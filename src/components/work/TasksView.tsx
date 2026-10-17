@@ -81,7 +81,7 @@ export function TasksView() {
         {day !== today && <button type="button" onClick={() => setDay(today)} className="btn btn-soft btn-sm ml-1">Bu gün</button>}
         {mine.length > 0 && (
           <span className="ml-auto rounded-full bg-primary-soft px-3 py-1.5 text-sm font-bold text-primary">
-            Sənin tapşırıqların: {mine.filter((t) => t.done).length} / {mine.length} görülüb
+            Sənin tapşırıqların: {mine.length} · görülən: {mine.filter((t) => t.done).length}
           </span>
         )}
       </div>
@@ -103,7 +103,7 @@ export function TasksView() {
               <header className="flex items-center gap-3 border-b border-line px-5 py-3">
                 <Avatar employee={employee} className="!h-9 !w-9 !text-xs" />
                 <span className="flex-1 font-bold">{employee.full_name}{isMe && <span className="ml-2 rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-bold text-primary">Sən</span>}</span>
-                <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${done === items.length ? "bg-ok-soft text-ok" : "bg-bg text-muted"}`}>{done} / {items.length}</span>
+                <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${done === items.length ? "bg-ok-soft text-ok" : "bg-bg text-muted"}`}>{items.length} tapşırıq · {done} görülən</span>
               </header>
               <ul>
                 {items.map((t) => (
