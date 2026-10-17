@@ -49,7 +49,7 @@ export function AppHeader({ children }: { children: React.ReactNode }) {
           <Suspense fallback={<NavLinksFallback />}>
             <PanelNav />
           </Suspense>
-          <div className="ml-auto">
+          <div className="ml-auto shrink-0">
             <Suspense fallback={<div className="user-chip h-[40px] w-56" />}>
               <UserChip />
             </Suspense>
