@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { ClipboardList, MapPin, Warehouse, Wrench } from "lucide-react";
 import { Page } from "@/components/Page";
+import { ToolStats, type StockRow } from "@/components/depot/ToolStats";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { createClient } from "@/lib/supabase/server";
 
@@ -86,10 +87,8 @@ async function Tools() {
       .from("tool_assignments")
       .select("id, quantity, employee_id, employees(full_name, photo_url), tools(name)")
       .is("returned_at", null),
-    supabase.from("tool_stock").select("quantity, given_out"),
+    supabase.from("tool_stock").select("name, quantity, given_out, available").order("name"),
   ]);
-  const total = (stock ?? []).reduce((s, t) => s + t.quantity, 0);
-  const out = (stock ?? []).reduce((s, t) => s + t.given_out, 0);
 
   // Usta üzrə qruplaşdırma; öz kartın birinci, qalanı əlifba ilə
   const byEmployee = new Map<number, { name: string; photo: string | null; tools: { id: number; name: string; quantity: number }[] }>();
@@ -102,18 +101,7 @@ async function Tools() {
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-2 text-center">
-        {[
-          { label: "Cəmi", value: total, tone: "" },
-          { label: "Ustalarda", value: out, tone: "text-primary" },
-          { label: "Depoda", value: total - out, tone: "text-ok" },
-        ].map((s) => (
-          <div key={s.label} className="rounded-xl bg-bg px-2 py-2.5">
-            <p className={`text-xl font-extrabold tabular-nums ${s.tone}`}>{s.value}</p>
-            <p className="muted text-xs font-medium">{s.label}</p>
-          </div>
-        ))}
-      </div>
+      <ToolStats tools={(stock ?? []) as StockRow[]} />
 
       <h3 className="mb-1 mt-5 text-xs font-bold uppercase tracking-wide text-muted">Kimdə nə var</h3>
       {people.length === 0 ? (
