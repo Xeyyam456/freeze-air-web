@@ -59,7 +59,7 @@ export async function ClientDetail({ id, kind }: { id: number; kind: Kind }) {
       subtitle={fixedPlace ? (client.address ?? "Sabit məkan") : `${list.length} ${k.unit}`}
       back={{ href: k.route, label: k.section }}
     >
-      <WithSidePanel fill={fixedPlace} panel={<ClientInfoCard company={client} unitCount={list.length} />}>
+      <WithSidePanel fill={fixedPlace} stack={!fixedPlace} panel={<ClientInfoCard company={client} unitCount={list.length} />}>
         {fixedPlace ? <LocationView company={client} /> : <UnitList units={list} kind={kind} />}
       </WithSidePanel>
     </Page>

@@ -228,15 +228,13 @@ export function ToolList({ kind, onKind, tools: allTools, holdings: allHoldings,
         <PersonModal emp={openPerson} kind={kind} holds={byEmployee[openPerson.id] ?? []} toolInfo={toolInfo} canManage={canManage} onClose={() => setOpenEmp(null)} />
       )}
 
-      {/* Axtarış öz yerində qalır; üstündəki boşluq (before) və altındakı zolaq bərk fonludur: sürüşən məzmun orada görünmür */}
-      <div className="sticky top-0 z-10 rounded-[14px] shadow-[0_16px_0_0_#f8f9fc] before:absolute before:inset-x-0 before:bottom-full before:h-8 before:bg-[#f8f9fc]">
-        <div className="search">
+      {/* Axtarış və tablar yerində qalır; yalnız aşağıdakı siyahı bloku öz içində sürüşür (scrollbar gizli) */}
+      <div className="search shrink-0">
         <Search size={20} />
         <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={tx.search} aria-label="Axtarış" />
       </div>
-      </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-3">
         <KindTabs kind={kind} onKind={(k) => { onKind(k); setQuery(""); }} />
         <div className="inline-flex gap-1 rounded-xl bg-line/60 p-1" role="tablist" aria-label="Görünüş">
           {([["list", "Siyahı"], ["people", "Ustalar üzrə"]] as const).map(([v, label]) => (
@@ -255,9 +253,9 @@ export function ToolList({ kind, onKind, tools: allTools, holdings: allHoldings,
           <p className="muted text-sm">{canManage ? "Sağdakı formdan əlavə et." : "Depo məsulu əlavə edir."}</p>
         </div>
       ) : view === "people" ? (
-        <div className="card overflow-hidden !p-0">
+        <div className="card min-h-0 flex-1 overflow-y-auto !p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <table className="w-full text-sm">
-            <thead className="bg-[#f8f9fc] text-left text-xs font-semibold text-muted">
+            <thead className="sticky top-0 z-[1] bg-[#f8f9fc] text-left text-xs font-semibold text-muted">
               <tr>
                 <th className="px-4 py-3">Usta</th>
                 <th className="px-4 py-3">{tx.hint}</th>
@@ -300,9 +298,9 @@ export function ToolList({ kind, onKind, tools: allTools, holdings: allHoldings,
           {masters.length === 0 && <p className="muted border-t border-line py-8 text-center text-sm">Heç nə tapılmadı.</p>}
         </div>
       ) : (
-        <div className="card overflow-hidden !p-0">
+        <div className="card min-h-0 flex-1 overflow-y-auto !p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <table className="w-full text-sm">
-            <thead className="bg-[#f8f9fc] text-left text-xs font-semibold text-muted">
+            <thead className="sticky top-0 z-[1] bg-[#f8f9fc] text-left text-xs font-semibold text-muted">
               <tr>
                 <th className="px-4 py-3">{tx.col}</th>
                 <th className="w-28 px-4 py-3 text-center">Cəmi</th>
@@ -735,7 +733,7 @@ function PersonModal({ emp, kind, holds, toolInfo, canManage, onClose }: {
 export function DepotShell({ tools, holdings, pieces, employees }: { tools: Tool[]; holdings: Holding[]; pieces: Piece[]; employees: DepotEmployee[] }) {
   const [kind, setKind] = useState<Kind>("tool");
   return (
-    <WithSidePanel panel={<AddToolCard kind={kind} onKind={setKind} names={tools.filter((t) => t.kind === kind).map((t) => t.name)} />}>
+    <WithSidePanel stack panel={<AddToolCard kind={kind} onKind={setKind} names={tools.filter((t) => t.kind === kind).map((t) => t.name)} />}>
       <ToolList kind={kind} onKind={setKind} tools={tools} holdings={holdings} pieces={pieces} employees={employees} canManage />
     </WithSidePanel>
   );
