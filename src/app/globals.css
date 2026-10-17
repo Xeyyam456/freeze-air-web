@@ -166,9 +166,18 @@
   }
   @media (max-width: 1600px) {
     .nav-link {
-      padding: 0 10px;
-      gap: 6px;
+      padding: 0 8px;
+      gap: 5px;
       font-size: 13px;
+    }
+    .user-chip {
+      white-space: nowrap;
+    }
+  }
+  /* Kiçik ekranlarda menyu bəndlərinin ikonları gizlənir (yer qazanmaq üçün) */
+  @media (max-width: 1480px) {
+    .nav-link > svg {
+      display: none;
     }
   }
   .nav-link:hover {
