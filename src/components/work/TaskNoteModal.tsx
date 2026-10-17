@@ -121,7 +121,7 @@ export function TaskNoteModal({ task, onClose, onSaved }: {
                       </span>
                     ) : (
                       // eslint-disable-next-line @next/next/no-img-element -- imzalı storage linki
-                      <img src={f.url} alt="İşin şəkli" className="h-14 w-14 rounded-lg border border-line object-cover" />
+                      <img src={f.url ?? undefined} alt="İşin şəkli" className="h-14 w-14 rounded-lg border border-line object-cover" />
                     )}
                     <button type="button" onClick={() => toggleRemove(f.id)}
                       className={`absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full text-white shadow ${gone ? "bg-muted" : "bg-danger"}`}
