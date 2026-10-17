@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Warehouse, Wrench } from "lucide-react";
+import { Package, Warehouse, Wrench } from "lucide-react";
 import { Page } from "@/components/Page";
 import { ToolStats, type StockRow } from "@/components/depot/ToolStats";
 import { Avatar } from "@/components/employees/EmployeeList";
@@ -14,19 +14,20 @@ async function Tools() {
     supabase.rpc("my_employee_id"),
     supabase
       .from("tool_assignments")
-      .select("id, quantity, employee_id, employees(full_name, photo_url), tools(name, kind)")
+      .select("id, quantity, employee_id, employees(full_name, photo_url), tools(name, kind, unit)")
       .is("returned_at", null),
     supabase.from("tool_stock").select("name, quantity, given_out, available").eq("kind", "tool").order("name"),
   ]);
 
   // Usta üzrə qruplaşdırma; öz kartın birinci, qalanı əlifba ilə
-  const byEmployee = new Map<number, { name: string; photo: string | null; tools: { id: number; name: string; quantity: number }[] }>();
+  const byEmployee = new Map<number, { name: string; photo: string | null; tools: { id: number; name: string; quantity: number; material: boolean; unit: string }[] }>();
   for (const a of held ?? []) {
-    if (a.tools?.kind !== "tool") continue; // materiallar usta panelində göstərilmir
     const e = byEmployee.get(a.employee_id) ?? { name: a.employees?.full_name ?? "—", photo: a.employees?.photo_url ?? null, tools: [] };
-    e.tools.push({ id: a.id, name: a.tools?.name ?? "—", quantity: a.quantity });
+    e.tools.push({ id: a.id, name: a.tools?.name ?? "—", quantity: a.quantity, material: a.tools?.kind === "material", unit: a.tools?.unit ?? "ədəd" });
     byEmployee.set(a.employee_id, e);
   }
+  // Hər ustada əvvəl alətlər, sonra materiallar
+  for (const e of byEmployee.values()) e.tools.sort((a, b) => Number(a.material) - Number(b.material));
   const people = [...byEmployee.entries()].sort(([ia, a], [ib, b]) => (ia === myId ? -1 : ib === myId ? 1 : a.name.localeCompare(b.name, "az")));
 
   return (
@@ -35,7 +36,7 @@ async function Tools() {
 
       <h3 className="mb-1 mt-5 text-xs font-bold uppercase tracking-wide text-muted">Kimdə nə var</h3>
       {people.length === 0 ? (
-        <p className="muted rounded-xl border border-dashed border-line px-3 py-6 text-center text-sm">Alətlər hamısı depodadır.</p>
+        <p className="muted rounded-xl border border-dashed border-line px-3 py-6 text-center text-sm">Alətlər və materiallar hamısı depodadır.</p>
       ) : (
         <ul className="nice-scroll -mr-2 min-h-0 flex-1 divide-y divide-line overflow-y-auto pr-2">
           {people.map(([id, p]) => (
@@ -49,8 +50,8 @@ async function Tools() {
                 <p className="mt-1.5 flex flex-wrap gap-1.5">
                   {p.tools.map((t) => (
                     <span key={t.id} className="inline-flex items-center gap-1 rounded-lg bg-bg px-2 py-1 text-xs font-medium">
-                      <Wrench size={11} className="text-primary" /> {t.name}
-                      {t.quantity > 1 && <b className="text-primary">×{t.quantity}</b>}
+                      {t.material ? <Package size={11} className="text-primary" /> : <Wrench size={11} className="text-primary" />} {t.name}
+                      {t.material ? <b className="text-primary">{t.quantity} {t.unit}</b> : t.quantity > 1 && <b className="text-primary">×{t.quantity}</b>}
                     </span>
                   ))}
                 </p>

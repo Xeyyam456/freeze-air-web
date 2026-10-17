@@ -16,7 +16,7 @@ async function Content() {
     // Hazırda ustalarda olan alətlər (qaytarılmamış)
     supabase
       .from("tool_assignments")
-      .select("employee_id, quantity, taken_at, tools(id, name, inventory_code, kind)")
+      .select("employee_id, quantity, taken_at, tools(id, name, inventory_code, kind, unit)")
       .is("returned_at", null)
       .order("taken_at"),
     // Daxil olmuş istifadəçinin usta qeydi: öz kartı seçilir, işlərini yalnız özü əlavə edir
@@ -30,7 +30,7 @@ async function Content() {
 
   const toolsByEmployee: Record<number, HeldTool[]> = {};
   for (const a of assignments ?? []) {
-    if (!a.tools || a.tools.kind !== "tool") continue; // materiallar yalnız Depo-da
+    if (!a.tools) continue;
     (toolsByEmployee[a.employee_id] ??= []).push({ ...a.tools, quantity: a.quantity, taken_at: a.taken_at });
   }
 

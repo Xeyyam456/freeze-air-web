@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Briefcase, CalendarDays, ClipboardList, Phone, Search, User, Users, Wrench, X } from "lucide-react";
+import { Briefcase, CalendarDays, ClipboardList, Package, Phone, Search, User, Users, Wrench, X } from "lucide-react";
 import { Modal } from "@/components/Modal";
 import { WorkTab } from "@/components/work/WorkTab";
 import type { Tables } from "@/lib/database.types";
@@ -9,13 +9,17 @@ import { experience, initials } from "@/lib/experience";
 
 type Employee = Tables<"employees">;
 
-// Ustada hazırda olan alət (qaytarılmamış)
-// quantity: ustadakı say (bir alətdən bir neçə ədəd ola bilər)
-export type HeldTool = { id: number; name: string; inventory_code: string | null; taken_at: string; quantity: number };
+// Ustada hazırda olan alət və ya material (qaytarılmamış)
+// quantity: ustadakı say (alətdən bir neçə ədəd, materialdan ölçü vahidi ilə: "12 metr"); kind: tool | material
+export type HeldTool = { id: number; name: string; inventory_code: string | null; taken_at: string; quantity: number; kind: string; unit: string };
 
-// Ustadakı ədədlərin cəmi
+// Ustadakı alət ədədlərinin cəmi (materiallar ayrıca: vahidləri fərqlidir)
 function toolCount(tools: HeldTool[]) {
-  return tools.reduce((s, t) => s + t.quantity, 0);
+  return tools.filter((t) => t.kind === "tool").reduce((s, t) => s + t.quantity, 0);
+}
+// Ustadakı material növlərinin sayı
+function materialCount(tools: HeldTool[]) {
+  return tools.filter((t) => t.kind === "material").length;
 }
 
 // Axtarış üçün sadələşdirmə: "Əlizadə" və "elizade" eyni tapılsın.
@@ -75,8 +79,8 @@ function EmployeeDetailsModal({ employee, tools, isMe, onClose }: {
             <User size={15} /> Haqqında
           </button>
           <button type="button" role="tab" aria-selected={tab === "tools"} onClick={() => setTab("tools")} className={tabClass("tools")}>
-            <Wrench size={15} /> Alətlər
-            <span className="rounded-full bg-primary-soft px-1.5 text-xs text-primary">{toolCount(tools)}</span>
+            <Wrench size={15} /> Alət və material
+            <span className="rounded-full bg-primary-soft px-1.5 text-xs text-primary">{toolCount(tools) + materialCount(tools)}</span>
           </button>
           <button type="button" role="tab" aria-selected={tab === "work"} onClick={() => setTab("work")} className={tabClass("work")}>
             <ClipboardList size={15} /> İşlər
@@ -105,16 +109,19 @@ function EmployeeDetailsModal({ employee, tools, isMe, onClose }: {
           ) : tab === "tools" ? (
             tools.length === 0 ? (
               <div className="grid h-full place-items-center rounded-xl border border-dashed border-line">
-                <p className="muted text-sm">Ustanın üzərində alət yoxdur.</p>
+                <p className="muted text-sm">Ustanın üzərində alət və ya material yoxdur.</p>
               </div>
             ) : (
               // Üç sütun: çox alət olanda da sahə öz içində sürüşür, pəncərə böyümür
               <ul className="grid h-full auto-rows-min grid-cols-3 gap-1.5 overflow-y-auto">
-                {tools.map((t) => (
+                {/* Əvvəl alətlər, sonra materiallar (materialda say ölçü vahidi ilə) */}
+                {[...tools].sort((a, b) => (a.kind === b.kind ? 0 : a.kind === "tool" ? -1 : 1)).map((t) => (
                   <li key={t.id} className="flex items-center gap-2 rounded-lg bg-bg px-3 py-1.5 text-[13px] font-medium" title={t.name}>
-                    <Wrench size={13} className="shrink-0 text-primary" />
+                    {t.kind === "material" ? <Package size={13} className="shrink-0 text-primary" /> : <Wrench size={13} className="shrink-0 text-primary" />}
                     <span className="min-w-0 flex-1 truncate">{t.name}</span>
-                    {t.quantity > 1 && <span className="shrink-0 rounded-full bg-primary-soft px-1.5 text-xs font-bold text-primary">×{t.quantity}</span>}
+                    {t.kind === "material"
+                      ? <span className="shrink-0 rounded-full bg-primary-soft px-1.5 text-xs font-bold text-primary">{t.quantity} {t.unit}</span>
+                      : t.quantity > 1 && <span className="shrink-0 rounded-full bg-primary-soft px-1.5 text-xs font-bold text-primary">×{t.quantity}</span>}
                   </li>
                 ))}
               </ul>
@@ -178,7 +185,7 @@ function EmployeeCard({ employee, tools, todayCount, isMe }: {
               <ClipboardList size={13} /> Bu gün: {todayCount} iş
             </span>
             <span className={`flex items-center gap-1.5 ${tools.length ? "text-primary" : "muted"}`}>
-              <Wrench size={13} /> {toolCount(tools)} alət
+              <Wrench size={13} /> {toolCount(tools)} alət{materialCount(tools) > 0 && ` · ${materialCount(tools)} material`}
             </span>
           </span>
         </div>
