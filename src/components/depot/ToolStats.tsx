@@ -18,7 +18,7 @@ type Kinds = (typeof KINDS)[number];
 
 function Row({ t, k }: { t: StockRow; k: Kinds }) {
   return (
-    <li className="flex items-center gap-2.5 py-2.5 text-sm">
+    <li className="flex h-10 items-center gap-2.5 text-sm">
       <Wrench size={14} className="shrink-0 text-primary" />
       <span className="min-w-0 flex-1 truncate font-medium" title={t.name}>{t.name}</span>
       {/* Depoda: neçə ədəd qalıb, cəmi neçədən */}
@@ -62,8 +62,9 @@ export function ToolStats({ tools }: { tools: StockRow[] }) {
           ) : (
             // Zolaq gizlidir (istifadəçi qərarı), sürüşmə işləyir; aşağıda yumşaq solğunlaşma siyahının davam etdiyini göstərir
             split ? (
+              // Qutunun hündürlüyü hər sütunda 10 sətir görünəcək qədərdir, qalanı sürüşür.
               // Sütunlar eyni sürüşən qutudadır: birlikdə sürüşür, ortadakı xətt bütün hündürlüyü tutur
-              <div className="grid grid-cols-2 max-h-[min(420px,calc(100vh-240px))] overflow-y-auto pb-6 [mask-image:linear-gradient(to_bottom,black_calc(100%-28px),transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="grid grid-cols-2 max-h-[min(433px,calc(100vh-240px))] overflow-y-auto pb-6 [mask-image:linear-gradient(to_bottom,black_calc(100%-28px),transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <ul className="divide-y divide-line border-r border-line pr-6">
                   {rows.slice(0, half).map((t) => <Row key={t.name} t={t} k={current} />)}
                 </ul>
