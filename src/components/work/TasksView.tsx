@@ -132,7 +132,7 @@ export function TasksView() {
                           <span className="muted"> — </span>
                           <span className={t.done ? "text-ok/80" : ""}>{t.reason}</span>
                         </span>
-                        {t.note && <span className="block truncate text-xs text-[#d97706]"><b>Təmir:</b> {t.note}</span>}
+                        {t.note && <span className={`block truncate text-xs ${t.done ? "text-[#d97706]" : "muted"}`}><b>Təmir:</b> {t.note}</span>}
                       </span>
                       {/* Görülmüş öz tapşırığında: təmir barədə yaz, akt/şəkil əlavə et */}
                       {t.done && (isMe || t.note || (t.work_logs?.work_files.length ?? 0) > 0) && (
