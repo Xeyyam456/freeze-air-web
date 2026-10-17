@@ -1,11 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Check, ChevronLeft, ChevronRight, ListChecks } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, ListChecks, Paperclip, PenLine } from "lucide-react";
 import { formatDateAz } from "@/components/DatePicker";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
+import { TaskNoteModal } from "./TaskNoteModal";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const iso = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -19,7 +20,7 @@ async function fetchTasks(day: string) {
   const supabase = createClient();
   const [tasks, employees] = await Promise.all([
     supabase.from("tasks")
-      .select("id, employee_id, reason, done, place_text, stores(name, code, companies(name)), companies(name)")
+      .select("id, employee_id, reason, done, note, place_text, stores(name, code, companies(name)), companies(name), work_logs(work_files(id))")
       .eq("task_date", day).order("created_at").then((r) => r.data ?? []),
     supabase.from("employees").select("id, full_name, photo_url").eq("is_management", false).eq("is_active", true).order("full_name").then((r) => r.data ?? []),
   ]);
@@ -41,6 +42,7 @@ export function TasksView() {
   const [day, setDay] = useState(today);
   const [me, setMe] = useState<number | null | undefined>(undefined);
   const [data, setData] = useState<Awaited<ReturnType<typeof fetchTasks>> | null>(null);
+  const [noteFor, setNoteFor] = useState<Task | null>(null); // təmir barədə yazı pəncərəsi
 
   useEffect(() => {
     let cancelled = false;
@@ -58,8 +60,10 @@ export function TasksView() {
   async function toggle(t: Task) {
     // Dərhal əks olunur, xəta olsa geri qayıdır
     setData((d) => d && { ...d, tasks: d.tasks.map((x) => (x.id === t.id ? { ...x, done: !t.done } : x)) });
-    const { error } = await createClient().from("tasks").update({ done: !t.done }).eq("id", t.id);
+    // Görüldü: iş avtomatik "Görülən işlər"ə düşür; geri alınanda boş avtomatik iş silinir (bazada task_set_done)
+    const { error } = await createClient().rpc("task_set_done", { p_task_id: t.id, p_done: !t.done });
     if (error) toast.error(error.message);
+    else if (!t.done) toast.success("Tapşırıq görüldü, iş qeydə alındı");
     load();
   }
 
@@ -74,6 +78,7 @@ export function TasksView() {
 
   return (
     <div className="space-y-4">
+      {noteFor && <TaskNoteModal task={{ id: noteFor.id, reason: noteFor.reason, note: noteFor.note, place: placeOf(noteFor) }} onClose={() => setNoteFor(null)} onSaved={load} />}
       <div className="flex flex-wrap items-center gap-2">
         <button type="button" onClick={() => setDay(shift(day, -1))} className="icon-btn" aria-label="Əvvəlki gün"><ChevronLeft size={18} /></button>
         <h2 className="min-w-44 text-center text-lg font-bold">{day === today ? "Bu gün" : formatDateAz(day)}</h2>
@@ -117,11 +122,26 @@ export function TasksView() {
                           t.done ? "border-ok bg-ok text-white" : isMe ? "border-line text-transparent hover:border-primary" : "border-line text-transparent"}`}>
                         <Check size={12} strokeWidth={3} />
                       </button>
-                      <span className="min-w-0 flex-1 truncate text-sm">
-                        <span className={`font-semibold ${t.done ? "text-ok" : "text-primary"}`}>{placeOf(t)}</span>
-                        <span className="muted"> — </span>
-                        <span className={t.done ? "text-ok/80" : ""}>{t.reason}</span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm">
+                          <span className={`font-semibold ${t.done ? "text-ok" : "text-primary"}`}>{placeOf(t)}</span>
+                          <span className="muted"> — </span>
+                          <span className={t.done ? "text-ok/80" : ""}>{t.reason}</span>
+                        </span>
+                        {t.note && <span className="muted block truncate text-xs">Təmir: {t.note}</span>}
                       </span>
+                      {/* Görülmüş öz tapşırığında: təmir barədə yaz, akt/şəkil əlavə et */}
+                      {t.done && (isMe || t.note || (t.work_logs?.work_files.length ?? 0) > 0) && (
+                        <span className="flex shrink-0 items-center gap-1.5 text-xs text-muted">
+                          {(t.work_logs?.work_files.length ?? 0) > 0 && <span className="inline-flex items-center gap-0.5" title="Əlavə olunmuş fayllar"><Paperclip size={13} />{t.work_logs?.work_files.length}</span>}
+                          {isMe && (
+                            <button type="button" onClick={() => setNoteFor(t)} title="Təmir barədə yaz, şəkil əlavə et"
+                              className="grid h-7 w-7 place-items-center rounded-lg bg-ok-soft text-ok transition-colors hover:bg-ok hover:text-white">
+                              <PenLine size={14} />
+                            </button>
+                          )}
+                        </span>
+                      )}
                     </li>
                   ))}
                 </ul>
