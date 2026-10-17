@@ -48,7 +48,7 @@ Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
   - `/avadanliq`, `/xidmetler`, `/xidmetler/[slug]` (obyekt növü), `/xidmet/[slug]` (xidmət səhifəsi: mətn, "Nə daxildir", addımlar, yapışan zəng bloku, digər xidmətlər), `/nece-isleyirik`, `/ustalarimiz`, `/elaqe`.
 - **Giriş**: `/login` → uğurdan sonra `/panel`; çıxış → `/`.
 - **Usta paneli** (yalnız girişlə; route group `app/(panel)/`): `/panel`, `/sirketler`, `/magazalar(/[id])`, `/ustalar`, `/rehberlik`, `/depo`. Ustanın "Alətlər" tabında say (×N) göstərilir.
-- **Usta paneli ana səhifəsi (`/panel`) qəsdən sadədir** (istifadəçi: "o qədər şeyə gərək yoxdu"): solda **Görülən işlər** (bütün ustaların son 30 işi: kim, harada, nə iş, saat və gün; Bakı vaxtı), sağda **Alətlər** (yuxarıda cəmi/ustalarda/depoda xanaları: **klik → modal**, həmin hissədəki alətlər və sayı, `components/depot/ToolStats.tsx`; altında "Kimdə nə var": hər ustada hansı alət və neçə ədəd; öz kartın birinci və "Sən" nişanı ilə). Göstərici kartları və "Bölmələr" yoxdur; sonra əlavə olunacaq (istifadəçi: "sonra əlavə ederik"). Menyu dəyişməyib.
+- **Usta paneli ana səhifəsi (`/panel`) qəsdən sadədir** (istifadəçi: "o qədər şeyə gərək yoxdu"): solda **Görülən işlər** (`components/work/WorkHistory.tsx`, client): seçilmiş günün bütün ustalar üzrə işləri (kim, harada, nə iş, saat; Bakı vaxtı), standart bu gün; **"Bu gün" / "Dünən" düymələri və təqvim** (`DatePicker`, gələcək gün seçilmir) ilə tarixçəyə baxılır, başlıqda günün iş sayı, sağda **Alətlər** (yuxarıda cəmi/ustalarda/depoda xanaları: **klik → modal**, həmin hissədəki alətlər və sayı, `components/depot/ToolStats.tsx`; altında "Kimdə nə var": hər ustada hansı alət və neçə ədəd; öz kartın birinci və "Sən" nişanı ilə). Göstərici kartları və "Bölmələr" yoxdur; sonra əlavə olunacaq (istifadəçi: "sonra əlavə ederik"). Menyu dəyişməyib.
 - **Depo (`/depo`) yalnız depo məsulu (və müdir) üçün** (istifadəçi qərarı): menyuda bənd yalnız `can_manage_tools()` doğru olanda görünür (`AppHeader` → `PanelNav` → `NavLinks showDepot`), başqası ünvana girsə `/panel`-ə yönləndirilir. Paneldəki "Bölmələr"-də Depo yoxdur. Səhifə admin-dəki sadə Depo ilə eynidir (`components/depot/DepotView.tsx` ← admin `DepotForms.tsx`, depo məsulu kartı olmadan; aksiyalar `lib/tools.ts` ← admin `actions/tools.ts`, mutasiyadan sonra `router.refresh()`). Siyahıda yalnız ustalar. Depo məsulunu müdir admin paneldən təyin edir.
 - Yeni açıq səhifə əlavə edəndə `proxy.ts`-də `PUBLIC_PATHS`-a da əlavə et (`/xidmetler/` və `/xidmet/` prefiksləri açıqdır).
 - Footer: xidmətlər `/xidmet/<slug>`-a aparır; telefon (`tel:`), ünvan (Google Maps), e-poçt (`mailto:`) klik olunur.
@@ -178,7 +178,7 @@ Storage-də `remove` faylı həmişə dərhal silmir; köhnə şəkillər bucket
 - Rəhbərlik: id 7 Abdulov Ceyhun, id 8 Məmmədov Anar, id 9 Mirmanafov Mirsadiq.
 - Marketlər: "Araz Market" (id 4, 200 mağaza, kodlar `ARZ-001…`), "TEST Oba Market" (id 6, 200 mağaza, `OBA-001…`). Mağazalar `excel/*-market-200.xlsx`-dən import olunub, məlumat uydurmadır. İstifadəçi "TEST" sözünü adlardan hələlik götürməmək dedi.
 - Şirkətlər: Rabitə Bank (id 7, 10 filial), Qarabağ Stadion, Knightsbridge Residence, Port Baku Residence, İzmir Villa (filialsız, sabit məkan).
-- 2026-10-17 sonunda: iş qeydi və müraciət **yoxdur** (hamısı silinib).
+- 2026-10-17: Əlizadə Xəyyam üçün 5 sınaq iş yazılıb (id 27–31: bu gün 2, dünən 3; uydurma məzmun); müraciət yoxdur.
 
 ## Admin reposu ilə sinxron saxlanmalı olanlar
 Repolar ayrıdır, kod paylaşılmır; bunlar əl ilə eyni saxlanmalıdır:
