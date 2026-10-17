@@ -19,7 +19,7 @@ Kondisioner servis şirkəti **Freeze Air Service** üçün sistem: ustalar, mü
 
 İkisi də **eyni Supabase layihəsini** işlədir. Admin funksiyaları bu repoda **yoxdur**. `supabase/` qovluğu (miqrasiyalar + Edge Function) **admin reposuna aiddir**; baza dəyişikliyi lazım olanda miqrasiya orada yazılır, Supabase MCP ilə tətbiq olunur.
 
-**Hazırkı vəziyyət (2026-10-17):** repolar hələ ayrılmayıb. Hər şey `D:\Praqramlasirma\Projects\kondisioner-servis\` altındadır: `admin/`, `web/`, `supabase/` (hələ kökdə, ayrılanda `admin/supabase/`-a köçürüləcək), `excel/`. 
+**Hazırkı vəziyyət (2026-10-18):** repolar hələ ayrılmayıb. Hər şey `D:\Praqramlasirma\Projects\kondisioner-servis\` altındadır: `admin/`, `web/`, `supabase/` (hələ kökdə, ayrılanda `admin/supabase/`-a köçürüləcək), `excel/`. 
 
 **Git (2026-10-17-dən):** hələlik hamısı **bir repodadır**, kökdə (`kondisioner-servis/.git`, budaq `main`): `admin/`, `web/`, `supabase/` birlikdə commit və push olunur. `web/`-in köhnə ayrıca `.git`-i (yalnız Next-in ilk commit-i) götürülüb. Kök `.gitignore`: `node_modules`, `.next`, `dist`, `.env*`, `excel/`; `.gitattributes`: LF.
 
@@ -48,7 +48,7 @@ Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
   - `/`: hero, Haqqımızda, obyektlər, xidmət kateqoriyaları, sürətli əlaqə + xəritə.
   - `/avadanliq`, `/xidmetler`, `/xidmetler/[slug]` (obyekt növü), `/xidmet/[slug]` (xidmət səhifəsi: mətn, "Nə daxildir", addımlar, yapışan zəng bloku, digər xidmətlər), `/nece-isleyirik`, `/ustalarimiz`, `/elaqe`.
 - **Giriş**: `/login` → uğurdan sonra `/panel`; çıxış → `/`. **Müasir dizayn** (2026-10-18, istifadəçi istəyi): solda tünd navy marka hissəsi ("Usta paneli" nişanı, başlıq, 3 xüsusiyyət kartı: tapşırıqlar, işlər, alət/material), sağda kölgəli giriş kartı (ikonlu e-poçt və parol sahələri, parolu göstər/gizlət, "Sayta qayıt" keçidi); dar ekranda sol hissə gizlənir, marka kartın üstündə görünür.
-- **Usta paneli** (yalnız girişlə; route group `app/(panel)/`): `/panel`, `/sirketler`, `/magazalar(/[id])`, `/ustalar`, `/rehberlik`, `/depo`. Ustanın "Alətlər" tabında say (×N) göstərilir.
+- **Usta paneli** (yalnız girişlə; route group `app/(panel)/`): `/panel`, `/sirketler`, `/magazalar(/[id])`, `/ustalar`, `/tapshiriqlar`, `/statistika`, `/rehberlik`, `/xeta-kodlari`, `/depo` (yalnız depo məsulu). Ustanın "Alətlər" tabında say (×N) göstərilir.
 - **Usta paneli ana səhifəsi (`/panel`) qəsdən sadədir** (istifadəçi: "o qədər şeyə gərək yoxdu"): solda **Görülən işlər** (`components/work/WorkHistory.tsx`, client): seçilmiş günün bütün ustalar üzrə işləri (kim, harada, nə iş, saat; Bakı vaxtı), standart bu gün; **"Bu gün" / "Dünən" düymələri və təqvim** (`DatePicker`, gələcək gün seçilmir) ilə tarixçəyə baxılır, başlıqda günün iş sayı; **sətrə klik → `components/work/WorkLogModal.tsx`** (admin paneldəki ilə eyni: usta, iş günü + əlavə olunma saatı, yer + xəritə, görülən iş, akt və şəkillər), sağda **Depo** kartı (`components/depot/ToolsPanel.tsx`: iki tab **Alətlər / Materiallar**; Alətlər: cəmi/ustalarda/depoda xanaları: **klik → modal**, həmin hissədəki alətlər və sayı, `components/depot/ToolStats.tsx`; altında "Kimdə nə var": hər ustada hansı alət və neçə ədəd; öz kartın birinci və "Sən" nişanı ilə). Göstərici kartları və "Bölmələr" yoxdur; sonra əlavə olunacaq (istifadəçi: "sonra əlavə ederik"). Menyu dəyişməyib.
 - **`/panel` yuxarıda "Mənim bugünüm" kartı** (2026-10-17; `components/work/MyDay.tsx`): bugün neçə iş yazılıb + **"İş əlavə et"** düyməsi → `WorkLogForm`; əməkdaş kartı olmayan hesabda görünmür. İş yazılanda `window` hadisəsi `WORK_SAVED` atılır: sayğac və `WorkHistory` siyahısı yenilənir.
 - **Mağaza axtarışı / "Yol tap" web-də YOXDUR** (istifadəçi qərarı: veb görünüşdə naviqatorla yola düşməyəcəklər, bu **mobil tətbiqdə** lazım olacaq; "tələsmə"). Yenidən əlavə etmə. Hazır qaralama git tarixçəsindədir: commit `019f8e4` (`components/StoreFinder.tsx`, `lib/navigation.ts` → `directionsUrl`/`wazeUrl`).
@@ -197,7 +197,7 @@ Storage-də `remove` faylı həmişə dərhal silmir; köhnə şəkillər bucket
 - Rəhbərlik: id 7 Abdulov Ceyhun, id 8 Məmmədov Anar, id 9 Mirmanafov Mirsadiq.
 - Marketlər: "Araz Market" (id 4, 200 mağaza, kodlar `ARZ-001…`), "TEST Oba Market" (id 6, 200 mağaza, `OBA-001…`). Mağazalar `excel/*-market-200.xlsx`-dən import olunub, məlumat uydurmadır. İstifadəçi "TEST" sözünü adlardan hələlik götürməmək dedi.
 - Şirkətlər: Rabitə Bank (id 7, 10 filial), Qarabağ Stadion, Knightsbridge Residence, Port Baku Residence, İzmir Villa (filialsız, sabit məkan).
-- 2026-10-17: Əlizadə Xəyyam üçün 5 sınaq iş yazılıb (id 27–31: bu gün 2, dünən 3; uydurma məzmun); müraciət yoxdur.
+- 2026-10-18: iş qeydləri, tapşırıqlar və fayl qeydləri istifadəçi istəyi ilə **hamısı silindi** (baza təmizdir); `work` bucket-ində `32/` qovluğunda 2 yetim şəkil qalıb (SQL ilə silinmir, Storage panelindən əl ilə). Xəta kodları: real kod `Daikin VRV · U4`; sınaq faylı `excel/xeta-kodlari-test.xlsx` (14 kod, `TEST` modelləri: yüklənibsə sonra "Modellər" tabından silinir). Müraciətlər: istifadəçinin yazdığı sınaq müraciətlər var.
 
 ## Admin reposu ilə sinxron saxlanmalı olanlar
 Repolar ayrıdır, kod paylaşılmır; bunlar əl ilə eyni saxlanmalıdır:
