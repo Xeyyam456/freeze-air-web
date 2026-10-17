@@ -1,8 +1,7 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { Page } from "@/components/Page";
-import { WithSidePanel } from "@/components/SidePanel";
-import { AddToolCard, ToolList, type Holding } from "@/components/depot/DepotView";
+import { DepotShell, type Holding } from "@/components/depot/DepotView";
 import { createClient } from "@/lib/supabase/server";
 
 // Depo yalnız depo məsulu (və müdir) üçündür: başqası bu ünvana girsə panelə qayıdır.
@@ -23,15 +22,13 @@ async function Content() {
   ]);
 
   return (
-    <WithSidePanel panel={<AddToolCard />}>
-      <ToolList tools={tools ?? []} holdings={(holdings ?? []) as Holding[]} employees={employees ?? []} canManage />
-    </WithSidePanel>
+    <DepotShell tools={tools ?? []} holdings={(holdings ?? []) as Holding[]} employees={employees ?? []} />
   );
 }
 
 export default function DepotPage() {
   return (
-    <Page title="Depo" subtitle="Alətlər, sayı və kimdə olduğu">
+    <Page title="Depo" subtitle="Alətlər və materiallar, sayı və kimdə olduğu">
       <Suspense fallback={<div className="card muted">Yüklənir...</div>}>
         <Content />
       </Suspense>

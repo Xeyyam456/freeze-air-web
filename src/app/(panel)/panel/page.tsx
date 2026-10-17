@@ -14,14 +14,15 @@ async function Tools() {
     supabase.rpc("my_employee_id"),
     supabase
       .from("tool_assignments")
-      .select("id, quantity, employee_id, employees(full_name, photo_url), tools(name)")
+      .select("id, quantity, employee_id, employees(full_name, photo_url), tools(name, kind)")
       .is("returned_at", null),
-    supabase.from("tool_stock").select("name, quantity, given_out, available").order("name"),
+    supabase.from("tool_stock").select("name, quantity, given_out, available").eq("kind", "tool").order("name"),
   ]);
 
   // Usta üzrə qruplaşdırma; öz kartın birinci, qalanı əlifba ilə
   const byEmployee = new Map<number, { name: string; photo: string | null; tools: { id: number; name: string; quantity: number }[] }>();
   for (const a of held ?? []) {
+    if (a.tools?.kind !== "tool") continue; // materiallar usta panelində göstərilmir
     const e = byEmployee.get(a.employee_id) ?? { name: a.employees?.full_name ?? "—", photo: a.employees?.photo_url ?? null, tools: [] };
     e.tools.push({ id: a.id, name: a.tools?.name ?? "—", quantity: a.quantity });
     byEmployee.set(a.employee_id, e);

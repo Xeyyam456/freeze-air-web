@@ -52,7 +52,7 @@ Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
 - **Usta paneli ana səhifəsi (`/panel`) qəsdən sadədir** (istifadəçi: "o qədər şeyə gərək yoxdu"): solda **Görülən işlər** (`components/work/WorkHistory.tsx`, client): seçilmiş günün bütün ustalar üzrə işləri (kim, harada, nə iş, saat; Bakı vaxtı), standart bu gün; **"Bu gün" / "Dünən" düymələri və təqvim** (`DatePicker`, gələcək gün seçilmir) ilə tarixçəyə baxılır, başlıqda günün iş sayı; **sətrə klik → `components/work/WorkLogModal.tsx`** (admin paneldəki ilə eyni: usta, iş günü + əlavə olunma saatı, yer + xəritə, görülən iş, akt və şəkillər), sağda **Alətlər** (yuxarıda cəmi/ustalarda/depoda xanaları: **klik → modal**, həmin hissədəki alətlər və sayı, `components/depot/ToolStats.tsx`; altında "Kimdə nə var": hər ustada hansı alət və neçə ədəd; öz kartın birinci və "Sən" nişanı ilə). Göstərici kartları və "Bölmələr" yoxdur; sonra əlavə olunacaq (istifadəçi: "sonra əlavə ederik"). Menyu dəyişməyib.
 - **`/panel` yuxarıda "Mənim bugünüm" kartı** (2026-10-17; `components/work/MyDay.tsx`): bugün neçə iş yazılıb + **"İş əlavə et"** düyməsi → `WorkLogForm`; əməkdaş kartı olmayan hesabda görünmür. İş yazılanda `window` hadisəsi `WORK_SAVED` atılır: sayğac və `WorkHistory` siyahısı yenilənir.
 - **Mağaza axtarışı / "Yol tap" web-də YOXDUR** (istifadəçi qərarı: veb görünüşdə naviqatorla yola düşməyəcəklər, bu **mobil tətbiqdə** lazım olacaq; "tələsmə"). Yenidən əlavə etmə. Hazır qaralama git tarixçəsindədir: commit `019f8e4` (`components/StoreFinder.tsx`, `lib/navigation.ts` → `directionsUrl`/`wazeUrl`).
-- **Depo (`/depo`) yalnız depo məsulu (və müdir) üçün** (istifadəçi qərarı): menyuda bənd yalnız `can_manage_tools()` doğru olanda görünür (`AppHeader` → `PanelNav` → `NavLinks showDepot`), başqası ünvana girsə `/panel`-ə yönləndirilir. Paneldəki "Bölmələr"-də Depo yoxdur. Səhifə admin-dəki sadə Depo ilə eynidir (`components/depot/DepotView.tsx` ← admin `DepotForms.tsx`, depo məsulu kartı olmadan; aksiyalar `lib/tools.ts` ← admin `actions/tools.ts`, mutasiyadan sonra `router.refresh()`). Siyahıda yalnız ustalar. Depo məsulunu müdir admin paneldən təyin edir.
+- **Depo (`/depo`) yalnız depo məsulu (və müdir) üçün** (istifadəçi qərarı): menyuda bənd yalnız `can_manage_tools()` doğru olanda görünür (`AppHeader` → `PanelNav` → `NavLinks showDepot`), başqası ünvana girsə `/panel`-ə yönləndirilir. Paneldəki "Bölmələr"-də Depo yoxdur. Səhifə admin-dəki Depo ilə eynidir: **Alətlər / Materiallar tabları**, "Siyahı / Ustalar üzrə", "Yeni alət/material" (`components/depot/DepotView.tsx` ← admin `DepotForms.tsx`, depo məsulu kartı olmadan, tab vəziyyəti `DepotShell`-dədir; aksiyalar `lib/tools.ts` ← admin `actions/tools.ts`, mutasiyadan sonra `router.refresh()`). Siyahıda yalnız ustalar. Usta panelinin ana səhifəsi və "Ustalar" yalnız alətləri göstərir (`kind = 'tool'`), materiallar yalnız Depo-dadır. Depo məsulunu müdir admin paneldən təyin edir.
 - Yeni açıq səhifə əlavə edəndə `proxy.ts`-də `PUBLIC_PATHS`-a da əlavə et (`/xidmetler/` və `/xidmet/` prefiksləri açıqdır).
 - Footer: xidmətlər `/xidmet/<slug>`-a aparır; telefon (`tel:`), ünvan (Google Maps), e-poçt (`mailto:`) klik olunur.
 - Qərar (2026-10-17): qonaq yalnız saytı görür; məlumat bölmələri (ünvan, telefon, müqavilə) açıq deyil.
@@ -107,7 +107,7 @@ Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
 | `employees` | full_name, position, specialty, is_management, is_storekeeper, start_date, phone, photo_url, user_id, is_active | usta və rəhbərlik birlikdə; `user_id` hesabı bağlayır; `is_storekeeper` = depo məsulu (yalnız müdir təyin edir) |
 | `companies` | name, kind (`company`/`market`), phone, contact_person, notes, logo_url, address, lat, lng | şirkət (bank, stadion, residence) və ya market şəbəkəsi |
 | `stores` | company_id, code, name, address, lat, lng, phone, notes | şirkətin filialı / marketin mağazası |
-| `tools`, `tool_assignments` | alət: name, inventory_code, category, notes, **quantity** (ümumi say); təhvil: tool_id, employee_id, **quantity**, taken_at, returned_at | bir ustada eyni alətdən bir açıq təhvil (unikal indeks), yenisi verəndə say artır; view `tool_stock`: quantity, given_out (ustalarda), available (depoda) |
+| `tools`, `tool_assignments` | alət **və material**: name, inventory_code, category, notes, **quantity** (ümumi say), **kind** (`tool`/`material`), **unit** (ölçü vahidi: ədəd, metr, kq...); təhvil: tool_id, employee_id, **quantity**, taken_at, returned_at | bir ustada eyni alətdən/materialdan bir açıq təhvil (unikal indeks), yenisi verəndə say artır; view `tool_stock`: quantity, given_out (ustalarda), available (depoda), kind, unit |
 | `work_logs` | employee_id, work_date, store_id \| company_id \| place_text, description, created_by | iş yeri: üçündən biri mütləqdir (check) |
 | `work_files` | work_log_id, kind, path | `work` bucket-dəki fayllar |
 | `contact_requests` | name, phone, email, message, handled | saytdakı "Bizə yazın"; Realtime-da |
@@ -152,7 +152,7 @@ Storage-də `remove` faylı həmişə dərhal silmir; köhnə şəkillər bucket
 - Publikasiya `supabase_realtime`-da yalnız `contact_requests`. Hadisəni RLS-ə görə yalnız admin alır.
 
 ### Miqrasiyalar (`supabase/migrations/`, admin reposunda)
-- `0001`–`0031`. Ad formatı `NNNN_ad.sql`; Supabase MCP `apply_migration` ilə tətbiq et və faylı da yaz.
+- `0001`–`0032`. Ad formatı `NNNN_ad.sql`; Supabase MCP `apply_migration` ilə tətbiq et və faylı da yaz.
 - Mühüm olanlar:
   - 0005: work_logs, `my_employee_id`;
   - 0010: rol trigger-i;
@@ -171,7 +171,8 @@ Storage-də `remove` faylı həmişə dərhal silmir; köhnə şəkillər bucket
   - 0028: `public_management()`, saytda "Rəhbərlik";
   - 0029: xidmət səhifələri (`site_services` yeni sahələr + ilkin məzmun);
   - 0030: depo: alət sayı (`quantity`), `tool_stock`, depo məsulu (`is_storekeeper`), `give_tool`/`return_tool`; `tools.status` və `tool_current_holders` silindi;
-  - 0031: alət yalnız aktiv ustaya verilir (trigger `tool_assignments_only_masters`; rəhbərlik ala bilməz).
+  - 0031: alət yalnız aktiv ustaya verilir (trigger `tool_assignments_only_masters`; rəhbərlik ala bilməz);
+  - 0032: depoda materiallar (mis boru, qaz balonu...): `tools.kind` (`tool`/`material`), `tools.unit`, `tool_stock`-a bu sütunlar.
 - RLS dəyişikliyini simulyasiya olunmuş JWT ilə DO-blokunda yoxla: `set_config('request.jwt.claims', json_build_object('sub', <uuid>, 'role', 'authenticated')::text, true)`, `set local role authenticated`. Nəticəni `raise exception 'NƏTİCƏ ...'` ilə çıxar, bu da hər şeyi geri qaytarır.
 - `database.types.ts` əl ilə yenilənib; dəyişiklikdən sonra Supabase MCP `generate_typescript_types` ilə yenidən yarat və **admin reposundakı eyni fayla da** köçür.
 
