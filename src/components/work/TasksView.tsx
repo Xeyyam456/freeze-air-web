@@ -81,7 +81,7 @@ export function TasksView() {
       {noteFor && <TaskNoteModal key={noteFor.id} task={{
         id: noteFor.id, logId: noteFor.work_log_id, reason: noteFor.reason, place: placeOf(noteFor),
         // Əvvəl yazılan: tapşırıqdakı yazı, yoxdursa iş qeydinin təsviri (avtomatik yaranan təsvir = səbəb sayılmır)
-        note: noteFor.note ?? (noteFor.work_logs && noteFor.work_logs.description !== noteFor.reason ? noteFor.work_logs.description : null),
+        note: noteFor.note ?? (noteFor.work_logs && noteFor.work_logs.description !== `Tapşırıq: ${noteFor.reason}` ? noteFor.work_logs.description : null),
       }} onClose={() => setNoteFor(null)} onSaved={load} />}
       <div className="flex flex-wrap items-center gap-2">
         <button type="button" onClick={() => setDay(shift(day, -1))} className="icon-btn" aria-label="Əvvəlki gün"><ChevronLeft size={18} /></button>
