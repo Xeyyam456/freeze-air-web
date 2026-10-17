@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Building2, LayoutGrid, Store, TriangleAlert, UserCog, Users, Warehouse } from "lucide-react";
+import { BarChart3, Building2, LayoutGrid, Store, TriangleAlert, UserCog, Users, Warehouse } from "lucide-react";
 
 const NAV = [
   { href: "/panel", label: "Panel", icon: LayoutGrid },
   { href: "/sirketler", label: "Şirkətlər", icon: Building2 },
   { href: "/magazalar", label: "Mağazalar", icon: Store },
   { href: "/ustalar", label: "Ustalar", icon: Users },
+  { href: "/statistika", label: "Statistika", icon: BarChart3 },
   { href: "/rehberlik", label: "Rəhbərlik", icon: UserCog },
   { href: "/depo", label: "Depo", icon: Warehouse, depot: true },
   { href: "/xeta-kodlari", label: "Xəta kodları", icon: TriangleAlert },
