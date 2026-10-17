@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ClipboardList, MapPin } from "lucide-react";
 import { DatePicker } from "@/components/DatePicker";
 import { Avatar } from "@/components/employees/EmployeeList";
+import { WORK_SAVED } from "@/components/work/MyDay";
 import { WorkLogModal } from "@/components/work/WorkLogModal";
 import { createClient } from "@/lib/supabase/client";
 
@@ -50,8 +51,15 @@ export function WorkHistory() {
   const [day, setDay] = useState(() => dayIso());
   const [logs, setLogs] = useState<LogRow[] | null>(null);
   const [openLog, setOpenLog] = useState<number | null>(null);
+  const [tick, setTick] = useState(0); // iş yazılanda (MyDay) artır → siyahı yenidən yüklənir
   const today = dayIso();
   const yesterday = dayIso(-1);
+
+  useEffect(() => {
+    const onSaved = () => setTick((t) => t + 1);
+    window.addEventListener(WORK_SAVED, onSaved);
+    return () => window.removeEventListener(WORK_SAVED, onSaved);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -61,7 +69,7 @@ export function WorkHistory() {
     return () => {
       cancelled = true; // gün tez-tez dəyişəndə köhnə cavab yenisinin üstünə yazılmasın
     };
-  }, [day]);
+  }, [day, tick]);
 
   function changeDay(value: string) {
     if (!value || value > today || value === day) return;

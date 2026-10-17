@@ -3,6 +3,8 @@ import { Warehouse, Wrench } from "lucide-react";
 import { Page } from "@/components/Page";
 import { ToolStats, type StockRow } from "@/components/depot/ToolStats";
 import { Avatar } from "@/components/employees/EmployeeList";
+import { StoreFinder } from "@/components/StoreFinder";
+import { MyDay } from "@/components/work/MyDay";
 import { WorkHistory } from "@/components/work/WorkHistory";
 import { createClient } from "@/lib/supabase/server";
 
@@ -67,16 +69,27 @@ export default function Home() {
   return (
     <Page title="Panel" subtitle="Görülən işlər və alətlər">
       <div className="grid h-[calc(100vh-var(--header-h)-2*var(--gap))] grid-cols-[1.6fr_1fr] gap-5">
-        <section className="card flex min-h-0 flex-col">
-          <WorkHistory />
-        </section>
+        {/* Sol: mənim bugünüm + görülən işlər (tarixçə) */}
+        <div className="flex min-h-0 flex-col gap-5">
+          <MyDay />
+          <section className="card flex min-h-0 flex-1 flex-col">
+            {/* Tarix render zamanı oxunur (new Date): Next 16 bunu Suspense daxilində tələb edir */}
+            <Suspense fallback={loading}>
+              <WorkHistory />
+            </Suspense>
+          </section>
+        </div>
 
-        <section className="card flex min-h-0 flex-col">
-          <h2 className="card-title mb-3 flex items-center gap-2"><Warehouse size={18} className="text-primary" /> Alətlər</h2>
-          <Suspense fallback={loading}>
-            <Tools />
-          </Suspense>
-        </section>
+        {/* Sağ: mağaza axtarışı (nəticələr kartların üstündə açılır) + alətlər */}
+        <div className="flex min-h-0 flex-col gap-5">
+          <StoreFinder />
+          <section className="card flex min-h-0 flex-1 flex-col">
+            <h2 className="card-title mb-3 flex items-center gap-2"><Warehouse size={18} className="text-primary" /> Alətlər</h2>
+            <Suspense fallback={loading}>
+              <Tools />
+            </Suspense>
+          </section>
+        </div>
       </div>
     </Page>
   );
