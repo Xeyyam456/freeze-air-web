@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { CalendarDays, ChevronLeft, ChevronRight, MapPin, Sparkles, Table2, TrendingDown, TrendingUp, Trophy } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, Download, MapPin, Sparkles, Table2, TrendingDown, TrendingUp, Trophy } from "lucide-react";
+import { exportMonthXlsx } from "@/lib/export-month";
 import { createClient } from "@/lib/supabase/client";
 
 const MONTHS = ["Yanvar", "Fevral", "Mart", "Aprel", "May", "İyun", "İyul", "Avqust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"];
@@ -202,6 +203,7 @@ export function MonthStats() {
   const [data, setData] = useState<MonthData | null>(null);
   const [cumulative, setCumulative] = useState(false);
   const [table, setTable] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const key = `${ym.y}-${ym.m}`;
 
   useEffect(() => {
@@ -306,10 +308,22 @@ export function MonthStats() {
                 <button type="button" role="tab" aria-selected={!cumulative} onClick={() => setCumulative(false)} className={seg(!cumulative)}>Günlük</button>
                 <button type="button" role="tab" aria-selected={cumulative} onClick={() => setCumulative(true)} className={seg(cumulative)}>Yığım</button>
               </div>
-              <button type="button" onClick={() => setTable((t) => !t)} aria-pressed={table}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-white/15 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-white/25">
-                <Table2 size={14} /> {table ? "Qrafik" : "Cədvəl"}
-              </button>
+              <div className="flex items-center gap-2">
+                <button type="button" disabled={!me || exporting} title="Seçilmiş ayın işlərini Excel faylına yaz"
+                  onClick={async () => {
+                    if (!me) return;
+                    setExporting(true);
+                    await exportMonthXlsx(me, ym.y, ym.m);
+                    setExporting(false);
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-primary transition-colors hover:bg-white/90 disabled:opacity-60">
+                  <Download size={14} /> {exporting ? "Hazırlanır..." : "Excel"}
+                </button>
+                <button type="button" onClick={() => setTable((t) => !t)} aria-pressed={table}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-white/15 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-white/25">
+                  <Table2 size={14} /> {table ? "Qrafik" : "Cədvəl"}
+                </button>
+              </div>
             </div>
 
             <div className="mt-4">
