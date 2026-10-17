@@ -1,31 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Briefcase, CalendarDays, ClipboardList, Package, Phone, Search, User, Users, Wrench, X } from "lucide-react";
+import { Briefcase, CalendarDays, ClipboardList, Phone, Search, User, Users, X } from "lucide-react";
 import { Modal } from "@/components/Modal";
 import { WorkTab } from "@/components/work/WorkTab";
 import type { Tables } from "@/lib/database.types";
 import { experience, initials } from "@/lib/experience";
 
 type Employee = Tables<"employees">;
-
-// Ustada hazırda olan alət və ya material (qaytarılmamış)
-// quantity: ustadakı say (alətdən bir neçə ədəd, materialdan ölçü vahidi ilə: "12 metr"); kind: tool | material
-export type HeldTool = { id: number; name: string; inventory_code: string | null; taken_at: string; quantity: number; kind: string; unit: string; pack_name: string | null; pack_size: number | null };
-
-// Qablı materialda (balon...) tam qabların sayı mötərizədə: "11 kq (1 balon)"
-function packSuffix(n: number, t: Pick<HeldTool, "pack_name" | "pack_size">) {
-  return t.pack_size && t.pack_name && n > 0 && n % t.pack_size === 0 ? ` (${n / t.pack_size} ${t.pack_name})` : "";
-}
-
-// Ustadakı alət ədədlərinin cəmi (materiallar ayrıca: vahidləri fərqlidir)
-function toolCount(tools: HeldTool[]) {
-  return tools.filter((t) => t.kind === "tool").reduce((s, t) => s + t.quantity, 0);
-}
-// Ustadakı material növlərinin sayı
-function materialCount(tools: HeldTool[]) {
-  return tools.filter((t) => t.kind === "material").length;
-}
 
 // Axtarış üçün sadələşdirmə: "Əlizadə" və "elizade" eyni tapılsın.
 function norm(s: string | null | undefined) {
@@ -51,15 +33,14 @@ function formatDate(d: string | null) {
 }
 
 // Usta kartına klikləyəndə açılan məlumat pəncərəsi
-function EmployeeDetailsModal({ employee, tools, isMe, onClose }: {
+function EmployeeDetailsModal({ employee, isMe, onClose }: {
   employee: Employee;
-  tools: HeldTool[];
   isMe: boolean;
   onClose: () => void;
 }) {
   const exp = experience(employee.start_date);
   // Öz kartını açan usta birbaşa işlərinə düşür
-  const [tab, setTab] = useState<"about" | "tools" | "work">(isMe ? "work" : "about");
+  const [tab, setTab] = useState<"about" | "work">(isMe ? "work" : "about");
 
   const tabClass = (t: typeof tab) =>
     `flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-sm font-semibold transition-colors ${
@@ -82,10 +63,6 @@ function EmployeeDetailsModal({ employee, tools, isMe, onClose }: {
         <div className="mt-5 flex gap-1 rounded-xl bg-bg p-1" role="tablist">
           <button type="button" role="tab" aria-selected={tab === "about"} onClick={() => setTab("about")} className={tabClass("about")}>
             <User size={15} /> Haqqında
-          </button>
-          <button type="button" role="tab" aria-selected={tab === "tools"} onClick={() => setTab("tools")} className={tabClass("tools")}>
-            <Wrench size={15} /> Alət və material
-            <span className="rounded-full bg-primary-soft px-1.5 text-xs text-primary">{toolCount(tools) + materialCount(tools)}</span>
           </button>
           <button type="button" role="tab" aria-selected={tab === "work"} onClick={() => setTab("work")} className={tabClass("work")}>
             <ClipboardList size={15} /> İşlər
@@ -111,26 +88,6 @@ function EmployeeDetailsModal({ employee, tools, isMe, onClose }: {
                   : <p className="font-semibold">—</p>}
               </div>
             </div>
-          ) : tab === "tools" ? (
-            tools.length === 0 ? (
-              <div className="grid h-full place-items-center rounded-xl border border-dashed border-line">
-                <p className="muted text-sm">Ustanın üzərində alət və ya material yoxdur.</p>
-              </div>
-            ) : (
-              // Üç sütun: çox alət olanda da sahə öz içində sürüşür, pəncərə böyümür
-              <ul className="grid h-full auto-rows-min grid-cols-3 gap-1.5 overflow-y-auto">
-                {/* Əvvəl alətlər, sonra materiallar (materialda say ölçü vahidi ilə) */}
-                {[...tools].sort((a, b) => (a.kind === b.kind ? 0 : a.kind === "tool" ? -1 : 1)).map((t) => (
-                  <li key={t.id} className="flex items-center gap-2 rounded-lg bg-bg px-3 py-1.5 text-[13px] font-medium" title={t.name}>
-                    {t.kind === "material" ? <Package size={13} className="shrink-0 text-primary" /> : <Wrench size={13} className="shrink-0 text-primary" />}
-                    <span className="min-w-0 flex-1 truncate">{t.name}</span>
-                    {t.kind === "material"
-                      ? <span className="shrink-0 rounded-full bg-primary-soft px-1.5 text-xs font-bold text-primary">{t.quantity} {t.unit}{packSuffix(t.quantity, t)}</span>
-                      : t.quantity > 1 && <span className="shrink-0 rounded-full bg-primary-soft px-1.5 text-xs font-bold text-primary">×{t.quantity}</span>}
-                  </li>
-                ))}
-              </ul>
-            )
           ) : (
             <WorkTab employeeId={employee.id} employeeName={employee.full_name} />
           )}
@@ -140,9 +97,8 @@ function EmployeeDetailsModal({ employee, tools, isMe, onClose }: {
   );
 }
 
-function EmployeeCard({ employee, tools, todayCount, isMe }: {
+function EmployeeCard({ employee, todayCount, isMe }: {
   employee: Employee;
-  tools: HeldTool[];
   todayCount: number;
   isMe: boolean;
 }) {
@@ -151,7 +107,7 @@ function EmployeeCard({ employee, tools, todayCount, isMe }: {
 
   return (
     <>
-      {viewing && <EmployeeDetailsModal employee={employee} tools={tools} isMe={isMe} onClose={() => setViewing(false)} />}
+      {viewing && <EmployeeDetailsModal employee={employee} isMe={isMe} onClose={() => setViewing(false)} />}
 
       {/* Kartın istənilən yerinə klik məlumat pəncərəsini açır */}
       <div
@@ -189,9 +145,6 @@ function EmployeeCard({ employee, tools, todayCount, isMe }: {
             <span className={`flex items-center gap-1.5 ${todayCount ? "text-ok" : "muted"}`} title="Bu gün yazılan işlər">
               <ClipboardList size={13} /> Bu gün: {todayCount} iş
             </span>
-            <span className={`flex items-center gap-1.5 ${tools.length ? "text-primary" : "muted"}`}>
-              <Wrench size={13} /> {toolCount(tools)} alət{materialCount(tools) > 0 && ` · ${materialCount(tools)} material`}
-            </span>
           </span>
         </div>
       </div>
@@ -200,9 +153,8 @@ function EmployeeCard({ employee, tools, todayCount, isMe }: {
 }
 
 // Ustalar siyahısı (yalnız baxış). Daxil olmuş usta öz kartını ən başda görür.
-export function EmployeeList({ employees, toolsByEmployee, todayWork, myEmployeeId }: {
+export function EmployeeList({ employees, todayWork, myEmployeeId }: {
   employees: Employee[];
-  toolsByEmployee: Record<number, HeldTool[]>;
   todayWork: Record<number, number>; // usta id → bu gün yazılan iş sayı
   myEmployeeId: number | null;
 }) {
@@ -246,7 +198,7 @@ export function EmployeeList({ employees, toolsByEmployee, todayWork, myEmployee
       ) : (
         <div className="grid grid-cols-2 gap-4">
           {filtered.map((e) => (
-            <EmployeeCard key={e.id} employee={e} tools={toolsByEmployee[e.id] ?? []} todayCount={todayWork[e.id] ?? 0} isMe={e.id === myEmployeeId} />
+            <EmployeeCard key={e.id} employee={e} todayCount={todayWork[e.id] ?? 0} isMe={e.id === myEmployeeId} />
           ))}
         </div>
       )}
