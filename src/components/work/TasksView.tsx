@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Check, ChevronLeft, ChevronRight, ListChecks, MapPin } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, ListChecks } from "lucide-react";
 import { formatDateAz } from "@/components/DatePicker";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { createClient } from "@/lib/supabase/client";
@@ -95,36 +95,40 @@ export function TasksView() {
           <p className="muted text-sm">Tapşırıqları admin və rəhbərlik verir.</p>
         </div>
       ) : (
-        groups.map(({ employee, items }) => {
-          const isMe = employee.id === me;
-          const done = items.filter((t) => t.done).length;
-          return (
-            <section key={employee.id} className={`card !p-0 ${isMe ? "ring-2 ring-primary/30" : ""}`}>
-              <header className="flex items-center gap-3 border-b border-line px-5 py-3">
-                <Avatar employee={employee} className="!h-9 !w-9 !text-xs" />
-                <span className="flex-1 font-bold">{employee.full_name}{isMe && <span className="ml-2 rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-bold text-primary">Sən</span>}</span>
-                <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${done === items.length ? "bg-ok-soft text-ok" : "bg-bg text-muted"}`}>{items.length} tapşırıq · {done} görülən</span>
-              </header>
-              <ul>
-                {items.map((t) => (
-                  <li key={t.id} className="flex items-start gap-3 border-b border-line px-5 py-3 last:border-b-0">
-                    {/* Yalnız öz tapşırığında işarələmək olur; başqasınınkı yalnız vəziyyəti göstərir */}
-                    <button type="button" disabled={!isMe} onClick={() => toggle(t)} aria-pressed={t.done}
-                      title={isMe ? (t.done ? "Görülməyib kimi işarələ" : "Görüldü kimi işarələ") : t.done ? "Görülüb" : "Görülməyib"}
-                      className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-lg border-2 transition-colors disabled:cursor-default ${
-                        t.done ? "border-ok bg-ok text-white" : isMe ? "border-line text-transparent hover:border-primary" : "border-line text-transparent"}`}>
-                      <Check size={14} strokeWidth={3} />
-                    </button>
-                    <span className="min-w-0 flex-1">
-                      <span className={`flex items-center gap-1.5 text-sm font-semibold ${t.done ? "text-ok" : "text-primary"}`}><MapPin size={13} className="shrink-0" /> {placeOf(t)}</span>
-                      <span className={`mt-0.5 block text-sm ${t.done ? "text-ok/80" : ""}`}>{t.reason}</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          );
-        })
+        <div className="card !p-0">
+          {groups.map(({ employee, items }) => {
+            const isMe = employee.id === me;
+            const done = items.filter((t) => t.done).length;
+            return (
+              <section key={employee.id} className="border-b border-line last:border-b-0">
+                <header className={`flex items-center gap-2.5 px-4 py-2 ${isMe ? "bg-primary-soft" : "bg-[#f8f9fc]"}`}>
+                  <Avatar employee={employee} className="!h-6 !w-6 !text-[10px]" />
+                  <span className="text-sm font-bold">{employee.full_name}</span>
+                  {isMe && <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-bold text-primary">Sən</span>}
+                  <span className="muted text-xs">{items.length} tapşırıq · {done} görülən</span>
+                </header>
+                <ul>
+                  {items.map((t) => (
+                    <li key={t.id} className="flex items-center gap-3 px-4 py-1.5">
+                      {/* Yalnız öz tapşırığında işarələmək olur; başqasınınkı yalnız vəziyyəti göstərir */}
+                      <button type="button" disabled={!isMe} onClick={() => toggle(t)} aria-pressed={t.done}
+                        title={isMe ? (t.done ? "Görülməyib kimi işarələ" : "Görüldü kimi işarələ") : t.done ? "Görülüb" : "Görülməyib"}
+                        className={`grid h-5 w-5 shrink-0 place-items-center rounded-md border-2 transition-colors disabled:cursor-default ${
+                          t.done ? "border-ok bg-ok text-white" : isMe ? "border-line text-transparent hover:border-primary" : "border-line text-transparent"}`}>
+                        <Check size={12} strokeWidth={3} />
+                      </button>
+                      <span className="min-w-0 flex-1 truncate text-sm">
+                        <span className={`font-semibold ${t.done ? "text-ok" : "text-primary"}`}>{placeOf(t)}</span>
+                        <span className="muted"> — </span>
+                        <span className={t.done ? "text-ok/80" : ""}>{t.reason}</span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })}
+        </div>
       )}
     </div>
   );
