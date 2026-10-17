@@ -77,37 +77,31 @@ async function WorkLogs() {
   );
 }
 
-// Alətlər: öz üzərindəkilər + depoda ümumi vəziyyət
+// Alətlər: depoda ümumi vəziyyət + hansı ustada hansı alət var
 async function Tools() {
   const supabase = await createClient();
-  const { data: myId } = await supabase.rpc("my_employee_id");
-  const [{ data: mine }, { data: stock }] = await Promise.all([
-    myId
-      ? supabase.from("tool_assignments").select("id, quantity, taken_at, tools(name)").eq("employee_id", myId).is("returned_at", null).order("taken_at")
-      : Promise.resolve({ data: [] }),
+  const [{ data: myId }, { data: held }, { data: stock }] = await Promise.all([
+    supabase.rpc("my_employee_id"),
+    supabase
+      .from("tool_assignments")
+      .select("id, quantity, employee_id, employees(full_name, photo_url), tools(name)")
+      .is("returned_at", null),
     supabase.from("tool_stock").select("quantity, given_out"),
   ]);
   const total = (stock ?? []).reduce((s, t) => s + t.quantity, 0);
   const out = (stock ?? []).reduce((s, t) => s + t.given_out, 0);
 
+  // Usta üzrə qruplaşdırma; öz kartın birinci, qalanı əlifba ilə
+  const byEmployee = new Map<number, { name: string; photo: string | null; tools: { id: number; name: string; quantity: number }[] }>();
+  for (const a of held ?? []) {
+    const e = byEmployee.get(a.employee_id) ?? { name: a.employees?.full_name ?? "—", photo: a.employees?.photo_url ?? null, tools: [] };
+    e.tools.push({ id: a.id, name: a.tools?.name ?? "—", quantity: a.quantity });
+    byEmployee.set(a.employee_id, e);
+  }
+  const people = [...byEmployee.entries()].sort(([ia, a], [ib, b]) => (ia === myId ? -1 : ib === myId ? 1 : a.name.localeCompare(b.name, "az")));
+
   return (
     <>
-      <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-muted">Sənin üzərində</h3>
-      {!mine || mine.length === 0 ? (
-        <p className="muted rounded-xl border border-dashed border-line px-3 py-6 text-center text-sm">Üzərində alət yoxdur.</p>
-      ) : (
-        <ul className="nice-scroll -mr-2 max-h-72 space-y-1.5 overflow-y-auto pr-2">
-          {mine.map((a) => (
-            <li key={a.id} className="flex items-center gap-2.5 rounded-lg bg-bg px-3 py-2 text-sm font-medium">
-              <Wrench size={14} className="shrink-0 text-primary" />
-              <span className="min-w-0 flex-1 truncate">{a.tools?.name}</span>
-              {a.quantity > 1 && <span className="rounded-full bg-primary-soft px-1.5 text-xs font-bold text-primary">×{a.quantity}</span>}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <h3 className="mb-2 mt-5 text-xs font-bold uppercase tracking-wide text-muted">Depo</h3>
       <div className="grid grid-cols-3 gap-2 text-center">
         {[
           { label: "Cəmi", value: total, tone: "" },
@@ -120,6 +114,33 @@ async function Tools() {
           </div>
         ))}
       </div>
+
+      <h3 className="mb-1 mt-5 text-xs font-bold uppercase tracking-wide text-muted">Kimdə nə var</h3>
+      {people.length === 0 ? (
+        <p className="muted rounded-xl border border-dashed border-line px-3 py-6 text-center text-sm">Alətlər hamısı depodadır.</p>
+      ) : (
+        <ul className="nice-scroll -mr-2 min-h-0 flex-1 divide-y divide-line overflow-y-auto pr-2">
+          {people.map(([id, p]) => (
+            <li key={id} className="flex items-start gap-3 py-3">
+              <Avatar employee={{ full_name: p.name, photo_url: p.photo }} className="!h-9 !w-9 shrink-0 !text-xs" />
+              <div className="min-w-0 flex-1">
+                <p className="flex items-center gap-2 text-sm font-semibold">
+                  {p.name}
+                  {id === myId && <span className="rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-bold text-primary">Sən</span>}
+                </p>
+                <p className="mt-1.5 flex flex-wrap gap-1.5">
+                  {p.tools.map((t) => (
+                    <span key={t.id} className="inline-flex items-center gap-1 rounded-lg bg-bg px-2 py-1 text-xs font-medium">
+                      <Wrench size={11} className="text-primary" /> {t.name}
+                      {t.quantity > 1 && <b className="text-primary">×{t.quantity}</b>}
+                    </span>
+                  ))}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </>
   );
 }
@@ -137,7 +158,7 @@ export default function Home() {
           </Suspense>
         </section>
 
-        <section className="card flex min-h-0 flex-col overflow-y-auto">
+        <section className="card flex min-h-0 flex-col">
           <h2 className="card-title mb-3 flex items-center gap-2"><Warehouse size={18} className="text-primary" /> Alətlər</h2>
           <Suspense fallback={loading}>
             <Tools />
