@@ -156,7 +156,7 @@ Storage-də `remove` faylı həmişə dərhal silmir; köhnə şəkillər bucket
 - Publikasiya `supabase_realtime`-da yalnız `contact_requests`. Hadisəni RLS-ə görə yalnız admin alır.
 
 ### Miqrasiyalar (`supabase/migrations/`, admin reposunda)
-- `0001`–`0039`. Ad formatı `NNNN_ad.sql`; Supabase MCP `apply_migration` ilə tətbiq et və faylı da yaz.
+- `0001`–`0040`. Ad formatı `NNNN_ad.sql`; Supabase MCP `apply_migration` ilə tətbiq et və faylı da yaz.
 - Mühüm olanlar:
   - 0005: work_logs, `my_employee_id`;
   - 0010: rol trigger-i;
@@ -181,7 +181,8 @@ Storage-də `remove` faylı həmişə dərhal silmir; köhnə şəkillər bucket
   - 0034: `give_piece`-ə `p_amount`: parçanın bir hissəsini ustaya vermək (qalan hissə parça kimi qalır);
   - 0036: qablaşdırılmış material (qaz balonu...): `tools.pack_name` (balon), `tools.pack_size` (hər qabda 11), `tool_stock`-a bu sütunlar; daxildə hər şey ölçü vahidi ilə (44 kq), qab yalnız daxiletmə və göstəriş üçün ("44 kq (4 balon)");
   - 0039: `tasks` cədvəli (iş tapşırıqları), RLS və `tasks_guard` tətikçisi;
-  - 0038: Səbət (`trash` cədvəli, silinən şirkət/mağaza/usta/alət üçün BEFORE DELETE tətikçiləri, RPC `restore_trash`) və `tools.min_stock` (+ `tool_stock`-a sütun);
+  - 0040: Səbət (0038-dəki `trash` cədvəli, tətikçilər, `restore_trash`) ləğv olundu, silindi; 0038-dən yalnız `tools.min_stock` qalır;
+  - 0038: `tools.min_stock` (minimum qalıq, `tool_stock`-a sütun) (Səbət hissəsi 0040 ilə silinib);
   - 0037: depo məsulunu istənilən admin təyin edir (əvvəl yalnız müdir): `employees_guard_storekeeper` `is_admin()` yoxlayır;
   - 0035: `material_pieces.original_length` (usta ilkin nə qədər qaytarıb; hissə veriləndə `length` azalır, ilkin qalır: sətir "1 metr · qalıb, ilkin 2 metr — Kərimov Orxan 2 metr qaytarıb" kimi oxunur).
 - RLS dəyişikliyini simulyasiya olunmuş JWT ilə DO-blokunda yoxla: `set_config('request.jwt.claims', json_build_object('sub', <uuid>, 'role', 'authenticated')::text, true)`, `set local role authenticated`. Nəticəni `raise exception 'NƏTİCƏ ...'` ilə çıxar, bu da hər şeyi geri qaytarır.
