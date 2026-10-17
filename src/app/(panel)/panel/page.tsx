@@ -1,13 +1,12 @@
 import { Suspense } from "react";
-import { Package, Warehouse, Wrench } from "lucide-react";
+import { Warehouse } from "lucide-react";
 import { Page } from "@/components/Page";
-import { ToolStats, type StockRow } from "@/components/depot/ToolStats";
-import { Avatar } from "@/components/employees/EmployeeList";
+import { ToolsPanel, type HolderPerson, type StockItem } from "@/components/depot/ToolsPanel";
 import { MyDay } from "@/components/work/MyDay";
 import { WorkHistory } from "@/components/work/WorkHistory";
 import { createClient } from "@/lib/supabase/server";
 
-// Alətlər: depoda ümumi vəziyyət + hansı ustada hansı alət var
+// Depo: alətlər və materiallar (iki tab, Depo-dakı kimi): stok vəziyyəti + hansı ustada nə var
 async function Tools() {
   const supabase = await createClient();
   const [{ data: myId }, { data: held }, { data: stock }] = await Promise.all([
@@ -16,52 +15,19 @@ async function Tools() {
       .from("tool_assignments")
       .select("id, quantity, employee_id, employees(full_name, photo_url), tools(name, kind, unit)")
       .is("returned_at", null),
-    supabase.from("tool_stock").select("name, quantity, given_out, available").eq("kind", "tool").order("name"),
+    supabase.from("tool_stock").select("name, quantity, given_out, available, kind, unit, pieces_count, pieces_total").order("name"),
   ]);
 
   // Usta üzrə qruplaşdırma; öz kartın birinci, qalanı əlifba ilə
-  const byEmployee = new Map<number, { name: string; photo: string | null; tools: { id: number; name: string; quantity: number; material: boolean; unit: string }[] }>();
+  const byEmployee = new Map<number, HolderPerson>();
   for (const a of held ?? []) {
-    const e = byEmployee.get(a.employee_id) ?? { name: a.employees?.full_name ?? "—", photo: a.employees?.photo_url ?? null, tools: [] };
-    e.tools.push({ id: a.id, name: a.tools?.name ?? "—", quantity: a.quantity, material: a.tools?.kind === "material", unit: a.tools?.unit ?? "ədəd" });
+    const e = byEmployee.get(a.employee_id) ?? { id: a.employee_id, name: a.employees?.full_name ?? "—", photo: a.employees?.photo_url ?? null, items: [] };
+    e.items.push({ id: a.id, name: a.tools?.name ?? "—", quantity: a.quantity, material: a.tools?.kind === "material", unit: a.tools?.unit ?? "ədəd" });
     byEmployee.set(a.employee_id, e);
   }
-  // Hər ustada əvvəl alətlər, sonra materiallar
-  for (const e of byEmployee.values()) e.tools.sort((a, b) => Number(a.material) - Number(b.material));
-  const people = [...byEmployee.entries()].sort(([ia, a], [ib, b]) => (ia === myId ? -1 : ib === myId ? 1 : a.name.localeCompare(b.name, "az")));
+  const people = [...byEmployee.values()].sort((a, b) => (a.id === myId ? -1 : b.id === myId ? 1 : a.name.localeCompare(b.name, "az")));
 
-  return (
-    <>
-      <ToolStats tools={(stock ?? []) as StockRow[]} />
-
-      <h3 className="mb-1 mt-5 text-xs font-bold uppercase tracking-wide text-muted">Kimdə nə var</h3>
-      {people.length === 0 ? (
-        <p className="muted rounded-xl border border-dashed border-line px-3 py-6 text-center text-sm">Alətlər və materiallar hamısı depodadır.</p>
-      ) : (
-        <ul className="nice-scroll -mr-2 min-h-0 flex-1 divide-y divide-line overflow-y-auto pr-2">
-          {people.map(([id, p]) => (
-            <li key={id} className="flex items-start gap-3 py-3">
-              <Avatar employee={{ full_name: p.name, photo_url: p.photo }} className="!h-9 !w-9 shrink-0 !text-xs" />
-              <div className="min-w-0 flex-1">
-                <p className="flex items-center gap-2 text-sm font-semibold">
-                  {p.name}
-                  {id === myId && <span className="rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-bold text-primary">Sən</span>}
-                </p>
-                <p className="mt-1.5 flex flex-wrap gap-1.5">
-                  {p.tools.map((t) => (
-                    <span key={t.id} className="inline-flex items-center gap-1 rounded-lg bg-bg px-2 py-1 text-xs font-medium">
-                      {t.material ? <Package size={11} className="text-primary" /> : <Wrench size={11} className="text-primary" />} {t.name}
-                      {t.material ? <b className="text-primary">{t.quantity} {t.unit}</b> : t.quantity > 1 && <b className="text-primary">×{t.quantity}</b>}
-                    </span>
-                  ))}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </>
-  );
+  return <ToolsPanel stock={(stock ?? []) as StockItem[]} people={people} myId={myId ?? null} />;
 }
 
 const loading = <p className="muted text-sm">Yüklənir...</p>;
@@ -84,7 +50,7 @@ export default function Home() {
         {/* Sağ: alətlər */}
         <div className="flex min-h-0 flex-col gap-5">
           <section className="card flex min-h-0 flex-1 flex-col">
-            <h2 className="card-title mb-3 flex items-center gap-2"><Warehouse size={18} className="text-primary" /> Alətlər</h2>
+            <h2 className="card-title mb-3 flex items-center gap-2"><Warehouse size={18} className="text-primary" /> Depo</h2>
             <Suspense fallback={loading}>
               <Tools />
             </Suspense>
