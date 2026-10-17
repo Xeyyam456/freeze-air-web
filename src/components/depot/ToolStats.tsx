@@ -33,9 +33,6 @@ export function ToolStats({ tools }: { tools: StockRow[] }) {
   const [open, setOpen] = useState<Kind | null>(null);
   const current = KINDS.find((k) => k.kind === open) ?? null;
   const rows = current ? tools.filter((t) => current.count(t) > 0) : [];
-  // "Bütün alətlər": geniş pəncərə, iki sütun, ortada xətt (əlifba sırası birinci sütunda aşağı gedir, sonra ikinciyə keçir)
-  const split = current?.kind === "total";
-  const half = Math.ceil(rows.length / 2);
 
   return (
     <>
@@ -50,7 +47,7 @@ export function ToolStats({ tools }: { tools: StockRow[] }) {
       </div>
 
       {current && (
-        <Modal onClose={() => setOpen(null)} labelledBy="tool-stats-title" className={split ? "!max-w-4xl" : "!max-w-2xl"}>
+        <Modal onClose={() => setOpen(null)} labelledBy="tool-stats-title" className="!max-w-2xl">
           <div className="mb-3 flex items-center justify-between gap-3">
             <h2 id="tool-stats-title" className="text-lg font-bold">{current.title}</h2>
             <button type="button" onClick={() => setOpen(null)} className="icon-btn" aria-label="Bağla"><X size={18} /></button>
@@ -60,23 +57,11 @@ export function ToolStats({ tools }: { tools: StockRow[] }) {
               {current.kind === "left" ? "Depoda alət qalmayıb." : "Burada alət yoxdur."}
             </p>
           ) : (
-            // Zolaq gizlidir (istifadəçi qərarı), sürüşmə işləyir; aşağıda yumşaq solğunlaşma siyahının davam etdiyini göstərir
-            split ? (
-              // Qutunun hündürlüyü hər sütunda 10 sətir görünəcək qədərdir, qalanı sürüşür.
-              // Sütunlar eyni sürüşən qutudadır: birlikdə sürüşür, ortadakı xətt bütün hündürlüyü tutur
-              <div className="grid grid-cols-2 max-h-[min(433px,calc(100vh-240px))] overflow-y-auto pb-6 [mask-image:linear-gradient(to_bottom,black_calc(100%-28px),transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                <ul className="divide-y divide-line border-r border-line pr-6">
-                  {rows.slice(0, half).map((t) => <Row key={t.name} t={t} k={current} />)}
-                </ul>
-                <ul className="divide-y divide-line pl-6">
-                  {rows.slice(half).map((t) => <Row key={t.name} t={t} k={current} />)}
-                </ul>
-              </div>
-            ) : (
-              <ul className="divide-y divide-line max-h-[min(420px,calc(100vh-240px))] overflow-y-auto pb-6 [mask-image:linear-gradient(to_bottom,black_calc(100%-28px),transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                {rows.map((t) => <Row key={t.name} t={t} k={current} />)}
-              </ul>
-            )
+            // Tək sütun: 10 sətir görünür (10×40px + 9 xətt = 409px + altdakı boşluq 24px), qalanı sürüşür.
+            // Zolaq gizlidir (istifadəçi qərarı); aşağıda yumşaq solğunlaşma siyahının davam etdiyini göstərir
+            <ul className="max-h-[min(433px,calc(100vh-240px))] divide-y divide-line overflow-y-auto pb-6 [mask-image:linear-gradient(to_bottom,black_calc(100%-28px),transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {rows.map((t) => <Row key={t.name} t={t} k={current} />)}
+            </ul>
           )}
         </Modal>
       )}
