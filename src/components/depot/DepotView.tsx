@@ -652,7 +652,7 @@ function ToolModal({ tool, holders, pieces, employees, canManage, onClose }: {
                 <Trash2 size={16} />
               </button>
             ) : (
-              <ConfirmButton onConfirm={async () => { if (await deleteTool(tool.id)) router.refresh(); }} success={false} className="icon-btn icon-btn-danger" title={TEXT[kind].deleteTitle}>
+              <ConfirmButton onConfirm={async () => { if (await deleteTool(tool.id, kind)) router.refresh(); }} success={false} className="icon-btn icon-btn-danger" title={TEXT[kind].deleteTitle}>
                 <Trash2 size={16} />
               </ConfirmButton>
             )}
