@@ -14,7 +14,7 @@ function ext(file: File) {
 // Görülmüş tapşırığın altına təmir barədə yazı və akt/şəkil əlavə etmək. İş artıq "Görülən işlər"dədir (✓ basılanda avtomatik düşüb):
 // yazı həmin işin təsvirini yeniləyir (RPC task_set_note), fayllar həmin işə yüklənir.
 export function TaskNoteModal({ task, onClose, onSaved }: {
-  task: { id: number; reason: string; note: string | null; place: string };
+  task: { id: number; reason: string; note: string | null; place: string; acts: number; photos: number };
   onClose: () => void;
   onSaved: () => void;
 }) {
@@ -80,13 +80,13 @@ export function TaskNoteModal({ task, onClose, onSaved }: {
           <label className="flex cursor-pointer flex-col items-center gap-1 rounded-xl border-2 border-dashed border-line px-3 py-3 text-center hover:border-primary">
             <FileText size={18} className="text-primary" />
             <span className="text-sm font-semibold">Akt</span>
-            <span className="muted w-full truncate text-xs">{act ? act.name : "şəkil və ya PDF"}</span>
+            <span className="muted w-full truncate text-xs">{act ? act.name : task.acts ? "var · yenisi əvəz edir" : "şəkil və ya PDF"}</span>
             <input type="file" accept="image/*,application/pdf" className="sr-only" onChange={(e) => setAct(e.target.files?.[0] ?? null)} />
           </label>
           <label className="flex cursor-pointer flex-col items-center gap-1 rounded-xl border-2 border-dashed border-line px-3 py-3 text-center hover:border-primary">
             <ImagePlus size={18} className="text-primary" />
             <span className="text-sm font-semibold">Şəkillər</span>
-            <span className="muted text-xs">{photos.length ? `${photos.length} şəkil seçildi` : "bir neçə şəkil"}</span>
+            <span className="muted text-xs">{photos.length ? `${photos.length} yeni şəkil seçildi` : task.photos ? `${task.photos} şəkil var · əlavə et` : "bir neçə şəkil"}</span>
             <input type="file" accept="image/*" multiple className="sr-only" onChange={(e) => setPhotos(Array.from(e.target.files ?? []))} />
           </label>
         </div>

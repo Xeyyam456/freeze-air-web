@@ -20,7 +20,7 @@ async function fetchTasks(day: string) {
   const supabase = createClient();
   const [tasks, employees] = await Promise.all([
     supabase.from("tasks")
-      .select("id, employee_id, reason, done, note, place_text, stores(name, code, companies(name)), companies(name), work_logs(work_files(id))")
+      .select("id, employee_id, reason, done, note, place_text, stores(name, code, companies(name)), companies(name), work_logs(description, work_files(id, kind))")
       .eq("task_date", day).order("created_at").then((r) => r.data ?? []),
     supabase.from("employees").select("id, full_name, photo_url").eq("is_management", false).eq("is_active", true).order("full_name").then((r) => r.data ?? []),
   ]);
@@ -78,7 +78,13 @@ export function TasksView() {
 
   return (
     <div className="space-y-4">
-      {noteFor && <TaskNoteModal task={{ id: noteFor.id, reason: noteFor.reason, note: noteFor.note, place: placeOf(noteFor) }} onClose={() => setNoteFor(null)} onSaved={load} />}
+      {noteFor && <TaskNoteModal task={{
+        id: noteFor.id, reason: noteFor.reason, place: placeOf(noteFor),
+        // Əvvəl yazılan: tapşırıqdakı yazı, yoxdursa iş qeydinin təsviri (avtomatik yaranan təsvir = səbəb sayılmır)
+        note: noteFor.note ?? (noteFor.work_logs && noteFor.work_logs.description !== noteFor.reason ? noteFor.work_logs.description : null),
+        acts: noteFor.work_logs?.work_files.filter((f) => f.kind === "act").length ?? 0,
+        photos: noteFor.work_logs?.work_files.filter((f) => f.kind !== "act").length ?? 0,
+      }} onClose={() => setNoteFor(null)} onSaved={load} />}
       <div className="flex flex-wrap items-center gap-2">
         <button type="button" onClick={() => setDay(shift(day, -1))} className="icon-btn" aria-label="Əvvəlki gün"><ChevronLeft size={18} /></button>
         <h2 className="min-w-44 text-center text-lg font-bold">{day === today ? "Bu gün" : formatDateAz(day)}</h2>
