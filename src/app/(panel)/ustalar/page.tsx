@@ -16,7 +16,7 @@ async function Content() {
     // Hazırda ustalarda olan alətlər (qaytarılmamış)
     supabase
       .from("tool_assignments")
-      .select("employee_id, quantity, taken_at, tools(id, name, inventory_code, kind, unit)")
+      .select("employee_id, quantity, taken_at, tools(id, name, inventory_code, kind, unit, pack_name, pack_size)")
       .is("returned_at", null)
       .order("taken_at"),
     // Daxil olmuş istifadəçinin usta qeydi: öz kartı seçilir, işlərini yalnız özü əlavə edir

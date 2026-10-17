@@ -11,7 +11,12 @@ type Employee = Tables<"employees">;
 
 // Ustada hazırda olan alət və ya material (qaytarılmamış)
 // quantity: ustadakı say (alətdən bir neçə ədəd, materialdan ölçü vahidi ilə: "12 metr"); kind: tool | material
-export type HeldTool = { id: number; name: string; inventory_code: string | null; taken_at: string; quantity: number; kind: string; unit: string };
+export type HeldTool = { id: number; name: string; inventory_code: string | null; taken_at: string; quantity: number; kind: string; unit: string; pack_name: string | null; pack_size: number | null };
+
+// Qablı materialda (balon...) tam qabların sayı mötərizədə: "11 kq (1 balon)"
+function packSuffix(n: number, t: Pick<HeldTool, "pack_name" | "pack_size">) {
+  return t.pack_size && t.pack_name && n > 0 && n % t.pack_size === 0 ? ` (${n / t.pack_size} ${t.pack_name})` : "";
+}
 
 // Ustadakı alət ədədlərinin cəmi (materiallar ayrıca: vahidləri fərqlidir)
 function toolCount(tools: HeldTool[]) {
@@ -120,7 +125,7 @@ function EmployeeDetailsModal({ employee, tools, isMe, onClose }: {
                     {t.kind === "material" ? <Package size={13} className="shrink-0 text-primary" /> : <Wrench size={13} className="shrink-0 text-primary" />}
                     <span className="min-w-0 flex-1 truncate">{t.name}</span>
                     {t.kind === "material"
-                      ? <span className="shrink-0 rounded-full bg-primary-soft px-1.5 text-xs font-bold text-primary">{t.quantity} {t.unit}</span>
+                      ? <span className="shrink-0 rounded-full bg-primary-soft px-1.5 text-xs font-bold text-primary">{t.quantity} {t.unit}{packSuffix(t.quantity, t)}</span>
                       : t.quantity > 1 && <span className="shrink-0 rounded-full bg-primary-soft px-1.5 text-xs font-bold text-primary">×{t.quantity}</span>}
                   </li>
                 ))}

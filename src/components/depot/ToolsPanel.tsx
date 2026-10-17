@@ -6,8 +6,12 @@ import { ToolStats, type StockRow } from "@/components/depot/ToolStats";
 import { Avatar } from "@/components/employees/EmployeeList";
 
 // tool_stock sətri: alət və ya material (kind), ölçü vahidi, parçalar (usta işlədib, qalanını təhvil verib)
-export type StockItem = StockRow & { kind: string; unit: string; pieces_count: number; pieces_total: number };
-export type HeldItem = { id: number; name: string; quantity: number; material: boolean; unit: string };
+export type StockItem = StockRow & { kind: string; unit: string; pieces_count: number; pieces_total: number; pack_name: string | null; pack_size: number | null };
+export type HeldItem = { id: number; name: string; quantity: number; material: boolean; unit: string; pack_name: string | null; pack_size: number | null };
+
+// Qablı materialda (balon...) tam qabların sayı mötərizədə: "44 kq (4 balon)"
+const packSuffix = (n: number, p: { pack_name: string | null; pack_size: number | null }) =>
+  p.pack_size && p.pack_name && n > 0 && n % p.pack_size === 0 ? ` (${n / p.pack_size} ${p.pack_name})` : "";
 export type HolderPerson = { id: number; name: string; photo: string | null; items: HeldItem[] };
 
 type Kind = "tool" | "material";
@@ -39,7 +43,7 @@ function People({ people, myId, material }: { people: HolderPerson[]; myId: numb
                   {p.items.map((t) => (
                     <span key={t.id} className="inline-flex items-center gap-1 rounded-lg bg-bg px-2 py-1 text-xs font-medium">
                       {t.material ? <Package size={11} className="text-primary" /> : <Wrench size={11} className="text-primary" />} {t.name}
-                      {t.material ? <b className="text-primary">{t.quantity} {t.unit}</b> : t.quantity > 1 && <b className="text-primary">×{t.quantity}</b>}
+                      {t.material ? <b className="text-primary">{t.quantity} {t.unit}{packSuffix(t.quantity, t)}</b> : t.quantity > 1 && <b className="text-primary">×{t.quantity}</b>}
                     </span>
                   ))}
                 </p>
@@ -70,7 +74,7 @@ function Materials({ items }: { items: StockItem[] }) {
             <span className="shrink-0 text-sm font-bold tabular-nums">{m.quantity + m.pieces_total} {m.unit}</span>
           </div>
           <p className="muted mt-1 text-xs">
-            tam: depoda <b className={m.available ? "text-ok" : "text-danger"}>{m.available}</b>, ustalarda <b className="text-primary">{m.given_out}</b>
+            tam: depoda <b className={m.available ? "text-ok" : "text-danger"}>{m.available}{packSuffix(m.available, m)}</b>, ustalarda <b className="text-primary">{m.given_out}{packSuffix(m.given_out, m)}</b>
             {" · "}parçalar: <b className="text-ink">{m.pieces_count} ədəd{m.pieces_count ? `, ${m.pieces_total} ${m.unit}` : ""}</b>
           </p>
         </li>
