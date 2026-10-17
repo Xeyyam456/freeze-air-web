@@ -3,7 +3,6 @@ import { Warehouse, Wrench } from "lucide-react";
 import { Page } from "@/components/Page";
 import { ToolStats, type StockRow } from "@/components/depot/ToolStats";
 import { Avatar } from "@/components/employees/EmployeeList";
-import { StoreFinder } from "@/components/StoreFinder";
 import { MyDay } from "@/components/work/MyDay";
 import { WorkHistory } from "@/components/work/WorkHistory";
 import { createClient } from "@/lib/supabase/server";
@@ -80,9 +79,8 @@ export default function Home() {
           </section>
         </div>
 
-        {/* Sağ: mağaza axtarışı (nəticələr kartların üstündə açılır) + alətlər */}
+        {/* Sağ: alətlər */}
         <div className="flex min-h-0 flex-col gap-5">
-          <StoreFinder />
           <section className="card flex min-h-0 flex-1 flex-col">
             <h2 className="card-title mb-3 flex items-center gap-2"><Warehouse size={18} className="text-primary" /> Alətlər</h2>
             <Suspense fallback={loading}>
