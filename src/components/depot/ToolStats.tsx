@@ -43,8 +43,8 @@ export function ToolStats({ tools }: { tools: StockRow[] }) {
               {current.kind === "left" ? "Depoda alət qalmayıb." : "Burada alət yoxdur."}
             </p>
           ) : (
-            // -mr-5 + pr-3: məzmun modalın eni qədər qalır, zolaq modalın daxili kənarında durur və aralarında boşluq var
-            <ul className="nice-scroll -mr-5 max-h-[min(420px,calc(100vh-240px))] divide-y divide-line overflow-y-auto pr-3">
+            // pr-2 + 10px zolaq = 18px: məzmun modalın eni qədər qalır, zolaq modalın daxili kənarında durur
+            <ul className="nice-scroll -mr-[18px] max-h-[min(420px,calc(100vh-240px))] divide-y divide-line overflow-y-auto pr-2">
               {rows.map((t) => (
                 <li key={t.name} className="flex items-center gap-2.5 py-2.5 text-sm">
                   <Wrench size={14} className="shrink-0 text-primary" />
