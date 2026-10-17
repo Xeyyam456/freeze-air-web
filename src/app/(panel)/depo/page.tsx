@@ -20,7 +20,7 @@ async function Content() {
     // Alət yalnız ustaya verilir
     supabase.from("employees").select("id, full_name, photo_url, is_management").eq("is_management", false).eq("is_active", true).order("full_name"),
     // Depodakı material parçaları (usta işlədib, qalanını təhvil verib)
-    supabase.from("material_pieces").select("id, tool_id, length, created_at, employees(full_name)").order("created_at"),
+    supabase.from("material_pieces").select("id, tool_id, length, original_length, created_at, employees(full_name)").order("created_at"),
   ]);
 
   return (
