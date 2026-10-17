@@ -20,27 +20,26 @@ type LogRow = {
 
 type MonthData = { key: string; logs: LogRow[]; prevCount: number; prevLabel: string };
 
-// Seçilmiş ayın işləri + müqayisə üçün əvvəlki ayın sayı.
-// Cari ayda əvvəlki ayın EYNİ dövrü (ilk N gün) götürülür: yarımçıq ayı tam ayla müqayisə etmək yanıltır.
-async function fetchMonth(employeeId: number, y: number, m: number, today: { y: number; m: number; d: number }): Promise<MonthData> {
+// Seçilmiş ayın işləri + müqayisə üçün əvvəlki ayın sayı. Müqayisə həmişə əvvəlki ayın 1-dən sonuna qədər tam sayı ilədir
+// (istifadəçi qərarı: "keçən ayın eyni günündən yox, hər ayın 1-dən sonuna qədər").
+async function fetchMonth(employeeId: number, y: number, m: number): Promise<MonthData> {
   const supabase = createClient();
   const days = new Date(y, m + 1, 0).getDate();
   const py = m === 0 ? y - 1 : y;
   const pm = m === 0 ? 11 : m - 1;
-  const isCurrent = y === today.y && m === today.m;
   const pdays = new Date(py, pm + 1, 0).getDate();
   const [cur, prev] = await Promise.all([
     supabase.from("work_logs")
       .select("id, work_date, place_text, stores(name, companies(name)), companies(name)")
       .eq("employee_id", employeeId).gte("work_date", iso(y, m, 1)).lte("work_date", iso(y, m, days)),
     supabase.from("work_logs").select("id", { count: "exact", head: true })
-      .eq("employee_id", employeeId).gte("work_date", iso(py, pm, 1)).lte("work_date", iso(py, pm, isCurrent ? Math.min(today.d, pdays) : pdays)),
+      .eq("employee_id", employeeId).gte("work_date", iso(py, pm, 1)).lte("work_date", iso(py, pm, pdays)),
   ]);
   return {
     key: `${y}-${m}`,
     logs: (cur.data ?? []) as LogRow[],
     prevCount: prev.count ?? 0,
-    prevLabel: isCurrent ? "keçən ayın eyni dövrünə görə" : "əvvəlki aya görə",
+    prevLabel: "əvvəlki aya görə",
   };
 }
 
@@ -169,13 +168,13 @@ export function MonthStats() {
   useEffect(() => {
     if (!me) return;
     let cancelled = false;
-    fetchMonth(me, ym.y, ym.m, today).then((d) => {
+    fetchMonth(me, ym.y, ym.m).then((d) => {
       if (!cancelled) setData(d);
     });
     return () => {
       cancelled = true; // ay tez-tez dəyişəndə köhnə cavab yenisinin üstünə yazılmasın
     };
-  }, [me, ym, today]);
+  }, [me, ym]);
 
   const days = new Date(ym.y, ym.m + 1, 0).getDate();
   const isCurrent = ym.y === today.y && ym.m === today.m;
