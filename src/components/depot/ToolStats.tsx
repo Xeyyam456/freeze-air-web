@@ -33,7 +33,7 @@ export function ToolStats({ tools }: { tools: StockRow[] }) {
       </div>
 
       {current && (
-        <Modal onClose={() => setOpen(null)} labelledBy="tool-stats-title" className="!max-w-md">
+        <Modal onClose={() => setOpen(null)} labelledBy="tool-stats-title" className="!max-w-xl">
           <div className="mb-3 flex items-center justify-between gap-3">
             <h2 id="tool-stats-title" className="text-lg font-bold">{current.title}</h2>
             <button type="button" onClick={() => setOpen(null)} className="icon-btn" aria-label="Bağla"><X size={18} /></button>
@@ -48,7 +48,7 @@ export function ToolStats({ tools }: { tools: StockRow[] }) {
               {rows.map((t) => (
                 <li key={t.name} className="flex items-center gap-2.5 py-2.5 text-sm">
                   <Wrench size={14} className="shrink-0 text-primary" />
-                  <span className="min-w-0 flex-1 truncate font-medium">{t.name}</span>
+                  <span className="min-w-0 flex-1 truncate font-medium" title={t.name}>{t.name}</span>
                   {/* Depoda: neçə ədəd qalıb, cəmi neçədən */}
                   {current.kind === "left" && t.quantity > t.available && <span className="muted text-xs">cəmi {t.quantity}</span>}
                   <span className={`min-w-8 rounded-full bg-bg px-2 py-0.5 text-center text-xs font-bold tabular-nums ${current.tone}`}>{current.count(t)}</span>
