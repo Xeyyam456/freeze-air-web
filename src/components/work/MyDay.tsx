@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CalendarCheck, Plus } from "lucide-react";
+import Link from "next/link";
+import { CalendarCheck, ListChecks, Plus } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { WorkLogForm } from "./WorkLogForm";
 
@@ -19,6 +20,7 @@ export function MyDay() {
   // undefined = yüklənir, null = əməkdaş kartı yoxdur
   const [me, setMe] = useState<{ id: number; name: string } | null | undefined>(undefined);
   const [count, setCount] = useState<number | null>(null);
+  const [tasks, setTasks] = useState<{ total: number; done: number } | null>(null); // bugünkü tapşırıqlarım
   const [adding, setAdding] = useState(false);
   const [tick, setTick] = useState(0);
 
@@ -61,6 +63,22 @@ export function MyDay() {
     };
   }, [me, tick]);
 
+  useEffect(() => {
+    if (!me) return;
+    let cancelled = false;
+    createClient()
+      .from("tasks")
+      .select("done")
+      .eq("employee_id", me.id)
+      .eq("task_date", todayIso())
+      .then(({ data }) => {
+        if (!cancelled) setTasks({ total: data?.length ?? 0, done: data?.filter((t) => t.done).length ?? 0 });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [me]);
+
   if (me === null) return null;
 
   return (
@@ -79,6 +97,12 @@ export function MyDay() {
         <p className="text-lg font-bold">
           {count === null ? "…" : count === 0 ? "Hələ iş yazmamısan" : <><span className="text-primary">{count}</span> iş yazılıb</>}
         </p>
+        {/* Admin/rəhbərlik verdiyi bugünkü tapşırıqlar: klik → Tapşırıqlar səhifəsi */}
+        {!!tasks?.total && (
+          <Link href="/tapshiriqlar" className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">
+            <ListChecks size={14} /> Tapşırıq: {tasks.done} / {tasks.total} görülüb
+          </Link>
+        )}
       </div>
       <button type="button" disabled={!me} onClick={() => setAdding(true)} className="btn btn-primary">
         <Plus size={16} /> İş əlavə et
