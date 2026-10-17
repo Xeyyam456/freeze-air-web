@@ -43,8 +43,8 @@ export function ToolStats({ tools }: { tools: StockRow[] }) {
               {current.kind === "left" ? "Depoda alət qalmayıb." : "Burada alət yoxdur."}
             </p>
           ) : (
-            // pr-2 + 10px zolaq = 18px: məzmun modalın eni qədər qalır, zolaq modalın daxili kənarında durur
-            <ul className="nice-scroll -mr-[18px] max-h-[min(420px,calc(100vh-240px))] divide-y divide-line overflow-y-auto pr-2">
+            // Zolaq gizlidir (istifadəçi qərarı), sürüşmə işləyir; aşağıda yumşaq solğunlaşma siyahının davam etdiyini göstərir
+            <ul className="max-h-[min(420px,calc(100vh-240px))] divide-y divide-line overflow-y-auto pb-6 [mask-image:linear-gradient(to_bottom,black_calc(100%-28px),transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {rows.map((t) => (
                 <li key={t.name} className="flex items-center gap-2.5 py-2.5 text-sm">
                   <Wrench size={14} className="shrink-0 text-primary" />
