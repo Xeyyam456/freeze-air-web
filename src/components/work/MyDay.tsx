@@ -100,7 +100,7 @@ export function MyDay() {
         {/* Admin/rəhbərlik verdiyi bugünkü tapşırıqlar: klik → Tapşırıqlar səhifəsi */}
         {!!tasks?.total && (
           <Link href="/tapshiriqlar" className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">
-            <ListChecks size={14} /> Tapşırıq: {tasks.done} / {tasks.total} görülüb
+            <ListChecks size={14} /> Tapşırıq: {tasks.total} · görülən: {tasks.done}
           </Link>
         )}
       </div>
