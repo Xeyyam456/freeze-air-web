@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ClipboardList, MapPin } from "lucide-react";
 import { DatePicker } from "@/components/DatePicker";
 import { Avatar } from "@/components/employees/EmployeeList";
+import { WorkLogModal } from "@/components/work/WorkLogModal";
 import { createClient } from "@/lib/supabase/client";
 
 type LogRow = {
@@ -48,6 +49,7 @@ async function fetchDay(day: string): Promise<LogRow[]> {
 export function WorkHistory() {
   const [day, setDay] = useState(() => dayIso());
   const [logs, setLogs] = useState<LogRow[] | null>(null);
+  const [openLog, setOpenLog] = useState<number | null>(null);
   const today = dayIso();
   const yesterday = dayIso(-1);
 
@@ -74,6 +76,8 @@ export function WorkHistory() {
 
   return (
     <>
+      {/* Sətrə klik → işin ətraflı pəncərəsi (admin paneldəki kimi) */}
+      {openLog && <WorkLogModal key={openLog} logId={openLog} onClose={() => setOpenLog(null)} />}
       <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
         <h2 className="card-title flex items-center gap-2">
           <ClipboardList size={18} className="text-primary" /> Görülən işlər
@@ -95,7 +99,9 @@ export function WorkHistory() {
       ) : (
         <ul className="nice-scroll -mr-2 min-h-0 flex-1 divide-y divide-line overflow-y-auto pr-2">
           {logs.map((l) => (
-            <li key={l.id} className="flex items-start gap-3 py-3">
+            <li key={l.id}>
+              <button type="button" onClick={() => setOpenLog(l.id)}
+                className="flex w-full items-start gap-3 rounded-xl px-2 py-3 text-left transition-colors hover:bg-bg">
               <Avatar employee={{ full_name: l.employees?.full_name ?? "?", photo_url: l.employees?.photo_url ?? null }} className="!h-10 !w-10 shrink-0 !text-xs" />
               <div className="min-w-0 flex-1">
                 <p className="flex flex-wrap items-center gap-x-2 text-sm">
@@ -105,6 +111,7 @@ export function WorkHistory() {
                 <p className="muted mt-0.5 text-sm">{l.description}</p>
               </div>
               <p className="shrink-0 text-sm font-semibold tabular-nums">{timeOf(l.created_at)}</p>
+              </button>
             </li>
           ))}
         </ul>
