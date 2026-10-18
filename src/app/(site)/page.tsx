@@ -168,7 +168,8 @@ export default async function HomePage() {
 
           {/* Şəkil yeri: admin yükləyibsə foto, yoxdursa kondisioner illüstrasiyası; üzən kartlar hər ikisində */}
           <div className="relative mx-2 sm:mx-8">
-            <Suspense fallback={<HeroIllustration />}>
+            {/* Yüklənərkən illüstrasiya yox, neytral boş yer: yoxsa başqa səhifədən qayıdanda əvvəl SVG, sonra real şəkil görünürdü */}
+            <Suspense fallback={<div className="aspect-[16/9] w-full rounded-[32px] bg-white/10" aria-hidden="true" />}>
               <HeroVisual alt={t["home.hero.title"]} />
             </Suspense>
             <div className="absolute -bottom-6 -left-6 rounded-2xl bg-white px-5 py-4 text-night shadow-[0_16px_40px_rgba(6,25,43,0.25)]">
