@@ -19,9 +19,12 @@ Kondisioner servis şirkəti **Freeze Air Service** üçün sistem: ustalar, mü
 
 İkisi də **eyni Supabase layihəsini** işlədir. Admin funksiyaları bu repoda **yoxdur**. `supabase/` qovluğu (miqrasiyalar + Edge Function) **admin reposuna aiddir**; baza dəyişikliyi lazım olanda miqrasiya orada yazılır, Supabase MCP ilə tətbiq olunur.
 
-**Hazırkı vəziyyət (2026-10-18):** repolar hələ ayrılmayıb. Hər şey `D:\Praqramlasirma\Projects\kondisioner-servis\` altındadır: `admin/`, `web/`, `supabase/` (hələ kökdə, ayrılanda `admin/supabase/`-a köçürüləcək), `excel/`. 
-
-**Git (2026-10-17-dən):** hələlik hamısı **bir repodadır**, kökdə (`kondisioner-servis/.git`, budaq `main`): `admin/`, `web/`, `supabase/` birlikdə commit və push olunur. `web/`-in köhnə ayrıca `.git`-i (yalnız Next-in ilk commit-i) götürülüb. Kök `.gitignore`: `node_modules`, `.next`, `dist`, `.env*`, `excel/`; `.gitattributes`: LF.
+## Layihə strukturu, git və iş qaydaları (admin və web fayllarında eynidir)
+- **Qovluqlar** (`D:\Praqramlasirma\Projects\kondisioner-servis\`): `admin/` (Vite, 5173), `web/` (Next.js, 3000), `supabase/` (miqrasiyalar `0001`–`0049`, hamısı bazada tətbiq olunub + Edge Function `admin-accounts`; repolar ayrılanda `admin/supabase/`-a köçürüləcək), `excel/` (test və import faylları, heç bir repoya aid deyil, git-ignore). **Kökdə CLAUDE.md yoxdur**: hər platformanın öz faylı tamdır, işlədiyin platformanın qovluğundan başla (`admin/CLAUDE.md` və ya `web/CLAUDE.md`).
+- **Yeni kompüterdə qurmaq**: `git clone https://github.com/Xeyyam456/kondisioner-servis.git`; `admin/` və `web/`-də `npm install`; hər qovluqda `.env.example`-ı `.env.local` adı ilə kopyala və publishable açarı doldur (Supabase → Project Settings → API); `npm run dev`. Gizli (service role) açar lokalda lazım deyil. Baza və Edge Function Supabase-dədir (kopyalanmır).
+- **Git**: hələlik **bir repo** (kök, budaq `main`): `admin/`, `web/`, `supabase/` birlikdə commit və push olunur, sonda ayrılacaq (məs. `git subtree split --prefix=admin`). Commit/push yalnız istifadəçi istəyəndə ("komit et", "pushla"). Commitdən əvvəl: admin `npx tsc -b`, web `npx tsc --noEmit` + `npx eslint src`. `.env*` və `excel/` repoya düşmür, `.gitattributes`: LF. İstifadəçi "hələ push etmə, xoşuma gəlməsə geri dönək" deyəndə yeni funksiya `feature/...` budağında commit olunur; təsdiqdən sonra `main`-ə `--ff-only` + push (bazadakı miqrasiyalar budaqla geri qayıtmır: miqrasiya faylının başına `drop` əmrlərini yaz).
+- **Dev serverləri Claude özü idarə edir** (2026-10-17-dən, istifadəçi istəyi): `admin/` → `npm run dev` (5173), `web/` → `npm run dev` (3000), fon prosesləri. Chrome-da hər biri üçün ayrı tab açıq qalır (admin, landing, usta paneli), tabları bağlama. Yaddaş azalıb server ölərsə yenidən başlat və tabı yenilə.
+- **Bazaya yazma (Claude Code icazələri)**: Supabase MCP `apply_migration` üçün icazə qaydası var (istifadəçi `/permissions` ilə əlavə edib; yoxdursa auto-rejim "Production Deploy" ilə bloklayır). Claude öz icazə fayllarını (`.claude/settings*.json`) dəyişə bilmir ("Self-Modification" bloku): qayda lazımdırsa istifadəçi `/permissions` ilə əlavə edir. Bloklanan miqrasiyanı dolayı yolla keçməyə çalışma: SQL-i istifadəçiyə ver, o, Supabase paneli → SQL Editor-də (`https://supabase.com/dashboard/project/roodclienblwrrlswmty/sql/new`) işlədir. Toplu silmə və `drop`-dan əvvəl hədəfə (sətir sayı, nələr silinir) bax və istifadəçinin sözünü yoxla.
 
 ## Komandalar
 Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
@@ -29,7 +32,7 @@ Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
 - Turbopack bəzən `globals.css` dəyişikliyini götürmür → port 3000-dəki node prosesini PowerShell ilə öldür (`Get-NetTCPConnection -LocalPort 3000 -State Listen | % { Stop-Process -Id $_.OwningProcess -Force }`), sonra `rm -rf .next && npm run dev`.
 - Yaddaş azalanda dev serverin daxili worker-ləri ölə bilər ("Jest worker encountered … child process exceptions"): prosesi öldürüb yenidən başlat. Claude Code fondakı serveri yaddaş azalanda özü dayandıra bilər: istifadəçiyə de, istəsə başlat.
 - Bazada yeni sütun əlavə olunanda `use cache` köhnə məlumatı 5 dəqiqəyə qədər qaytara bilər (məs. yeni `slug` görünməz, səhifə 404). Gözləmək və ya `rm -rf .next` + yenidən başlatmaq lazımdır. `notFound()` Suspense daxilində olanda curl 200 qaytarır, yoxlamanı brauzerdə və ya məzmunla (`grep`) et.
-- Brauzer testi: Claude in Chrome, ayrı açıq saxlanan tabda (`localhost:3000/panel`); usta hesabı (Əlizadə Xəyyam) brauzerdə artıq daxil olub. Parol yazma. Dev serveri Claude özü fonda işlədir (kökdəki `CLAUDE.md`).
+- Brauzer testi: Claude in Chrome, ayrı açıq saxlanan tabda (`localhost:3000/panel`); usta hesabı (Əlizadə Xəyyam) brauzerdə artıq daxil olub. Parol yazma. Dev serveri Claude özü fonda işlədir (yuxarıda "Layihə strukturu, git və iş qaydaları").
 - **Next dev göstəricisi "1 Issue"** = real xəta: konsola bax (`read_console_messages`). Client komponentdə render zamanı `new Date()` oxumaq Cache Components-də xətadır → komponenti `<Suspense>` daxilində işlət (`/panel`-də `WorkHistory`) və ya tarixi effektdə oxu.
 
 ## Stack və Next 16 xüsusiyyətləri
@@ -38,6 +41,7 @@ Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
 - Klik olunan hər şeydə əl kursoru (`globals.css` base qaydası). Yumşaq sürüşmə (Lenis) sınanıb və istifadəçinin istəyi ilə **silinib**: yenidən təklif etmə.
 - cookies, params və runtime data `<Suspense>` daxilində; server `createClient()` `await connection()` çağırır.
 - Açıq məlumat (sayt məzmunu) `"use cache"` + `cacheLife(SITE_CACHE)` ilə (`lib/site-cache.ts`: revalidate 5 san., stale 30, expire 60), **cookie-siz** klientlə (`createClient` from `@supabase/supabase-js`, `persistSession: false`). Admin dəyişikliyi saytda ~5 saniyəyə görünür (istifadəçi 1 dəqiqəni çox gördü); səhifəni yeniləmək lazımdır, saytdaxili keçiddə Next-in brauzer keşi 30 saniyədən az ola bilmir.
+- **Landing dev nişanları (2026-10-18)**: `SITE_CACHE` qısa ömürlüdür (expire 60 san. < 5 dəq), Next 16 onu oxuyan hər şeyin `<Suspense>` daxilində olmasını tələb edir → `app/(site)/layout.tsx`-də header, səhifə (`<main>`) və footer ayrı `<Suspense>`-dədir (fallback eyni hündürlükdə). Qalan "Instant" xəbərdarlığı (hər Page üçün default yoxlama, build-i bloklamır) `next.config.ts`-də `experimental.instantInsights.validationLevel: "manual-warning"` ilə söndürülüb. `expire`-i 300-ə qaldırmaq kifayət etmədi (geri qaytarıldı). `next.config` dəyişəndə dev serveri yenidən başlat.
 - Mutasiyadan sonra client komponentdə `router.refresh()`.
 - React 19 `<form action>` göndərəndən sonra formanı sıfırlayır, xətada da. Ona görə `ActionForm` / `onSubmit` + `startTransition(() => action(fd))` işlənir.
 - Lint qaydaları: `react-hooks/refs` (renderdə ref oxuma yox), `set-state-in-effect`; storage şəkilləri üçün `<img>` + `eslint-disable-next-line @next/next/no-img-element`.
@@ -59,6 +63,8 @@ Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
 - **SEO** (2026-10-18): `app/sitemap.ts` (sabit səhifələr + bazadakı aktiv xidmət/obyekt), `app/robots.ts` (panel və giriş bağlıdır), `metadataBase` + Open Graph (`app/layout.tsx`), ana səhifədə `LocalBusinessJsonLd` (`HVACBusiness`; telefon, ünvan, e-poçt bazadan, yer tutucu "XX" olanda göndərilmir). Ünvan `lib/site-url.ts` → `NEXT_PUBLIC_SITE_URL` (**canlıda mütləq yaz**). `robots.txt` və `sitemap.xml` `proxy.ts`-də `PUBLIC_PATHS`-dadır (yoxsa `/login`-ə yönlənir).
 - **Keşin dərhal təmizlənməsi**: bütün `use cache` funksiyaları `cacheTag(SITE_TAG)` daşıyır; `POST /api/revalidate` (`app/api/revalidate/route.ts`) admin JWT-ni `is_admin()` ilə yoxlayıb `revalidateTag(SITE_TAG, { expire: 0 })` çağırır. CORS yalnız `ADMIN_ORIGIN`. Yeni `use cache` funksiyasına da `cacheTag(SITE_TAG)` əlavə et.
 - Yeni açıq səhifə əlavə edəndə `proxy.ts`-də `PUBLIC_PATHS`-a da əlavə et (`/xidmetler/` və `/xidmet/` prefiksləri açıqdır).
+- **`<Suspense>` fallback qaydası (2026-10-18)**: fallback heç vaxt real məzmundan fərqli görünən şey (illüstrasiya, SVG, başqa şəkil) olmasın, yalnız neytral boş qutu/skelet (eyni ölçüdə). Hero-da fallback əvvəl SVG illüstrasiya idi: başqa səhifədən qayıdanda SVG → real şəkil yanıb-sönürdü; indi `aspect-[16/9]` yarımşəffaf qutudur (`app/(site)/page.tsx`).
+- **Header menyusu**: sağda ayrıca **"Xidmət növləri"** düyməsi (`components/landing/SiteNav.tsx`, client): klik ilə açılır, aktiv xidmətlərin siyahısı (`/xidmet/<slug>`); kənara klik/Escape bağlayır; yalnız masaüstündə (mobildə `/xidmetler`). "Xidmətlər" bəndi adi keçid qalır (hover ilə açılan variant istifadəçiyə yaramadı: yenidən təklif etmə).
 - Footer: xidmətlər `/xidmet/<slug>`-a aparır; telefon (`tel:`), ünvan (Google Maps), e-poçt (`mailto:`) klik olunur.
 - Qərar (2026-10-17): qonaq yalnız saytı görür; məlumat bölmələri (ünvan, telefon, müqavilə) açıq deyil.
 
@@ -200,7 +206,7 @@ Storage-də `remove` faylı həmişə dərhal silmir; köhnə şəkillər bucket
 - Rəhbərlik: id 7 Abdulov Ceyhun, id 8 Məmmədov Anar, id 9 Mirmanafov Mirsadiq.
 - Marketlər: "Araz Market" (id 4, 200 mağaza, kodlar `ARZ-001…`), "TEST Oba Market" (id 6, 200 mağaza, `OBA-001…`). Mağazalar `excel/*-market-200.xlsx`-dən import olunub, məlumat uydurmadır. İstifadəçi "TEST" sözünü adlardan hələlik götürməmək dedi.
 - Şirkətlər: Rabitə Bank (id 7, 10 filial), Qarabağ Stadion, Knightsbridge Residence, Port Baku Residence, İzmir Villa (filialsız, sabit məkan).
-- 2026-10-18: iş qeydləri, tapşırıqlar və fayl qeydləri istifadəçi istəyi ilə **hamısı silindi** (baza təmizdir); `work` bucket-ində `32/` qovluğunda 2 yetim şəkil qalıb (SQL ilə silinmir, Storage panelindən əl ilə). Xəta kodları: real kod `Daikin VRV · U4`; sınaq faylı `excel/xeta-kodlari-test.xlsx` (14 kod, `TEST` modelləri: yüklənibsə sonra "Modellər" tabından silinir). Müraciətlər: istifadəçinin yazdığı sınaq müraciətlər var.
+- 2026-10-18: iş qeydləri, tapşırıqlar və fayl qeydləri istifadəçi istəyi ilə **hamısı silindi** (baza təmizdir); `work` bucket-ində `32/` qovluğunda 2 yetim şəkil qalıb (SQL ilə silinmir, Storage panelindən əl ilə). Xəta kodları: bütün köhnə kodlar silinib; bazada Daikin SM-TS3 cədvəlindən 334 kod var (3 model, Azərbaycan dilində; ətraflı admin `CLAUDE.md`). Müraciətlər: istifadəçinin yazdığı sınaq müraciətlər var.
 
 ## Admin reposu ilə sinxron saxlanmalı olanlar
 Repolar ayrıdır, kod paylaşılmır; bunlar əl ilə eyni saxlanmalıdır:
@@ -217,4 +223,5 @@ Repolar ayrıdır, kod paylaşılmır; bunlar əl ilə eyni saxlanmalıdır:
 - `.env.local` fayllarını oxuma; parol və gizli açar yazma və oxuma. Hesab parollarını istifadəçi özü daxil edir.
 - Test məlumatı uydurmadır (uydurma ünvan, telefon `+994 12 000 …`); real şəxs məlumatı uydurma. Test üçün özün yaratdığın sətirləri sonra sil.
 - Supabase dashboard-da hesab və ya tənzimləmə dəyişikliyindən əvvəl icazə al.
-- Shell-də `node -e` daxilində `\n` və `\D` kimi escape-lər pozulur; uzun skripti scratchpad-də `.cjs` faylına yaz.
+- Shell-də `node -e` daxilində `\n` və `\D` kimi escape-lər pozulur; uzun skripti scratchpad-də `.cjs`/`.mjs` faylına yaz. Git Bash-in `/tmp`-i Node üçün başqa yerdir: Node-a scratchpad-in Windows yolunu ver (`cygpath -m`).
+- Dəyişikliklərdən sonra Chrome-da yoxla, amma real məlumata yazan düymələri sınaqda basma (HMR/modal sıfırlanandan sonra koordinatla klik səhv yerə düşə bilər).
