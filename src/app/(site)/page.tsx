@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, CircleCheck, ClipboardCheck, Clock, MapPin, Phone, Snowflake, Sun } from "lucide-react";
 import { OutdoorUnit, SplitUnit } from "@/components/landing/AcIllustrations";
+import { HeroQuickForm } from "@/components/landing/HeroQuickForm";
 import { LocalBusinessJsonLd } from "@/components/landing/LocalBusinessJsonLd";
+import { Reveal } from "@/components/landing/Reveal";
 import { SegmentCards, SegmentCardsSkeleton } from "@/components/landing/SegmentCards";
+import { FaqSection, HowSteps, StatsStrip } from "@/components/landing/TrustSections";
 import { Suspense } from "react";
 import { CATEGORIES } from "@/components/landing/content";
 import { getContact, getHomeContent, telHref } from "@/lib/site-settings";
@@ -104,7 +107,7 @@ async function QuickContact({ t }: { t: Texts }) {
     { icon: MapPin, label: t["home.contact.address"], value: c.address },
     { icon: Clock, label: t["home.contact.hours"], value: c.hours },
   ];
-  const mapUrl = `https://www.google.com/maps?q=${encodeURIComponent(c.address)}&z=13&output=embed`;
+  const mapUrl = `https://www.google.com/maps?q=${encodeURIComponent(c.address)}&z=13&output=embed&hl=az`;
 
   return (
     <>
@@ -134,6 +137,35 @@ async function QuickContact({ t }: { t: Texts }) {
   );
 }
 
+// Hero-dakı form altındakı yazı: qısa izah + telefon (bazadan)
+async function HeroNote({ t }: { t: Texts }) {
+  const c = await getContact();
+  const tel = telHref(c.phone);
+  return (
+    <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-white/65">
+      <span>{t["home.quick.note"]}</span>
+      {tel && (
+        <>
+          <span className="text-white/30" aria-hidden="true">·</span>
+          <span>{t["home.quick.or"]}:</span>
+          <a href={tel} className="inline-flex items-center gap-1.5 font-bold text-white transition-colors hover:text-heat"><Phone size={14} /> {c.phone}</a>
+        </>
+      )}
+    </p>
+  );
+}
+
+// Sürətli müraciət formu: admin "Sayt → Ana səhifə"dən göstərib-gizlədir, mətnləri dəyişir
+async function HeroForm({ t }: { t: Texts }) {
+  if (!(await getHomeContent()).heroFormEnabled) return null;
+  return (
+    <>
+      <HeroQuickForm t={t} />
+      <HeroNote t={t} />
+    </>
+  );
+}
+
 export default async function HomePage() {
   const t = await getTexts();
   return (
@@ -142,32 +174,37 @@ export default async function HomePage() {
         <LocalBusinessJsonLd />
       </Suspense>
       {/* Hero banner */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-night via-[#0b3a5c] to-cold text-white">
+      <section className="relative overflow-hidden bg-gradient-to-br from-night via-[#0b3a5c] to-cold pb-8 text-white lg:pb-14">
         <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(90deg,rgba(255,255,255,0.04)_0_1px,transparent_1px_32px)]" aria-hidden="true" />
         <div className="site-wrap relative grid items-center gap-14 py-16 lg:grid-cols-[1.05fr_1fr] lg:py-24">
           <div>
-            <div className="flex flex-wrap gap-2 text-sm font-semibold">
+            <div className="hero-in flex flex-wrap gap-2 text-sm font-semibold">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-heat/20 px-3 py-1.5 text-[#ffd08a]"><Sun size={15} /> {t["home.hero.badge_out"]}</span>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-ice"><Snowflake size={15} /> {t["home.hero.badge_in"]}</span>
             </div>
-            <h1 className="mt-6 font-display text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-6xl">
+            <h1 className="hero-in mt-6 font-display text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-6xl" style={{ "--d": "80ms" } as React.CSSProperties}>
               {t["home.hero.title"]}
             </h1>
-            <p className="mt-5 max-w-xl text-lg text-white/75">
+            <p className="hero-in mt-5 max-w-xl text-lg text-white/75" style={{ "--d": "160ms" } as React.CSSProperties}>
               {t["home.hero.lead"]}
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/elaqe" className="inline-flex h-12 items-center gap-2 rounded-full bg-white px-6 font-bold text-night transition-colors hover:bg-ice">
-                {t["home.hero.cta"]} <ArrowRight size={18} />
-              </Link>
-              <Link href="/xidmetler" className="inline-flex h-12 items-center rounded-full border border-white/30 px-6 font-bold transition-colors hover:border-white">
-                {t["home.hero.cta2"]}
-              </Link>
+            <div className="hero-in" style={{ "--d": "240ms" } as React.CSSProperties}>
+              <Suspense fallback={<div className="mt-9 h-[68px] max-w-xl rounded-[28px] bg-white/10" aria-hidden="true" />}>
+                <HeroForm t={t} />
+              </Suspense>
+              <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold">
+                <Link href="/elaqe" className="inline-flex items-center gap-1.5 text-white/85 underline-offset-4 transition-colors hover:text-white hover:underline">
+                  {t["home.hero.cta"]} <ArrowRight size={15} />
+                </Link>
+                <Link href="/xidmetler" className="inline-flex items-center gap-1.5 text-white/85 underline-offset-4 transition-colors hover:text-white hover:underline">
+                  {t["home.hero.cta2"]} <ArrowRight size={15} />
+                </Link>
+              </div>
             </div>
           </div>
 
           {/* Şəkil yeri: admin yükləyibsə foto, yoxdursa kondisioner illüstrasiyası; üzən kartlar hər ikisində */}
-          <div className="relative mx-2 sm:mx-8">
+          <div className="hero-in relative mx-2 sm:mx-8" style={{ "--d": "200ms" } as React.CSSProperties}>
             {/* Yüklənərkən illüstrasiya yox, neytral boş yer: yoxsa başqa səhifədən qayıdanda əvvəl SVG, sonra real şəkil görünürdü */}
             <Suspense fallback={<div className="aspect-[16/9] w-full rounded-[32px] bg-white/10" aria-hidden="true" />}>
               <HeroVisual alt={t["home.hero.title"]} />
@@ -183,6 +220,11 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* İnam: rəqəmlər zolağı (hero-nun üstünə çıxır); ən azı 2 aktiv rəqəm yoxdursa göstərilmir */}
+      <Suspense fallback={null}>
+        <StatsStrip />
+      </Suspense>
+
       {/* Haqqımızda */}
       <section className="site-wrap grid items-center gap-12 py-20 lg:grid-cols-2">
         <Suspense fallback={<div className="min-h-[420px] rounded-[28px] bg-white/60 lg:col-span-2" />}>
@@ -193,7 +235,9 @@ export default async function HomePage() {
       {/* Xidmət: obyekt növlərinə görə */}
       <section className="bg-white py-20">
         <div className="site-wrap">
-          <SectionTitle title={t["home.segments.title"]} lead={t["home.segments.lead"]} />
+          <Reveal>
+            <SectionTitle title={t["home.segments.title"]} lead={t["home.segments.lead"]} />
+          </Reveal>
           <div className="mt-12">
             <Suspense fallback={<SegmentCardsSkeleton />}>
               <SegmentCards />
@@ -202,33 +246,45 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Necə işləyirik: 3 addım */}
+      <HowSteps t={t} />
+
       {/* Xidmət kateqoriyaları: göy zolaq */}
       <section className="relative overflow-hidden bg-cold py-20 text-white">
         <Snowflake size={420} strokeWidth={0.5} className="pointer-events-none absolute -left-24 -top-24 text-white/10" aria-hidden="true" />
         <div className="site-wrap relative">
-          <SectionTitle title={t["home.categories.title"]} lead={t["home.categories.lead"]} light />
+          <Reveal>
+            <SectionTitle title={t["home.categories.title"]} lead={t["home.categories.lead"]} light />
+          </Reveal>
           <div className="mt-12 grid gap-5 lg:grid-cols-3">
-            {CATEGORIES.map(({ icon: Icon, title, items }) => (
-              <div key={title} className="rounded-[28px] bg-white p-7 text-night shadow-[0_20px_50px_rgba(6,25,43,0.15)]">
-                <div className="flex items-center gap-4">
-                  <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-glacier text-cold"><Icon size={26} /></span>
-                  <h3 className="font-display text-lg font-bold leading-tight">{t[title]}</h3>
+            {CATEGORIES.map(({ icon: Icon, title, items }, i) => (
+              <Reveal key={title} delay={i * 100} className="h-full">
+                <div className="h-full rounded-[28px] bg-white p-7 text-night shadow-[0_20px_50px_rgba(6,25,43,0.15)]">
+                  <div className="flex items-center gap-4">
+                    <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-glacier text-cold"><Icon size={26} /></span>
+                    <h3 className="font-display text-lg font-bold leading-tight">{t[title]}</h3>
+                  </div>
+                  <ul className="mt-6 divide-y divide-night/10">
+                    {lines(t[items]).map((item) => (
+                      <li key={item} className="flex items-center gap-3 py-3 font-medium">
+                        <CircleCheck size={18} className="shrink-0 text-cold" /> {item}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="mt-6 divide-y divide-night/10">
-                  {lines(t[items]).map((item) => (
-                    <li key={item} className="flex items-center gap-3 py-3 font-medium">
-                      <CircleCheck size={18} className="shrink-0 text-cold" /> {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Tez-tez verilən suallar (boşdursa göstərilmir) */}
+      <Suspense fallback={null}>
+        <FaqSection t={t} />
+      </Suspense>
+
       {/* Sürətli əlaqə və xəritə */}
-      <section className="site-wrap grid gap-6 pt-20 lg:grid-cols-[1fr_1.4fr]">
+      <section className="site-wrap grid gap-6 pb-2 lg:grid-cols-[1fr_1.4fr]">
         <Suspense fallback={<div className="min-h-[420px] rounded-[28px] bg-night lg:col-span-2" />}>
           <QuickContact t={t} />
         </Suspense>

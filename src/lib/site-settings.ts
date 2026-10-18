@@ -3,7 +3,7 @@ import { SITE_CACHE, SITE_TAG } from "@/lib/site-cache";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/database.types";
 
-export type Contact = { phone: string; address: string; hours: string; email: string | null };
+export type Contact = { phone: string; address: string; hours: string; email: string | null; instagram: string | null; facebook: string | null };
 
 // Admin hələ doldurmayıbsa göstərilən yer tutucular
 const FALLBACK: Contact = {
@@ -11,6 +11,8 @@ const FALLBACK: Contact = {
   address: "Bakı, ünvan yazılacaq",
   hours: "Hər gün, saatlar yazılacaq",
   email: null,
+  instagram: null,
+  facebook: null,
 };
 
 // Saytın əlaqə məlumatları: admin panelindəki "Sayt" səhifəsindən dəyişir.
@@ -26,13 +28,15 @@ export async function getContact(): Promise<Contact> {
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     { auth: { persistSession: false } },
   );
-  const { data } = await supabase.from("site_settings").select("phone, address, hours, email").eq("id", 1).maybeSingle();
+  const { data } = await supabase.from("site_settings").select("phone, address, hours, email, instagram_url, facebook_url").eq("id", 1).maybeSingle();
 
   return {
     phone: data?.phone ? formatPhone(data.phone) : FALLBACK.phone,
     address: data?.address || FALLBACK.address,
     hours: data?.hours || FALLBACK.hours,
     email: data?.email || null,
+    instagram: data?.instagram_url || null,
+    facebook: data?.facebook_url || null,
   };
 }
 
@@ -53,6 +57,7 @@ export async function getLogo(): Promise<string | null> {
 
 export type HomeContent = {
   heroImage: string | null;
+  heroFormEnabled: boolean;
   about: {
     title: string;
     text: string[];
@@ -88,13 +93,14 @@ export async function getHomeContent(): Promise<HomeContent> {
   );
   const { data: d } = await supabase
     .from("site_settings")
-    .select("hero_image_url, about_title, about_text, about_points, about_card_title, about_card_text, about_card_color, about_image_main_url, about_image_side_url")
+    .select("hero_image_url, hero_form_enabled, about_title, about_text, about_points, about_card_title, about_card_text, about_card_color, about_image_main_url, about_image_side_url")
     .eq("id", 1)
     .maybeSingle();
 
   const lines = (v: string, sep: RegExp) => v.split(sep).map((x) => x.trim()).filter(Boolean);
   return {
     heroImage: d?.hero_image_url || null,
+    heroFormEnabled: d?.hero_form_enabled ?? true,
     about: {
       title: d?.about_title || ABOUT_FALLBACK.title,
       text: lines(d?.about_text || ABOUT_FALLBACK.text, /\n\s*\n/),

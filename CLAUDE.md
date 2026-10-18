@@ -20,7 +20,7 @@ Kondisioner servis şirkəti **Freeze Air Service** üçün sistem: ustalar, mü
 İkisi də **eyni Supabase layihəsini** işlədir. Admin funksiyaları bu repoda **yoxdur**. `supabase/` qovluğu (miqrasiyalar + Edge Function) **admin reposuna aiddir**; baza dəyişikliyi lazım olanda miqrasiya orada yazılır, Supabase MCP ilə tətbiq olunur.
 
 ## Layihə strukturu, git və iş qaydaları (admin və web fayllarında eynidir)
-- **Qovluqlar** (`D:\Praqramlasirma\Projects\kondisioner-servis\`): `admin/` (Vite, 5173), `web/` (Next.js, 3000), `supabase/` (miqrasiyalar `0001`–`0049`, hamısı bazada tətbiq olunub + Edge Function `admin-accounts`; repolar ayrılanda `admin/supabase/`-a köçürüləcək), `excel/` (test və import faylları, heç bir repoya aid deyil, git-ignore). **Kökdə CLAUDE.md yoxdur**: hər platformanın öz faylı tamdır, işlədiyin platformanın qovluğundan başla (`admin/CLAUDE.md` və ya `web/CLAUDE.md`).
+- **Qovluqlar** (`D:\Praqramlasirma\Projects\kondisioner-servis\`): `admin/` (Vite, 5173), `web/` (Next.js, 3000), `supabase/` (miqrasiyalar `0001`–`0051`, hamısı bazada tətbiq olunub + Edge Function `admin-accounts`; repolar ayrılanda `admin/supabase/`-a köçürüləcək), `excel/` (test və import faylları, heç bir repoya aid deyil, git-ignore). **Kökdə CLAUDE.md yoxdur**: hər platformanın öz faylı tamdır, işlədiyin platformanın qovluğundan başla (`admin/CLAUDE.md` və ya `web/CLAUDE.md`).
 - **Yeni kompüterdə qurmaq**: `git clone https://github.com/Xeyyam456/kondisioner-servis.git`; `admin/` və `web/`-də `npm install`; hər qovluqda `.env.example`-ı `.env.local` adı ilə kopyala və publishable açarı doldur (Supabase → Project Settings → API); `npm run dev`. Gizli (service role) açar lokalda lazım deyil. Baza və Edge Function Supabase-dədir (kopyalanmır).
 - **Git**: hələlik **bir repo** (kök, budaq `main`): `admin/`, `web/`, `supabase/` birlikdə commit və push olunur, sonda ayrılacaq (məs. `git subtree split --prefix=admin`). Commit/push yalnız istifadəçi istəyəndə ("komit et", "pushla"). Commitdən əvvəl: admin `npx tsc -b`, web `npx tsc --noEmit` + `npx eslint src`. `.env*` və `excel/` repoya düşmür, `.gitattributes`: LF. İstifadəçi "hələ push etmə, xoşuma gəlməsə geri dönək" deyəndə yeni funksiya `feature/...` budağında commit olunur; təsdiqdən sonra `main`-ə `--ff-only` + push (bazadakı miqrasiyalar budaqla geri qayıtmır: miqrasiya faylının başına `drop` əmrlərini yaz).
 - **Dev serverləri Claude özü idarə edir** (2026-10-17-dən, istifadəçi istəyi): `admin/` → `npm run dev` (5173), `web/` → `npm run dev` (3000), fon prosesləri. Chrome-da hər biri üçün ayrı tab açıq qalır (admin, landing, usta paneli), tabları bağlama. Yaddaş azalıb server ölərsə yenidən başlat və tabı yenilə.
@@ -63,6 +63,9 @@ Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
 - **SEO** (2026-10-18): `app/sitemap.ts` (sabit səhifələr + bazadakı aktiv xidmət/obyekt), `app/robots.ts` (panel və giriş bağlıdır), `metadataBase` + Open Graph (`app/layout.tsx`), ana səhifədə `LocalBusinessJsonLd` (`HVACBusiness`; telefon, ünvan, e-poçt bazadan, yer tutucu "XX" olanda göndərilmir). Ünvan `lib/site-url.ts` → `NEXT_PUBLIC_SITE_URL` (**canlıda mütləq yaz**). `robots.txt` və `sitemap.xml` `proxy.ts`-də `PUBLIC_PATHS`-dadır (yoxsa `/login`-ə yönlənir).
 - **Keşin dərhal təmizlənməsi**: bütün `use cache` funksiyaları `cacheTag(SITE_TAG)` daşıyır; `POST /api/revalidate` (`app/api/revalidate/route.ts`) admin JWT-ni `is_admin()` ilə yoxlayıb `revalidateTag(SITE_TAG, { expire: 0 })` çağırır. CORS yalnız `ADMIN_ORIGIN`. Yeni `use cache` funksiyasına da `cacheTag(SITE_TAG)` əlavə et.
 - Yeni açıq səhifə əlavə edəndə `proxy.ts`-də `PUBLIC_PATHS`-a da əlavə et (`/xidmetler/` və `/xidmet/` prefiksləri açıqdır).
+- **Landing yenilənməsi (2026-10-18, "professional səviyyə")**: ana səhifənin ardıcıllığı: hero (solda **sürətli müraciət formu** `HeroQuickForm`: ad + telefon, "Bizə yazın" ilə eyni server action, altında telefon; sağda foto) → **rəqəmlər zolağı** `StatsStrip` (hero-nun üstünə yarı çıxan ağ kart, `CountUp` sayğacı) → Haqqımızda → obyekt kartları → **Necə işləyirik** 3 addım `HowSteps` → xidmət kateqoriyaları (göy) → **FAQ** `FaqSection` (`<details name="home-faq">`, birinci açıq, Google üçün `FAQPage` JSON-LD) → sürətli əlaqə + xəritə (`hl=az`). Hamısı `components/landing/TrustSections.tsx`-dədir; məzmun admin "Sayt → Etibar və suallar"dan (cədvəllər `site_stats`, `site_faq`, migrasiya 0050; `lib/site-trust.ts`, `cacheTag(SITE_TAG)`). **Rəqəm/sual siyahısı boşdursa (rəqəmlər üçün < 2) həmin bölmə göstərilmir.** İlk rəqəmlər bazadakı real saydır (usta, xidmət növü, obyekt növü); uydurma rəqəm yazma. **"Bizə etibar edənlər" (müştəri loqoları) bölməsi istifadəçi qərarı ilə ləğv olunub (2026-10-19, migrasiya 0051: `site_clients` silindi): yenidən təklif etmə.**
+- **Header**: telefon (`tel:`) görünür, əsas düymə "Usta çağır" (dolu), giriş/panel ikinci dərəcəli (mətn keçid). **Footer**: sosial düymələr `FooterSocial` (WhatsApp telefondan `whatsappHref`, Instagram/Facebook `site_settings.instagram_url/facebook_url`; yalnız doldurulanlar; ikonlar `SocialIcons.tsx`, lucide-də brend ikonu yoxdur).
+- **Hərəkətlər**: hero elementləri `.hero-in` (yalnız CSS, `--d` gecikmə); bölmələr `Reveal` (IntersectionObserver, `.js .reveal`), rəqəmlər `CountUp`. `<html>`-ə `js` sinfini `layout.tsx`-dəki kiçik skript qoyur; JS işləməsə hər şey görünür, 3 san. sonra `failsafe` animasiyası məcburən göstərir; `prefers-reduced-motion`-da hərəkət yoxdur. Yeni animasiyanı yalnız bu sistemlə et. **Mobil/responsivlik sonda toplu işlənəcək (istifadəçi qərarı): indi mobillə bağlı heç nə etmə.**
 - **`<Suspense>` fallback qaydası (2026-10-18)**: fallback heç vaxt real məzmundan fərqli görünən şey (illüstrasiya, SVG, başqa şəkil) olmasın, yalnız neytral boş qutu/skelet (eyni ölçüdə). Hero-da fallback əvvəl SVG illüstrasiya idi: başqa səhifədən qayıdanda SVG → real şəkil yanıb-sönürdü; indi `aspect-[16/9]` yarımşəffaf qutudur (`app/(site)/page.tsx`).
 - **Header menyusu**: sağda ayrıca **"Xidmət növləri"** düyməsi (`components/landing/SiteNav.tsx`, client): klik ilə açılır, aktiv xidmətlərin siyahısı (`/xidmet/<slug>`); kənara klik/Escape bağlayır; yalnız masaüstündə (mobildə `/xidmetler`). "Xidmətlər" bəndi adi keçid qalır (hover ilə açılan variant istifadəçiyə yaramadı: yenidən təklif etmə).
 - Footer: xidmətlər `/xidmet/<slug>`-a aparır; telefon (`tel:`), ünvan (Google Maps), e-poçt (`mailto:`) klik olunur.
@@ -165,7 +168,7 @@ Storage-də `remove` faylı həmişə dərhal silmir; köhnə şəkillər bucket
 - Publikasiya `supabase_realtime`-da yalnız `contact_requests`. Hadisəni RLS-ə görə yalnız admin alır.
 
 ### Miqrasiyalar (`supabase/migrations/`, admin reposunda)
-- `0001`–`0049`. Ad formatı `NNNN_ad.sql`; Supabase MCP `apply_migration` ilə tətbiq et və faylı da yaz.
+- `0001`–`0050`. Ad formatı `NNNN_ad.sql`; Supabase MCP `apply_migration` ilə tətbiq et və faylı da yaz.
 - Mühüm olanlar:
   - 0005: work_logs, `my_employee_id`;
   - 0010: rol trigger-i;
@@ -190,6 +193,8 @@ Storage-də `remove` faylı həmişə dərhal silmir; köhnə şəkillər bucket
   - 0034: `give_piece`-ə `p_amount`: parçanın bir hissəsini ustaya vermək (qalan hissə parça kimi qalır);
   - 0036: qablaşdırılmış material (qaz balonu...): `tools.pack_name` (balon), `tools.pack_size` (hər qabda 11), `tool_stock`-a bu sütunlar; daxildə hər şey ölçü vahidi ilə (44 kq), qab yalnız daxiletmə və göstəriş üçün ("44 kq (4 balon)");
   - 0039: `tasks` cədvəli (iş tapşırıqları), RLS və `tasks_guard` tətikçisi;
+  - 0051: `site_clients` silindi (müştəri bölməsi ləğv), `site_settings.hero_form_enabled`;
+  - 0050: ana səhifənin inam hissələri (`site_stats`, `site_faq`, `site_settings` sosial linklər; `site_clients` sonra 0051 ilə silindi);
   - 0046–0049: müraciət sürət limiti; material təhvili `settle_material` (işlədilib + qaytarılır, qalan ustada qalır; boruda ≤ 3 metr parça, > 3 tam; depoda qalan 1–3 metr avtomatik parça, `material_small_to_pieces`). Depo paneli (`DepotView`) bu təhvil formasını admin ilə eyni işlədir (`settleMaterial`);
   - 0045: xəta kodları üçün `ac_models` və `ac_error_codes.model_id` (0044 əvəz olundu);
   - 0041-0043: tapşırıqdan avtomatik iş qeydi (`tasks.work_log_id`, `tasks.note`, `task_set_done`, `task_set_note`);
@@ -218,6 +223,12 @@ Repolar ayrıdır, kod paylaşılmır; bunlar əl ilə eyni saxlanmalıdır:
 - İş qeydi pəncərəsi: `components/work/WorkLogModal.tsx` ↔ admin `components/work/WorkLogModal.tsx` (burada `"use client"`, `useData` əvəzinə `useEffect`, vaxt Bakı saatı ilə).
 - Depo: `components/depot/DepotView.tsx` ↔ admin `components/depot/DepotForms.tsx`; `lib/tools.ts` ↔ admin `actions/tools.ts`; `components/{ToolPicker,QuantityInput}.tsx` ↔ admin; `nice-scroll` sinfi ↔ admin `index.css`.
 - Avatar çevirmə (`toSquareWebp`): `components/ProfileButton.tsx` ↔ admin `components/employees/AvatarUpload.tsx`.
+
+## Landing: qərarlar və qalan işlər (2026-10-19)
+- İstifadəçi tələbi: landing UX/UI "professional" olsun. **Mobil/responsivlik sonda toplu işlənəcək: indi mobillə bağlı heç nə etmə.**
+- **Edilib**: hero sürətli forma (admin açıb-bağlayır, mətnlər admin-dən), rəqəmlər zolağı, necə işləyirik 3 addım, FAQ, header telefon + əsas düymə, footer sosial/WhatsApp, xəritə `hl=az`, yumşaq animasiyalar. **Ləğv/istənmir**: "Bizə etibar edənlər", xidmət təkrarının təmizlənməsi (4 kart + göy kateqoriyalar + "Xidmət növləri" qalır), hover ilə açılan menyu.
+- **Qalan**: "Haqqımızda" şəkilləri (Fujitsu məhsul şəkilləri əvəzinə öz real foto; foto istifadəçidən gələndə, admin → Sayt → Ana səhifə), responsivlik (sonda).
+- Rəqəmlər zolağında ilk 3 rəqəm bazadakı real saydır (6 usta, 6 xidmət növü, 4 obyekt növü): istifadəçi real rəqəmlərlə dəyişdirməlidir (məs. mağaza sayı, təcrübə ili); uydurma rəqəm yazma.
 
 ## Qaydalar
 - `.env.local` fayllarını oxuma; parol və gizli açar yazma və oxuma. Hesab parollarını istifadəçi özü daxil edir.

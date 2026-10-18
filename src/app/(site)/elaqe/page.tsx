@@ -16,7 +16,7 @@ async function ContactCards({ t }: { t: Texts }) {
   const c = await getContact();
   const tel = telHref(c.phone);
   const wa = whatsappHref(c.phone);
-  const mapUrl = `https://www.google.com/maps?q=${encodeURIComponent(c.address)}&z=14&output=embed`;
+  const mapUrl = `https://www.google.com/maps?q=${encodeURIComponent(c.address)}&z=14&output=embed&hl=az`;
 
   return (
     <>

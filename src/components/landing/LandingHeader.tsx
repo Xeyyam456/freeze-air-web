@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { LayoutGrid, LogIn, Snowflake } from "lucide-react";
+import { LayoutGrid, LogIn, Phone, Snowflake } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { getLogo } from "@/lib/site-settings";
+import { getContact, getLogo, telHref } from "@/lib/site-settings";
 import { getServices } from "@/lib/site-content";
 import { getTexts, type Texts } from "@/lib/site-texts";
 import { sitePages } from "./content";
 import { SiteNav } from "./SiteNav";
 
 const accountClass =
-  "inline-flex h-11 items-center gap-2 rounded-full border border-night/15 px-5 text-sm font-bold text-night transition-colors hover:border-night";
+  "inline-flex h-11 items-center gap-2 rounded-full px-3.5 text-sm font-bold text-night/65 transition-colors hover:bg-glacier hover:text-night";
 
 // Qonaq "Daxil ol", giriş etmiş usta isə "Panelə keç" görür
 async function AccountButton({ t }: { t: Texts }) {
@@ -25,7 +25,8 @@ async function AccountButton({ t }: { t: Texts }) {
 
 // İki qat: ağ loqo zolağı → göy menyu (yalnız menyu yuxarıda yapışıb qalır). Mətnlər bazadan.
 export async function LandingHeader() {
-  const [t, logo, services] = await Promise.all([getTexts(), getLogo(), getServices()]);
+  const [t, logo, services, contact] = await Promise.all([getTexts(), getLogo(), getServices(), getContact()]);
+  const tel = telHref(contact.phone);
   return (
     <>
       <div className="bg-white">
@@ -44,11 +45,17 @@ export async function LandingHeader() {
               <span className="block text-xs font-medium text-night/50">{t["brand.tagline"]}</span>
             </span>
           </Link>
-          <div className="ml-auto flex items-center gap-3">
-            <Link href="/elaqe" className="hidden h-11 items-center rounded-full bg-cold px-5 text-sm font-bold text-white transition-colors hover:bg-night sm:inline-flex">
+          <div className="ml-auto flex items-center gap-2 lg:gap-3">
+            {tel && (
+              <a href={tel} className="hidden items-center gap-2 rounded-full px-3 py-2 text-sm font-bold text-night transition-colors hover:text-cold lg:inline-flex">
+                <span className="grid h-9 w-9 place-items-center rounded-full bg-glacier text-cold"><Phone size={16} /></span>
+                {contact.phone}
+              </a>
+            )}
+            <Link href="/elaqe" className="hidden h-11 items-center rounded-full bg-cold px-6 text-sm font-bold text-white shadow-[0_8px_20px_rgba(0,163,217,0.3)] transition-all hover:bg-night hover:shadow-none sm:inline-flex">
               {t["header.cta"]}
             </Link>
-            <Suspense fallback={<span className={`${accountClass} w-36 opacity-40`} />}>
+            <Suspense fallback={<span className={`${accountClass} w-32 opacity-40`} />}>
               <AccountButton t={t} />
             </Suspense>
           </div>

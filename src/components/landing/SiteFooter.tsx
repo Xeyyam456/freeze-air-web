@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { Clock, LogIn, Mail, MapPin, Phone, Snowflake } from "lucide-react";
 import { Suspense } from "react";
-import { getContact, getLogo, telHref } from "@/lib/site-settings";
+import { getContact, getLogo, telHref, whatsappHref } from "@/lib/site-settings";
 import { getServices } from "@/lib/site-content";
 import { getTexts } from "@/lib/site-texts";
 import { sitePages } from "./content";
+import { FacebookIcon, InstagramIcon } from "./SocialIcons";
+import { WhatsAppIcon } from "./WhatsAppIcon";
 
 // Əlaqə sətirləri klik olunur: zəng, xəritə, e-poçt (saatlar yalnız məlumatdır)
 const contactLink = "flex gap-3 transition-colors hover:text-cold";
@@ -22,6 +24,32 @@ async function FooterContact() {
       <li className="flex gap-3"><Clock size={18} className="mt-0.5 shrink-0 text-cold" /> {c.hours}</li>
       {c.email && <li><a href={`mailto:${c.email}`} className={contactLink}><Mail size={18} className="mt-0.5 shrink-0 text-cold" /> {c.email}</a></li>}
     </>
+  );
+}
+
+// Sosial düymələr: yalnız doldurulanlar görünür (WhatsApp telefon mobil formatdadırsa)
+async function FooterSocial({ title }: { title: string }) {
+  const c = await getContact();
+  const links = [
+    { href: whatsappHref(c.phone), label: "WhatsApp", icon: <WhatsAppIcon size={18} /> },
+    { href: c.instagram ?? undefined, label: "Instagram", icon: <InstagramIcon size={18} /> },
+    { href: c.facebook ?? undefined, label: "Facebook", icon: <FacebookIcon size={18} /> },
+  ].filter((l) => l.href);
+  if (links.length === 0) return null;
+  return (
+    <div className="mt-8">
+      <p className="text-sm font-bold text-white/80">{title}</p>
+      <ul className="mt-3 flex gap-2.5">
+        {links.map((l) => (
+          <li key={l.label}>
+            <a href={l.href} target="_blank" rel="noopener noreferrer" aria-label={l.label} title={l.label}
+              className="grid h-11 w-11 place-items-center rounded-full border border-white/15 text-white/75 transition-all hover:-translate-y-0.5 hover:border-cold hover:bg-cold hover:text-white">
+              {l.icon}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -58,6 +86,9 @@ export async function SiteFooter() {
           <Link href="/login" className="mt-6 inline-flex h-10 items-center gap-2 rounded-full border border-white/20 px-4 text-sm font-bold text-white/80 transition-colors hover:border-white hover:text-white">
             <LogIn size={15} /> {t["footer.login"]}
           </Link>
+          <Suspense fallback={null}>
+            <FooterSocial title={t["footer.social"]} />
+          </Suspense>
         </div>
 
         <div>

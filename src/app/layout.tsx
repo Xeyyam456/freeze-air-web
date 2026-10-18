@@ -20,7 +20,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="az" className={`${jakarta.variable} h-full antialiased`}>
+    <html lang="az" className={`${jakarta.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        {/* JS işləyəndə bölmə animasiyaları aktiv olur (globals.css `.js .reveal`) */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+      </head>
       <body className="min-h-full">
         {children}
         <Toaster />

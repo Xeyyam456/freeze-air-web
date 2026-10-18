@@ -730,3 +730,47 @@
 @media (prefers-reduced-motion: reduce) {
   .airflow { animation: none; opacity: 0.6; }
 }
+
+/* ---------- Açıq sayt: yumşaq hərəkətlər ---------- */
+/* Hero: səhifə açılanda elementlər ardıcıl yuxarı qalxaraq görünür (yalnız CSS; --d gecikmədir) */
+@keyframes hero-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+.hero-in {
+  animation: hero-in 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* Bölmələr: görünəndə açılır (components/landing/Reveal.tsx). `.js` sinfini layout-dakı kiçik skript qoyur;
+   JS yoxdursa və ya xəta olarsa, 3 saniyədən sonra hər şey məcburən görünür. */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  animation: reveal-failsafe 0s 3s forwards;
+}
+.js .reveal.in {
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+@keyframes reveal-failsafe {
+  to { opacity: 1; transform: none; }
+}
+
+/* Rəqəm sayğacı (components/landing/CountUp.tsx): görünənə qədər gizli, 3 saniyə sonra məcburən görünür */
+.js .count-up:not(.ready) {
+  visibility: hidden;
+  animation: count-failsafe 0s 3s forwards;
+}
+@keyframes count-failsafe {
+  to { visibility: visible; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-in { animation: none; }
+  .js .reveal { opacity: 1; transform: none; transition: none; animation: none; }
+  .js .count-up:not(.ready) { visibility: visible; animation: none; }
+}
