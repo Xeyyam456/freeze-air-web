@@ -57,6 +57,8 @@ const packSuffix = (n: number, p: PackInfo) => (p.pack_size && p.pack_name && n 
 // "12 metr" / "44 kq (4 balon)" (material) | "12" (alət)
 const withUnit = (n: number, t: Pick<Tool, "kind" | "unit" | "pack_name" | "pack_size">) => (t.kind === "material" ? `${n} ${t.unit}${packSuffix(n, t)}` : String(n));
 // Ustada olan miqdar: "11 kq (1 balon)"
+// Boru (metr): bu qədər və ya az qaytarılan hissə parça olur, çoxu tam boruya qatılır (bazada settle_material ilə eyni hədd)
+const PIECE_MAX = 3;
 const showQty = (n: number, unit: string, p?: PackInfo | null) => `${n} ${unit}${p ? packSuffix(n, p) : ""}`;
 
 // Axtarış üçün sadələşdirmə: "Əlizadə" və "elizade" eyni tapılsın.
@@ -332,7 +334,6 @@ export function ToolList({ kind, onKind, tools: allTools, holdings: allHoldings,
                     <span className="flex items-center gap-2.5">
                       <Wrench size={15} className="shrink-0 text-primary" />
                       <span className="font-semibold">{t.name}</span>
-                      {t.inventory_code && <span className="muted text-xs">{t.inventory_code}</span>}
                     </span>
                   </td>
                   {/* Cəmi = tam hissə + parçalar (ümumilikdə nə qədər var) */}
@@ -398,7 +399,7 @@ function HolderRow({ holding, canManage, toolName, unit = "ədəd", material = f
   const rest = holding.quantity - usedBase - retBase;
   const parts = [
     usedBase > 0 && `${showQty(usedBase, unit, pack)} sərf olunur`,
-    retBase > 0 && `${showQty(retBase, unit, pack)} depoya qayıdır`,
+    retBase > 0 && `${showQty(retBase, unit, pack)} depoya qayıdır${unit.trim().toLowerCase() === "metr" ? (retBase <= PIECE_MAX ? " (parça)" : " (tam boru)") : ""}`,
     rest > 0 ? `${showQty(rest, unit, pack)} ustada qalır` : "ustada heç nə qalmır",
   ].filter(Boolean);
   const hint = invalid ? "İşlədilən və qaytarılanın cəmi ustada olandan çox ola bilməz."
@@ -607,7 +608,7 @@ function PieceRow({ piece, unit, employees, canManage }: { piece: Piece; unit: s
   const date = piece.created_at.slice(0, 10).split("-").reverse().join(".");
   const original = piece.original_length ?? piece.length;
   // Qaytaran ustanın ilkin qaytardığı miqdar: "Kərimov Orxan 2 metr qaytarıb"
-  const who = piece.employees ? `${piece.employees.full_name} ${original} ${unit} qaytarıb` : "Qaytaran bilinmir";
+  const who = piece.employees ? `${piece.employees.full_name} ${original} ${unit} qaytarıb` : "Depoda qalan hissə";
   return (
     <li className="flex items-center gap-3 py-2">
       {giving && <PieceGiveModal piece={piece} unit={unit} employees={employees} onClose={() => setGiving(false)} />}
