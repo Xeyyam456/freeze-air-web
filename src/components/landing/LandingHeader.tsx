@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { LayoutGrid, LogIn, Snowflake } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getLogo } from "@/lib/site-settings";
+import { getServices } from "@/lib/site-content";
 import { getTexts, type Texts } from "@/lib/site-texts";
 import { sitePages } from "./content";
 import { SiteNav } from "./SiteNav";
@@ -24,7 +25,7 @@ async function AccountButton({ t }: { t: Texts }) {
 
 // İki qat: ağ loqo zolağı → göy menyu (yalnız menyu yuxarıda yapışıb qalır). Mətnlər bazadan.
 export async function LandingHeader() {
-  const [t, logo] = await Promise.all([getTexts(), getLogo()]);
+  const [t, logo, services] = await Promise.all([getTexts(), getLogo(), getServices()]);
   return (
     <>
       <div className="bg-white">
@@ -56,7 +57,7 @@ export async function LandingHeader() {
 
       <header className="sticky top-0 z-30 bg-cold shadow-[0_6px_20px_rgba(6,25,43,0.15)]">
         <div className="site-wrap">
-          <SiteNav pages={sitePages(t)} />
+          <SiteNav pages={sitePages(t)} services={services.map((s) => ({ slug: s.slug, title: s.title }))} />
         </div>
       </header>
     </>

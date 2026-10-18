@@ -88,7 +88,7 @@ Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
   - konteyner `.site-wrap` (max 1760px);
   - şəkillər kəsilmir: öz nisbətində və ya `object-contain`.
 - "Bizə yazın" (`/elaqe`): `ContactForm` → server action `app/(site)/elaqe/actions.ts`.
-  - Gizli tələ sahəsi `website`. Cookie-siz klient; baza yalnız əlavə etməyə icazə verir. Sürət limiti bazadadır (migrasiya 0046, tətbiq olunubsa): `too_many_requests` xətası istifadəçiyə "Çox sayda müraciət" kimi göstərilir.
+  - Gizli tələ sahəsi `website`. Cookie-siz klient; baza yalnız əlavə etməyə icazə verir. Sürət limiti bazadadır (migrasiya 0046, tətbiq olunub): `too_many_requests` xətası istifadəçiyə "Çox sayda müraciət" kimi göstərilir.
   - Nəticə tostla bildirilir: uğurda forma təmizlənir, xətada yazılanlar qalır.
   - Admin panelində Realtime ilə dərhal görünür.
 

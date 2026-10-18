@@ -118,6 +118,13 @@ export async function finishMaterial(assignmentId: number, used: number): Promis
   return { ok: true };
 }
 
+// Material təhvili: usta neçə işlədib və neçə qaytarır; qalan hissə ustada qalır (hamısı bitirsə təhvil bağlanır). Bazada settle_material.
+export async function settleMaterial(assignmentId: number, used: number, returned: number): Promise<FormState> {
+  const { error } = await createClient().rpc("settle_material", { p_assignment_id: assignmentId, p_used: used, p_returned: returned });
+  if (error) return { error: error.message };
+  return { ok: true };
+}
+
 // Depodakı parçanı ustaya ver: amount verilməsə hamısı, verilsə bir hissəsi (qalan hissə depoda parça kimi qalır).
 // Verilən hissə tam hissəyə qatılıb ustaya verilir; təhvildə yenidən bölünə bilər.
 export async function givePiece(pieceId: number, employeeId: number, amount?: number): Promise<FormState> {

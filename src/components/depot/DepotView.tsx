@@ -3,7 +3,7 @@
 import { useActionState, useMemo, useRef, useState } from "react";
 import { History, Pencil, Plus, Search, Trash2, Users, Warehouse, Wrench, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { addTool, deleteTool, discardPiece, finishMaterial, givePiece, giveTool, returnTool, updateTool } from "@/lib/tools";
+import { addTool, deleteTool, discardPiece, givePiece, giveTool, returnTool, settleMaterial, updateTool } from "@/lib/tools";
 import { ConfirmButton } from "@/components/ConfirmButton";
 import { HistoryModal } from "@/components/depot/HistoryModal";
 import { Avatar } from "@/components/employees/EmployeeList";
@@ -369,35 +369,41 @@ function HolderRow({ holding, canManage, toolName, unit = "ədəd", material = f
   holding: Holding; canManage: boolean; toolName?: string; unit?: string; material?: boolean; pack?: PackInfo | null;
 }) {
   const [asking, setAsking] = useState(false);
-  // Material: "İşlədilib" və ya "Qaytarılır" (usta qaz balonundan 5 kq qaytarır): eyni nəticə, fərqli yazılış
-  const [mode, setMode] = useState<"used" | "left">("used");
-  const [val, setVal] = useState(0);
+  // Material təhvili: usta neçə işlədib və neçə qaytarır; qalan hissə ustada qalır.
+  // İkisi də 0 ola bilər (biri kifayətdir); cəmi ustada olandan çox olmaz; cəmi hamıya bərabərdirsə, təhvil bağlanır.
+  const [usedVal, setUsedVal] = useState(0);
+  const [retVal, setRetVal] = useState(0);
   // Qablı materialda (balon...) təhvil də balonla və ya ölçü vahidi ilə (kq) yazıla bilər (verəndə olduğu kimi)
   const [byPack, setByPack] = useState(false);
   const packed = !!pack?.pack_size && !!pack?.pack_name;
   const factor = packed && byPack ? pack!.pack_size! : 1;
   const unitLabel = packed && byPack ? pack!.pack_name! : unit;
-  const valBase = val * factor; // ölçü vahidi ilə
-  const used = mode === "used" ? valBase : holding.quantity - valBase;
-  const invalid = valBase > holding.quantity;
+  const usedBase = usedVal * factor; // ölçü vahidi ilə
+  const retBase = retVal * factor;
+  const invalid = usedBase + retBase > holding.quantity;
   const limit = Math.floor(holding.quantity / factor);
   const [state, action, pending] = useActionState(
     async (_prev: Awaited<ReturnType<typeof returnTool>>, fd: FormData) => {
-      const raw = Number(fd.get("quantity") ?? holding.quantity);
-      const qty = material ? raw * factor : raw; // material: yazılan balon da olsa, baza ölçü vahidi ilə işləyir
+      if (material) return settleMaterial(holding.id, usedBase, retBase);
+      const qty = Number(fd.get("quantity") ?? holding.quantity);
       if (qty > holding.quantity) return { error: `Ustada cəmi ${holding.quantity} ${unit} var.` };
-      if (material) return finishMaterial(holding.id, mode === "used" ? qty : holding.quantity - qty);
       return returnTool(holding.id, qty);
     },
     null,
   );
   const router = useRouter();
-  useOnSuccess(state, () => { setAsking(false); setVal(0); setMode("used"); setByPack(false); router.refresh(); }, material ? "Təhvil alındı" : "Geri alındı");
+  const resetForm = () => { setAsking(false); setUsedVal(0); setRetVal(0); setByPack(false); };
+  useOnSuccess(state, () => { resetForm(); router.refresh(); }, material ? "Təhvil yazıldı" : "Geri alındı");
 
-  const leftover = holding.quantity - used;
-  const hint = used === 0 ? `Heç nə işlənməyib: ${holding.quantity} ${unit} tam depoya qayıdır.`
-    : leftover > 0 ? `${showQty(leftover, unit, pack)} qalıb: depoya ayrıca parça kimi yazılır.`
-    : "Hamısı işlənib: depoya heç nə qayıtmır.";
+  const rest = holding.quantity - usedBase - retBase;
+  const parts = [
+    usedBase > 0 && `${showQty(usedBase, unit, pack)} sərf olunur`,
+    retBase > 0 && `${showQty(retBase, unit, pack)} depoya qayıdır`,
+    rest > 0 ? `${showQty(rest, unit, pack)} ustada qalır` : "ustada heç nə qalmır",
+  ].filter(Boolean);
+  const hint = invalid ? "İşlədilən və qaytarılanın cəmi ustada olandan çox ola bilməz."
+    : usedBase + retBase === 0 ? "Neçə işlədiyini və/və ya neçə qaytardığını yaz, qalanı ustada qalır."
+    : parts.join(" · ");
 
   return (
     <li className="py-2">
@@ -433,22 +439,21 @@ function HolderRow({ holding, canManage, toolName, unit = "ədəd", material = f
       </div>
       {canManage && material && asking && (
         <ActionForm action={action} className="mt-2 rounded-xl bg-bg p-3">
-          <div className="mb-2 inline-flex gap-0.5 rounded-lg bg-line/60 p-0.5" role="tablist" aria-label="Təhvil yazılışı">
-            {([["used", "İşlədilib"], ["left", "Qaytarılır"]] as const).map(([m, label]) => (
-              <button key={m} type="button" role="tab" aria-selected={mode === m} onClick={() => { setMode(m); setVal(0); }}
-                className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${mode === m ? "bg-surface text-ink shadow-sm" : "text-muted hover:text-ink"}`}>
-                {label}
-              </button>
-            ))}
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold">{mode === "used" ? "İşlədilib:" : "Qaytarılır:"}</span>
-            <QuantityInput key={`${mode}-${byPack}`} min={0} defaultValue={0} limit={limit} className="!h-8 !w-20" onValue={setVal}
-              limitText={(l) => `Ustada cəmi ${l} ${unitLabel} var.`} />
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <label className="flex items-center gap-2">
+              <span className="text-sm font-semibold">İşlədilib</span>
+              <QuantityInput key={`u-${byPack}`} min={0} defaultValue={0} limit={limit} className="!h-8 !w-20" onValue={setUsedVal}
+                limitText={(l) => `Ustada cəmi ${l} ${unitLabel} var.`} />
+            </label>
+            <label className="flex items-center gap-2">
+              <span className="text-sm font-semibold">Qaytarılır</span>
+              <QuantityInput key={`r-${byPack}`} min={0} defaultValue={0} limit={limit} className="!h-8 !w-20" onValue={setRetVal}
+                limitText={(l) => `Ustada cəmi ${l} ${unitLabel} var.`} />
+            </label>
             {packed ? (
               <span className="inline-flex shrink-0 gap-0.5 rounded-lg bg-line/60 p-0.5" role="tablist" aria-label="Vahid">
                 {([[false, unit], [true, pack!.pack_name!]] as const).map(([v, label]) => (
-                  <button key={String(v)} type="button" role="tab" aria-selected={byPack === v} onClick={() => { setByPack(v); setVal(0); }}
+                  <button key={String(v)} type="button" role="tab" aria-selected={byPack === v} onClick={() => { setByPack(v); setUsedVal(0); setRetVal(0); }}
                     className={`h-7 rounded-md px-2 text-xs font-semibold transition-colors ${byPack === v ? "bg-surface text-ink shadow-sm" : "text-muted hover:text-ink"}`}>
                     {label}
                   </button>
@@ -457,10 +462,12 @@ function HolderRow({ holding, canManage, toolName, unit = "ədəd", material = f
             ) : (
               <span className="muted text-sm">{unit}</span>
             )}
-            <button type="submit" disabled={pending || invalid} className="btn btn-primary btn-sm !h-8 ml-auto">{pending ? "..." : "Təhvil al"}</button>
-            <button type="button" onClick={() => { setAsking(false); setVal(0); setMode("used"); setByPack(false); }} className="btn btn-cancel btn-sm !h-8">Ləğv</button>
           </div>
-          <p className="muted mt-2 text-xs">{invalid ? "Ustada olandan çox ola bilməz." : hint}</p>
+          <div className="mt-3 flex items-center gap-2">
+            <p className={`min-w-0 flex-1 text-xs ${invalid ? "font-semibold text-danger" : "muted"}`}>{hint}</p>
+            <button type="submit" disabled={pending || invalid || usedBase + retBase === 0} className="btn btn-primary btn-sm !h-8">{pending ? "..." : "Təhvil al"}</button>
+            <button type="button" onClick={resetForm} className="btn btn-cancel btn-sm !h-8">Ləğv</button>
+          </div>
         </ActionForm>
       )}
     </li>
