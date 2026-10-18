@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 // Sessiyanı yeniləyir. Landing (/) hamıya açıqdır; panel səhifələri yalnız girişlə.
 // Daxil olmayan panelə girmək istəsə /login-ə, daxil olan /login-ə girsə /panel-ə yönləndirilir.
-const PUBLIC_PATHS = ["/", "/login", "/avadanliq", "/xidmetler", "/nece-isleyirik", "/ustalarimiz", "/elaqe"];
+const PUBLIC_PATHS = ["/", "/login", "/api/revalidate", "/robots.txt", "/sitemap.xml", "/avadanliq", "/xidmetler", "/nece-isleyirik", "/ustalarimiz", "/elaqe"];
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });

@@ -1,5 +1,5 @@
-import { cacheLife } from "next/cache";
-import { SITE_CACHE } from "@/lib/site-cache";
+import { cacheLife, cacheTag } from "next/cache";
+import { SITE_CACHE, SITE_TAG } from "@/lib/site-cache";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/database.types";
 
@@ -145,6 +145,7 @@ export type Texts = Record<TextKey, string>;
 export async function getTexts(): Promise<Texts> {
   "use cache";
   cacheLife(SITE_CACHE);
+  cacheTag(SITE_TAG);
 
   const supabase = createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

@@ -1,5 +1,5 @@
-import { cacheLife } from "next/cache";
-import { SITE_CACHE } from "@/lib/site-cache";
+import { cacheLife, cacheTag } from "next/cache";
+import { SITE_CACHE, SITE_TAG } from "@/lib/site-cache";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/database.types";
 
@@ -19,6 +19,7 @@ const FALLBACK: Contact = {
 export async function getContact(): Promise<Contact> {
   "use cache";
   cacheLife(SITE_CACHE);
+  cacheTag(SITE_TAG);
 
   const supabase = createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -39,6 +40,7 @@ export async function getContact(): Promise<Contact> {
 export async function getLogo(): Promise<string | null> {
   "use cache";
   cacheLife(SITE_CACHE);
+  cacheTag(SITE_TAG);
 
   const supabase = createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -77,6 +79,7 @@ const ABOUT_FALLBACK = {
 export async function getHomeContent(): Promise<HomeContent> {
   "use cache";
   cacheLife(SITE_CACHE);
+  cacheTag(SITE_TAG);
 
   const supabase = createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

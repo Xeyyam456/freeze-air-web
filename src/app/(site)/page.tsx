@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, CircleCheck, ClipboardCheck, Clock, MapPin, Phone, Snowflake, Sun } from "lucide-react";
 import { OutdoorUnit, SplitUnit } from "@/components/landing/AcIllustrations";
+import { LocalBusinessJsonLd } from "@/components/landing/LocalBusinessJsonLd";
 import { SegmentCards, SegmentCardsSkeleton } from "@/components/landing/SegmentCards";
 import { Suspense } from "react";
 import { CATEGORIES } from "@/components/landing/content";
@@ -137,6 +138,9 @@ export default async function HomePage() {
   const t = await getTexts();
   return (
     <>
+      <Suspense fallback={null}>
+        <LocalBusinessJsonLd />
+      </Suspense>
       {/* Hero banner */}
       <section className="relative overflow-hidden bg-gradient-to-br from-night via-[#0b3a5c] to-cold text-white">
         <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(90deg,rgba(255,255,255,0.04)_0_1px,transparent_1px_32px)]" aria-hidden="true" />

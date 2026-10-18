@@ -1,5 +1,5 @@
-import { cacheLife } from "next/cache";
-import { SITE_CACHE } from "@/lib/site-cache";
+import { cacheLife, cacheTag } from "next/cache";
+import { SITE_CACHE, SITE_TAG } from "@/lib/site-cache";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/database.types";
 import { experience } from "@/lib/experience";
@@ -17,6 +17,7 @@ export type PublicEmployee = {
 export async function getPublicEmployees(): Promise<PublicEmployee[]> {
   "use cache";
   cacheLife(SITE_CACHE);
+  cacheTag(SITE_TAG);
 
   const supabase = createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -40,6 +41,7 @@ export type PublicManager = { id: number; full_name: string; job_title: string; 
 export async function getPublicManagement(): Promise<PublicManager[]> {
   "use cache";
   cacheLife(SITE_CACHE);
+  cacheTag(SITE_TAG);
 
   const supabase = createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

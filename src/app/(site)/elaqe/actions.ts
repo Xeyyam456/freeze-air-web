@@ -32,6 +32,8 @@ export async function sendContactRequest(_prev: ContactFormState, formData: Form
     name, phone, email: email || null, message: message || null,
   });
 
+  // Bazadakı sürət limiti (contact_requests_throttle): eyni telefondan saatda 3, ümumi 10 dəqiqədə 20
+  if (error?.message.includes("too_many_requests")) return { error: "Çox sayda müraciət göndərilib. Bir az sonra yenidən yoxlayın və ya zəng edin." };
   if (error) return { error: "Göndərilmədi. Bir az sonra yenidən yoxlayın və ya zəng edin." };
   return { ok: true };
 }

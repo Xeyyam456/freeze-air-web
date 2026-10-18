@@ -5,3 +5,6 @@
 // Diqqət: Next 16 bu keşi "qısa ömürlü" (expire < 5 dəq) sayır: onu oxuyan hər şey <Suspense> daxilində olmalıdır
 // (`app/(site)/layout.tsx`-də header, səhifə və footer ayrı Suspense-dədir).
 export const SITE_CACHE = { stale: 30, revalidate: 5, expire: 60 };
+
+// Açıq saytın bütün keşləri bu etiketi daşıyır: admin dəyişiklikdən sonra `/api/revalidate` onu dərhal təmizləyir.
+export const SITE_TAG = "site";

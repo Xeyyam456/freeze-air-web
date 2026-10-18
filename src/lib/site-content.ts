@@ -1,5 +1,5 @@
-import { cacheLife } from "next/cache";
-import { SITE_CACHE } from "@/lib/site-cache";
+import { cacheLife, cacheTag } from "next/cache";
+import { SITE_CACHE, SITE_TAG } from "@/lib/site-cache";
 import { createClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@/lib/database.types";
 
@@ -25,6 +25,7 @@ function publicClient() {
 export async function getSegments(): Promise<Segment[]> {
   "use cache";
   cacheLife(SITE_CACHE);
+  cacheTag(SITE_TAG);
   const { data } = await publicClient().from("site_segments").select("*").order("sort").order("id");
   return data ?? [];
 }
@@ -32,6 +33,7 @@ export async function getSegments(): Promise<Segment[]> {
 export async function getServices(): Promise<Service[]> {
   "use cache";
   cacheLife(SITE_CACHE);
+  cacheTag(SITE_TAG);
   const { data } = await publicClient().from("site_services").select("*").order("sort").order("id");
   return data ?? [];
 }
@@ -39,6 +41,7 @@ export async function getServices(): Promise<Service[]> {
 export async function getEquipment(): Promise<Equipment[]> {
   "use cache";
   cacheLife(SITE_CACHE);
+  cacheTag(SITE_TAG);
   const { data } = await publicClient().from("site_equipment").select("*").order("sort").order("id");
   return data ?? [];
 }
