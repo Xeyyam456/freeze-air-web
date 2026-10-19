@@ -7,10 +7,7 @@ export type Segment = Tables<"site_segments">;
 export type Service = Tables<"site_services">;
 export type Equipment = Tables<"site_equipment">;
 
-// Hazır illüstrasiyası olan avadanlıq key-ləri (digərlərinə admin şəkil yükləyir)
-export const ILLUSTRATED_KEYS = ["split", "cassette", "floor", "ducted", "outdoor"] as const;
-export type IllustratedKey = (typeof ILLUSTRATED_KEYS)[number];
-export const isIllustrated = (key: string): key is IllustratedKey => (ILLUSTRATED_KEYS as readonly string[]).includes(key);
+export { ILLUSTRATED_KEYS, isIllustrated, type IllustratedKey } from "@/lib/illustrated";
 
 // "Xidmətlər" və "Avadanlıq" bölmələrinin məzmunu: admin panelindəki "Sayt" səhifəsindən idarə olunur.
 // Keşdə saxlanır, hər dəqiqə yenilənir. Cookie-siz klient: qonaq yalnız aktiv sətirləri görür.

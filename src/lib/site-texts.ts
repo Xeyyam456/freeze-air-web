@@ -129,6 +129,9 @@ export const TEXT_DEFAULTS = {
   "team.new": "Yeni usta",
   "team.cta_text": "Usta lazımdır? Ən yaxın usta obyektinizə gəlsin.",
   "team.cta_button": "Usta çağır",
+  "team.type.master": "Usta",
+  "team.type.assistant": "Köməkçi",
+  "team.type.driver": "Sürücü",
 
   // Əlaqə
   "contact.title": "Əlaqə",
@@ -139,6 +142,11 @@ export const TEXT_DEFAULTS = {
   "contact.address": "Ünvan",
   "contact.hours": "İş saatları",
   "contact.email": "E-poçt",
+  "contact.map_reset": "Ünvana qayıt",
+  "contact.route": "Marşrut qur",
+  "contact.route_loading": "Yeriniz təyin olunur...",
+  "contact.route_denied": "Yerinizi təyin etmək olmadı. Brauzerdə məkana icazə verin.",
+  "contact.route_open": "Naviqasiyanı aç",
   "form.title": "Bizə yazın",
   "form.lead": "Mesajınızı yazın, sizə özümüz zəng edək.",
   "form.name": "Adınız",

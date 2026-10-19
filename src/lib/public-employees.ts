@@ -10,7 +10,19 @@ export type PublicEmployee = {
   specialty: string | null;
   photo_url: string | null;
   experience: string | null;
+  worker_type: string; // master | assistant | driver (admin işə qəbulda seçir)
+  months: number; // təcrübə ayla (saytda təcrübə zolağı və cəmi üçün); tarix yoxdursa 0
 };
+
+// İşə başlama tarixindən tam ay sayı (experience() ilə eyni hesab; lib/experience.ts admin ilə sinxrondur, ona toxunmuruq)
+function monthsSince(startDate: string | null, now = new Date()) {
+  if (!startDate) return 0;
+  const start = new Date(startDate);
+  if (Number.isNaN(start.getTime()) || start > now) return 0;
+  let m = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+  if (now.getDate() < start.getDate()) m -= 1;
+  return Math.max(0, m);
+}
 
 // Açıq saytın "Ustalarımız" səhifəsi: yalnız ad, ixtisas, şəkil və təcrübə (bazada public_employees() funksiyası).
 // Keşdə saxlanır, hər dəqiqə yenilənir; təcrübə də burada hesablanır.
@@ -32,6 +44,8 @@ export async function getPublicEmployees(): Promise<PublicEmployee[]> {
     specialty: e.specialty,
     photo_url: e.photo_url,
     experience: experience(e.start_date),
+    worker_type: e.worker_type,
+    months: monthsSince(e.start_date),
   }));
 }
 

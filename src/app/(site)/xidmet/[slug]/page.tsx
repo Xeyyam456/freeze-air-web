@@ -5,6 +5,8 @@ import { Suspense } from "react";
 import { ArrowRight, CircleCheck, Lightbulb, Phone } from "lucide-react";
 import { ServiceIcon } from "@/components/landing/icons";
 import { PageIntro } from "@/components/landing/PageIntro";
+import { Reveal } from "@/components/landing/Reveal";
+import { Spotlight } from "@/components/landing/Spotlight";
 import { WhatsAppIcon } from "@/components/landing/WhatsAppIcon";
 import { getServices } from "@/lib/site-content";
 import { getContact, telHref, whatsappHref } from "@/lib/site-settings";
@@ -50,10 +52,10 @@ async function ServiceContent({ slug }: { slug: string }) {
         {/* Sol: məzmun */}
         <div className="grid gap-4">
           {service.image_url && (
-            <div className="overflow-hidden rounded-[32px] bg-white">
+            <Reveal className="reveal-wipe"><div className="overflow-hidden rounded-[32px] bg-white">
               {/* eslint-disable-next-line @next/next/no-img-element -- storage şəkli */}
               <img src={service.image_url} alt={service.title} className="block h-auto w-full" />
-            </div>
+            </div></Reveal>
           )}
 
           {(paragraphs.length > 0 || service.text) && (
@@ -78,9 +80,9 @@ async function ServiceContent({ slug }: { slug: string }) {
             </div>
           )}
 
-          {/* Addımlar ardıcıllıqdır: nömrələnir, aralarında xətt */}
+          {/* Addımlar ardıcıllıqdır: nömrələnir, aralarında xətt; tünd aurora fonda */}
           {service.steps.length > 0 && (
-            <div className="rounded-[28px] bg-night p-7 text-white sm:p-9">
+            <div className="aurora relative overflow-hidden rounded-[28px] bg-night p-7 text-white sm:p-9">
               <h2 className="font-display text-2xl font-bold">{t["service.steps"]}</h2>
               <ol className="relative mt-8 grid gap-6 sm:grid-cols-2 xl:grid-flow-col xl:auto-cols-fr xl:grid-cols-none">
                 <span className="absolute left-5 right-5 top-5 hidden h-0.5 bg-gradient-to-r from-cold via-ice/40 to-cold xl:block" aria-hidden="true" />
@@ -97,16 +99,17 @@ async function ServiceContent({ slug }: { slug: string }) {
 
         {/* Sağ: yapışan çağırış bloku və məsləhət */}
         <aside className="grid gap-4 lg:sticky lg:top-20">
-          <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-cold to-[#0077b6] p-8 text-white">
-            <ServiceIcon name={service.icon} size={220} strokeWidth={1} className="pointer-events-none absolute -bottom-12 -right-12 text-white/10" aria-hidden="true" />
+          {/* Çağırış kartı: tünd aurora fon + fırlanan işıqlı haşiyə (ana səhifənin əlaqə kartı ilə eyni dil) */}
+          <div className="glow-border aurora relative overflow-hidden rounded-[32px] bg-night p-8 text-white">
+            <ServiceIcon name={service.icon} size={220} strokeWidth={1} className="pointer-events-none absolute -bottom-12 -right-12 text-cold/10" aria-hidden="true" />
             <div className="relative">
-              <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white/15"><ServiceIcon name={service.icon} size={26} /></span>
+              <span className="grid h-14 w-14 place-items-center rounded-2xl bg-cold/15 text-cold ring-1 ring-cold/30"><ServiceIcon name={service.icon} size={26} /></span>
               <h2 className="mt-6 font-display text-2xl font-bold">{t["service.aside_title"]}</h2>
               <p className="mt-2 text-white/80">{t["service.aside_text"]}</p>
               <p className="mt-6 whitespace-nowrap font-display text-2xl font-bold tracking-tight sm:text-3xl">{contact.phone}</p>
               <div className="mt-6 flex flex-wrap gap-3">
                 {tel && (
-                  <a href={tel} className="inline-flex h-12 items-center gap-2 rounded-full bg-white px-6 font-bold text-night transition-colors hover:bg-night hover:text-white">
+                  <a href={tel} className="inline-flex h-12 items-center gap-2 rounded-full bg-cold px-6 font-bold text-white transition-colors hover:bg-white hover:text-night">
                     <Phone size={18} /> {t["contact.call"]}
                   </a>
                 )}
@@ -139,8 +142,9 @@ async function ServiceContent({ slug }: { slug: string }) {
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {others.map((o) => {
               return (
-                <Link key={o.id} href={`/xidmet/${o.slug}`}
-                  className="group flex items-start gap-4 rounded-[24px] bg-white p-6 transition-shadow hover:shadow-[0_16px_40px_rgba(6,25,43,0.1)]">
+                <Spotlight key={o.id} className="rounded-[24px]">
+                <Link href={`/xidmet/${o.slug}`}
+                  className="group flex h-full items-start gap-4 rounded-[24px] bg-white p-6 transition-[box-shadow,transform] duration-300 hover:-translate-y-1 hover:shadow-[0_20px_44px_rgba(6,25,43,0.12)]">
                   <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-glacier text-cold transition-colors group-hover:bg-cold group-hover:text-white">
                     <ServiceIcon name={o.icon} size={22} />
                   </span>
@@ -152,6 +156,7 @@ async function ServiceContent({ slug }: { slug: string }) {
                     </span>
                   </span>
                 </Link>
+                </Spotlight>
               );
             })}
           </div>

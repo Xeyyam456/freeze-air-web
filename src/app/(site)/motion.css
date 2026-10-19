@@ -200,3 +200,66 @@
   .js .reveal.reveal-wipe > * { clip-path: none; transition: none; }
   .faq-item::details-content { transition: none; }
 }
+
+/* Avadanlıq vitrini (components/landing/EquipmentShowcase.tsx): seçim dəyişəndə şəkil yumşaq yaxınlaşaraq,
+   məlumat paneli aşağıdan qalxaraq görünür (hidden → görünən olanda animasiya yenidən başlayır) */
+@keyframes eq-image {
+  from { opacity: 0; transform: scale(1.06); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+@keyframes eq-info {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+.eq-stage .eq-image {
+  animation: eq-image 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.eq-stage .eq-info {
+  animation: eq-info 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.12s both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .eq-stage .eq-image, .eq-stage .eq-info { animation: none; }
+}
+
+
+/* "Necə işləyirik" zaman xətti (nece-isleyirik/page.tsx): ortadakı xətt bölmə ekrandan keçdikcə yuxarıdan aşağı dolur,
+   hər düyün ekranın ortasına çatanda ağdan mavyə keçir. Dəstək yoxdursa xətt dolu, düyünlər ağ qalır. */
+@supports (animation-timeline: view()) {
+  @keyframes timeline-fill {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+  }
+  .timeline {
+    view-timeline: --timeline block;
+  }
+  .timeline-fill {
+    transform-origin: top;
+    animation: timeline-fill linear both;
+    animation-timeline: --timeline;
+    animation-range: entry 30% cover 65%;
+  }
+  @keyframes tl-node {
+    from { background-color: #fff; color: var(--color-cold); box-shadow: none; }
+    to { background-color: var(--color-cold); color: #fff; box-shadow: 0 12px 30px rgba(0, 163, 217, 0.45); }
+  }
+  .tl-node {
+    animation: tl-node linear both;
+    animation-timeline: view();
+    animation-range: entry 80% cover 45%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .timeline-fill, .tl-node { animation: none !important; }
+}
+
+/* Əlaqə xəritəsi: ünvan nişanının ətrafında döyünən halqa (elaqe/page.tsx) */
+@keyframes map-pulse {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+.map-pulse {
+  animation: map-pulse 1.8s cubic-bezier(0.2, 0.7, 0.2, 1) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .map-pulse { animation: none; opacity: 0.35; }
+}

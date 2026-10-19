@@ -1,5 +1,6 @@
 import { Snowflake } from "lucide-react";
-import { isIllustrated, type Equipment } from "@/lib/site-content";
+import { isIllustrated } from "@/lib/illustrated";
+import type { Equipment } from "@/lib/site-content";
 import { AC_ILLUSTRATION } from "./AcIllustrations";
 
 // Avadanlığın vizualı: admin şəkil yükləyibsə şəkil, yoxdursa hazır illüstrasiya, o da yoxdursa ikon
