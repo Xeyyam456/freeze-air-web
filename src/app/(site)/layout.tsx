@@ -2,6 +2,7 @@ import { Unbounded } from "next/font/google";
 import { Suspense } from "react";
 import { LandingHeader } from "@/components/landing/LandingHeader";
 import { SiteFooter } from "@/components/landing/SiteFooter";
+import "./motion.css";
 
 // Başlıq şrifti (termostat displeyini xatırladan geniş həndəsi şrift); latin-ext: ə, ğ, ş, ı
 const unbounded = Unbounded({

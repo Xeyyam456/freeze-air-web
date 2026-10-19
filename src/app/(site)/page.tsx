@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, CircleCheck, ClipboardCheck, Clock, MapPin, Phone, Snowflake, Sun } from "lucide-react";
 import { OutdoorUnit, SplitUnit } from "@/components/landing/AcIllustrations";
+import { AirflowCanvas } from "@/components/landing/AirflowCanvas";
 import { HeroQuickForm } from "@/components/landing/HeroQuickForm";
+import { HeroTitle } from "@/components/landing/HeroTitle";
 import { LocalBusinessJsonLd } from "@/components/landing/LocalBusinessJsonLd";
 import { Reveal } from "@/components/landing/Reveal";
 import { SegmentCards, SegmentCardsSkeleton } from "@/components/landing/SegmentCards";
+import { Spotlight } from "@/components/landing/Spotlight";
 import { FaqSection, HowSteps, StatsStrip } from "@/components/landing/TrustSections";
 import { Suspense } from "react";
 import { CATEGORIES } from "@/components/landing/content";
@@ -35,8 +38,10 @@ async function HeroBackground() {
   return (
     <>
       {/* eslint-disable-next-line @next/next/no-img-element -- storage şəkli */}
-      <img src={url} alt="" className="col-start-1 row-start-1 block h-[calc(100svh-105px)] min-h-[560px] w-full object-cover object-top" />
-      <div className="col-start-1 row-start-1 bg-gradient-to-r from-night/90 via-night/65 to-night/10" aria-hidden="true" />
+      <img src={url} alt="" className="hero-parallax col-start-1 row-start-1 block h-[calc(100svh-105px)] min-h-[560px] w-full object-cover object-top" />
+      {/* relative: şəkil parallax üçün transform alır və qat yaradır; overlay onun üstündə qalsın deyə o da mövqeli olmalıdır */}
+      <div className="relative col-start-1 row-start-1 bg-gradient-to-r from-night/90 via-night/65 to-night/10" aria-hidden="true" />
+      <AirflowCanvas />
     </>
   );
 }
@@ -55,16 +60,21 @@ async function About({ t }: { t: Texts }) {
   const color = CARD_COLORS[a.cardColor];
   return (
     <>
+      {/* Şəkillər pərdə kimi soldan açılır (.reveal-wipe), rəngli kart yavaşca "nəfəs alır" (.float-soft) */}
       <div className="grid grid-cols-2 gap-4">
-        {a.mainImage
-          // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
-          ? <img src={a.mainImage} alt="" className="col-span-2 block h-auto w-full rounded-[28px]" />
-          : <div className="col-span-2 grid place-items-center rounded-[28px] bg-white p-8"><OutdoorUnit className="w-full max-w-[320px]" /></div>}
-        {a.sideImage
-          // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
-          ? <img src={a.sideImage} alt="" className="block h-auto w-full self-center rounded-[28px]" />
-          : <div className="grid place-items-center rounded-[28px] bg-ice p-6"><SplitUnit className="w-full" /></div>}
-        <div className={`flex flex-col justify-center rounded-[28px] p-6 ${color.box}`}>
+        <Reveal className="reveal-wipe col-span-2">
+          {a.mainImage
+            // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
+            ? <img src={a.mainImage} alt="" className="block h-auto w-full rounded-[28px]" />
+            : <div className="grid place-items-center rounded-[28px] bg-white p-8"><OutdoorUnit className="w-full max-w-[320px]" /></div>}
+        </Reveal>
+        <Reveal className="reveal-wipe self-center" delay={180}>
+          {a.sideImage
+            // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
+            ? <img src={a.sideImage} alt="" className="block h-auto w-full rounded-[28px]" />
+            : <div className="grid place-items-center rounded-[28px] bg-ice p-6"><SplitUnit className="w-full" /></div>}
+        </Reveal>
+        <div className={`float-soft flex flex-col justify-center rounded-[28px] p-6 ${color.box}`}>
           <ClipboardCheck size={30} className={color.icon} />
           <p className="mt-3 font-display text-lg font-bold">{a.cardTitle}</p>
           {a.cardText && <p className={`mt-1 text-sm ${color.sub}`}>{a.cardText}</p>}
@@ -101,7 +111,8 @@ async function QuickContact({ t }: { t: Texts }) {
 
   return (
     <>
-      <div className="rounded-[28px] bg-night p-8 text-white sm:p-10">
+      {/* Əsas çağırış kartı: tünd aurora fon + fırlanan işıqlı haşiyə (.glow-border) */}
+      <div className="glow-border aurora relative overflow-hidden rounded-[28px] bg-night p-8 text-white sm:p-10">
         <p className="font-semibold text-cold">{t["home.contact.label"]}</p>
         <h2 className="mt-2 font-display text-3xl font-bold">{t["home.contact.title"]}</h2>
         <p className="mt-3 text-white/60">{t["home.contact.text"]}</p>
@@ -175,13 +186,11 @@ export default async function HomePage() {
               <span className="inline-flex items-center gap-1.5 rounded-full bg-heat/20 px-3 py-1.5 text-[#ffd08a]"><Sun size={15} /> {t["home.hero.badge_out"]}</span>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-ice"><Snowflake size={15} /> {t["home.hero.badge_in"]}</span>
             </div>
-            <h1 className="hero-in mt-6 font-display text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-6xl" style={{ "--d": "80ms" } as React.CSSProperties}>
-              {t["home.hero.title"]}
-            </h1>
-            <p className="hero-in mt-5 max-w-xl text-lg text-white/75" style={{ "--d": "160ms" } as React.CSSProperties}>
+            <HeroTitle text={t["home.hero.title"]} className="mt-6 font-display text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-6xl" />
+            <p className="hero-in mt-5 max-w-xl text-lg text-white/75" style={{ "--d": "420ms" } as React.CSSProperties}>
               {t["home.hero.lead"]}
             </p>
-            <div className="hero-in" style={{ "--d": "240ms" } as React.CSSProperties}>
+            <div className="hero-in" style={{ "--d": "520ms" } as React.CSSProperties}>
               <Suspense fallback={<div className="mt-9 h-[68px] max-w-xl rounded-[28px] bg-white/10" aria-hidden="true" />}>
                 <HeroForm t={t} />
               </Suspense>
@@ -227,9 +236,9 @@ export default async function HomePage() {
       {/* Necə işləyirik: 3 addım */}
       <HowSteps t={t} />
 
-      {/* Xidmət kateqoriyaları: göy zolaq */}
-      <section className="relative overflow-hidden bg-cold py-20 text-white">
-        <Snowflake size={420} strokeWidth={0.5} className="pointer-events-none absolute -left-24 -top-24 text-white/10" aria-hidden="true" />
+      {/* Xidmət kateqoriyaları: tünd "aurora" fonda üç bərabər şüşə kart */}
+      <section className="aurora relative overflow-hidden bg-night py-24 text-white">
+        <Snowflake size={420} strokeWidth={0.5} className="pointer-events-none absolute -left-24 -top-24 text-white/[0.06]" aria-hidden="true" />
         <div className="site-wrap relative">
           <Reveal>
             <SectionTitle title={t["home.categories.title"]} lead={t["home.categories.lead"]} light />
@@ -237,19 +246,23 @@ export default async function HomePage() {
           <div className="mt-12 grid gap-5 lg:grid-cols-3">
             {CATEGORIES.map(({ icon: Icon, title, items }, i) => (
               <Reveal key={title} delay={i * 100} className="h-full">
-                <div className="h-full rounded-[28px] bg-white p-7 text-night shadow-[0_20px_50px_rgba(6,25,43,0.15)]">
-                  <div className="flex items-center gap-4">
-                    <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-glacier text-cold"><Icon size={26} /></span>
-                    <h3 className="font-display text-lg font-bold leading-tight">{t[title]}</h3>
+                <Spotlight className="h-full rounded-[28px]">
+                  <div className="bento-card h-full rounded-[28px] p-7">
+                    <div className="flex items-center gap-4">
+                      <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-cold/15 text-cold ring-1 ring-cold/30">
+                        <Icon size={26} />
+                      </span>
+                      <h3 className="font-display text-lg font-bold leading-tight">{t[title]}</h3>
+                    </div>
+                    <ul className="mt-6 divide-y divide-white/10">
+                      {lines(t[items]).map((item) => (
+                        <li key={item} className="flex items-center gap-3 py-3 font-medium text-white/85">
+                          <CircleCheck size={18} className="shrink-0 text-cold" /> {item}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <ul className="mt-6 divide-y divide-night/10">
-                    {lines(t[items]).map((item) => (
-                      <li key={item} className="flex items-center gap-3 py-3 font-medium">
-                        <CircleCheck size={18} className="shrink-0 text-cold" /> {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                </Spotlight>
               </Reveal>
             ))}
           </div>

@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { getSegments } from "@/lib/site-content";
 import { getTexts } from "@/lib/site-texts";
 import { SegmentVisual } from "./SegmentVisual";
+import { Spotlight } from "./Spotlight";
 
 // Obyekt növlərinin kartları (bazadan): ana səhifədə ətraflı, Xidmətlər səhifəsində yığcam
 export async function SegmentCards({ compact = false }: { compact?: boolean }) {
@@ -11,10 +12,11 @@ export async function SegmentCards({ compact = false }: { compact?: boolean }) {
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {segments.map((s) => (
-        <Link key={s.id} href={`/xidmetler/${s.slug}`}
-          className={`group overflow-hidden rounded-[28px] bg-white transition-shadow hover:shadow-[0_20px_50px_rgba(6,25,43,0.12)] ${compact ? "" : "border border-night/10"}`}>
+        <Spotlight key={s.id} className="rounded-[28px]">
+        <Link href={`/xidmetler/${s.slug}`}
+          className={`group block h-full overflow-hidden rounded-[28px] bg-white transition-[box-shadow,transform] duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(6,25,43,0.14)] ${compact ? "" : "border border-night/10"}`}>
           <div className={`overflow-hidden ${compact ? "h-40" : "h-48"}`}>
-            <SegmentVisual segment={s} className="transition-transform duration-300 group-hover:scale-105" />
+            <SegmentVisual segment={s} className="transition-transform duration-700 group-hover:scale-110" />
           </div>
           {compact ? (
             <div className="flex items-center justify-between gap-3 p-5">
@@ -29,6 +31,7 @@ export async function SegmentCards({ compact = false }: { compact?: boolean }) {
             </div>
           )}
         </Link>
+        </Spotlight>
       ))}
     </div>
   );

@@ -62,7 +62,8 @@ export async function LandingHeader() {
         </div>
       </div>
 
-      <header className="sticky top-0 z-30 bg-cold shadow-[0_6px_20px_rgba(6,25,43,0.15)]">
+      {/* Yapışan menyu: sürüşəndə şüşə (bulanıq, yarımşəffaf) olur */}
+      <header className="site-header sticky top-0 z-30 bg-cold shadow-[0_6px_20px_rgba(6,25,43,0.15)]">
         <div className="site-wrap">
           <SiteNav pages={sitePages(t)} services={services.map((s) => ({ slug: s.slug, title: s.title }))} />
         </div>
