@@ -26,9 +26,9 @@
     animation-range: 0 100vh;
   }
 
-  /* Menyu zolağı: sürüşəndə şüşəyə çevrilir */
+  /* Header: sürüşəndə daha şəffaf şüşə olur və altında yumşaq kölgə yaranır */
   @keyframes header-glass {
-    to { background-color: rgba(0, 163, 217, 0.78); backdrop-filter: blur(14px) saturate(1.4); }
+    to { background-color: rgba(255, 255, 255, 0.72); box-shadow: 0 12px 32px rgba(6, 25, 43, 0.1); }
   }
   .site-header {
     animation: header-glass linear both;
@@ -48,7 +48,7 @@
     transform-origin: left;
     animation: steps-line linear both;
     animation-timeline: --steps;
-    animation-range: entry 40% cover 55%;
+    animation-range: entry 10% entry 100%;
   }
   @keyframes step-dot {
     from { background-color: #fff; color: var(--color-cold); box-shadow: 0 0 0 rgba(0, 163, 217, 0); }
@@ -59,9 +59,9 @@
     animation-timeline: --steps;
   }
   /* li:nth-child(1) — mütləq mövqeli xətt <span>-dır, addımlar 2-dən başlayır */
-  .steps li:nth-child(2) .step-dot { animation-range: entry 40% entry 60%; }
-  .steps li:nth-child(3) .step-dot { animation-range: entry 60% cover 40%; }
-  .steps li:nth-child(4) .step-dot { animation-range: cover 40% cover 55%; }
+  .steps li:nth-child(2) .step-dot { animation-range: entry 10% entry 40%; }
+  .steps li:nth-child(3) .step-dot { animation-range: entry 40% entry 70%; }
+  .steps li:nth-child(4) .step-dot { animation-range: entry 70% entry 100%; }
 }
 /* Rəqəmlər: sayğacla birlikdə dolan qısa xətt */
 @keyframes stat-bar {

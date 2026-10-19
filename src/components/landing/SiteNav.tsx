@@ -7,8 +7,8 @@ import { ChevronDown, Wrench } from "lucide-react";
 
 type NavService = { slug: string; title: string };
 
-// Açıq saytın menyusu (göy zolaqda): hər bənd ayrıca səhifədir, aktiv səhifə seçilir.
-// Sağda "Xidmət növləri" düyməsi: klikləyəndə xidmətlərin siyahısı açılır (masaüstündə; mobildə siyahı /xidmetler səhifəsindədir).
+// Açıq saytın menyusu (header-in ortasında həb düymələr): hər bənd ayrıca səhifədir, aktiv səhifə ağ həblə seçilir.
+// Sonda "Xidmət növləri" düyməsi: klikləyəndə xidmətlərin siyahısı açılır (masaüstündə; mobildə siyahı /xidmetler səhifəsindədir).
 export function SiteNav({ pages, services = [], className = "" }: {
   pages: { href: string; label: string }[];
   services?: NavService[];
@@ -32,7 +32,7 @@ export function SiteNav({ pages, services = [], className = "" }: {
   }, [open]);
 
   return (
-    <nav className={`flex items-stretch overflow-x-auto [scrollbar-width:none] md:overflow-visible ${className}`}>
+    <nav className={`flex items-center gap-1 overflow-x-auto rounded-full bg-glacier/80 p-1 ring-1 ring-night/[0.06] [scrollbar-width:none] md:overflow-visible ${className}`}>
       {pages.map((p) => {
         const active = p.href === "/" ? pathname === "/" : pathname.startsWith(p.href);
         return (
@@ -40,8 +40,8 @@ export function SiteNav({ pages, services = [], className = "" }: {
             key={p.href}
             href={p.href}
             aria-current={active ? "page" : undefined}
-            className={`relative flex shrink-0 items-center px-5 py-3.5 text-sm font-semibold transition-colors ${
-              active ? "bg-night text-white" : "text-white/85 hover:bg-white/10 hover:text-white"
+            className={`relative flex h-9 shrink-0 items-center rounded-full px-4 text-sm font-semibold transition-all ${
+              active ? "bg-white text-night shadow-[0_2px_8px_rgba(6,25,43,0.1)]" : "text-night/60 hover:text-night"
             }`}
           >
             {p.label}
@@ -50,14 +50,14 @@ export function SiteNav({ pages, services = [], className = "" }: {
       })}
 
       {services.length > 0 && (
-        <div ref={box} className="relative ml-auto hidden items-center md:flex">
+        <div ref={box} className="relative hidden items-center md:flex">
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-haspopup="true"
-            className={`inline-flex h-9 items-center gap-2 rounded-full px-4 text-sm font-bold transition-colors ${
-              open ? "bg-white text-night" : "bg-white/15 text-white hover:bg-white/25"
+            className={`inline-flex h-9 items-center gap-2 rounded-full px-4 text-sm font-semibold transition-all ${
+              open ? "bg-white text-night shadow-[0_2px_8px_rgba(6,25,43,0.1)]" : "text-night/60 hover:text-night"
             }`}
           >
             <Wrench size={15} /> Xidmət növləri
@@ -65,7 +65,7 @@ export function SiteNav({ pages, services = [], className = "" }: {
           </button>
 
           {open && (
-            <ul className="absolute right-0 top-full z-40 mt-3 w-72 rounded-2xl bg-white p-2 shadow-[0_18px_40px_rgba(6,25,43,0.22)] ring-1 ring-night/10">
+            <ul className="absolute right-0 top-full z-40 mt-4 w-72 rounded-2xl bg-white p-2 shadow-[0_18px_40px_rgba(6,25,43,0.22)] ring-1 ring-night/10">
               {services.map((s) => (
                 <li key={s.slug}>
                   <Link

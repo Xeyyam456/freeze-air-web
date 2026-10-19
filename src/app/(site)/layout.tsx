@@ -18,7 +18,7 @@ const unbounded = Unbounded({
 export default function SiteLayout({ children }: LayoutProps<"/">) {
   return (
     <div className={`${unbounded.variable} min-h-screen bg-glacier text-night`}>
-      <Suspense fallback={<><div className="h-20 bg-white" /><div className="h-11 bg-cold" /></>}>
+      <Suspense fallback={<div className="h-[77px] border-b border-night/[0.06] bg-white" />}>
         <LandingHeader />
       </Suspense>
       <Suspense fallback={<div className="min-h-[60vh]" />}>

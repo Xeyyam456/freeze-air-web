@@ -38,7 +38,7 @@ async function HeroBackground() {
   return (
     <>
       {/* eslint-disable-next-line @next/next/no-img-element -- storage şəkli */}
-      <img src={url} alt="" className="hero-parallax col-start-1 row-start-1 block h-[calc(100svh-105px)] min-h-[560px] w-full object-cover object-top" />
+      <img src={url} alt="" className="hero-parallax col-start-1 row-start-1 block h-[calc(100svh-77px)] min-h-[560px] w-full object-cover object-top" />
       {/* relative: şəkil parallax üçün transform alır və qat yaradır; overlay onun üstündə qalsın deyə o da mövqeli olmalıdır */}
       <div className="relative col-start-1 row-start-1 bg-gradient-to-r from-night/90 via-night/65 to-night/10" aria-hidden="true" />
       <AirflowCanvas />
