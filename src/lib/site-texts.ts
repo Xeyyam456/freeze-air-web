@@ -36,9 +36,6 @@ export const TEXT_DEFAULTS = {
   "home.hero.lead": "Marketlər, banklar, stadionlar və yaşayış kompleksləri üçün quraşdırma, təmir və müqavilə ilə müntəzəm texniki xidmət.",
   "home.hero.cta": "Usta çağır",
   "home.hero.cta2": "Xidmətlər",
-  "home.hero.temp_label": "Otaq temperaturu",
-  "home.hero.temp": "+22°",
-  "home.hero.badge": "Akt ilə təhvil",
   "home.quick.title": "Sürətli müraciət",
   "home.quick.name": "Adınız",
   "home.quick.phone": "Telefon nömrəniz",
@@ -89,7 +86,6 @@ export const TEXT_DEFAULTS = {
   "service.steps": "Necə edirik",
   "service.aside_title": "Bu xidmət lazımdır?",
   "service.aside_text": "Zəng edin və ya yazın, ən yaxın usta obyektinizə gəlsin.",
-  "service.cta": "Usta çağır",
   "service.others": "Digər xidmətlər",
   "service.more": "Ətraflı",
 
@@ -121,8 +117,6 @@ export const TEXT_DEFAULTS = {
   // Ustalarımız
   "team.title": "Ustalarımız",
   "team.lead": "Obyektinizə gələn ustalar: hər birinin ixtisası və təcrübəsi.",
-  "team.management": "Rəhbərlik",
-  "team.masters": "Ustalar",
   "team.empty": "Usta siyahısı tezliklə burada olacaq.",
   "team.specialty": "Usta",
   "team.experience": "Təcrübə:",

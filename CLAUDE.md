@@ -73,7 +73,7 @@ Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
 
 ## Açıq sayt: hər şey bazadan, admin paneldən idarə olunur
 - **Saytda sabit mətn yoxdur.** Bütün mətnlər (menyu, header, footer, başlıqlar, düymələr, form yazıları, brauzer tab başlığı) `site_texts`-dədir → `lib/site-texts.ts`:
-  - `TEXT_DEFAULTS`: 111 açar, ehtiyat mətn;
+  - `TEXT_DEFAULTS`: 126 açar, ehtiyat mətn;
   - `getTexts()`: `use cache`;
   - `lines()`: siyahı mətni, hər sətir bir bənd;
   - `pageTitle()`.
@@ -127,7 +127,7 @@ Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
 | `work_files` | work_log_id, kind, path | `work` bucket-dəki fayllar |
 | `contact_requests` | name, phone, email, message, handled | saytdakı "Bizə yazın"; Realtime-da |
 | `site_settings` | tək sətir (id = 1): phone, address, hours, email, logo_url, hero_image_url, about_title, about_text, about_points, about_card_title, about_card_text, about_card_color, about_image_main_url, about_image_side_url | saytın əlaqə və ana səhifə məlumatları |
-| `site_texts` | key, value | saytın sabit mətnləri (111 açar) |
+| `site_texts` | key, value | saytın sabit mətnləri (126 açar) |
 | `site_segments` | slug, title, summary, lead, issues[], work[], note, equipment[] (site_equipment.key), image_url, image_position, sort, is_active | obyekt növləri → `/xidmetler/[slug]` |
 | `site_equipment` | key, title, text, place, image_url, sort, is_active | avadanlıq növləri |
 | `site_services` | slug, title, text, icon, lead, details, includes[], steps[], note, image_url, sort, is_active | xidmətlər siyahısı + hər xidmətin səhifəsi `/xidmet/[slug]` |
@@ -168,7 +168,7 @@ Storage-də `remove` faylı həmişə dərhal silmir; köhnə şəkillər bucket
 - Publikasiya `supabase_realtime`-da yalnız `contact_requests`. Hadisəni RLS-ə görə yalnız admin alır.
 
 ### Miqrasiyalar (`supabase/migrations/`, admin reposunda)
-- `0001`–`0054`. Ad formatı `NNNN_ad.sql`; Supabase MCP `apply_migration` ilə tətbiq et və faylı da yaz.
+- `0001`–`0055`. Ad formatı `NNNN_ad.sql`; Supabase MCP `apply_migration` ilə tətbiq et və faylı da yaz.
 - Mühüm olanlar:
   - 0005: work_logs, `my_employee_id`;
   - 0010: rol trigger-i;
@@ -193,6 +193,7 @@ Storage-də `remove` faylı həmişə dərhal silmir; köhnə şəkillər bucket
   - 0034: `give_piece`-ə `p_amount`: parçanın bir hissəsini ustaya vermək (qalan hissə parça kimi qalır);
   - 0036: qablaşdırılmış material (qaz balonu...): `tools.pack_name` (balon), `tools.pack_size` (hər qabda 11), `tool_stock`-a bu sütunlar; daxildə hər şey ölçü vahidi ilə (44 kq), qab yalnız daxiletmə və göstəriş üçün ("44 kq (4 balon)");
   - 0039: `tasks` cədvəli (iş tapşırıqları), RLS və `tasks_guard` tətikçisi;
+  - 0055: istifadə olunmayan mətnlər silindi (hero üzən kartları `home.hero.temp*`, `home.hero.badge`, `service.cta`, `team.management`, `team.masters`);
   - 0054: `site_texts.contact.route*` (Əlaqə xəritəsində "Marşrut qur");
   - 0053: `site_texts.contact.map_reset` ("Ünvana qayıt");
   - 0052: `employees.worker_type` (usta / köməkçi / sürücü), `public_employees()` növü qaytarır (usta → köməkçi → sürücü sırası), mətnlər `team.type.*`;
@@ -229,6 +230,7 @@ Repolar ayrıdır, kod paylaşılmır; bunlar əl ilə eyni saxlanmalıdır:
 
 ## Responsivlik (2026-10-20-dən başlayır)
 - İstifadəçi qərarı: 4 cihaz sinfi üçün tam responsivlik. Tailwind breakpoint-ləri ilə: **Mobil** < 640px (əsas sinif, prefikssiz), **Planşet** 640–1023px (`sm:`, `md:`), **Large** 1024–1535px (`lg:`, `xl:`), **XLarge** ≥ 1536px (`2xl:`). Əvvəl "mobil sonda" qaydası var idi; indi bu iş başlayır, səhifə-səhifə yoxlanır (Chrome-da `resize_window`).
+- Təklif olunan sıra: 1) header + footer, 2) ana səhifə, 3) Avadanlıq, Xidmətlər (+ alt səhifələr), Necə işləyirik, Ustalarımız, Əlaqə, 4) usta paneli və admin. Hər səhifə Chrome-da 375 / 768 / 1280 / 1920 enində yoxlanır.
 - Masaüstü görünüşü (indi bəyənilən) dəyişməməlidir: düzəlişlər kiçik ekranlar üçün prefikssiz/`sm:`/`md:` siniflərlə, böyük ekranlar üçün `2xl:` ilə əlavə olunur.
 
 ## Landing: qərarlar və qalan işlər (2026-10-19)
