@@ -27,27 +27,17 @@ function SectionTitle({ title, lead, light = false }: { title: string; lead?: st
   );
 }
 
-function HeroIllustration() {
-  return (
-    <div className="rounded-[32px] bg-gradient-to-br from-white to-ice p-10 shadow-[0_30px_80px_rgba(0,0,0,0.3)]">
-      <SplitUnit className="w-full" />
-      <div className="mx-auto mt-2 flex w-[80%] flex-col gap-3" aria-hidden="true">
-        {[0, 1, 2].map((i) => (
-          <span key={i} className="airflow block h-[3px] rounded-full bg-gradient-to-r from-transparent via-cold to-transparent"
-            style={{ animationDelay: `${i * 0.6}s`, width: `${100 - i * 18}%`, marginLeft: `${i * 9}%` }} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// Hero şəkli bazadan; şəkil öz nisbətində göstərilir (kəsilmir)
-async function HeroVisual({ alt }: { alt: string }) {
+// Hero arka planı: şəkil bazadan (admin → Sayt → Ana səhifə); yoxdursa bölmənin gradient fonu qalır.
+// Soldan sağa tünd overlay mətnin oxunmasını təmin edir, şəklin sağ tərəfi açıq qalır.
+async function HeroBackground() {
   const { heroImage: url } = await getHomeContent();
-  if (!url) return <HeroIllustration />;
+  if (!url) return null;
   return (
-    // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
-    <img src={url} alt={alt} className="block h-auto w-full rounded-[32px] shadow-[0_30px_80px_rgba(0,0,0,0.3)]" />
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element -- storage şəkli */}
+      <img src={url} alt="" className="col-start-1 row-start-1 block h-[calc(100svh-105px)] min-h-[560px] w-full object-cover object-top" />
+      <div className="col-start-1 row-start-1 bg-gradient-to-r from-night/90 via-night/65 to-night/10" aria-hidden="true" />
+    </>
   );
 }
 
@@ -174,10 +164,13 @@ export default async function HomePage() {
         <LocalBusinessJsonLd />
       </Suspense>
       {/* Hero banner */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-night via-[#0b3a5c] to-cold pb-8 text-white lg:pb-14">
+      <section className="relative grid overflow-hidden bg-gradient-to-br from-night via-[#0b3a5c] to-cold text-white">
+        <Suspense fallback={null}>
+          <HeroBackground />
+        </Suspense>
         <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(90deg,rgba(255,255,255,0.04)_0_1px,transparent_1px_32px)]" aria-hidden="true" />
-        <div className="site-wrap relative grid items-center gap-14 py-16 lg:grid-cols-[1.05fr_1fr] lg:py-24">
-          <div>
+        <div className="site-wrap relative col-start-1 row-start-1 w-full self-center pb-24 pt-16">
+          <div className="max-w-2xl">
             <div className="hero-in flex flex-wrap gap-2 text-sm font-semibold">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-heat/20 px-3 py-1.5 text-[#ffd08a]"><Sun size={15} /> {t["home.hero.badge_out"]}</span>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-ice"><Snowflake size={15} /> {t["home.hero.badge_in"]}</span>
@@ -200,21 +193,6 @@ export default async function HomePage() {
                   {t["home.hero.cta2"]} <ArrowRight size={15} />
                 </Link>
               </div>
-            </div>
-          </div>
-
-          {/* Şəkil yeri: admin yükləyibsə foto, yoxdursa kondisioner illüstrasiyası; üzən kartlar hər ikisində */}
-          <div className="hero-in relative mx-2 sm:mx-8" style={{ "--d": "200ms" } as React.CSSProperties}>
-            {/* Yüklənərkən illüstrasiya yox, neytral boş yer: yoxsa başqa səhifədən qayıdanda əvvəl SVG, sonra real şəkil görünürdü */}
-            <Suspense fallback={<div className="aspect-[16/9] w-full rounded-[32px] bg-white/10" aria-hidden="true" />}>
-              <HeroVisual alt={t["home.hero.title"]} />
-            </Suspense>
-            <div className="absolute -bottom-6 -left-6 rounded-2xl bg-white px-5 py-4 text-night shadow-[0_16px_40px_rgba(6,25,43,0.25)]">
-              <p className="text-xs font-semibold text-night/50">{t["home.hero.temp_label"]}</p>
-              <p className="font-display text-3xl font-bold text-cold">{t["home.hero.temp"]}</p>
-            </div>
-            <div className="absolute -right-6 -top-5 flex items-center gap-2 rounded-2xl bg-night px-4 py-3 text-sm font-semibold shadow-[0_16px_40px_rgba(0,0,0,0.3)]">
-              <CircleCheck size={18} className="text-cold" /> {t["home.hero.badge"]}
             </div>
           </div>
         </div>
