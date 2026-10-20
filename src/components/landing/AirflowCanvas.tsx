@@ -3,9 +3,10 @@
 import { useEffect, useRef } from "react";
 
 // Hero şəklindəki kondisionerdən çıxan soyuq hava: nazik, yarımşəffaf axın xətləri.
-// Mənbə (kondisionerin barmaqlığı) və istiqamət hero ölçüsünə nisbətlə verilir: şəkil `object-top` ilə yerləşir.
+// Mənbə (kondisionerin barmaqlığı) şəklin öz ölçüsünə nisbətlə verilir və şəklin ekrandakı yerindən hesablanır
+// (object-cover + object-position): hansı endə şəkil kəsilsə də, axın kondisionerdən çıxır.
 // Ekrandan çıxanda və tab gizli olanda dayanır; hərəkət azaldılıbsa heç nə çəkilmir.
-const SOURCE = { x0: 0.6, x1: 0.92, y: 0.36 }; // barmaqlığın sol/sağ kənarı və hündürlüyü (hero eninə/hündürlüyünə nisbət)
+const SOURCE = { x0: 0.6, x1: 0.92, y: 0.31 }; // barmaqlığın sol/sağ kənarı və hündürlüyü (şəklin eninə/hündürlüyünə nisbət)
 const COUNT = 70;
 
 type P = { x: number; y: number; vx: number; vy: number; life: number; max: number; w: number };
@@ -21,6 +22,9 @@ export function AirflowCanvas() {
 
     let w = 0;
     let h = 0;
+    // Barmaqlığın ekrandakı yeri (piksel); şəkil yoxdursa və ya yüklənməyibsə hero-ya nisbət götürülür
+    let src = { x0: 0, x1: 0, y: 0 };
+    const img = canvas.parentElement?.querySelector("img");
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       w = canvas.clientWidth;
@@ -28,15 +32,27 @@ export function AirflowCanvas() {
       canvas.width = w * dpr;
       canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (img?.naturalWidth) {
+        const scale = Math.max(w / img.naturalWidth, h / img.naturalHeight);
+        const rw = img.naturalWidth * scale;
+        const rh = img.naturalHeight * scale;
+        const [px, py] = getComputedStyle(img).objectPosition.split(" ").map((v) => parseFloat(v) / 100);
+        const ox = (w - rw) * px;
+        const oy = (h - rh) * py;
+        src = { x0: ox + rw * SOURCE.x0, x1: ox + rw * SOURCE.x1, y: oy + rh * SOURCE.y };
+      } else {
+        src = { x0: w * SOURCE.x0, x1: w * SOURCE.x1, y: h * SOURCE.y };
+      }
     };
     resize();
+    if (img && !img.complete) img.addEventListener("load", resize, { once: true });
 
     // Hissəcik barmaqlıqdan çıxır, əvvəl aşağı, sonra sola əyilərək otağa yayılır
     const spawn = (p?: P): P => {
       const t = Math.random();
       const o = p ?? ({} as P);
-      o.x = w * (SOURCE.x0 + (SOURCE.x1 - SOURCE.x0) * t);
-      o.y = h * SOURCE.y + Math.random() * 6;
+      o.x = src.x0 + (src.x1 - src.x0) * t;
+      o.y = src.y + Math.random() * 6;
       o.vx = -(0.4 + Math.random() * 0.9);
       o.vy = 0.9 + Math.random() * 0.9;
       o.life = 0;

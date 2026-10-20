@@ -11,6 +11,9 @@ import { WhatsAppIcon } from "./WhatsAppIcon";
 // Əlaqə sətirləri klik olunur: zəng, xəritə, e-poçt (saatlar yalnız məlumatdır)
 const contactLink = "flex gap-3 transition-colors hover:text-cold";
 
+// Sütun başlığı loqo sətri ilə eyni hündürlükdə (h-11): başlıqlar şirkət adı ilə, siyahılar izah mətni ilə bir xətdə
+const footerHeading = "flex h-11 items-center font-display text-sm font-bold";
+
 async function FooterContact() {
   const c = await getContact();
   const tel = telHref(c.phone);
@@ -37,9 +40,9 @@ async function FooterSocial({ title }: { title: string }) {
   ].filter((l) => l.href);
   if (links.length === 0) return null;
   return (
-    <div className="mt-8">
-      <p className="text-sm font-bold text-white/80">{title}</p>
-      <ul className="mt-3 flex gap-2.5">
+    <div className="mt-8 max-lg:mt-0">
+      <p className="text-sm font-bold text-white/80 max-lg:sr-only">{title}</p>
+      <ul className="mt-3 flex gap-2.5 max-lg:mt-0">
         {links.map((l) => (
           <li key={l.label}>
             <a href={l.href} target="_blank" rel="noopener noreferrer" aria-label={l.label} title={l.label}
@@ -65,43 +68,52 @@ async function FooterServices() {
 export async function SiteFooter() {
   const [t, logo] = await Promise.all([getTexts(), getLogo()]);
   return (
-    <footer className="mt-20 bg-night text-white">
+    <footer className="mt-12 bg-night text-white lg:mt-20">
       <div className="h-1.5 w-full bg-gradient-to-r from-heat via-ice to-cold" aria-hidden="true" />
 
-      <div className="site-wrap relative grid gap-10 overflow-hidden py-16 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
-        <div>
-          <Link href="/" className="flex items-center gap-3">
-            {logo
-              // Tünd fonda: loqo ağ kartın içində, rəngli loqo da görünsün
-              // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
-              ? <span className="grid h-11 place-items-center rounded-2xl bg-white px-2"><img src={logo} alt={t["brand.name"]} className="h-8 w-auto max-w-[140px] object-contain" /></span>
-              : (
-                <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-cold to-[#0b3a5c]">
-                  <Snowflake size={22} strokeWidth={2.2} />
-                </span>
-              )}
-            <span className="font-display text-lg font-bold">{t["brand.name"]}</span>
-          </Link>
-          <p className="mt-5 max-w-xs text-white/55">{t["footer.text"]}</p>
-          <Link href="/login" className="mt-6 inline-flex h-10 items-center gap-2 rounded-full border border-white/20 px-4 text-sm font-bold text-white/80 transition-colors hover:border-white hover:text-white">
-            <LogIn size={15} /> {t["footer.login"]}
-          </Link>
-          <Suspense fallback={null}>
-            <FooterSocial title={t["footer.social"]} />
-          </Suspense>
+      {/* Planşetdə: yuxarıda tam enli brend sırası (solda loqo + mətn, sağda giriş + sosial), altında 3 sütun:
+          enlər məzmuna görə (səhifə adları qısa, əlaqə sətirləri uzun) */}
+      {/* Mobildə hər şey mərkəzdə: brend, düymələr, altında Səhifələr + Əlaqə yan-yana (Xidmətlər gizli, ☰ menyuda var) */}
+      <div className="site-wrap relative grid grid-cols-[0.75fr_1.25fr] gap-x-4 gap-y-10 max-sm:text-center overflow-hidden py-16 sm:grid-cols-[0.8fr_1fr_1.35fr] sm:gap-x-8 lg:grid-cols-[1.3fr_1fr_1fr_1fr] lg:gap-x-10">
+        <div className="max-sm:col-span-2 sm:max-lg:col-span-3 sm:max-lg:flex sm:max-lg:items-center sm:max-lg:justify-between sm:max-lg:gap-8 sm:max-lg:border-b sm:max-lg:border-white/10 sm:max-lg:pb-10">
+          <div>
+            <Link href="/" className="flex items-center gap-3 max-sm:justify-center">
+              {logo
+                // Tünd fonda: loqo ağ kartın içində, rəngli loqo da görünsün
+                // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
+                ? <span className="grid h-11 place-items-center rounded-2xl bg-white px-2"><img src={logo} alt={t["brand.name"]} className="h-8 w-auto max-w-[140px] object-contain" /></span>
+                : (
+                  <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-cold to-[#0b3a5c]">
+                    <Snowflake size={22} strokeWidth={2.2} />
+                  </span>
+                )}
+              <span className="font-display text-lg font-bold">{t["brand.name"]}</span>
+            </Link>
+            <p className="mt-5 max-w-xs text-white/55 max-sm:mx-auto">{t["footer.text"]}</p>
+          </div>
+          {/* Mobildə "Usta girişi" sıranın boş yerini tutur, sosial düymələr sağ kənarda */}
+          <div className="max-sm:mt-6 max-lg:flex max-lg:shrink-0 max-lg:items-center max-lg:gap-3">
+            <Link href="/login" className="mt-6 inline-flex h-10 items-center gap-2 rounded-full border border-white/20 px-4 text-sm font-bold text-white/80 transition-colors hover:border-white hover:text-white max-lg:mt-0 max-sm:h-11 max-sm:flex-1 max-sm:justify-center">
+              <LogIn size={15} /> {t["footer.login"]}
+            </Link>
+            <Suspense fallback={null}>
+              <FooterSocial title={t["footer.social"]} />
+            </Suspense>
+          </div>
         </div>
 
         <div>
-          <p className="font-display text-sm font-bold">{t["footer.pages"]}</p>
-          <ul className="mt-5 space-y-3">
+          <p className={`${footerHeading} max-sm:justify-center`}>{t["footer.pages"]}</p>
+          {/* Mobildə Əlaqə kimi: siyahı blok olaraq mərkəzdə, sətirlər bir xətdən (solda) başlayır */}
+          <ul className="mt-5 space-y-3 max-sm:mx-auto max-sm:w-fit max-sm:text-left">
             {sitePages(t).map((p) => (
               <li key={p.href}><Link href={p.href} className="text-white/65 transition-colors hover:text-cold">{p.label}</Link></li>
             ))}
           </ul>
         </div>
 
-        <div>
-          <p className="font-display text-sm font-bold">{t["footer.services"]}</p>
+        <div className="max-sm:hidden">
+          <p className={footerHeading}>{t["footer.services"]}</p>
           <ul className="mt-5 space-y-3">
             <Suspense fallback={null}>
               <FooterServices />
@@ -109,9 +121,10 @@ export async function SiteFooter() {
           </ul>
         </div>
 
-        <div>
-          <p className="font-display text-sm font-bold">{t["footer.contact"]}</p>
-          <ul className="mt-5 space-y-4 text-white/65">
+        <div className="min-w-0">
+          <p className={`${footerHeading} max-sm:justify-center`}>{t["footer.contact"]}</p>
+          {/* Mobildə siyahı blok kimi mərkəzdə, içində ikonlar bir şaquli xətdə (sətirlər sola düzlənir) */}
+          <ul className="mt-5 space-y-4 text-white/65 max-sm:mx-auto max-sm:w-fit max-sm:text-left max-sm:text-sm [overflow-wrap:anywhere]">
             <Suspense fallback={null}>
               <FooterContact />
             </Suspense>
@@ -122,7 +135,7 @@ export async function SiteFooter() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="site-wrap flex flex-wrap items-center justify-between gap-3 py-5 text-sm text-white/45">
+        <div className="site-wrap flex flex-wrap items-center justify-between gap-3 py-5 text-sm text-white/45 max-sm:flex-col max-sm:gap-1 max-sm:text-center">
           <span>{t["footer.copyright"]}</span>
           <span>{t["footer.slogan"]}</span>
         </div>

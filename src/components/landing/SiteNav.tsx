@@ -32,7 +32,7 @@ export function SiteNav({ pages, services = [], className = "" }: {
   }, [open]);
 
   return (
-    <nav className={`flex items-center gap-1 overflow-x-auto rounded-full bg-glacier/80 p-1 ring-1 ring-night/[0.06] [scrollbar-width:none] md:overflow-visible ${className}`}>
+    <nav className={`flex items-center gap-1 lg:gap-0.5 2xl:gap-1 overflow-x-auto rounded-full bg-glacier/80 p-1 ring-1 ring-night/[0.06] [scrollbar-width:none] md:overflow-visible ${className}`}>
       {pages.map((p) => {
         const active = p.href === "/" ? pathname === "/" : pathname.startsWith(p.href);
         return (
@@ -40,7 +40,7 @@ export function SiteNav({ pages, services = [], className = "" }: {
             key={p.href}
             href={p.href}
             aria-current={active ? "page" : undefined}
-            className={`relative flex h-9 shrink-0 items-center rounded-full px-4 text-sm font-semibold transition-all ${
+            className={`relative flex h-9 shrink-0 items-center rounded-full px-4 text-sm font-semibold transition-all lg:px-3 2xl:px-4 ${
               active ? "bg-white text-night shadow-[0_2px_8px_rgba(6,25,43,0.1)]" : "text-night/60 hover:text-night"
             }`}
           >
@@ -56,7 +56,7 @@ export function SiteNav({ pages, services = [], className = "" }: {
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-haspopup="true"
-            className={`inline-flex h-9 items-center gap-2 rounded-full px-4 text-sm font-semibold transition-all ${
+            className={`inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-semibold transition-all lg:px-3 2xl:px-4 ${
               open ? "bg-white text-night shadow-[0_2px_8px_rgba(6,25,43,0.1)]" : "text-night/60 hover:text-night"
             }`}
           >

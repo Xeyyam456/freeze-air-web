@@ -6,15 +6,26 @@ import { getContact, getLogo, telHref } from "@/lib/site-settings";
 import { getServices } from "@/lib/site-content";
 import { getTexts, type Texts } from "@/lib/site-texts";
 import { sitePages } from "./content";
+import { SiteMenu } from "./SiteMenu";
 import { SiteNav } from "./SiteNav";
 
 const accountClass =
   "grid h-11 w-11 place-items-center rounded-full text-night/60 ring-1 ring-night/10 transition-colors hover:bg-night hover:text-white hover:ring-night";
 
-// Qonaq "Daxil ol", giriş etmiş usta isə "Panelə keç" görür (ikon düymə, ad title-da)
-async function AccountButton({ t }: { t: Texts }) {
+// Qonaq "Daxil ol", giriş etmiş usta isə "Panelə keç" görür (ikon düymə, ad title-da).
+// Mobildə (< 640) header-ə sığmır: ☰ panelində ikon + mətnli sətir kimi göstərilir (row).
+async function AccountButton({ t, row = false }: { t: Texts; row?: boolean }) {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
+
+  if (row) {
+    const [href, label, Icon] = data?.claims ? ["/panel", t["header.panel"], LayoutGrid] : ["/login", t["header.login"], LogIn];
+    return (
+      <Link href={href} className="flex h-11 items-center gap-3 rounded-2xl px-4 font-semibold text-night/70 transition-colors hover:bg-glacier hover:text-night">
+        <Icon size={18} /> {label}
+      </Link>
+    );
+  }
 
   return data?.claims ? (
     <Link href="/panel" className={accountClass} title={t["header.panel"]} aria-label={t["header.panel"]}><LayoutGrid size={18} /></Link>
@@ -28,9 +39,11 @@ async function AccountButton({ t }: { t: Texts }) {
 export async function LandingHeader() {
   const [t, logo, services, contact] = await Promise.all([getTexts(), getLogo(), getServices(), getContact()]);
   const tel = telHref(contact.phone);
+  const navPages = sitePages(t);
+  const navServices = services.map((s) => ({ slug: s.slug, title: s.title }));
   return (
     <header className="site-header sticky top-0 z-30 border-b border-night/[0.06] bg-white/85 backdrop-blur-xl backdrop-saturate-150">
-      <div className="site-wrap flex h-[76px] items-center gap-6">
+      <div className="site-wrap flex h-[76px] items-center gap-3 sm:gap-6 lg:gap-4 2xl:gap-6">
         <Link href="/" className="flex shrink-0 items-center gap-3">
           {logo
             // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
@@ -40,17 +53,17 @@ export async function LandingHeader() {
                 <Snowflake size={22} strokeWidth={2.2} />
               </span>
             )}
-          <span className="leading-tight">
-            <span className="block font-display text-[17px] font-bold text-night">{t["brand.name"]}</span>
+          <span className="leading-tight lg:max-xl:hidden">
+            <span className="block font-display text-[15px] font-bold text-night sm:text-[17px]">{t["brand.name"]}</span>
             <span className="block text-xs font-medium text-night/50 max-[1500px]:hidden">{t["brand.tagline"]}</span>
           </span>
         </Link>
 
-        <SiteNav className="mx-auto" pages={sitePages(t)} services={services.map((s) => ({ slug: s.slug, title: s.title }))} />
+        <SiteNav className="mx-auto max-lg:hidden" pages={navPages} services={navServices} />
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2 max-lg:ml-auto">
           {tel && (
-            <a href={tel} className="hidden items-center gap-2.5 rounded-full py-1.5 pl-1.5 pr-3 text-sm font-bold text-night transition-colors hover:bg-glacier lg:inline-flex" title={contact.phone}>
+            <a href={tel} className="hidden items-center gap-2.5 rounded-full py-1.5 pl-1.5 pr-3 text-sm font-bold text-night transition-colors hover:bg-glacier xl:inline-flex" title={contact.phone}>
               <span className="grid h-9 w-9 place-items-center rounded-full bg-cold/10 text-cold"><Phone size={16} /></span>
               <span className="max-[1600px]:hidden">{contact.phone}</span>
             </a>
@@ -58,9 +71,17 @@ export async function LandingHeader() {
           <Link href="/elaqe" className="hidden h-11 items-center rounded-full bg-night px-6 text-sm font-bold text-white shadow-[0_10px_24px_rgba(6,25,43,0.25)] transition-all hover:-translate-y-px hover:bg-cold hover:shadow-[0_12px_28px_rgba(0,163,217,0.35)] sm:inline-flex">
             {t["header.cta"]}
           </Link>
-          <Suspense fallback={<span className={`${accountClass} opacity-40`} />}>
-            <AccountButton t={t} />
-          </Suspense>
+          <div className="max-sm:hidden">
+            <Suspense fallback={<span className={`${accountClass} opacity-40`} />}>
+              <AccountButton t={t} />
+            </Suspense>
+          </div>
+          <SiteMenu
+            pages={navPages}
+            phone={contact.phone}
+            tel={tel}
+            account={<Suspense fallback={null}><AccountButton t={t} row /></Suspense>}
+          />
         </div>
       </div>
     </header>

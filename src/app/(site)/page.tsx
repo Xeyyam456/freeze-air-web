@@ -24,7 +24,7 @@ function SectionTitle({ title, lead, light = false }: { title: string; lead?: st
   return (
     <div className="mx-auto max-w-2xl text-center">
       <span className={`mx-auto block h-1 w-12 rounded-full ${light ? "bg-white" : "bg-cold"}`} aria-hidden="true" />
-      <h2 className={`mt-4 font-display text-3xl font-bold sm:text-4xl ${light ? "text-white" : ""}`}>{title}</h2>
+      <h2 className={`mt-4 text-balance font-display text-[clamp(1.4rem,6.9vw,1.875rem)] font-bold sm:text-4xl ${light ? "text-white" : ""}`}>{title}</h2>
       {lead && <p className={`mt-3 ${light ? "text-white/75" : "text-night/60"}`}>{lead}</p>}
     </div>
   );
@@ -38,7 +38,7 @@ async function HeroBackground() {
   return (
     <>
       {/* eslint-disable-next-line @next/next/no-img-element -- storage şəkli */}
-      <img src={url} alt="" className="hero-parallax col-start-1 row-start-1 block h-[calc(100svh-77px)] min-h-[560px] w-full object-cover object-top" />
+      <img src={url} alt="" className="hero-parallax col-start-1 row-start-1 block h-[calc(100svh-77px)] min-h-[560px] w-full object-cover object-top max-xl:object-right-top max-sm:object-[86%_top]" />
       {/* relative: şəkil parallax üçün transform alır və qat yaradır; overlay onun üstündə qalsın deyə o da mövqeli olmalıdır */}
       <div className="relative col-start-1 row-start-1 bg-gradient-to-r from-night/90 via-night/65 to-night/10" aria-hidden="true" />
       <AirflowCanvas />
@@ -61,7 +61,7 @@ async function About({ t }: { t: Texts }) {
   return (
     <>
       {/* Şəkillər pərdə kimi soldan açılır (.reveal-wipe), rəngli kart yavaşca "nəfəs alır" (.float-soft) */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
         <Reveal className="reveal-wipe col-span-2">
           {a.mainImage
             // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
@@ -74,26 +74,31 @@ async function About({ t }: { t: Texts }) {
             ? <img src={a.sideImage} alt="" className="block h-auto w-full rounded-[28px]" />
             : <div className="grid place-items-center rounded-[28px] bg-ice p-6"><SplitUnit className="w-full" /></div>}
         </Reveal>
-        <div className={`float-soft flex flex-col justify-center rounded-[28px] p-6 ${color.box}`}>
+        {/* Mobildə kart yarım endədir: kənar boşluq və başlıq kiçilir */}
+        <div className={`float-soft flex flex-col justify-center rounded-[28px] p-4 sm:p-6 ${color.box}`}>
           <ClipboardCheck size={30} className={color.icon} />
-          <p className="mt-3 font-display text-lg font-bold">{a.cardTitle}</p>
+          <p className="mt-3 font-display text-base font-bold sm:text-lg">{a.cardTitle}</p>
           {a.cardText && <p className={`mt-1 text-sm ${color.sub}`}>{a.cardText}</p>}
         </div>
       </div>
       <div>
         <p className="font-semibold text-cold">{t["home.about.label"]}</p>
-        <h2 className="mt-2 font-display text-3xl font-bold leading-tight sm:text-4xl">{a.title}</h2>
+        {/* Planşetdə mətn tam endədir: şrift enə görə kiçilir ki, başlıq bir sətrə sığsın */}
+        <h2 className="mt-2 text-balance font-display text-[clamp(1.4rem,6.9vw,1.875rem)] font-bold leading-tight sm:text-4xl sm:max-lg:text-[clamp(1.6rem,4.3vw,2.25rem)]">{a.title}</h2>
         {a.text.map((t) => <p key={t} className="mt-4 text-night/65">{t}</p>)}
-        {a.points.length > 0 && (
-          <ul className="mt-6 space-y-3">
-            {a.points.map((p) => (
-              <li key={p} className="flex items-center gap-3 font-semibold"><CircleCheck size={20} className="text-cold" /> {p}</li>
-            ))}
-          </ul>
-        )}
-        <Link href="/nece-isleyirik" className="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-cold px-6 font-bold text-white transition-colors hover:bg-night">
-          {t["home.about.button"]} <ArrowRight size={18} />
-        </Link>
+        {/* Planşetdə mətn tam endədir: siyahı solda, düymə sağda (siyahının alt xəttində); mobildə düymə siyahının altında, sağda */}
+        <div className="max-sm:flex max-sm:flex-col max-sm:items-end sm:max-lg:flex sm:max-lg:items-end sm:max-lg:justify-between sm:max-lg:gap-6">
+          {a.points.length > 0 && (
+            <ul className="mt-6 space-y-3 max-sm:self-stretch">
+              {a.points.map((p) => (
+                <li key={p} className="flex items-center gap-3 font-semibold"><CircleCheck size={20} className="text-cold" /> {p}</li>
+              ))}
+            </ul>
+          )}
+          <Link href="/nece-isleyirik" className="mt-8 inline-flex h-12 shrink-0 items-center gap-2 rounded-full bg-cold px-6 font-bold text-white transition-colors hover:bg-night max-sm:w-full max-sm:justify-center sm:max-lg:mt-0">
+            {t["home.about.button"]} <ArrowRight size={18} />
+          </Link>
+        </div>
       </div>
     </>
   );
@@ -112,13 +117,16 @@ async function QuickContact({ t }: { t: Texts }) {
   return (
     <>
       {/* Əsas çağırış kartı: tünd aurora fon + fırlanan işıqlı haşiyə (.glow-border) */}
-      <div className="glow-border aurora relative overflow-hidden rounded-[28px] bg-night p-8 text-white sm:p-10">
-        <p className="font-semibold text-cold">{t["home.contact.label"]}</p>
-        <h2 className="mt-2 font-display text-3xl font-bold">{t["home.contact.title"]}</h2>
-        <p className="mt-3 text-white/60">{t["home.contact.text"]}</p>
-        <ul className="mt-8 space-y-5">
+      {/* Planşetdə kart tam endədir: iki bərabər yarı — solda başlıq, mətn və düymə; sağda məlumatlar şüşə plitələrdə */}
+      <div className="glow-border aurora relative overflow-hidden rounded-[28px] bg-night p-8 text-white sm:p-10 sm:max-lg:grid sm:max-lg:grid-cols-2 sm:max-lg:gap-x-8">
+        <div className="sm:max-lg:self-end">
+          <p className="font-semibold text-cold">{t["home.contact.label"]}</p>
+          <h2 className="mt-2 font-display text-3xl font-bold">{t["home.contact.title"]}</h2>
+          <p className="mt-3 text-white/60">{t["home.contact.text"]}</p>
+        </div>
+        <ul className="mt-8 space-y-5 sm:max-lg:col-start-2 sm:max-lg:row-span-2 sm:max-lg:row-start-1 sm:max-lg:mt-0 sm:max-lg:space-y-3 sm:max-lg:self-center">
           {items.map(({ icon: Icon, label, value, href }) => (
-            <li key={label} className="flex items-center gap-4">
+            <li key={label} className="flex items-center gap-4 sm:max-lg:rounded-2xl sm:max-lg:bg-white/[0.06] sm:max-lg:p-3 sm:max-lg:ring-1 sm:max-lg:ring-white/10">
               <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/10 text-cold"><Icon size={20} /></span>
               <span>
                 <span className="block text-xs text-white/50">{label}</span>
@@ -127,7 +135,7 @@ async function QuickContact({ t }: { t: Texts }) {
             </li>
           ))}
         </ul>
-        <Link href="/elaqe" className="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-cold px-6 font-bold transition-colors hover:bg-white hover:text-night">
+        <Link href="/elaqe" className="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-cold px-6 font-bold transition-colors hover:bg-white hover:text-night max-sm:w-full max-sm:justify-center sm:max-lg:col-start-1 sm:max-lg:row-start-2 sm:max-lg:mt-6 sm:max-lg:self-start sm:max-lg:justify-self-start">
           {t["home.contact.button"]} <ArrowRight size={18} />
         </Link>
       </div>
@@ -180,13 +188,14 @@ export default async function HomePage() {
           <HeroBackground />
         </Suspense>
         <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(90deg,rgba(255,255,255,0.04)_0_1px,transparent_1px_32px)]" aria-hidden="true" />
-        <div className="site-wrap relative col-start-1 row-start-1 w-full self-center pb-24 pt-16">
+        {/* < 1024: mətn aşağıda, şəklin yuxarısındakı kondisioner açıq qalır */}
+        <div className="site-wrap relative col-start-1 row-start-1 w-full self-center pb-24 pt-16 max-lg:self-end">
           <div className="max-w-2xl">
             <div className="hero-in flex flex-wrap gap-2 text-sm font-semibold">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-heat/20 px-3 py-1.5 text-[#ffd08a]"><Sun size={15} /> {t["home.hero.badge_out"]}</span>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-ice"><Snowflake size={15} /> {t["home.hero.badge_in"]}</span>
             </div>
-            <HeroTitle text={t["home.hero.title"]} className="mt-6 font-display text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-6xl" />
+            <HeroTitle text={t["home.hero.title"]} className="mt-6 text-balance font-display text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-6xl" />
             <p className="hero-in mt-5 max-w-xl text-lg text-white/75" style={{ "--d": "420ms" } as React.CSSProperties}>
               {t["home.hero.lead"]}
             </p>
@@ -254,9 +263,10 @@ export default async function HomePage() {
                       </span>
                       <h3 className="font-display text-lg font-bold leading-tight">{t[title]}</h3>
                     </div>
-                    <ul className="mt-6 divide-y divide-white/10">
+                    {/* Planşetdə kart tam endədir: siyahı 2 sütuna bölünür (ayırıcı xətt hər sütunun ilk bəndində yoxdur) */}
+                    <ul className="mt-6 sm:max-lg:grid sm:max-lg:grid-cols-2 sm:max-lg:gap-x-8">
                       {lines(t[items]).map((item) => (
-                        <li key={item} className="flex items-center gap-3 py-3 font-medium text-white/85">
+                        <li key={item} className="flex items-center gap-3 border-t border-white/10 py-3 font-medium text-white/85 first:border-t-0 sm:max-lg:nth-2:border-t-0">
                           <CircleCheck size={18} className="shrink-0 text-cold" /> {item}
                         </li>
                       ))}
