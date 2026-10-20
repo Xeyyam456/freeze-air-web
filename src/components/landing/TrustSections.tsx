@@ -70,7 +70,8 @@ export function HowSteps({ t }: { t: Texts }) {
           ))}
         </ol>
         <Reveal className="mt-10 text-center">
-          <Link href="/nece-isleyirik" className="inline-flex h-12 items-center gap-2 rounded-full bg-cold px-6 font-bold text-white transition-colors hover:bg-night">
+          {/* Planşet və mobildə tam endə (istifadəçi qərarı) */}
+          <Link href="/nece-isleyirik" className="inline-flex h-12 items-center gap-2 rounded-full bg-cold px-6 font-bold text-white transition-colors hover:bg-night max-lg:w-full max-lg:justify-center">
             {t["home.how.button"]} <ArrowRight size={18} />
           </Link>
         </Reveal>
