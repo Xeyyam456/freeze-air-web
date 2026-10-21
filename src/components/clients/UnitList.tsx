@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Building2, Search, Store } from "lucide-react";
 import { StoreCard } from "@/components/StoreCard";
+import { PlaceHistoryModal, type HistoryTarget } from "@/components/work/PlaceHistory";
 import type { Tables } from "@/lib/database.types";
 import { KIND, type Kind } from "@/lib/kinds";
 
@@ -17,6 +18,7 @@ function norm(s: string | null | undefined) {
 // Şirkətin filialları və ya marketin mağazaları: axtarış + kartlar
 export function UnitList({ units, kind }: { units: Tables<"stores">[]; kind: Kind }) {
   const [query, setQuery] = useState("");
+  const [historyFor, setHistoryFor] = useState<HistoryTarget | null>(null);
   const k = KIND[kind];
   const Icon = kind === "market" ? Store : Building2;
 
@@ -39,6 +41,7 @@ export function UnitList({ units, kind }: { units: Tables<"stores">[]; kind: Kin
 
   return (
     <div className="flex h-full flex-col gap-4">
+      {historyFor && <PlaceHistoryModal key={historyFor.storeId} target={historyFor} onClose={() => setHistoryFor(null)} />}
       {/* Axtarış və tablar yerində qalır; yalnız aşağıdakı siyahı bloku öz içində sürüşür (scrollbar gizli) */}
       <div className="search shrink-0">
         <Search size={20} />
@@ -61,7 +64,9 @@ export function UnitList({ units, kind }: { units: Tables<"stores">[]; kind: Kin
       ) : (
         <div className="-mx-1 -my-1 min-h-0 flex-1 overflow-y-auto px-1 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="grid grid-cols-2 gap-4">
-          {filtered.map((u) => <StoreCard key={u.id} store={u} />)}
+          {filtered.map((u) => (
+            <StoreCard key={u.id} store={u} onHistory={() => setHistoryFor({ title: `${u.code} ${u.name}`, storeId: u.id })} />
+          ))}
         </div>
         </div>
       )}

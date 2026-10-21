@@ -2,8 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { CalendarCheck, ListChecks, Plus } from "lucide-react";
+import { CalendarCheck, CalendarDays, CalendarOff, CalendarRange, ListChecks, LogIn, LogOut, Plus, Wrench } from "lucide-react";
+import { AttendanceCalendar } from "@/components/employees/AttendanceCalendar";
+import { presenceText, timeBaku, todayBaku, useMonthAttendance } from "@/lib/attendance";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "@/lib/toast";
+import { LeaveModal } from "./LeaveModal";
+import { TASKS_CHANGED } from "@/lib/tasks-live";
 import { WorkLogForm } from "./WorkLogForm";
 
 // İş yazılanda (həm burada, həm başqa yerdə) bu hadisə atılır: sayğac və iş siyahısı yenilənir
@@ -15,14 +20,98 @@ function todayIso() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-// Mənim bugünüm: bugün neçə iş yazılıb və bir kliklə "İş əlavə et". Əməkdaş kartı olmayan hesabda (məs. yalnız admin) görünmür.
+type Stats = {
+  today: number;
+  month: number;
+  tasks: { total: number; done: number }; // bugünkü tapşırıqlarım (geri alınanlar yox)
+  tools: number; // məndə olan alətlərin ədədi
+  materials: number; // məndə olan materialın növ sayı
+};
+
+async function fetchStats(employeeId: number): Promise<Stats> {
+  const supabase = createClient();
+  const today = todayIso();
+  const [day, month, tasks, held] = await Promise.all([
+    supabase.from("work_logs").select("id", { count: "exact", head: true }).eq("employee_id", employeeId).eq("work_date", today),
+    supabase.from("work_logs").select("id", { count: "exact", head: true }).eq("employee_id", employeeId).gte("work_date", `${today.slice(0, 8)}01`).lte("work_date", today),
+    supabase.from("tasks").select("done").eq("employee_id", employeeId).eq("task_date", today).is("cancelled_at", null),
+    supabase.from("tool_assignments").select("quantity, tools(kind)").eq("employee_id", employeeId).is("returned_at", null),
+  ]);
+  const h = held.data ?? [];
+  return {
+    today: day.count ?? 0,
+    month: month.count ?? 0,
+    tasks: { total: tasks.data?.length ?? 0, done: tasks.data?.filter((t) => t.done).length ?? 0 },
+    tools: h.filter((a) => a.tools?.kind !== "material").reduce((s, a) => s + a.quantity, 0),
+    materials: h.filter((a) => a.tools?.kind === "material").length,
+  };
+}
+
+// Kiçik göstərici xanası (link verilsə klik olunur)
+function Stat({ icon: Icon, label, value, sub, href }: { icon: typeof Wrench; label: string; value: React.ReactNode; sub?: string; href?: string }) {
+  const body = (
+    <>
+      <span className="muted flex items-center gap-1.5 text-xs font-semibold"><Icon size={13} className="text-primary" /> {label}</span>
+      <span className="mt-0.5 block truncate text-lg font-bold leading-tight">
+        {value}{sub && <span className="muted ml-1 text-xs font-semibold">{sub}</span>}
+      </span>
+    </>
+  );
+  const cls = "min-w-0 rounded-xl bg-bg px-3 py-2";
+  return href
+    ? <Link href={href} className={`${cls} transition-colors hover:bg-primary-soft`}>{body}</Link>
+    : <div className={cls}>{body}</div>;
+}
+
+// Mənim bugünüm: davamiyyət ("İşə gəldim" / vəziyyət, "İcazə istə"), dörd göstərici (bu gün, bu ay, bugünkü tapşırıqlar, məndə olan alət/material) və bir kliklə "İş əlavə et".
+// Əməkdaş kartı olmayan hesabda (məs. yalnız admin) görünmür. Tapşırıq dəyişəndə (Realtime) və iş yazılanda yenilənir.
 export function MyDay() {
   // undefined = yüklənir, null = əməkdaş kartı yoxdur
   const [me, setMe] = useState<{ id: number; name: string } | null | undefined>(undefined);
-  const [count, setCount] = useState<number | null>(null);
-  const [tasks, setTasks] = useState<{ total: number; done: number } | null>(null); // bugünkü tapşırıqlarım
+  const [stats, setStats] = useState<Stats | null>(null);
   const [adding, setAdding] = useState(false);
+  const [leaving, setLeaving] = useState(false); // "İcazə istə" pəncərəsi
+  const [checking, setChecking] = useState(false);
+  const [calendar, setCalendar] = useState(false); // davamiyyət təqvimi
   const [tick, setTick] = useState(0);
+  const attendance = useMonthAttendance(); // bu günün vəziyyəti Realtime ilə
+  const mine = me && attendance ? attendance.byEmployee.get(me.id) ?? attendance.empty : null;
+
+  async function checkIn() {
+    setChecking(true);
+    const { data, error } = await createClient().rpc("check_in");
+    setChecking(false);
+    if (error) return toast.error(error.message);
+    toast.success("İşə gəldin", data ? `Başlama saatı: ${timeBaku(data)}` : undefined);
+  }
+
+  // İcazəli gündə icazəyə ehtiyac qalmadı: bugünkü icazə ləğv olunur (leave_cancel) və işə gəlmə yazılır
+  async function giveUpLeave() {
+    if (!me) return;
+    setChecking(true);
+    const supabase = createClient();
+    const t = todayBaku();
+    const { data: lv } = await supabase.from("leave_requests").select("id").eq("employee_id", me.id).eq("status", "approved")
+      .lte("date_from", t).gte("date_to", t).maybeSingle();
+    const cancel = lv ? await supabase.rpc("leave_cancel", { p_id: lv.id }) : { error: null };
+    if (cancel.error) {
+      setChecking(false);
+      return toast.error(cancel.error.message);
+    }
+    const { data, error } = await supabase.rpc("check_in");
+    setChecking(false);
+    if (error) return toast.error(error.message);
+    toast.success("İcazə ləğv edildi, işə gəldin", data ? `Başlama saatı: ${timeBaku(data)}` : undefined);
+  }
+
+  // Axşam: "İşi bitirdim" (bitmə saatı yazılır, gündə bir dəfə)
+  async function checkOut() {
+    setChecking(true);
+    const { data, error } = await createClient().rpc("check_out");
+    setChecking(false);
+    if (error) return toast.error(error.message);
+    toast.success("İş günü bitdi", data ? `Bitmə saatı: ${timeBaku(data)}` : undefined);
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -42,47 +131,74 @@ export function MyDay() {
   }, []);
 
   useEffect(() => {
-    const onSaved = () => setTick((t) => t + 1);
-    window.addEventListener(WORK_SAVED, onSaved);
-    return () => window.removeEventListener(WORK_SAVED, onSaved);
+    const onChange = () => setTick((t) => t + 1);
+    window.addEventListener(WORK_SAVED, onChange);
+    window.addEventListener(TASKS_CHANGED, onChange);
+    return () => {
+      window.removeEventListener(WORK_SAVED, onChange);
+      window.removeEventListener(TASKS_CHANGED, onChange);
+    };
   }, []);
 
   useEffect(() => {
     if (!me) return;
     let cancelled = false;
-    createClient()
-      .from("work_logs")
-      .select("id", { count: "exact", head: true })
-      .eq("employee_id", me.id)
-      .eq("work_date", todayIso())
-      .then(({ count: n }) => {
-        if (!cancelled) setCount(n ?? 0);
-      });
+    fetchStats(me.id).then((s) => {
+      if (!cancelled) setStats(s);
+    });
     return () => {
       cancelled = true;
     };
   }, [me, tick]);
 
-  useEffect(() => {
-    if (!me) return;
-    let cancelled = false;
-    createClient()
-      .from("tasks")
-      .select("done")
-      .eq("employee_id", me.id)
-      .eq("task_date", todayIso())
-      .then(({ data }) => {
-        if (!cancelled) setTasks({ total: data?.length ?? 0, done: data?.filter((t) => t.done).length ?? 0 });
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [me]);
-
   if (me === null) return null;
+  const s = stats;
+  const open = s ? s.tasks.total - s.tasks.done : 0;
+
+  // Bu günün davamiyyəti: "İşə gəldim" → gün boyu "İşdəsən · 09:02-dən" + "İşi bitirdim" → "İşi bitirdin · 09:02 – 18:10".
+  // Təsdiqlənmiş icazə günü "icazəlisən" (Realtime: admin təsdiqləyən kimi dəyişir)
+  const day = mine?.today;
+  const p = day?.presence;
+  const pill = (cls: string, text: string) => <span className={`rounded-full px-3 py-1.5 text-xs font-bold ${cls}`}>{text}</span>;
+  const presence = !day ? (
+    <span className="muted text-sm">…</span>
+  ) : day.status === "pending" ? (
+    <button type="button" onClick={checkIn} disabled={checking} className="btn btn-sm !h-9 bg-ok text-white hover:brightness-110">
+      <LogIn size={15} /> {checking ? "..." : "İşə gəldim"}
+    </button>
+  ) : day.status === "present" && p && !p.out ? (
+    <>
+      {pill("bg-ok-soft text-ok", `İşdəsən · ${presenceText(p)}`)}
+      <button type="button" onClick={checkOut} disabled={checking} className="btn btn-sm !h-9 bg-navy text-white hover:brightness-125">
+        <LogOut size={15} /> {checking ? "..." : "İşi bitirdim"}
+      </button>
+    </>
+  ) : day.status === "present" && p ? (
+    pill("bg-bg text-ink", `İşi bitirdin · ${presenceText(p)}`)
+  ) : day.status === "leave" ? (
+    <>
+      {pill("bg-violet-50 text-violet-700", "Bu gün icazəlisən")}
+      <button type="button" onClick={giveUpLeave} disabled={checking} className="btn btn-soft btn-sm !h-9" title="İcazə ləğv olunur, işə gəlmə yazılır">
+        <LogIn size={15} /> {checking ? "..." : "İcazəyə ehtiyac qalmadı, işdəyəm"}
+      </button>
+    </>
+  ) : day.status === "absent" ? (
+    // Admin bu günü "işdə olmayıb" qeyd edib (0065): usta işə gəldim basa bilmir, səhvdirsə admin geri alır
+    pill("bg-danger-soft text-danger", "Bu gün işdə olmayıb qeyd olunub")
+  ) : (
+    // Bazar iş günü deyil, amma usta çağırılıbsa işə çıxdığını qeyd edə bilər (əlavə gün)
+    <>
+      {pill("bg-slate-200 text-slate-600", "Bazar: iş günü deyil")}
+      <button type="button" onClick={checkIn} disabled={checking} className="btn btn-soft btn-sm !h-9" title="Bazar günü işə çağırılmısansa">
+        <LogIn size={15} /> {checking ? "..." : "Bazar günü işdəyəm"}
+      </button>
+    </>
+  );
 
   return (
-    <section className="card flex items-center gap-4 !py-4">
+    <section className="card space-y-3 !py-4">
+      {leaving && me && <LeaveModal employeeId={me.id} onClose={() => setLeaving(false)} />}
+      {calendar && me && <AttendanceCalendar employeeId={me.id} name={me.name} onClose={() => setCalendar(false)} />}
       {adding && me && (
         <WorkLogForm
           employeeId={me.id}
@@ -91,22 +207,31 @@ export function MyDay() {
           onSaved={() => window.dispatchEvent(new Event(WORK_SAVED))}
         />
       )}
-      <span className="icon-tile shrink-0"><CalendarCheck size={20} /></span>
-      <div className="min-w-0 flex-1">
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="icon-tile shrink-0"><CalendarCheck size={20} /></span>
         <p className="muted text-xs font-semibold uppercase tracking-wide">Mənim bugünüm</p>
-        <p className="text-lg font-bold">
-          {count === null ? "…" : count === 0 ? "Hələ iş yazmamısan" : <><span className="text-primary">{count}</span> iş yazılıb</>}
-        </p>
-        {/* Admin/rəhbərlik verdiyi bugünkü tapşırıqlar: klik → Tapşırıqlar səhifəsi */}
-        {!!tasks?.total && (
-          <Link href="/tapshiriqlar" className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">
-            <ListChecks size={14} /> Tapşırıq: {tasks.total} · görülən: {tasks.done}
-          </Link>
-        )}
+        {presence}
+        <div className="ml-auto flex items-center gap-2">
+          <button type="button" disabled={!me} onClick={() => setCalendar(true)} className="icon-btn !h-9 !w-9" title="Davamiyyət təqvimim" aria-label="Davamiyyət təqvimim">
+            <CalendarRange size={16} />
+          </button>
+          <button type="button" disabled={!me} onClick={() => setLeaving(true)} className="btn btn-soft btn-sm !h-9" title="İcazə sorğusu: admin təsdiqləyir">
+            <CalendarOff size={15} /> İcazə istə{mine?.pendingLeave ? ` (${mine.pendingLeave})` : ""}
+          </button>
+          <button type="button" disabled={!me} onClick={() => setAdding(true)} className="btn btn-primary btn-sm !h-9">
+            <Plus size={15} /> İş əlavə et
+          </button>
+        </div>
       </div>
-      <button type="button" disabled={!me} onClick={() => setAdding(true)} className="btn btn-primary">
-        <Plus size={16} /> İş əlavə et
-      </button>
+      <div className="grid grid-cols-4 gap-2">
+        <Stat icon={CalendarCheck} label="Bu gün" value={s ? <span className={s.today ? "text-primary" : ""}>{s.today}</span> : "…"} sub="iş" />
+        <Stat icon={CalendarDays} label="Bu ay" value={s?.month ?? "…"} sub="iş" href="/statistika" />
+        {/* Admin/rəhbərlik verdiyi bugünkü tapşırıqlar: klik → Tapşırıqlar səhifəsi */}
+        <Stat icon={ListChecks} label="Tapşırıq" href="/tapshiriqlar"
+          value={s ? <span className={open ? "text-primary" : s.tasks.total ? "text-ok" : ""}>{s.tasks.done}/{s.tasks.total}</span> : "…"}
+          sub={s?.tasks.total ? (open ? `${open} qalıb` : "hamısı görülüb") : undefined} />
+        <Stat icon={Wrench} label="Məndə" value={s?.tools ?? "…"} sub={s ? `alət${s.materials ? ` · ${s.materials} material` : ""}` : undefined} />
+      </div>
     </section>
   );
 }

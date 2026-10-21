@@ -1,6 +1,7 @@
 import { MapPin, Phone, User } from "lucide-react";
 import type { Tables } from "@/lib/database.types";
 import { asKind, KIND } from "@/lib/kinds";
+import { PlaceHistoryButton } from "@/components/work/PlaceHistory";
 
 // Sağ panel: şirkətin/marketin vizit kartı (yalnız baxış)
 export function ClientInfoCard({ company, unitCount }: { company: Tables<"companies">; unitCount: number }) {
@@ -39,6 +40,8 @@ export function ClientInfoCard({ company, unitCount }: { company: Tables<"compan
         </div>
       )}
       {company.notes && <p className="muted mt-3 line-clamp-2 text-sm">{company.notes}</p>}
+      {/* Bütün obyektin (özü + filialları/mağazaları) iş tarixçəsi */}
+      <PlaceHistoryButton target={{ title: company.name, companyId: company.id }} className="btn btn-soft mt-4 w-full" />
     </div>
   );
 }

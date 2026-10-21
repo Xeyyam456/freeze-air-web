@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Check, ChevronLeft, ChevronRight, ListChecks, Paperclip, PenLine } from "lucide-react";
+import { ArrowRight, Check, ChevronLeft, ChevronRight, ListChecks, Paperclip, PenLine, Undo2 } from "lucide-react";
 import { formatDateAz } from "@/components/DatePicker";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { createClient } from "@/lib/supabase/client";
+import { TASKS_CHANGED } from "@/lib/tasks-live";
 import { toast } from "@/lib/toast";
 import { TaskNoteModal } from "./TaskNoteModal";
 
@@ -20,11 +21,18 @@ async function fetchTasks(day: string) {
   const supabase = createClient();
   const [tasks, employees] = await Promise.all([
     supabase.from("tasks")
-      .select("id, employee_id, reason, done, note, work_log_id, place_text, stores(name, code, companies(name)), companies(name), work_logs(description, work_files(id, kind))")
+      .select("id, employee_id, reason, done, note, work_log_id, place_text, cancelled_at, reassigned_to, stores(name, code, companies(name)), companies(name), work_logs(description, work_files(id, kind))")
       .eq("task_date", day).order("created_at").then((r) => r.data ?? []),
     supabase.from("employees").select("id, full_name, photo_url").eq("is_management", false).eq("is_active", true).order("full_name").then((r) => r.data ?? []),
   ]);
-  return { tasks, employees };
+  // Geri alınıb başqasına verilənlər: yeni tapşırıq kimdədir ("Geri alınıb → Ad"; admin paneldəki ilə eyni)
+  const nextIds = tasks.flatMap((t) => (t.reassigned_to ? [t.reassigned_to] : []));
+  const nextName = new Map<number, string>();
+  if (nextIds.length) {
+    const { data } = await supabase.from("tasks").select("id, employees(full_name)").in("id", nextIds);
+    for (const n of data ?? []) if (n.employees) nextName.set(n.id, n.employees.full_name);
+  }
+  return { tasks: tasks.map((t) => ({ ...t, nextName: t.reassigned_to ? nextName.get(t.reassigned_to) : undefined })), employees };
 }
 
 type Task = Awaited<ReturnType<typeof fetchTasks>>["tasks"][number];
@@ -56,6 +64,11 @@ export function TasksView() {
     fetchTasks(day).then((d) => { if (!cancelled) setData(d); });
     return () => { cancelled = true; };
   }, [day]);
+  // Admin tapşırıq verəndə, dəyişəndə və ya başqa usta işarələyəndə siyahı dərhal yenilənir (Realtime, TasksListener)
+  useEffect(() => {
+    window.addEventListener(TASKS_CHANGED, load);
+    return () => window.removeEventListener(TASKS_CHANGED, load);
+  }, [load]);
 
   async function toggle(t: Task) {
     // Dərhal əks olunur, xəta olsa geri qayıdır
@@ -74,7 +87,7 @@ export function TasksView() {
       .filter((g) => g.items.length > 0)
       .sort((a, b) => Number(b.employee.id === me) - Number(a.employee.id === me)); // öz tapşırıqların birinci
   }, [data, me]);
-  const mine = data?.tasks.filter((t) => t.employee_id === me) ?? [];
+  const mine = data?.tasks.filter((t) => t.employee_id === me && !t.cancelled_at) ?? [];
 
   return (
     <div className="space-y-4">
@@ -107,30 +120,33 @@ export function TasksView() {
         <div className="card !p-0">
           {groups.map(({ employee, items }) => {
             const isMe = employee.id === me;
-            const done = items.filter((t) => t.done).length;
+            const live = items.filter((t) => !t.cancelled_at); // geri alınanlar saya düşmür
+            const done = live.filter((t) => t.done).length;
             return (
               <section key={employee.id} className="border-b border-line last:border-b-0">
                 <header className={`flex items-center gap-2.5 px-4 py-2 ${isMe ? "bg-primary-soft" : "bg-[#f8f9fc]"}`}>
                   <Avatar employee={employee} className="!h-6 !w-6 !text-[10px]" />
                   <span className="text-sm font-bold">{employee.full_name}</span>
                   {isMe && <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-bold text-primary">Sən</span>}
-                  <span className="muted text-xs">{items.length} tapşırıq · {done} görülən</span>
+                  <span className="muted text-xs">{live.length} tapşırıq · {done} görülən</span>
                 </header>
                 <ul>
-                  {items.map((t) => (
-                    <li key={t.id} className="flex items-center gap-3 px-4 py-1.5">
+                  {items.map((t) => {
+                    const cancelled = !!t.cancelled_at; // admin geri alıb: tarixçə kimi qalır, işarələnmir
+                    return (
+                    <li key={t.id} className={`flex items-center gap-3 px-4 py-1.5 ${cancelled ? "opacity-60" : ""}`}>
                       {/* Yalnız öz tapşırığında işarələmək olur; başqasınınkı yalnız vəziyyəti göstərir */}
-                      <button type="button" disabled={!isMe} onClick={() => toggle(t)} aria-pressed={t.done}
-                        title={isMe ? (t.done ? "Görülməyib kimi işarələ" : "Görüldü kimi işarələ") : t.done ? "Görülüb" : "Görülməyib"}
+                      <button type="button" disabled={!isMe || cancelled} onClick={() => toggle(t)} aria-pressed={t.done}
+                        title={cancelled ? "Geri alınıb" : isMe ? (t.done ? "Görülməyib kimi işarələ" : "Görüldü kimi işarələ") : t.done ? "Görülüb" : "Görülməyib"}
                         className={`grid h-5 w-5 shrink-0 place-items-center rounded-md border-2 transition-colors disabled:cursor-default ${
-                          t.done ? "border-ok bg-ok text-white" : isMe ? "border-line text-transparent hover:border-primary" : "border-line text-transparent"}`}>
-                        <Check size={12} strokeWidth={3} />
+                          cancelled ? "border-line bg-bg text-muted" : t.done ? "border-ok bg-ok text-white" : isMe ? "border-line text-transparent hover:border-primary" : "border-line text-transparent"}`}>
+                        {cancelled ? <Undo2 size={11} strokeWidth={3} /> : <Check size={12} strokeWidth={3} />}
                       </button>
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm">
-                          <span className={`font-semibold ${t.done ? "text-ok" : "text-primary"}`}>{placeOf(t)}</span>
+                        <span className={`block truncate text-sm ${cancelled ? "line-through" : ""}`}>
+                          <span className={`font-semibold ${cancelled ? "text-muted" : t.done ? "text-ok" : "text-primary"}`}>{placeOf(t)}</span>
                           <span className="muted"> — </span>
-                          <span className={t.done ? "text-ok/80" : ""}>{t.reason}</span>
+                          <span className={cancelled ? "text-muted" : t.done ? "text-ok/80" : ""}>{t.reason}</span>
                         </span>
                         {t.note && <span className={`block truncate text-xs ${t.done ? "text-[#d97706]" : "muted"}`}><b>Təmir:</b> {t.note}</span>}
                       </span>
@@ -146,8 +162,14 @@ export function TasksView() {
                           )}
                         </span>
                       )}
+                      {cancelled && (
+                        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-bg px-2.5 py-0.5 text-[11px] font-semibold text-muted">
+                          Geri alınıb{t.nextName && <><ArrowRight size={11} /> {t.nextName}</>}
+                        </span>
+                      )}
                     </li>
-                  ))}
+                    );
+                  })}
                 </ul>
               </section>
             );

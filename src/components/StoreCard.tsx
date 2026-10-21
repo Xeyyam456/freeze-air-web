@@ -1,4 +1,4 @@
-import { MapPin, Phone } from "lucide-react";
+import { History, MapPin, Phone } from "lucide-react";
 import type { Tables } from "@/lib/database.types";
 import { MapButton } from "./MapButton";
 
@@ -6,9 +6,10 @@ type Props = {
   store: Tables<"stores">;
   companyName?: string;
   action?: React.ReactNode;
+  onHistory?: () => void; // "Tarixçə": bu filialda/mağazada görülən işlər (work/PlaceHistory.tsx)
 };
 
-export function StoreCard({ store, companyName, action }: Props) {
+export function StoreCard({ store, companyName, action, onHistory }: Props) {
   const hasCoords = store.lat != null && store.lng != null;
 
   return (
@@ -43,7 +44,14 @@ export function StoreCard({ store, companyName, action }: Props) {
           <span className={`h-2 w-2 rounded-full ${hasCoords ? "bg-ok" : "bg-amber-500"}`} />
           {hasCoords ? "Koordinat var" : "Koordinat yoxdur"}
         </span>
-        <MapButton place={store} />
+        <div className="flex items-center gap-2">
+          {onHistory && (
+            <button type="button" onClick={onHistory} className="btn btn-soft btn-sm" title="Bu yerdə görülən işlər">
+              <History size={14} /> Tarixçə
+            </button>
+          )}
+          <MapButton place={store} />
+        </div>
       </div>
     </div>
   );
