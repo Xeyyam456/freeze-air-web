@@ -24,8 +24,7 @@ function toggleMini() {
 
 // Sol menyu: loqo, qruplu bəndlər (tapşırıq nişanı ilə), altda profil və çıxış.
 // ≥ 1024: sabit, yığıla bilir (yalnız ikonlar); < 1024: üst zolaqdakı ☰ ilə açılan çəkmə panel (səhifə dəyişəndə özü bağlanır).
-export function Sidebar({ showDepot, me }: { showDepot: boolean; me: Me | null }) {
-  const pathname = usePathname();
+function SidebarView({ showDepot, me, pathname }: { showDepot: boolean; me: Me | null; pathname: string | null }) {
   const openTasks = useMyOpenTasks();
   const [openAt, setOpenAt] = useState<string | null>(null); // mobil panel hansı səhifədə açılıb
   const open = openAt !== null && openAt === pathname;
@@ -88,4 +87,13 @@ export function Sidebar({ showDepot, me }: { showDepot: boolean; me: Me | null }
       </aside>
     </>
   );
+}
+
+// Suspense fallback: usePathname() dinamik marşrutda (/magazalar/[id]) prerender-i bloklayır (Vercel build xətası), ona görə aktiv bənd seçilməmiş menyu
+export function SidebarFallback() {
+  return <SidebarView showDepot={false} me={null} pathname={null} />;
+}
+
+export function Sidebar({ showDepot, me }: { showDepot: boolean; me: Me | null }) {
+  return <SidebarView showDepot={showDepot} me={me} pathname={usePathname()} />;
 }

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { QuickActions } from "@/components/panel/QuickActions";
-import { Sidebar } from "@/components/panel/Sidebar";
+import { Sidebar, SidebarFallback } from "@/components/panel/Sidebar";
 import { TasksListener } from "@/components/work/TasksListener";
 
 // Sol menyu + qlobal pəncərələr: Depo bəndi yalnız depo məsulu (və müdir) üçün; altda profil (ad, rol, şəkil)
@@ -33,7 +33,7 @@ export default function PanelLayout({ children }: LayoutProps<"/">) {
   return (
     <>
       <TasksListener />
-      <Suspense fallback={<Sidebar showDepot={false} me={null} />}>
+      <Suspense fallback={<SidebarFallback />}>
         <PanelChrome />
       </Suspense>
       <div className="panel-body">{children}</div>
