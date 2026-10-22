@@ -23,7 +23,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="az" className={`${jakarta.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
         {/* JS işləyəndə bölmə animasiyaları aktiv olur (globals.css `.js .reveal`) */}
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+        {/* Usta panelində yığılmış sol menyu ilk boyamadan əvvəl bərpa olunur (components/panel/Sidebar.tsx) */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js');try{if(localStorage.getItem('panel-nav')==='mini')document.documentElement.dataset.nav='mini'}catch(e){}" }} />
       </head>
       <body className="min-h-full">
         {children}

@@ -2,14 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { CalendarCheck, CalendarDays, CalendarOff, CalendarRange, ListChecks, LogIn, LogOut, Plus, Wrench } from "lucide-react";
+import { CalendarCheck, CalendarDays, CalendarOff, CalendarRange, ListChecks, LogIn, LogOut, Wrench } from "lucide-react";
 import { AttendanceCalendar } from "@/components/employees/AttendanceCalendar";
 import { presenceText, timeBaku, todayBaku, useMonthAttendance } from "@/lib/attendance";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
 import { LeaveModal } from "./LeaveModal";
 import { TASKS_CHANGED } from "@/lib/tasks-live";
-import { WorkLogForm } from "./WorkLogForm";
 
 // İş yazılanda (həm burada, həm başqa yerdə) bu hadisə atılır: sayğac və iş siyahısı yenilənir
 export const WORK_SAVED = "work-saved";
@@ -63,13 +62,12 @@ function Stat({ icon: Icon, label, value, sub, href }: { icon: typeof Wrench; la
     : <div className={cls}>{body}</div>;
 }
 
-// Mənim bugünüm: davamiyyət ("İşə gəldim" / vəziyyət, "İcazə istə"), dörd göstərici (bu gün, bu ay, bugünkü tapşırıqlar, məndə olan alət/material) və bir kliklə "İş əlavə et".
+// Mənim bugünüm: davamiyyət ("İşə gəldim" / vəziyyət, "İcazə istə"), dörd göstərici (bu gün, bu ay, bugünkü tapşırıqlar, məndə olan alət/material) "İş əlavə et" üst zolaqdadır (hər səhifədə, components/panel/TopbarTools.tsx).
 // Əməkdaş kartı olmayan hesabda (məs. yalnız admin) görünmür. Tapşırıq dəyişəndə (Realtime) və iş yazılanda yenilənir.
 export function MyDay() {
   // undefined = yüklənir, null = əməkdaş kartı yoxdur
   const [me, setMe] = useState<{ id: number; name: string } | null | undefined>(undefined);
   const [stats, setStats] = useState<Stats | null>(null);
-  const [adding, setAdding] = useState(false);
   const [leaving, setLeaving] = useState(false); // "İcazə istə" pəncərəsi
   const [checking, setChecking] = useState(false);
   const [calendar, setCalendar] = useState(false); // davamiyyət təqvimi
@@ -205,14 +203,6 @@ export function MyDay() {
     <section className="card space-y-3 !py-4">
       {leaving && me && <LeaveModal employeeId={me.id} onClose={() => setLeaving(false)} />}
       {calendar && me && <AttendanceCalendar employeeId={me.id} name={me.name} onClose={() => setCalendar(false)} />}
-      {adding && me && (
-        <WorkLogForm
-          employeeId={me.id}
-          employeeName={me.name}
-          onClose={() => setAdding(false)}
-          onSaved={() => window.dispatchEvent(new Event(WORK_SAVED))}
-        />
-      )}
       <div className="flex flex-wrap items-center gap-3">
         <span className="icon-tile shrink-0"><CalendarCheck size={20} /></span>
         <p className="muted text-xs font-semibold uppercase tracking-wide">Mənim bugünüm</p>
@@ -223,11 +213,7 @@ export function MyDay() {
           </button>
           <button type="button" disabled={!me} onClick={() => setLeaving(true)} className="btn btn-soft btn-sm !h-9" title="İcazə sorğusu: admin təsdiqləyir">
             <CalendarOff size={15} /> İcazə istə{mine?.pendingLeave ? ` (${mine.pendingLeave})` : ""}
-          </button>
-          <button type="button" disabled={!me} onClick={() => setAdding(true)} className="btn btn-primary btn-sm !h-9">
-            <Plus size={15} /> İş əlavə et
-          </button>
-        </div>
+          </button>        </div>
       </div>
       <div className="grid grid-cols-4 gap-2">
         <Stat icon={CalendarCheck} label="Bu gün" value={s ? <span className={s.today ? "text-primary" : ""}>{s.today}</span> : "…"} sub="iş" />

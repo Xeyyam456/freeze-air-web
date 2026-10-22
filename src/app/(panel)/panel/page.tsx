@@ -1,11 +1,11 @@
 import { Suspense } from "react";
 import { Page } from "@/components/Page";
-import { ToolsPanel, type HolderPerson, type StockItem } from "@/components/depot/ToolsPanel";
+import { DepotCard, type HolderPerson, type StockItem } from "@/components/depot/ToolsPanel";
 import { MyDay } from "@/components/work/MyDay";
 import { WorkHistory } from "@/components/work/WorkHistory";
 import { createClient } from "@/lib/supabase/server";
 
-// Depo: alətlər və materiallar (iki tab, Depo-dakı kimi): stok vəziyyəti + hansı ustada nə var
+// Depo: alətlər və materiallar: stok vəziyyəti + hansı ustada nə var (yığcam kart, ətraflısı modalda)
 async function Tools() {
   const supabase = await createClient();
   const [{ data: myId }, { data: held }, { data: stock }] = await Promise.all([
@@ -26,38 +26,31 @@ async function Tools() {
   }
   const people = [...byEmployee.values()].sort((a, b) => (a.id === myId ? -1 : b.id === myId ? 1 : a.name.localeCompare(b.name, "az")));
 
-  return <ToolsPanel stock={(stock ?? []) as StockItem[]} people={people} myId={myId ?? null} />;
+  return <DepotCard stock={(stock ?? []) as StockItem[]} people={people} myId={myId ?? null} />;
 }
 
 const loading = <p className="muted text-sm">Yüklənir...</p>;
 
 export default function Home() {
   return (
-    <Page title="Panel" subtitle="Görülən işlər və alətlər">
-      <div className="grid h-[calc(100vh-var(--header-h)-2*var(--gap))] grid-cols-[1.6fr_1fr] gap-5">
-        {/* Sol: mənim bugünüm + görülən işlər (tarixçə) */}
-        <div className="flex min-h-0 flex-col gap-5">
+    <Page title="Panel" subtitle="Mənim bugünüm, görülən işlər və depo">
+      <div className="flex h-[calc(100vh-var(--header-h)-2*var(--gap))] flex-col gap-5">
+        {/* Üst sıra: mənim bugünüm + yığcam depo (eyni hündürlükdə) */}
+        <div className="grid shrink-0 grid-cols-[1.6fr_1fr] gap-5">
           {/* MyDay render zamanı tarixi oxuyur (davamiyyət): Next 16 bunu Suspense daxilində tələb edir */}
           <Suspense fallback={<div className="card h-[118px]" />}>
             <MyDay />
           </Suspense>
-          <section className="card flex min-h-0 flex-1 flex-col">
-            {/* Tarix render zamanı oxunur (new Date): Next 16 bunu Suspense daxilində tələb edir */}
-            <Suspense fallback={loading}>
-              <WorkHistory />
-            </Suspense>
-          </section>
+          <Suspense fallback={<div className="card h-[118px]" />}>
+            <Tools />
+          </Suspense>
         </div>
-
-        {/* Sağ: alətlər */}
-        <div className="flex min-h-0 flex-col gap-5">
-          {/* Depo: tünd kart (Statistika üslubunda), başlıq ToolsPanel-in içindədir */}
-          <section className="card flex min-h-0 flex-1 flex-col !border-transparent !bg-[#0c1b36] text-white">
-            <Suspense fallback={<p className="text-sm text-white/50">Yüklənir...</p>}>
-              <Tools />
-            </Suspense>
-          </section>
-        </div>
+        {/* Görülən işlər (tarixçə) tam endə; tarix render zamanı oxunur (new Date): Suspense daxilində */}
+        <section className="card flex min-h-0 flex-1 flex-col">
+          <Suspense fallback={loading}>
+            <WorkHistory />
+          </Suspense>
+        </section>
       </div>
     </Page>
   );

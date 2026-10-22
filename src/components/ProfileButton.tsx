@@ -32,25 +32,25 @@ function storagePath(url: string | null) {
   return url?.includes(marker) ? url.split(marker)[1] : null;
 }
 
-type Me = { employeeId: number | null; name: string; role: string; email: string; photoUrl: string | null };
+export type Me = { employeeId: number | null; name: string; role: string; email: string; photoUrl: string | null };
 
-// Sağ yuxarıdakı profil: klik → pəncərə. Əməkdaşa bağlı hesab öz şəklini burada qoyur/dəyişir/silir
+// Sol menyunun altındakı profil: klik → pəncərə. Əməkdaşa bağlı hesab öz şəklini burada qoyur/dəyişir/silir
 // (baza yalnız öz şəklinə icazə verir: set_employee_photo).
 export function ProfileButton({ me }: { me: Me }) {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} title={`${me.email} — profili aç`}
-        className="flex items-center gap-2.5 rounded-full py-0.5 pl-3 pr-0.5 hover:bg-white/10">
-        <span className="text-right leading-tight max-[1100px]:hidden">
-          <span className="block font-semibold text-white">{me.name}</span>
-          <span className="block text-[11px] text-white/60">{me.role}</span>
-        </span>
+      <button type="button" onClick={() => setOpen(true)} title={`${me.name} — profili aç`}
+        className="flex min-w-0 flex-1 items-center gap-3 rounded-xl p-1.5 text-left hover:bg-white/10">
         {me.photoUrl
           // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
-          ? <img src={me.photoUrl} alt="" className="avatar object-cover" />
-          : <span className="avatar">{initials(me.name)}</span>}
+          ? <img src={me.photoUrl} alt="" className="avatar !h-9 !w-9 shrink-0 object-cover" />
+          : <span className="avatar !h-9 !w-9 shrink-0">{initials(me.name)}</span>}
+        <span className="nav-label min-w-0 leading-tight">
+          <span className="block truncate text-sm font-semibold text-white">{me.name}</span>
+          <span className="block truncate text-[11px] text-white/55">{me.role}</span>
+        </span>
       </button>
       {open && <ProfileModal me={me} onClose={() => setOpen(false)} />}
     </>

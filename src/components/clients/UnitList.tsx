@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Building2, Search, Store } from "lucide-react";
 import { StoreCard } from "@/components/StoreCard";
 import { PlaceHistoryModal, type HistoryTarget } from "@/components/work/PlaceHistory";
@@ -17,7 +18,9 @@ function norm(s: string | null | undefined) {
 
 // Şirkətin filialları və ya marketin mağazaları: axtarış + kartlar
 export function UnitList({ units, kind }: { units: Tables<"stores">[]; kind: Kind }) {
-  const [query, setQuery] = useState("");
+  // Ctrl+K axtarışından gələndə (?q=ARZ-045) siyahı həmin mağaza ilə süzülmüş açılır
+  const params = useSearchParams();
+  const [query, setQuery] = useState(() => params.get("q") ?? "");
   const [historyFor, setHistoryFor] = useState<HistoryTarget | null>(null);
   const k = KIND[kind];
   const Icon = kind === "market" ? Store : Building2;

@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ChevronDown, Package, Warehouse, Wrench } from "lucide-react";
+import { ChevronDown, Package, Users, Warehouse, Wrench, X } from "lucide-react";
+import { Modal } from "@/components/Modal";
 import { ToolStats, type StockRow } from "@/components/depot/ToolStats";
 import { initials } from "@/lib/experience";
 
@@ -116,30 +117,81 @@ function Materials({ items }: { items: StockItem[] }) {
   );
 }
 
-// Usta panelindəki Depo kartı (tünd, Statistika üslubunda): başlıq + Alətlər/Materiallar keçidi, rəqəm zolağı, "Kimdə nə var"
-export function ToolsPanel({ stock, people, myId }: { stock: StockItem[]; people: HolderPerson[]; myId: number | null }) {
-  const [kind, setKind] = useState<Kind>("tool");
+// Usta panelindəki Depo: tam məlumat (modalın içində, tünd): başlıq + Alətlər/Materiallar keçidi, rəqəm zolağı, "Kimdə nə var"
+export function ToolsPanel({ stock, people, myId, initialKind = "tool", onClose }: {
+  stock: StockItem[]; people: HolderPerson[]; myId: number | null; initialKind?: Kind; onClose?: () => void;
+}) {
+  const [kind, setKind] = useState<Kind>(initialKind);
   const tools = useMemo(() => stock.filter((s) => s.kind === "tool"), [stock]);
   const materials = useMemo(() => stock.filter((s) => s.kind === "material"), [stock]);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="mb-4 flex items-center justify-between gap-3">
-        <h2 className="flex items-center gap-2.5 text-lg font-bold text-white">
+        <h2 id="depot-title" className="flex items-center gap-2.5 text-lg font-bold text-white">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-primary to-frost shadow-[0_6px_16px_rgba(31,111,235,0.35)]"><Warehouse size={18} /></span>
           Depo
         </h2>
-        <div className="inline-flex gap-0.5 rounded-xl bg-white/[0.07] p-1" role="tablist" aria-label="Depo bölməsi">
-          {([["tool", "Alətlər"], ["material", "Materiallar"]] as const).map(([k, label]) => (
-            <button key={k} type="button" role="tab" aria-selected={kind === k} onClick={() => setKind(k)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${kind === k ? "bg-white text-navy shadow-sm" : "text-white/60 hover:text-white"}`}>
-              {label}
-            </button>
-          ))}
+        <div className="flex items-center gap-2">
+          <div className="inline-flex gap-0.5 rounded-xl bg-white/[0.07] p-1" role="tablist" aria-label="Depo bölməsi">
+            {([["tool", "Alətlər"], ["material", "Materiallar"]] as const).map(([k, label]) => (
+              <button key={k} type="button" role="tab" aria-selected={kind === k} onClick={() => setKind(k)}
+                className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${kind === k ? "bg-white text-navy shadow-sm" : "text-white/60 hover:text-white"}`}>
+                {label}
+              </button>
+            ))}
+          </div>
+          {onClose && (
+            <button type="button" onClick={onClose} className="nav-icon-btn" aria-label="Bağla"><X size={18} /></button>
+          )}
         </div>
       </div>
       {kind === "tool" ? <ToolStats tools={tools} /> : <Materials items={materials} />}
       <People key={kind} people={people} myId={myId} material={kind === "material"} />
     </div>
+  );
+}
+
+function Num({ label, value, tone = "", onClick }: { label: string; value: number; tone?: string; onClick: () => void }) {
+  return (
+    <button type="button" onClick={onClick} className="min-w-0 rounded-xl bg-bg px-3 py-2 text-left transition-colors hover:bg-primary-soft">
+      <span className="muted block truncate text-xs">{label}</span>
+      <span className={`block text-lg font-extrabold leading-tight tabular-nums ${tone}`}>{value}</span>
+    </button>
+  );
+}
+
+// /panel-də yığcam Depo kartı ("Mənim bugünüm"ün yanında, eyni hündürlükdə): alət rəqəmləri və material sayı;
+// istənilən xana və ya "Kimdə nə var" → tam məlumat modalda (ToolsPanel). Öz üzərimdəki say "Mənim bugünüm"dədir.
+export function DepotCard({ stock, people, myId }: { stock: StockItem[]; people: HolderPerson[]; myId: number | null }) {
+  const [open, setOpen] = useState<Kind | null>(null);
+  const tools = stock.filter((s) => s.kind === "tool");
+  const sum = (f: (t: StockItem) => number) => tools.reduce((s, t) => s + f(t), 0);
+
+  return (
+    <section className="card space-y-3 !py-4">
+      {open && (
+        <Modal onClose={() => setOpen(null)} labelledBy="depot-title"
+          className="flex max-h-[calc(100vh-48px)] !max-w-2xl flex-col !bg-[#0c1b36] text-white">
+          <ToolsPanel stock={stock} people={people} myId={myId} initialKind={open} onClose={() => setOpen(null)} />
+        </Modal>
+      )}
+      <div className="flex items-center gap-3">
+        <span className="icon-tile shrink-0"><Warehouse size={20} /></span>
+        <div className="min-w-0">
+          <p className="muted text-xs font-semibold uppercase tracking-wide">Depo</p>
+          <p className="truncate text-xs text-muted">Alətlər və materiallar</p>
+        </div>
+        <button type="button" onClick={() => setOpen("tool")} className="btn btn-soft btn-sm !h-9 ml-auto">
+          <Users size={15} /> Kimdə nə var
+        </button>
+      </div>
+      <div className="grid grid-cols-4 gap-2">
+        <Num label="Alət, cəmi" value={sum((t) => t.quantity)} onClick={() => setOpen("tool")} />
+        <Num label="Ustalarda" value={sum((t) => t.given_out)} tone="text-primary" onClick={() => setOpen("tool")} />
+        <Num label="Depoda" value={sum((t) => t.available)} tone="text-ok" onClick={() => setOpen("tool")} />
+        <Num label="Material" value={stock.length - tools.length} onClick={() => setOpen("material")} />
+      </div>
+    </section>
   );
 }

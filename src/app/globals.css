@@ -34,21 +34,32 @@
 
 /*
   Ekrana görə dəyişən ölçülər. Böyük monitorda geniş, noutbukda yığcam.
-  --gutter: yanlardakı boşluq, --panel-w: sağ panelin eni,
-  --topbar-h / --hero-h: sabit header-in iki hissəsi, --gap: konteynerlər arası boşluq.
+  --gutter: məzmunun yan boşluğu, --panel-w: sağ panelin eni, --nav-w: sol menyunun eni (yığılanda 80px, < 1024 yoxdur),
+  --topbar-h: yuxarıdakı yapışan zolaq, --header-h: məzmunun başladığı hündürlük, --gap: konteynerlər arası boşluq.
 */
 :root {
-  --gutter: clamp(24px, 5vw, 120px);
-  --panel-w: clamp(360px, 26vw, 440px);
+  --gutter: clamp(20px, 2.6vw, 56px);
+  --panel-w: clamp(340px, 24vw, 420px);
+  --nav-w: 264px;
   --topbar-h: 72px;
-  --hero-h: 88px;
   --gap: 24px;
-  --header-h: calc(var(--topbar-h) + 1px + var(--hero-h)); /* 1px: menyu altındakı xətt */
+  --header-h: var(--topbar-h);
+}
+:root[data-nav="mini"] {
+  --nav-w: 84px;
 }
 @media (max-height: 820px) {
   :root {
-    --topbar-h: 60px;
-    --hero-h: 64px;
+    --topbar-h: 64px;
+    --gap: 16px;
+  }
+}
+@media (max-width: 1023px) {
+  :root,
+  :root[data-nav="mini"] {
+    --nav-w: 0px;
+    --topbar-h: 64px;
+    --gutter: 16px;
     --gap: 16px;
   }
 }
@@ -96,44 +107,356 @@
 }
 
 @layer components {
-  /* ---------- Header ---------- */
-  /* Menyu + başlıq zolağı birlikdə yuxarıda sabit qalır (cəmi 72 + 88 = 160px) */
-  .app-sticky {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    box-shadow: 0 4px 16px rgba(10, 26, 51, 0.18);
+  /* ---------- Panel karkası: sol menyu + yapışan üst zolaq ---------- */
+  /* Səhifələr sol menyunun sağında başlayır (< 1024 menyu çəkmə paneldir, yer tutmur) */
+  .panel-body {
+    padding-left: var(--nav-w);
+    transition: padding-left 220ms ease;
   }
 
-  .app-topbar {
+  /* Sol menyu: tünd, üstdə yumşaq firuzəyi işıq; aktiv bənd göy→firuzəyi qradiyentdə */
+  .panel-nav {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    width: var(--nav-w);
     color: #fff;
-    background: linear-gradient(90deg, #0a1a33 0%, #0f2a55 55%, #0e3b6e 100%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background:
+      radial-gradient(420px 260px at 0% 0%, rgba(34, 195, 230, 0.16), transparent 65%),
+      radial-gradient(380px 300px at 100% 100%, rgba(31, 111, 235, 0.18), transparent 65%),
+      linear-gradient(180deg, #0a1a33 0%, #0c2246 55%, #0a1a33 100%);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    transition: width 220ms ease, transform 240ms ease;
   }
-
-  /* Səhifə başlığı zolağı: menyu ilə eyni rəng keçidi, üstündə işıq effekti */
-  .app-header {
+  .panel-nav-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: var(--topbar-h);
+    padding: 0 18px;
+    flex-shrink: 0;
+  }
+  .panel-nav-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 4px 14px 12px;
+    scrollbar-width: none;
+  }
+  .panel-nav-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .nav-group + .nav-group {
+    margin-top: 6px;
+  }
+  .nav-group-title {
+    height: 34px;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 12px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.36);
+  }
+  .nav-item {
     position: relative;
     display: flex;
     align-items: center;
-    height: var(--hero-h);
-    color: #fff;
-    background:
-      radial-gradient(900px 160px at 85% 0%, rgba(34, 195, 230, 0.3), transparent 70%),
-      radial-gradient(600px 160px at 10% 120%, rgba(31, 111, 235, 0.45), transparent 70%),
-      linear-gradient(90deg, #0a1a33 0%, #0f2a55 55%, #0e3b6e 100%);
-    overflow: hidden;
+    gap: 12px;
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    color: rgba(255, 255, 255, 0.66);
+    transition: background-color 150ms ease, color 150ms ease;
   }
-  /* İncə şəbəkə naxışı: kondisioner barmaqlığını xatırladır */
-  .app-header::before {
-    content: "";
-    position: absolute;
+  .nav-item + .nav-item {
+    margin-top: 2px;
+  }
+  .nav-item:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.07);
+  }
+  .nav-item[aria-current="page"] {
+    color: #fff;
+    background: linear-gradient(90deg, #1f6feb, rgba(34, 195, 230, 0.75));
+    box-shadow: 0 10px 24px -10px rgba(31, 111, 235, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+  .nav-badge {
+    display: grid;
+    place-items: center;
+    min-width: 22px;
+    height: 22px;
+    margin-left: auto;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: #ff9f1c;
+    color: #1a1204;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .panel-nav-foot {
+    flex-shrink: 0;
+    padding: 12px 14px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .nav-profile {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 6px;
+    padding: 4px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .nav-collapse svg {
+    transition: transform 220ms ease;
+  }
+  .nav-icon-btn {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .nav-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+
+  /* Yığılmış menyu: yalnız ikonlar, ad title-da; qrup adları nazik xəttə çevrilir */
+  @media (min-width: 1024px) {
+    :root[data-nav="mini"] .nav-label {
+      display: none;
+    }
+    :root[data-nav="mini"] .panel-nav-head {
+      justify-content: center;
+      padding: 0;
+    }
+    :root[data-nav="mini"] .nav-item {
+      justify-content: center;
+      padding: 0;
+    }
+    :root[data-nav="mini"] .nav-group-title {
+      height: 17px;
+      margin: 0 12px 8px;
+      padding: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    :root[data-nav="mini"] .nav-badge {
+      position: absolute;
+      top: 4px;
+      right: 6px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 4px;
+      font-size: 10px;
+    }
+    :root[data-nav="mini"] .nav-profile {
+      flex-direction: column;
+      background: transparent;
+      border-color: transparent;
+    }
+    :root[data-nav="mini"] .nav-profile > button:first-child {
+      flex: none;
+    }
+    :root[data-nav="mini"] .nav-collapse svg {
+      transform: rotate(180deg);
+    }
+  }
+
+  /* < 1024: menyu soldan çıxan çəkmə panel, arxada qaraltma */
+  @media (max-width: 1023px) {
+    .panel-nav {
+      width: min(300px, 86vw);
+      transform: translateX(-100%);
+      box-shadow: none;
+    }
+    .panel-nav.is-open {
+      transform: none;
+      box-shadow: 24px 0 60px rgba(6, 16, 33, 0.35);
+    }
+  }
+  .panel-nav-scrim {
+    position: fixed;
     inset: 0;
-    background-image: repeating-linear-gradient(
-      90deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 28px
-    );
-    mask-image: linear-gradient(to bottom, black, transparent 85%);
-    pointer-events: none;
+    z-index: 55;
+    background: rgba(6, 16, 33, 0.45);
+    backdrop-filter: blur(2px);
+  }
+
+  /* Üst zolaq: ağ şüşə, sürüşəndə məzmun altından keçir */
+  .app-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: var(--topbar-h);
+    background: rgba(244, 246, 250, 0.82);
+    backdrop-filter: saturate(1.4) blur(14px);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .page-title h1 {
+    font-size: 21px;
+    font-weight: 800;
+    color: var(--color-ink);
+  }
+  .page-title p {
+    margin-top: 1px;
+    font-size: 13px;
+    color: var(--color-muted);
+  }
+  @media (max-height: 820px), (max-width: 1023px) {
+    .page-title h1 {
+      font-size: 18px;
+    }
+  }
+  .topbar-icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    color: var(--color-ink);
+  }
+  kbd {
+    display: inline-grid;
+    place-items: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 6px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-line);
+    border-bottom-width: 2px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-muted);
+  }
+  .btn-glow {
+    background: linear-gradient(135deg, #1f6feb, #1a8fe0);
+    box-shadow: 0 8px 20px -8px rgba(31, 111, 235, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  /* Ctrl+K pəncərəsi */
+  .cmdk-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 12vh 16px 16px;
+    background: rgba(6, 16, 33, 0.42);
+    backdrop-filter: blur(3px);
+    animation: cmdk-fade 140ms ease-out;
+  }
+  .cmdk {
+    display: flex;
+    flex-direction: column;
+    width: min(640px, 100%);
+    max-height: min(560px, 76vh);
+    overflow: hidden;
+    border-radius: 18px;
+    background: var(--color-surface);
+    box-shadow: 0 30px 80px rgba(6, 16, 33, 0.35), 0 0 0 1px rgba(6, 16, 33, 0.06);
+    animation: cmdk-in 160ms ease-out;
+  }
+  .cmdk-input {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 58px;
+    padding: 0 16px 0 18px;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .cmdk-input input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    font-size: 16px;
+    background: transparent;
+    outline: none;
+  }
+  .cmdk-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 6px 8px 10px;
+  }
+  .cmdk-group {
+    padding: 12px 10px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .cmdk-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 12px;
+    text-align: left;
+    font-size: 14px;
+  }
+  .cmdk-item[aria-selected="true"] {
+    background: var(--color-primary-soft);
+  }
+  .cmdk-icon {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: var(--color-bg);
+    color: var(--color-muted);
+  }
+  .cmdk-item[aria-selected="true"] .cmdk-icon {
+    background: var(--color-primary);
+    color: #fff;
+  }
+  .cmdk-foot {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 16px;
+    border-top: 1px solid var(--color-line);
+    background: #fafbfd;
+    font-size: 12px;
+    color: var(--color-muted);
+  }
+  .cmdk-foot span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  @media (max-width: 639px) {
+    .cmdk-foot {
+      display: none;
+    }
+  }
+  @keyframes cmdk-fade {
+    from { opacity: 0; }
+  }
+  @keyframes cmdk-in {
+    from { opacity: 0; transform: translateY(-8px) scale(0.98); }
   }
 
   .app-shell {
@@ -146,63 +469,12 @@
     place-items: center;
     width: 40px;
     height: 40px;
+    flex-shrink: 0;
     border-radius: 12px;
     background: linear-gradient(135deg, var(--color-frost), var(--color-primary));
     box-shadow: 0 6px 20px rgba(34, 195, 230, 0.35);
   }
 
-  .nav-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    height: 38px;
-    padding: 0 14px;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 14px;
-    white-space: nowrap;
-    color: rgba(255, 255, 255, 0.72);
-    transition: background-color 150ms ease, color 150ms ease;
-  }
-  @media (max-width: 1600px) {
-    .nav-link {
-      padding: 0 8px;
-      gap: 5px;
-      font-size: 13px;
-    }
-    .user-chip {
-      white-space: nowrap;
-    }
-  }
-  /* Kiçik ekranlarda menyu bəndlərinin ikonları gizlənir (yer qazanmaq üçün) */
-  @media (max-width: 1620px) {
-    .nav-link > svg {
-      display: none;
-    }
-  }
-  .nav-link:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.08);
-  }
-  .nav-link[aria-current="page"] {
-    color: var(--color-navy);
-    background: #fff;
-  }
-
-  .user-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 4px 4px 4px 12px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    font-size: 13px;
-    flex-shrink: 0;
-  }
-  .user-chip > * {
-    flex-shrink: 0;
-  }
   .avatar {
     display: grid;
     place-items: center;
@@ -215,37 +487,21 @@
     text-transform: uppercase;
   }
 
-  /* Səhifə başlığı tünd zolağın içində */
-  .page-hero h1 {
-    font-size: 24px;
-    font-weight: 800;
-    color: #fff;
-  }
-  .page-hero p {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
-  }
-  /* Geri düyməsi başlığın solunda, ayrıca sətir tutmur */
+  /* Geri düyməsi başlığın solunda */
   .hero-back {
     display: grid;
     place-items: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    color: rgba(255, 255, 255, 0.85);
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    color: var(--color-ink);
     flex-shrink: 0;
   }
   .hero-back:hover {
-    background: rgba(255, 255, 255, 0.16);
-    color: #fff;
-  }
-
-  @media (max-height: 820px) {
-    .page-hero h1 {
-      font-size: 20px;
-    }
+    border-color: #c9dafb;
+    color: var(--color-primary);
   }
 
   /* Məzmun header zolağından aşağıda başlayır */
