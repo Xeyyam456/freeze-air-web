@@ -174,7 +174,13 @@ export function MyDay() {
       </button>
     </>
   ) : day.status === "present" && p ? (
-    pill("bg-bg text-ink", `İşi bitirdin · ${presenceText(p)}`)
+    <>
+      {pill("bg-bg text-ink", `İşi bitirdin · ${presenceText(p)}`)}
+      {/* Təcili iş çıxsa yenidən işə çıxır: yeni seans açılır (0066), sonra yenə "İşi bitirdim" */}
+      <button type="button" onClick={checkIn} disabled={checking} className="btn btn-soft btn-sm !h-9" title="Yeni seans açılır">
+        <LogIn size={15} /> {checking ? "..." : "Yenidən işə çıxdım"}
+      </button>
+    </>
   ) : day.status === "leave" ? (
     <>
       {pill("bg-violet-50 text-violet-700", "Bu gün icazəlisən")}

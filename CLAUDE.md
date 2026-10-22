@@ -20,7 +20,7 @@ Kondisioner servis şirkəti **Freeze Air Service** üçün sistem: ustalar, mü
 İkisi də **eyni Supabase layihəsini** işlədir. Admin funksiyaları bu repoda **yoxdur**. `supabase/` qovluğu (miqrasiyalar + Edge Function) **admin reposuna aiddir**; baza dəyişikliyi lazım olanda miqrasiya orada yazılır, Supabase MCP ilə tətbiq olunur.
 
 ## Layihə strukturu, git və iş qaydaları (admin və web fayllarında eynidir)
-- **Qovluqlar** (`D:\Praqramlasirma\Projects\kondisioner-servis\`): `admin/` (Vite, 5173), `web/` (Next.js, 3000), `supabase/` (miqrasiyalar `0001`–`0065`, hamısı bazada tətbiq olunub + Edge Function `admin-accounts`; repolar ayrılanda `admin/supabase/`-a köçürüləcək), `excel/` (test və import faylları, heç bir repoya aid deyil, git-ignore). **Kökdə CLAUDE.md yoxdur**: hər platformanın öz faylı tamdır, işlədiyin platformanın qovluğundan başla (`admin/CLAUDE.md` və ya `web/CLAUDE.md`).
+- **Qovluqlar** (`D:\Praqramlasirma\Projects\kondisioner-servis\`): `admin/` (Vite, 5173), `web/` (Next.js, 3000), `supabase/` (miqrasiyalar `0001`–`0069`, hamısı bazada tətbiq olunub + Edge Function `admin-accounts`; repolar ayrılanda `admin/supabase/`-a köçürüləcək), `excel/` (test və import faylları, heç bir repoya aid deyil, git-ignore). **Kökdə CLAUDE.md yoxdur**: hər platformanın öz faylı tamdır, işlədiyin platformanın qovluğundan başla (`admin/CLAUDE.md` və ya `web/CLAUDE.md`).
 - **Yeni kompüterdə qurmaq**: `git clone https://github.com/Xeyyam456/kondisioner-servis.git`; `admin/` və `web/`-də `npm install`; hər qovluqda `.env.example`-ı `.env.local` adı ilə kopyala və publishable açarı doldur (Supabase → Project Settings → API); `npm run dev`. Gizli (service role) açar lokalda lazım deyil. Baza və Edge Function Supabase-dədir (kopyalanmır).
 - **Git**: hələlik **bir repo** (kök, budaq `main`): `admin/`, `web/`, `supabase/` birlikdə commit və push olunur, sonda ayrılacaq (məs. `git subtree split --prefix=admin`). **Ayrı deploy repoları** (2026-10-19): `web/` → `github.com/Xeyyam456/freeze-air-web`, `admin/` → `github.com/Xeyyam456/freeze-air-admin` (ikisi private, budaq `main`, remote adları `web` və `admin`; Vercel bunlardan deploy edir). Kök repo işləmə yeri qalır, bu ikisi onun `subtree` güzgüsüdür: **ayrı repolarda birbaşa dəyişiklik etmə**. **Push qaydası (istifadəçi qərarı, 2026-10-20)**: commit və push **yalnız istifadəçi deyəndə** ("push et", "pushla"); deyəndə dəyişən hər şey **həm kökə, həm də aid ayrı repoya** push olunur: `git push origin main`, sonra dəyişən qovluğa görə `git subtree push --prefix=web web main` və/və ya `git subtree push --prefix=admin admin main` (yalnız `supabase/` dəyişibsə ayrı repo lazım deyil). Yarımçıq və ya uğursuz iş push olunmur; istifadəçi "hələ push etmə" desə gözlə. Commit mesajı Azərbaycanca. Commitdən əvvəl: admin `npx tsc -b`, web `npx tsc --noEmit` + `npx eslint src`. `.env*` və `excel/` repoya düşmür, `.gitattributes`: LF. İstifadəçi "hələ push etmə, xoşuma gəlməsə geri dönək" deyəndə yeni funksiya `feature/...` budağında commit olunur; təsdiqdən sonra `main`-ə `--ff-only` + push (bazadakı miqrasiyalar budaqla geri qayıtmır: miqrasiya faylının başına `drop` əmrlərini yaz).
 - **Dev serverləri Claude özü idarə edir** (2026-10-17-dən, istifadəçi istəyi): `admin/` → `npm run dev` (5173), `web/` → `npm run dev` (3000), fon prosesləri. Chrome-da hər biri üçün ayrı tab açıq qalır (admin, landing, usta paneli), tabları bağlama. Yaddaş azalıb server ölərsə yenidən başlat və tabı yenilə.
@@ -59,7 +59,7 @@ Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
 - **`/panel` yuxarıda "Mənim bugünüm" kartı** (2026-10-17; `components/work/MyDay.tsx`): bugün neçə iş yazılıb + **"İş əlavə et"** düyməsi → `WorkLogForm`; əməkdaş kartı olmayan hesabda görünmür. İş yazılanda `window` hadisəsi `WORK_SAVED` atılır: sayğac və `WorkHistory` siyahısı yenilənir.
 - **Usta paneli əlavələri (2026-10-21/22, istifadəçi istəyi)**:
   - **Tapşırıqlar Realtime** (`components/work/TasksListener.tsx`, `app/(panel)/layout.tsx`): yeni tapşırıq → tost + səs + tab başlığı, menyuda "Tapşırıqlar" yanında bugünkü açıq tapşırıq nişanı (`lib/tasks-live.ts`), siyahı və "Mənim bugünüm" dərhal yenilənir; geri alınan tapşırıq "Geri alınıb → Ad" (üstüxətli), işarələnmir.
-  - **"Mənim bugünüm"** (`MyDay.tsx`): "İşə gəldim" → "İşdəsən · 09:02-dən" + "İşi bitirdim" → "İşi bitirdin · 09:02 – 18:10"; bazar günü "Bazar günü işdəyəm"; icazəli gündə "İcazəyə ehtiyac qalmadı, işdəyəm"; "İcazə istə" (`LeaveModal.tsx`: tarix aralığı, səbəb, son sorğular, "Ehtiyac qalmadı"); davamiyyət təqvimi düyməsi; 4 göstərici (bu gün, bu ay, tapşırıq, məndə).
+  - **"Mənim bugünüm"** (`MyDay.tsx`): "İşə gəldim" → "İşdəsən · 09:02-dən" + "İşi bitirdim" → "İşi bitirdin · 09:02 – 18:10" + "Yenidən işə çıxdım" (təcili iş: yeni seans, gün bir dəfə sayılır; təqvimdə və Excel-də hər seans ayrıca, müddət cəmdir); bazar günü "Bazar günü işdəyəm"; icazəli gündə "İcazəyə ehtiyac qalmadı, işdəyəm"; "İcazə istə" (`LeaveModal.tsx`: tarix aralığı, səbəb, son sorğular, "Ehtiyac qalmadı"); davamiyyət təqvimi düyməsi; 4 göstərici (bu gün, bu ay, tapşırıq, məndə).
   - **Davamiyyət** (`/davamiyyet`, menyuda; `components/employees/AttendanceBoard.tsx`, `AttendanceCalendar.tsx`, `lib/attendance.ts`, `lib/export-attendance.ts` — **admin-də eyni fayllar**): iş həftəsi 6 gün (bazar istirahət, bazar işləsə "+N bazar"); sayım `ATTENDANCE_START` (2026-10-21) gündən; ay seçimi, bu günün xanaları (hazırda işdə, işi bitirib, icazəli, hələ gəlməyib, işdə olmayıb, gözləyən sorğu), hər usta: iş günü, işdə olub, icazə (dəfə · gün), icazəsiz, cəmi işdə olmayıb, bazar; sətir → təqvim (rəngli günlər: işdə yaşıl ✓, icazəli bənövşəyi, gəlmədi qırmızı, bazar tünd boz; sağda tam tarix + gəlmə/getmə + müddət); **Excel** (bütün ustalar: Xülasə + Gün-gün vərəqi; bir usta: gün-gün). Təsdiqlənmiş icazə işdə olmaqdan üstündür. Ustalar kartlarında davamiyyət yoxdur (ayrıca bölmədir).
   - **İş tarixçəsi** (`components/work/PlaceHistory.tsx`): mağaza kartında "Tarixçə", şirkət kartında "İş tarixçəsi" (özü + filialları), günlərə görə, axtarışlı, klik → `WorkLogModal`.
   - **İş formasında**: işlədilən material (üzərimdəki materiallardan, `work_log_materials`), yeni işin qaralaması (`localStorage`, fayllar yox). Xəta kodu seçimi və "ən çox rast gəlinən xətalar" **ləğv olunub** (istifadəçi: "artıq şeydir") — yenidən təklif etmə.
@@ -156,10 +156,10 @@ Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
 - **Üç səviyyə:** sahib (müdir, `profiles.is_owner`) → admin → usta (worker). Qonaq (anon) yalnız saytın açıq məlumatlarını oxuyur.
 - Giriş edən hər kəs iş cədvəllərini oxuyur (companies, stores, employees, tools, work_logs…).
 - **Depo** (`tools`, `tool_assignments`): yazmaq yalnız **depo məsulu və sahib** (`can_manage_tools()`); digər adminlər və ustalar yalnız baxır. Depo məsulu usta da ola bilər: admin panelə daxil olub Depo bölməsini idarə edir.
-- **Admin**: şirkət, mağaza, usta, sayt məzmunu yazır; müraciətləri oxuyur, dəyişir, silir. İş qeydi **açmır**.
+- **Admin** (rəhbərlik hesabı): şirkət, mağaza, usta yazır (sayt məzmununu **yalnız müdir**, 0069); hər əməkdaşın şəkli və telefonu; müraciətləri oxuyur, dəyişir, silir. İş qeydi **açmır**.
 - **Rəhbərlik (`is_management`) sətirlərini yalnız sahib yazır**; sahib öz kartını dəyişə və silə bilməz.
 - **Usta**: yalnız öz iş qeydini (və fayllarını) əlavə edir; dəyişmək və silmək: sahibi və ya admin.
-- **Profil şəkli**: hər kəs yalnız öz şəklini, müdir hamınınkını (storage də: öz qovluğu və ya müdir).
+- **Profil şəkli**: hər kəs öz şəklini, istənilən admin (rəhbər) hamınınkını (storage də: öz qovluğu və ya admin; 0069).
 - `profiles`: istifadəçi yalnız öz `full_name`-ini dəyişir; özünü və ya admin hamını görür.
 - Sayt cədvəlləri (`site_*`): anon və authenticated oxuyur, admin yazır. `contact_requests`: hamı **yalnız əlavə edir**, oxumaq admin. Anon üçün oxu qaydaları ayrıdır, çünki anon `is_admin()`-i çağıra bilmir.
 
@@ -176,7 +176,7 @@ Storage-də `remove` faylı həmişə dərhal silmir; köhnə şəkillər bucket
 - Publikasiya `supabase_realtime`-da: `contact_requests` (yalnız admin alır), `tasks`, `attendance`, `leave_requests`, `attendance_absences` (giriş edən hər kəs). Web-də kanal sessiya yüklənəndən sonra açılır (`supabase.realtime.setAuth`), yoxsa anon kimi qoşulur və hadisə gəlmir.
 
 ### Miqrasiyalar (`supabase/migrations/`, admin reposunda)
-- `0001`–`0065`. Ad formatı `NNNN_ad.sql`; Supabase MCP `apply_migration` ilə tətbiq et və faylı da yaz.
+- `0001`–`0069`. Ad formatı `NNNN_ad.sql`; Supabase MCP `apply_migration` ilə tətbiq et və faylı da yaz.
 - Mühüm olanlar:
   - 0005: work_logs, `my_employee_id`;
   - 0010: rol trigger-i;
@@ -209,6 +209,10 @@ Storage-də `remove` faylı həmişə dərhal silmir; köhnə şəkillər bucket
   - 0061: `attendance.checked_out_at`, `check_out` ("İşi bitirdim");
   - 0062: bazar günü də `check_in` (əlavə gün);
   - 0063: `leave_cancel` (usta icazədən imtina edir; başlayıbsa keçmiş günlər qalır), status `cancelled`;
+  - 0069: rəhbərlərin hüquqları: saytın məzmununu (site_* + site bucket) **yalnız müdir** yazır; istənilən admin hər əməkdaşın şəklini (`set_employee_photo`, avatars) və telefonunu dəyişir; rəhbərlik kartında (və müdirin öz kartında) admin yalnız telefon/şəkil dəyişir (`employees_guard_management`);
+  - 0068: `tasks_guard`: iş qeydi silinəndə bağlantının boşalmasına geri alınmış tapşırıqda da icazə (əvvəl silmə bloklanırdı); iş silməsi əvvəl qeydi, sonra faylları silir və alınmasa xəta göstərir;
+  - 0067: admin cavablanmış icazə sorğularını silir (gözləyən yox);
+  - 0066: gündə bir neçə seans: `attendance` hər seans bir sətir (unikal yalnız açıq seans üçün), "Yenidən işə çıxdım";
   - 0065: `attendance_absences` (admin "işdə olmayıb" qeyd edir, usta həmin gün check_in edə bilmir), Realtime;
   - 0055: istifadə olunmayan mətnlər silindi (hero üzən kartları `home.hero.temp*`, `home.hero.badge`, `service.cta`, `team.management`, `team.masters`);
   - 0054: `site_texts.contact.route*` (Əlaqə xəritəsində "Marşrut qur");
