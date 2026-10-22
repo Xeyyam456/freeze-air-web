@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { Warehouse } from "lucide-react";
 import { Page } from "@/components/Page";
 import { ToolsPanel, type HolderPerson, type StockItem } from "@/components/depot/ToolsPanel";
 import { MyDay } from "@/components/work/MyDay";
@@ -38,7 +37,10 @@ export default function Home() {
       <div className="grid h-[calc(100vh-var(--header-h)-2*var(--gap))] grid-cols-[1.6fr_1fr] gap-5">
         {/* Sol: mənim bugünüm + görülən işlər (tarixçə) */}
         <div className="flex min-h-0 flex-col gap-5">
-          <MyDay />
+          {/* MyDay render zamanı tarixi oxuyur (davamiyyət): Next 16 bunu Suspense daxilində tələb edir */}
+          <Suspense fallback={<div className="card h-[118px]" />}>
+            <MyDay />
+          </Suspense>
           <section className="card flex min-h-0 flex-1 flex-col">
             {/* Tarix render zamanı oxunur (new Date): Next 16 bunu Suspense daxilində tələb edir */}
             <Suspense fallback={loading}>
@@ -49,9 +51,9 @@ export default function Home() {
 
         {/* Sağ: alətlər */}
         <div className="flex min-h-0 flex-col gap-5">
-          <section className="card flex min-h-0 flex-1 flex-col">
-            <h2 className="card-title mb-3 flex items-center gap-2"><Warehouse size={18} className="text-primary" /> Depo</h2>
-            <Suspense fallback={loading}>
+          {/* Depo: tünd kart (Statistika üslubunda), başlıq ToolsPanel-in içindədir */}
+          <section className="card flex min-h-0 flex-1 flex-col !border-transparent !bg-[#0c1b36] text-white">
+            <Suspense fallback={<p className="text-sm text-white/50">Yüklənir...</p>}>
               <Tools />
             </Suspense>
           </section>
