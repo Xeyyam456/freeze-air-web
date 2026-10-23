@@ -6,7 +6,8 @@ import { Page } from "@/components/Page";
 import { PendingBlock } from "@/components/depot/Approvals";
 import { DepotBoard, type DepotView } from "@/components/depot/DepotBoard";
 import { CountModal, ReceiptModal } from "@/components/depot/DepotDocs";
-import { exportStock, MoreMenu, ShoppingModal } from "@/components/depot/DepotExtras";
+import { ExcelModal } from "@/components/depot/DepotExcel";
+import { MoreMenu, ShoppingModal } from "@/components/depot/DepotExtras";
 import { HistoryModal } from "@/components/depot/HistoryModal";
 import { isLowStock, type DepotRequest, type Holding, type Kind, type Piece, type Loss, type Repair, type Tool } from "@/components/depot/depotUtils";
 import { createClient } from "@/lib/supabase/client";
@@ -41,7 +42,7 @@ export function DepotPage({ myUid, owner }: { myUid: string | null; owner: boole
   const data = useData(fetchDepot);
   const [tab, setTab] = useState<DepotView>("home");
   const [openToolId, setOpenToolId] = useState<number | null>(null);
-  const [modal, setModal] = useState<"receipt" | "count" | "shopping" | "journal" | null>(null);
+  const [modal, setModal] = useState<"receipt" | "count" | "shopping" | "journal" | "excel" | null>(null);
   const [receiptTool, setReceiptTool] = useState<Tool | null>(null);
   const kind: Kind = tab === "material" ? "material" : "tool";
 
@@ -62,7 +63,7 @@ export function DepotPage({ myUid, owner }: { myUid: string | null; owner: boole
             <MoreMenu items={[
               { label: "Sayım", icon: ClipboardCheck, onClick: () => setModal("count") },
               { label: "Alınmalı", icon: ShoppingCart, onClick: () => setModal("shopping"), badge: low },
-              { label: "Excel", icon: FileSpreadsheet, onClick: () => exportStock(tools, holdings) },
+              { label: "Excel", icon: FileSpreadsheet, onClick: () => setModal("excel") },
               { label: "Jurnal", icon: History, onClick: () => setModal("journal") },
             ]} />
           )}
@@ -82,6 +83,7 @@ export function DepotPage({ myUid, owner }: { myUid: string | null; owner: boole
           {modal === "count" && <CountModal tools={tools} kind={kind} onClose={() => setModal(null)} />}
           {modal === "shopping" && <ShoppingModal tools={tools} onReceipt={(t) => openReceipt(t)} onClose={() => setModal(null)} />}
           {modal === "journal" && <HistoryModal kind={kind} onClose={() => setModal(null)} />}
+          {modal === "excel" && <ExcelModal tools={tools} holdings={holdings} employees={data.employees} onClose={() => setModal(null)} />}
 
           <PendingBlock requests={data.requests} holdings={holdings} tools={tools} myUid={myUid} owner={owner} />
 
