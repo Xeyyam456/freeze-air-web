@@ -5,6 +5,7 @@ import { leaveRange } from "@/lib/attendance";
 import { isSoundReady, playNotify } from "@/lib/sound";
 import { createClient } from "@/lib/supabase/client";
 import type { Tables } from "@/lib/database.types";
+import { revalidate } from "@/lib/revalidate";
 import { refreshMyOpenTasks, TASKS_CHANGED } from "@/lib/tasks-live";
 import { toast } from "@/lib/toast";
 
@@ -45,6 +46,7 @@ export function TasksListener() {
   useEffect(() => {
     const supabase = createClient();
     let me: number | null = null;
+    let keeper = false; // depo məsulu / admin: yeni depo sənədində tost
     let cancelled = false;
     let channel: ReturnType<typeof supabase.channel> | null = null;
 
@@ -76,6 +78,34 @@ export function TasksListener() {
         else if (l.status === "rejected") toast.error(`İcazən rədd edildi: ${range}`, l.reason ?? undefined);
         playNotify();
       })
+      // Depo (0084): mənə alət verildi → "Aldım" xatırlatması; sorğuma cavab → tost; depo məsuluna yeni sənəd → tost.
+      // Hər dəyişiklikdə Alətlərim və Depo səhifələri yenilənir (useData → revalidate).
+      .on("postgres_changes", { event: "*", schema: "public", table: "tool_assignments" }, async (payload) => {
+        revalidate();
+        const a = payload.new as Partial<Tables<"tool_assignments">>;
+        const o = payload.old as Partial<Tables<"tool_assignments">>;
+        if (!me || a.employee_id !== me || a.returned_at || a.received_at) return;
+        const given = payload.eventType === "INSERT" || (o.received_at && !a.received_at);
+        if (!given) return;
+        const { data: t } = await supabase.from("tools").select("name").eq("id", a.tool_id!).maybeSingle();
+        toast.success(`Sənə verildi: ${t?.name ?? "alət"}`, "Alətlərim bölməsində «Aldım» ilə təsdiqlə");
+        playNotify();
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "depot_requests" }, (payload) => {
+        revalidate();
+        const r = payload.new as Tables<"depot_requests">;
+        const o = payload.old as Partial<Tables<"depot_requests">>;
+        if (payload.eventType === "INSERT" && keeper && r.employee_id !== me) {
+          toast.success(`Depo: ${r.created_by_name ?? ""}`, `${r.tool_name} · ${r.type === "return" ? "qaytarır" : r.type === "request" ? "istəyir" : "təsdiq gözləyir"}`);
+          playNotify();
+          return;
+        }
+        if (payload.eventType !== "UPDATE" || !me || r.employee_id !== me || r.status === o.status || !r.decided_by) return;
+        const what = r.type === "return" ? "Qaytarman" : r.type === "request" ? "İstəyin" : "Sənəd";
+        if (r.status === "approved") toast.success(`${what} qəbul edildi: ${r.tool_name}`, r.decided_by_name ?? undefined);
+        else if (r.status === "rejected") toast.error(`${what} rədd edildi: ${r.tool_name}`, r.decision_note ?? r.decided_by_name ?? undefined);
+        playNotify();
+      })
       .subscribe();
 
     // Kanal sessiya yüklənəndən sonra açılır: yoxsa Realtime-a qonaq (anon) kimi qoşulur və RLS hadisələri göndərmir
@@ -83,9 +113,10 @@ export function TasksListener() {
       const { data: { session } } = await supabase.auth.getSession();
       if (cancelled || !session) return;
       await supabase.realtime.setAuth(session.access_token);
-      const { data } = await supabase.rpc("my_employee_id");
+      const [{ data }, { data: canManage }] = await Promise.all([supabase.rpc("my_employee_id"), supabase.rpc("can_manage_tools")]);
       if (cancelled) return;
       me = data ?? null;
+      keeper = canManage === true;
       void refreshMyOpenTasks(me);
       channel = subscribe();
     })();

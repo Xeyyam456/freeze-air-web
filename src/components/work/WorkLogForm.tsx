@@ -26,6 +26,9 @@ export type ExistingLog = {
 type Draft = { work_date?: string; description?: string; place?: Place | null; materials?: Record<number, string> };
 // Ustanın üzərindəki material (açıq təhvil): iş qeydində nə qədər işlətdiyini yazır (migrasiya 0060)
 type HeldMaterial = { toolId: number; name: string; unit: string; quantity: number };
+// Material miqdarı kəsr ola bilər (0085: 2,5 kq): "2,5" və "2.5" ikisi də olur
+const toNum = (s: string | undefined) => Math.round((Number(String(s ?? "").trim().replace(",", ".")) || 0) * 100) / 100;
+const fmtNum = (n: number) => String(Math.round(n * 100) / 100).replace(".", ",");
 const draftKey = (employeeId: number) => `worklog-draft:${employeeId}`;
 function readDraft(employeeId: number): Draft | null {
   try {
@@ -130,13 +133,13 @@ export function WorkLogForm({ employeeId, employeeName, existing, onClose, onSav
       setHeld(assign.filter((a) => a.tools?.kind === "material").map((a) => ({ toolId: a.tools!.id, name: a.tools!.name, unit: a.tools!.unit, quantity: a.quantity }))
         .sort((a, b) => a.name.localeCompare(b.name, "az")));
       if (prev.length) {
-        usedRef.current = Object.fromEntries(prev.map((m) => [m.tool_id, String(m.amount)]));
+        usedRef.current = Object.fromEntries(prev.map((m) => [m.tool_id, fmtNum(m.amount)]));
         setUsed(usedRef.current);
       }
     });
     return () => { cancelled = true; };
   }, [employeeId, existing]);
-  const overused = held.filter((m) => Number(used[m.toolId] || 0) > m.quantity);
+  const overused = held.filter((m) => toNum(used[m.toolId]) > m.quantity);
 
   // Qaralamanı yenilə: mətn yazılanda (form onChange), yer və ya kod seçiləndə
   function saveDraft(next: Partial<Draft> = {}) {
@@ -151,7 +154,7 @@ export function WorkLogForm({ employeeId, employeeName, existing, onClose, onSav
     const form = new FormData(e.currentTarget);
     if (!place) return toast.error("İşin görüldüyü yeri seç.");
     if (!String(form.get("description") ?? "").trim()) return toast.error("Görülən işi yaz.");
-    if (overused.length) return toast.error(`${overused[0].name}: üzərində cəmi ${overused[0].quantity} ${overused[0].unit} var.`);
+    if (overused.length) return toast.error(`${overused[0].name}: üzərində cəmi ${fmtNum(overused[0].quantity)} ${overused[0].unit} var.`);
     // Redaktədə əvvəl "Məlumatların doğruluğunu təsdiq edirsinizmi?" soruşulur
     if (existing) setConfirmData(form);
     else save(form);
@@ -213,7 +216,7 @@ export function WorkLogForm({ employeeId, employeeName, existing, onClose, onSav
     }
 
     // İşlədilən material: əvvəlkilər silinir, sıfırdan böyük olanlar yazılır (yalnız məlumat, depoda say dəyişmir)
-    const rows = held.map((m) => ({ work_log_id: logId, tool_id: m.toolId, amount: Math.floor(Number(used[m.toolId] || 0)) })).filter((r) => r.amount > 0);
+    const rows = held.map((m) => ({ work_log_id: logId, tool_id: m.toolId, amount: toNum(used[m.toolId]) })).filter((r) => r.amount > 0);
     if (existing) await supabase.from("work_log_materials").delete().eq("work_log_id", logId);
     if (rows.length) {
       const { error: mErr } = await supabase.from("work_log_materials").insert(rows);
@@ -270,15 +273,15 @@ export function WorkLogForm({ employeeId, employeeName, existing, onClose, onSav
             <span className="label">İşlədilən material <span className="muted font-normal">(istəyə görə)</span></span>
             <ul className="divide-y divide-line rounded-xl border border-line">
               {held.map((m) => {
-                const over = Number(used[m.toolId] || 0) > m.quantity;
+                const over = toNum(used[m.toolId]) > m.quantity;
                 return (
                   <li key={m.toolId} className="flex items-center gap-3 px-3 py-2">
                     <Package size={15} className="shrink-0 text-primary" />
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-semibold">{m.name}</span>
-                      <span className={`block text-[11px] ${over ? "font-semibold text-danger" : "muted"}`}>Məndə: {m.quantity} {m.unit}</span>
+                      <span className={`block text-[11px] ${over ? "font-semibold text-danger" : "muted"}`}>Məndə: {fmtNum(m.quantity)} {m.unit}</span>
                     </span>
-                    <input type="number" inputMode="numeric" min={0} step={1} value={used[m.toolId] ?? ""} placeholder="0"
+                    <input inputMode="decimal" autoComplete="off" value={used[m.toolId] ?? ""} placeholder="0"
                       onChange={(e) => { usedRef.current = { ...usedRef.current, [m.toolId]: e.target.value }; setUsed(usedRef.current); }}
                       className={`field !h-9 !w-20 text-center ${over ? "!border-danger" : ""}`} aria-label={`${m.name}: işlədilən miqdar`} />
                     <span className="muted w-10 text-xs">{m.unit}</span>

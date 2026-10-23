@@ -1,9 +1,9 @@
-import { BarChart3, Building2, CalendarCheck, CalendarOff, Fuel, LayoutGrid, ListChecks, Store, TriangleAlert, UserCog, Users, Warehouse, type LucideIcon } from "lucide-react";
+import { BarChart3, Building2, CalendarCheck, CalendarOff, Fuel, LayoutGrid, ListChecks, Package, Store, TriangleAlert, UserCog, Users, Warehouse, type LucideIcon } from "lucide-react";
 
 export type NavItem = { href: string; label: string; icon: LucideIcon; hint: string; tasks?: boolean; depot?: boolean; fuel?: boolean };
 
 // Usta panelinin menyusu: qruplar sol menyuda və Ctrl+K axtarışında eyni sırada.
-// Depo yalnız depo məsulu (və müdir) üçündür: showDepot serverdə can_manage_tools() ilə təyin olunur.
+// Depo yalnız depo məsulu (və adminlər) üçündür: showDepot serverdə can_manage_tools() ilə təyin olunur.
 export const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
   {
     title: "Gündəlik",
@@ -12,6 +12,7 @@ export const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
       { href: "/tapshiriqlar", label: "Tapşırıqlar", icon: ListChecks, hint: "Günün tapşırıqları", tasks: true },
       { href: "/davamiyyet", label: "Davamiyyət", icon: CalendarCheck, hint: "İşə gəlmə, icazələr, təqvim" },
       { href: "/icazelerim", label: "İcazələrim", icon: CalendarOff, hint: "İcazə istə, sorğular və tarixçə" },
+      { href: "/aletlerim", label: "Alətlərim", icon: Package, hint: "Üzərimdəkilər: Aldım, qaytar, alət istə" },
       { href: "/yanacaq", label: "Yanacaq", icon: Fuel, hint: "Gündəlik km və yanacaq pulu", fuel: true },
       { href: "/statistika", label: "Statistika", icon: BarChart3, hint: "Ay ərzində gördüyün işlər" },
     ],
