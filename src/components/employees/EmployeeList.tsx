@@ -1,11 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Briefcase, CalendarDays, ClipboardList, Phone, Search, User, Users, X } from "lucide-react";
+import { Briefcase, CalendarDays, Car, ClipboardList, Phone, Search, User, Users, X } from "lucide-react";
 import { Modal } from "@/components/Modal";
 import { WorkTab } from "@/components/work/WorkTab";
 import type { Tables } from "@/lib/database.types";
 import { experience, initials } from "@/lib/experience";
+import { PersonCard, type PersonStatus } from "./PersonCard";
+
+export type TodayStatus = PersonStatus;
 
 type Employee = Tables<"employees">;
 
@@ -81,11 +84,18 @@ function EmployeeDetailsModal({ employee, isMe, onClose }: {
                 <p className="muted flex items-center gap-1.5 text-xs font-medium"><CalendarDays size={13} /> İşə başlayıb</p>
                 <p className="font-semibold">{formatDate(employee.start_date) ?? "—"}</p>
               </div>
-              <div className="col-span-2 rounded-xl bg-bg px-3 py-2">
+              <div className="rounded-xl bg-bg px-3 py-2">
                 <p className="muted flex items-center gap-1.5 text-xs font-medium"><Phone size={13} /> Telefon</p>
                 {employee.phone
                   ? <a href={`tel:${employee.phone}`} className="link">{employee.phone}</a>
                   : <p className="font-semibold">—</p>}
+              </div>
+              {/* Maşın (0076): admin paneldə yazılır */}
+              <div className="rounded-xl bg-bg px-3 py-2">
+                <p className="muted flex items-center gap-1.5 text-xs font-medium"><Car size={13} /> Maşın</p>
+                {employee.has_car
+                  ? <p className="font-semibold"><span className="plate">{employee.car_plate ?? "Nömrə yazılmayıb"}</span>{employee.car_model && <span className="muted ml-1.5 text-xs font-medium">{employee.car_model}</span>}</p>
+                  : <p className="muted font-semibold">Yoxdur</p>}
               </div>
             </div>
           ) : (
@@ -97,71 +107,56 @@ function EmployeeDetailsModal({ employee, isMe, onClose }: {
   );
 }
 
-function EmployeeCard({ employee, todayCount, isMe }: {
+function EmployeeCard({ employee, todayCount, monthCount, status, isMe }: {
   employee: Employee;
   todayCount: number;
+  monthCount: number;
+  status?: TodayStatus;
   isMe: boolean;
 }) {
   const [viewing, setViewing] = useState(false);
-  const exp = experience(employee.start_date);
 
   return (
     <>
       {viewing && <EmployeeDetailsModal employee={employee} isMe={isMe} onClose={() => setViewing(false)} />}
-
-      {/* Kartın istənilən yerinə klik məlumat pəncərəsini açır */}
-      <div
-        className={`store-card cursor-pointer ${isMe ? "!border-primary" : ""}`}
-        role="button"
-        tabIndex={0}
-        aria-label={`${employee.full_name}: məlumatlara bax`}
-        onClick={() => setViewing(true)}
-        onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && e.target === e.currentTarget && setViewing(true)}
-      >
-        <div className="flex gap-4">
-          <Avatar employee={employee} />
-          <div className="min-w-0 flex-1">
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0">
-                <h3 className="truncate text-[15px] font-bold">{employee.full_name}</h3>
-                <p className="muted text-[13px]">{employee.specialty ?? "İxtisas yazılmayıb"}</p>
-              </div>
-              {isMe && <span className="shrink-0 rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-semibold text-primary">Sən</span>}
-            </div>
-            <p className="mt-1 flex items-center gap-1.5 text-[13px]">
-              <Phone size={14} className="muted shrink-0" />
-              {employee.phone
-                ? <a href={`tel:${employee.phone}`} className="link" onClick={(e) => e.stopPropagation()}>{employee.phone}</a>
-                : <span className="muted">Telefon yoxdur</span>}
-            </p>
-          </div>
-        </div>
-        <div className="mt-3 flex items-center justify-between gap-2 border-t border-dashed border-line pt-3 text-xs font-semibold">
-          <span className="flex items-center gap-2">
-            <Briefcase size={14} className="text-primary" />
-            {exp ? <span>Təcrübə: {exp}</span> : <span className="muted">İşə başlama tarixi yazılmayıb</span>}
-          </span>
-          <span className="flex shrink-0 items-center gap-3">
-            <span className={`flex items-center gap-1.5 ${todayCount ? "text-ok" : "muted"}`} title="Bu gün yazılan işlər">
-              <ClipboardList size={13} /> Bu gün: {todayCount} iş
-            </span>
-          </span>
-        </div>
-      </div>
+      <PersonCard
+        person={employee}
+        subtitle={employee.specialty ?? "İxtisas yazılmayıb"}
+        badge={isMe ? "Sən" : undefined}
+        highlight={isMe}
+        status={status}
+        stats={[
+          { label: "Bu gün iş", value: todayCount, tone: todayCount ? "text-ok" : "" },
+          { label: "Bu ay iş", value: monthCount, tone: monthCount ? "text-primary" : "" },
+        ]}
+        onOpen={() => setViewing(true)}
+      />
     </>
   );
 }
 
-// Ustalar siyahısı (yalnız baxış). Daxil olmuş usta öz kartını ən başda görür.
-export function EmployeeList({ employees, todayWork, myEmployeeId }: {
+// Tünd xülasədəki rəqəm
+function SummaryStat({ label, value, tone = "" }: { label: string; value: number; tone?: string }) {
+  return (
+    <div>
+      <dt className="text-xs text-white/55">{label}</dt>
+      <dd className={`text-2xl font-extrabold tabular-nums ${tone}`}>{value}</dd>
+    </div>
+  );
+}
+
+// Ustalar: tünd xülasə (bu gün işdə, icazəli, işlər), yapışan axtarış, profil kartları. Daxil olmuş usta öz kartını ən başda görür.
+export function EmployeeList({ employees, todayWork, monthWork, status, myEmployeeId }: {
   employees: Employee[];
   todayWork: Record<number, number>; // usta id → bu gün yazılan iş sayı
+  monthWork: Record<number, number>; // usta id → bu ay yazılan iş sayı
+  status: Record<number, TodayStatus>; // usta id → bu günkü davamiyyət vəziyyəti
   myEmployeeId: number | null;
 }) {
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
-    const words = norm(query).split(/\s+/).filter(Boolean);
+    const words = norm(query).split(/s+/).filter(Boolean);
     return employees
       .filter((e) => {
         const haystack = norm(`${e.full_name} ${e.specialty} ${e.phone}`);
@@ -179,26 +174,57 @@ export function EmployeeList({ employees, todayWork, myEmployeeId }: {
     );
   }
 
+  const count = (kind: TodayStatus["kind"]) => employees.filter((e) => status[e.id]?.kind === kind).length;
+  const sum = (r: Record<number, number>) => Object.values(r).reduce((n, v) => n + v, 0);
+
   return (
-    <div className="space-y-4">
-      {/* Axtarış öz yerində qalır; üstündəki boşluq (before) və altındakı zolaq bərk fonludur: sürüşən məzmun orada görünmür */}
-      <div className="sticky top-0 z-10 rounded-[14px] shadow-[0_16px_0_0_#f8f9fc] before:absolute before:inset-x-0 before:bottom-full before:h-8 before:bg-[#f8f9fc]">
-        <div className="search">
-        <Search size={20} />
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Ad, ixtisas və ya telefon ilə axtar..."
-          aria-label="Usta axtarışı"
-        />
+    <div className="space-y-5">
+      <section className="flex flex-wrap items-center gap-x-10 gap-y-4 rounded-[18px] bg-[#0c1b36] bg-[radial-gradient(520px_220px_at_100%_0%,rgba(34,195,230,0.22),transparent_70%)] px-6 py-5 text-white">
+        <div className="flex items-center gap-4">
+          {/* Komandanın üzləri: ilk 4 usta üst-üstə */}
+          <div className="flex -space-x-3">
+            {employees.slice(0, 4).map((e) => <Avatar key={e.id} employee={e} className="!h-11 !w-11 !text-xs ring-2 ring-[#0c1b36]" />)}
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-white/50">Komanda</p>
+            <p className="text-2xl font-extrabold leading-tight">{employees.length} usta</p>
+          </div>
+        </div>
+        <dl className="flex flex-1 flex-wrap gap-x-10 gap-y-3">
+          <SummaryStat label="Bu gün işdə" value={count("in")} tone="text-[#4ade80]" />
+          <SummaryStat label="İşi bitirib" value={count("done")} />
+          <SummaryStat label="İcazəli" value={count("leave")} tone={count("leave") ? "text-amber-400" : ""} />
+          <SummaryStat label="Bu gün iş" value={sum(todayWork)} tone="text-frost" />
+          <SummaryStat label="Bu ay iş" value={sum(monthWork)} />
+        </dl>
+      </section>
+
+      {/* Axtarış üst zolağın altında yapışıq qalır */}
+      <div className="sticky top-[var(--topbar-h)] z-20 -mx-1 bg-bg/90 px-1 py-2 backdrop-blur">
+        <label className="flex h-11 items-center gap-2.5 rounded-xl bg-surface px-3.5 ring-1 ring-line focus-within:ring-2 focus-within:ring-primary">
+          <Search size={18} className="shrink-0 text-muted" />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Ad, ixtisas və ya telefon ilə axtar..."
+            aria-label="Usta axtarışı"
+            className="h-full min-w-0 flex-1 bg-transparent text-[15px] outline-none"
+          />
+          {query && (
+            <button type="button" onClick={() => setQuery("")} className="text-muted hover:text-ink" aria-label="Axtarışı təmizlə">
+              <X size={16} />
+            </button>
+          )}
+        </label>
       </div>
-      </div>
+
       {filtered.length === 0 ? (
         <div className="card muted py-10 text-center text-sm">Bu axtarışa uyğun usta tapılmadı.</div>
       ) : (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {filtered.map((e) => (
-            <EmployeeCard key={e.id} employee={e} todayCount={todayWork[e.id] ?? 0} isMe={e.id === myEmployeeId} />
+            <EmployeeCard key={e.id} employee={e} todayCount={todayWork[e.id] ?? 0} monthCount={monthWork[e.id] ?? 0}
+              status={status[e.id]} isMe={e.id === myEmployeeId} />
           ))}
         </div>
       )}

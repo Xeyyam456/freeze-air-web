@@ -13,7 +13,7 @@ type Me = { id: number; name: string };
 
 // Panelin hər səhifəsindən əlçatan pəncərələr: "İş əlavə et", "İcazə istə" və Ctrl+K axtarışı.
 // Üst zolaq, Ctrl+K və "Mənim bugünüm" bunları PANEL_EVENTS hadisələri ilə açır.
-export function QuickActions({ showDepot }: { showDepot: boolean }) {
+export function QuickActions({ showDepot, showFuel }: { showDepot: boolean; showFuel: boolean }) {
   const [dialog, setDialog] = useState<"work" | "leave" | null>(null);
   const [me, setMe] = useState<Me | null>(null);
   const [search, setSearch] = useState(false);
@@ -59,7 +59,7 @@ export function QuickActions({ showDepot }: { showDepot: boolean }) {
 
   return (
     <>
-      {search && <CommandMenu showDepot={showDepot} onClose={() => setSearch(false)} />}
+      {search && <CommandMenu showDepot={showDepot} showFuel={showFuel} onClose={() => setSearch(false)} />}
       {dialog === "work" && me && (
         <WorkLogForm
           employeeId={me.id}

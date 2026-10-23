@@ -1,47 +1,65 @@
-import { MapPin, Phone, User } from "lucide-react";
+import { MapPin, Phone, StickyNote, User } from "lucide-react";
 import type { Tables } from "@/lib/database.types";
 import { asKind, KIND } from "@/lib/kinds";
 import { PlaceHistoryButton } from "@/components/work/PlaceHistory";
+import { coordPercent, shortDateAz } from "./stats";
 
-// Sağ panel: şirkətin/marketin vizit kartı (yalnız baxış)
-export function ClientInfoCard({ company, unitCount }: { company: Tables<"companies">; unitCount: number }) {
+export type ClientStats = { units: number; coords: number; monthWorks: number; lastWork: string | null };
+
+// Tünd kartdakı rəqəm
+function HeroStat({ label, value, tone = "" }: { label: string; value: string | number; tone?: string }) {
+  return (
+    <div>
+      <dt className="text-xs text-white/55">{label}</dt>
+      <dd className={`text-2xl font-extrabold tabular-nums leading-tight ${tone}`}>{value}</dd>
+    </div>
+  );
+}
+
+// Səhifənin başı: şirkətin/marketin vizit kartı (yalnız baxış) + rəqəmlər + bütün obyektin iş tarixçəsi
+export function ClientHero({ company, stats }: { company: Tables<"companies">; stats: ClientStats }) {
   const kind = asKind(company.kind);
   const k = KIND[kind];
+  const fixedPlace = kind === "company" && stats.units === 0;
 
   return (
-    <div className="card">
-      <div className="flex min-w-0 items-center gap-3">
-        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-frost to-primary text-xl font-extrabold text-white shadow-[0_6px_16px_rgba(31,111,235,0.3)]">
-          {company.name.charAt(0)}
-        </span>
-        <div className="min-w-0">
-          <h2 className="truncate text-base font-bold">{company.name}</h2>
-          <p className="muted text-xs font-medium">
-            {k.One} · {kind === "company" && unitCount === 0 ? "sabit məkan" : `${unitCount} ${k.unit}`}
-          </p>
+    <section className="rounded-[18px] bg-[#0c1b36] bg-[radial-gradient(560px_240px_at_100%_0%,rgba(34,195,230,0.22),transparent_70%)] px-6 py-5 text-white">
+      <div className="flex flex-wrap items-center gap-x-8 gap-y-5">
+        <div className="flex min-w-0 flex-[1_1_320px] items-center gap-4">
+          <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-frost to-primary text-2xl font-extrabold shadow-[0_8px_24px_rgba(34,195,230,0.35)]">
+            {company.name.charAt(0)}
+          </span>
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-wider text-white/50">{k.One}</p>
+            <h2 className="truncate text-2xl font-extrabold leading-tight">{company.name}</h2>
+            <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-white/75">
+              <span className="flex min-w-0 items-center gap-1.5"><User size={14} className="shrink-0 text-white/50" />{company.contact_person ?? "Əlaqəli şəxs yoxdur"}</span>
+              {company.phone
+                ? <a href={`tel:${company.phone}`} className="flex items-center gap-1.5 font-semibold text-frost hover:underline"><Phone size={14} />{company.phone}</a>
+                : <span className="flex items-center gap-1.5"><Phone size={14} className="text-white/50" />Telefon yoxdur</span>}
+              {fixedPlace && (
+                <span className="flex min-w-0 items-center gap-1.5"><MapPin size={14} className="shrink-0 text-white/50" />{company.address ?? "Ünvan yazılmayıb"}</span>
+              )}
+            </p>
+          </div>
         </div>
+
+        <dl className="flex flex-wrap gap-x-9 gap-y-3">
+          {!fixedPlace && <HeroStat label={k.Unit} value={stats.units} />}
+          {!fixedPlace && <HeroStat label="Koordinatlı" value={`${coordPercent(stats.coords, stats.units)}%`} />}
+          <HeroStat label="Bu ay iş" value={stats.monthWorks} tone="text-frost" />
+          <HeroStat label="Son iş" value={stats.lastWork ? shortDateAz(stats.lastWork) : "—"} />
+        </dl>
+
+        {/* Bütün obyektin (özü + filialları/mağazaları) iş tarixçəsi */}
+        <PlaceHistoryButton target={{ title: company.name, companyId: company.id }}
+          className="btn shrink-0 !bg-white/10 !text-white ring-1 ring-white/15 hover:!bg-white/20" />
       </div>
-      <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
-        <div className="min-w-0 rounded-xl bg-bg px-3 py-2">
-          <p className="muted flex items-center gap-1.5 text-xs font-medium"><User size={13} /> Əlaqəli şəxs</p>
-          <p className="truncate font-semibold">{company.contact_person ?? "—"}</p>
-        </div>
-        <div className="min-w-0 rounded-xl bg-bg px-3 py-2">
-          <p className="muted flex items-center gap-1.5 text-xs font-medium"><Phone size={13} /> Telefon</p>
-          {company.phone
-            ? <a href={`tel:${company.phone}`} className="link block truncate">{company.phone}</a>
-            : <p className="font-semibold">—</p>}
-        </div>
-      </div>
-      {kind === "company" && (
-        <div className="mt-2 min-w-0 rounded-xl bg-bg px-3 py-2 text-sm">
-          <p className="muted flex items-center gap-1.5 text-xs font-medium"><MapPin size={13} /> Ünvan</p>
-          <p className="truncate font-semibold">{company.address ?? "—"}</p>
-        </div>
+      {company.notes && (
+        <p className="mt-4 flex items-start gap-2 border-t border-white/10 pt-3 text-sm text-white/70">
+          <StickyNote size={15} className="mt-0.5 shrink-0 text-white/40" />{company.notes}
+        </p>
       )}
-      {company.notes && <p className="muted mt-3 line-clamp-2 text-sm">{company.notes}</p>}
-      {/* Bütün obyektin (özü + filialları/mağazaları) iş tarixçəsi */}
-      <PlaceHistoryButton target={{ title: company.name, companyId: company.id }} className="btn btn-soft mt-4 w-full" />
-    </div>
+    </section>
   );
 }

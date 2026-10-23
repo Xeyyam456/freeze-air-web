@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Briefcase, CalendarDays, Phone, UserCog, X } from "lucide-react";
+import { Briefcase, CalendarDays, Crown, Phone, UserCog, X } from "lucide-react";
 import { Modal } from "@/components/Modal";
 import { Avatar } from "@/components/employees/EmployeeList";
+import { PersonCard } from "@/components/employees/PersonCard";
 import type { Tables } from "@/lib/database.types";
 import { experience } from "@/lib/experience";
 
@@ -52,7 +53,16 @@ function ManagerDetailsModal({ manager, onClose }: { manager: Manager; onClose: 
   );
 }
 
-function ManagerCard({ manager }: { manager: Manager }) {
+// Vəzifə sırası: müdir ən üstdə, sonra servis müdirləri, sonra qalanlar (maliyyəçi və s.)
+function rank(position: string | null) {
+  const p = (position ?? "").toLocaleLowerCase("az");
+  if (p === "müdir") return 0;
+  if (p.includes("müdir")) return 1;
+  return 2;
+}
+
+// Müdirin iri tünd kartı (rəhbərliyin başı)
+function LeadCard({ manager }: { manager: Manager }) {
   const [viewing, setViewing] = useState(false);
   const exp = experience(manager.start_date);
 
@@ -60,35 +70,45 @@ function ManagerCard({ manager }: { manager: Manager }) {
     <>
       {viewing && <ManagerDetailsModal manager={manager} onClose={() => setViewing(false)} />}
       <div
-        className="store-card cursor-pointer"
+        className="flex cursor-pointer flex-wrap items-center gap-x-6 gap-y-4 rounded-[18px] bg-[#0c1b36] bg-[radial-gradient(560px_240px_at_100%_0%,rgba(34,195,230,0.25),transparent_70%)] px-6 py-6 text-white transition-transform hover:-translate-y-0.5"
         role="button"
         tabIndex={0}
         aria-label={`${manager.full_name}: məlumatlara bax`}
         onClick={() => setViewing(true)}
         onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && e.target === e.currentTarget && setViewing(true)}
       >
-        <div className="flex gap-4">
-          <Avatar employee={manager} />
-          <div className="min-w-0 flex-1">
-            <h3 className="truncate text-[15px] font-bold">{manager.full_name}</h3>
-            <p className="muted text-[13px]">{manager.position}</p>
-            <p className="mt-1 flex items-center gap-1.5 text-[13px]">
-              <Phone size={14} className="muted shrink-0" />
-              {manager.phone
-                ? <a href={`tel:${manager.phone}`} className="link" onClick={(e) => e.stopPropagation()}>{manager.phone}</a>
-                : <span className="muted">Telefon yoxdur</span>}
-            </p>
-          </div>
+        <Avatar employee={manager} className="!h-24 !w-24 !text-2xl ring-4 ring-white/15" />
+        <div className="min-w-0 flex-[1_1_240px]">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-frost">
+            <Crown size={12} /> {manager.position ?? "Rəhbər"}
+          </span>
+          <h2 className="mt-1.5 truncate text-2xl font-extrabold">{manager.full_name}</h2>
+          <p className="mt-1 flex items-center gap-1.5 text-sm text-white/65">
+            <Briefcase size={14} className="text-white/45" /> {exp ? `Təcrübə: ${exp}` : "Təcrübə yazılmayıb"}
+          </p>
         </div>
-        <div className="mt-3 flex items-center gap-2 border-t border-dashed border-line pt-3 text-xs font-semibold">
-          <Briefcase size={14} className="text-primary" />
-          {exp ? <span>Təcrübə: {exp}</span> : <span className="muted">İşə başlama tarixi yazılmayıb</span>}
-        </div>
+        {manager.phone ? (
+          <a href={`tel:${manager.phone}`} onClick={(e) => e.stopPropagation()}
+            className="btn shrink-0 !bg-white !text-[#0c1b36] hover:!bg-frost"><Phone size={16} /> {manager.phone}</a>
+        ) : (
+          <span className="flex shrink-0 items-center gap-1.5 text-sm text-white/50"><Phone size={15} /> Telefon yazılmayıb</span>
+        )}
       </div>
     </>
   );
 }
 
+function ManagerCard({ manager }: { manager: Manager }) {
+  const [viewing, setViewing] = useState(false);
+  return (
+    <>
+      {viewing && <ManagerDetailsModal manager={manager} onClose={() => setViewing(false)} />}
+      <PersonCard person={manager} subtitle={manager.position ?? "Rəhbərlik"} onOpen={() => setViewing(true)} />
+    </>
+  );
+}
+
+// Rəhbərlik (yalnız baxış): müdir üstdə iri kartda, altında digər rəhbərlər; klik → məlumat pəncərəsi
 export function ManagerList({ managers }: { managers: Manager[] }) {
   if (managers.length === 0) {
     return (
@@ -99,9 +119,20 @@ export function ManagerList({ managers }: { managers: Manager[] }) {
     );
   }
 
+  const sorted = [...managers].sort((a, b) => rank(a.position) - rank(b.position) || a.full_name.localeCompare(b.full_name, "az"));
+  const [lead, ...rest] = rank(sorted[0].position) === 0 ? sorted : [null, ...sorted];
+
   return (
-    <div className="grid grid-cols-2 gap-4">
-      {managers.map((m) => <ManagerCard key={m.id} manager={m} />)}
+    <div className="space-y-6">
+      {lead && <LeadCard manager={lead} />}
+      {rest.length > 0 && (
+        <section>
+          <h2 className="muted mb-3 text-xs font-semibold uppercase tracking-wider">{lead ? "Komanda rəhbərləri" : "Rəhbərlik"} · {rest.length}</h2>
+          <div className="flex flex-wrap gap-4">
+            {rest.map((m) => m && <div key={m.id} className="flex min-w-0 grow basis-[320px] [&>*]:flex-1"><ManagerCard manager={m} /></div>)}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

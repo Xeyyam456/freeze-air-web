@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { Page } from "@/components/Page";
-import { WithSidePanel } from "@/components/SidePanel";
 import { ManagerList } from "@/components/management/ManagerList";
 import { createClient } from "@/lib/supabase/server";
 
@@ -20,11 +19,9 @@ async function Content() {
 export default function ManagementPage() {
   return (
     <Page title="Rəhbərlik" subtitle="Müdir, servis müdirləri və maliyyəçi">
-      <WithSidePanel>
-        <Suspense fallback={<div className="card muted">Yüklənir...</div>}>
-          <Content />
-        </Suspense>
-      </WithSidePanel>
+      <Suspense fallback={<div className="card muted">Yüklənir...</div>}>
+        <Content />
+      </Suspense>
     </Page>
   );
 }

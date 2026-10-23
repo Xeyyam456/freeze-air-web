@@ -13,17 +13,18 @@ async function PanelChrome() {
   const [{ data: canManageTools }, { data: admin }, { data: employee }, { data: profile }] = await Promise.all([
     supabase.rpc("can_manage_tools"),
     supabase.rpc("is_admin"),
-    supabase.from("employees").select("id, full_name, position, photo_url").eq("user_id", uid).maybeSingle(),
+    supabase.from("employees").select("id, full_name, position, photo_url, has_car").eq("user_id", uid).maybeSingle(),
     supabase.from("profiles").select("full_name").eq("id", uid).maybeSingle(),
   ]);
   const name = employee?.full_name ?? profile?.full_name ?? (admin ? "Admin" : email);
   const role = admin ? (employee?.position ?? "Administrator") : employee ? "Usta" : "İstifadəçi";
   const showDepot = canManageTools === true;
+  const showFuel = employee?.has_car === true; // Yanacaq bəndi yalnız maşını olan ustaya
 
   return (
     <>
-      <Sidebar showDepot={showDepot} me={{ employeeId: employee?.id ?? null, name, role, email, photoUrl: employee?.photo_url ?? null }} />
-      <QuickActions showDepot={showDepot} />
+      <Sidebar showDepot={showDepot} showFuel={showFuel} me={{ employeeId: employee?.id ?? null, name, role, email, photoUrl: employee?.photo_url ?? null }} />
+      <QuickActions showDepot={showDepot} showFuel={showFuel} />
     </>
   );
 }

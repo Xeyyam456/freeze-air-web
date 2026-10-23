@@ -22,7 +22,7 @@ type Found = { companies: { id: number; name: string; kind: string }[]; stores: 
 
 // Ctrl+K: səhifələr, tez əməllər (iş əlavə et, icazə istə) və bazadan şirkət / market / mağaza axtarışı.
 // ↑ ↓ ilə seçilir, Enter açır, Esc bağlayır.
-export function CommandMenu({ showDepot, onClose }: { showDepot: boolean; onClose: () => void }) {
+export function CommandMenu({ showDepot, showFuel, onClose }: { showDepot: boolean; showFuel: boolean; onClose: () => void }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [found, setFound] = useState<Found | null>(null);
@@ -70,7 +70,7 @@ export function CommandMenu({ showDepot, onClose }: { showDepot: boolean; onClos
       { key: "a:work", group: "Tez əməllər", label: "İş əlavə et", hint: "Görülən işi yaz", icon: Plus, run: act(PANEL_EVENTS.addWork) },
       { key: "a:leave", group: "Tez əməllər", label: "İcazə istə", hint: "İcazə sorğusu göndər", icon: CalendarOff, run: act(PANEL_EVENTS.leave) },
     ];
-    const pages: Item[] = navGroups(showDepot).flatMap((g) =>
+    const pages: Item[] = navGroups(showDepot, showFuel).flatMap((g) =>
       g.items.map((i) => ({ key: `p:${i.href}`, group: "Səhifələr", label: i.label, hint: i.hint, icon: i.icon, run: go(i.href) })));
     const local = [...actions, ...pages].filter((i) => match(`${i.label} ${i.hint ?? ""}`));
     if (query.trim().length < 2 || !found) return local;
@@ -88,7 +88,7 @@ export function CommandMenu({ showDepot, onClose }: { showDepot: boolean; onClos
     return [...local, ...companies, ...stores];
     // go/act hər renderdə yenidir, amma yalnız onClose və router-dən asılıdır
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, found, showDepot]);
+  }, [query, found, showDepot, showFuel]);
 
   const current = Math.min(active, Math.max(items.length - 1, 0));
 

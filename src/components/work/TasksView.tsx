@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ArrowRight, Building2, Check, ChevronLeft, ChevronRight, ListChecks, MapPin, Paperclip, PenLine, Store, Undo2, Users } from "lucide-react";
+import { ArrowRight, Building2, Check, ChevronLeft, ChevronRight, ListChecks, Lock, MapPin, Paperclip, PenLine, Store, Undo2, Users } from "lucide-react";
 import { formatDateAz } from "@/components/DatePicker";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { createClient } from "@/lib/supabase/client";
@@ -28,7 +28,7 @@ async function fetchTasks(day: string) {
   const supabase = createClient();
   const [tasks, employees] = await Promise.all([
     supabase.from("tasks")
-      .select("id, employee_id, reason, done, note, work_log_id, place_text, cancelled_at, reassigned_to, stores(name, code, companies(name)), companies(name), work_logs(description, work_files(id, kind))")
+      .select("id, employee_id, group_id, reason, done, note, work_log_id, place_text, cancelled_at, reassigned_to, stores(name, code, companies(name)), companies(name), work_logs(description, work_files(id, kind))")
       .eq("task_date", day).order("created_at").then((r) => r.data ?? []),
     supabase.from("employees").select("id, full_name, photo_url").eq("is_management", false).eq("is_active", true).order("full_name").then((r) => r.data ?? []),
   ]);
@@ -44,7 +44,7 @@ async function fetchTasks(day: string) {
 
 // Həftə zolağı üçün: hər gün neçə tapşırıq (geri alınanlar sayılmır) və onlardan neçəsi mənimdir
 async function fetchWeek(from: string) {
-  const { data } = await createClient().from("tasks").select("task_date, employee_id")
+  const { data } = await createClient().from("tasks").select("task_date, employee_id, group_id")
     .gte("task_date", from).lte("task_date", shift(from, 6)).is("cancelled_at", null);
   return data ?? [];
 }
@@ -122,27 +122,42 @@ export function TasksView() {
     return () => window.removeEventListener(TASKS_CHANGED, load);
   }, [load]);
 
+  // Keçmiş gün bağlıdır (bazada da: 0070): nə işarələmək, nə təmir qeydi
+  const past = day < today;
+
   async function toggle(t: Task) {
+    if (past) return;
     // Dərhal əks olunur, xəta olsa geri qayıdır
     setData((d) => d && { ...d, tasks: d.tasks.map((x) => (x.id === t.id ? { ...x, done: !t.done } : x)) });
     // Görüldü: iş avtomatik "Görülən işlər"ə düşür; geri alınanda boş avtomatik iş silinir (bazada task_set_done)
     const { error } = await createClient().rpc("task_set_done", { p_task_id: t.id, p_done: !t.done });
     if (error) toast.error(error.message);
-    else if (!t.done) toast.success("Tapşırıq görüldü, iş qeydə alındı");
+    else if (!t.done) toast.success(t.group_id ? "Tapşırıq bütün qrup üçün görüldü" : "Tapşırıq görüldü, iş qeydə alındı");
     load();
   }
 
   const groups = useMemo(() => {
     if (!data) return [];
     return data.employees
-      .map((e) => ({ employee: e, items: data.tasks.filter((t) => t.employee_id === e.id) }))
+      .map((e) => ({ employee: e, items: data.tasks.filter((t) => t.employee_id === e.id && !t.group_id) }))
       .filter((g) => g.items.length > 0 && g.employee.id !== me);
+  }, [data, me]);
+  // Başqalarının qrup tapşırıqları (0071): bir group_id = bir kart; mənim olduğum qrup yuxarıda «Mənim tapşırıqlarım»dadır
+  const teams = useMemo(() => {
+    if (!data) return [];
+    const map = new Map<string, Task[]>();
+    for (const t of data.tasks) if (t.group_id) map.set(t.group_id, [...(map.get(t.group_id) ?? []), t]);
+    return [...map]
+      .filter(([, rows]) => !rows.some((t) => t.employee_id === me))
+      .map(([id, rows]) => ({ id, rows, live: rows.filter((t) => !t.cancelled_at) }));
   }, [data, me]);
   const mine = data?.tasks.filter((t) => t.employee_id === me) ?? [];
   const mineLive = mine.filter((t) => !t.cancelled_at);
-  const live = data?.tasks.filter((t) => !t.cancelled_at) ?? []; // geri alınanlar saya düşmür
+  const liveRows = data?.tasks.filter((t) => !t.cancelled_at) ?? []; // geri alınanlar saya düşmür
+  // Saylarda qrup tapşırığı (0071) bir tapşırıqdır: hər group_id-dən bir sətir (qrup birlikdə görülür)
+  const live = liveRows.filter((t, i) => !t.group_id || liveRows.findIndex((x) => x.group_id === t.group_id) === i);
   const doneAll = live.filter((t) => t.done).length;
-  const people = new Set(live.map((t) => t.employee_id)).size;
+  const people = new Set(liveRows.map((t) => t.employee_id)).size;
 
   const days = Array.from({ length: 7 }, (_, i) => shift(from, i));
   const rows = week?.from === from ? week.rows : [];
@@ -170,7 +185,8 @@ export function TasksView() {
         </div>
         <div className="grid grid-cols-7 gap-1.5">
           {days.map((d, i) => {
-            const count = rows.filter((r) => r.task_date === d).length;
+            // Qrup tapşırığı (0071) bir tapşırıq sayılır
+            const count = new Set(rows.filter((r) => r.task_date === d).map((r, i) => r.group_id ?? `t${i}`)).size;
             const mineHere = rows.some((r) => r.task_date === d && r.employee_id === me);
             const selected = d === day;
             return (
@@ -191,7 +207,7 @@ export function TasksView() {
 
       {data === null ? (
         <div className="card muted py-16 text-center text-sm">Yüklənir...</div>
-      ) : live.length === 0 && mine.length === 0 && groups.length === 0 ? (
+      ) : live.length === 0 && mine.length === 0 && groups.length === 0 && teams.length === 0 ? (
         <div className="card py-16 text-center">
           <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-primary-soft to-[#e6f8fc] text-primary">
             <ListChecks size={28} />
@@ -230,6 +246,11 @@ export function TasksView() {
               <h2 className="mb-3 flex items-center gap-2 text-base font-bold">
                 Mənim tapşırıqlarım
                 <span className="rounded-full bg-primary-soft px-2 py-0.5 text-xs font-bold text-primary">{mineLive.length}</span>
+                {past && (
+                  <span className="muted ml-auto flex items-center gap-1.5 text-xs font-semibold">
+                    <Lock size={13} /> Keçmiş gün: yalnız baxış
+                  </span>
+                )}
               </h2>
               {/* Natamam son sıra bütün eni tutur (tək kart yarı endə qalmır) */}
               <ul className="flex flex-wrap gap-3">
@@ -240,11 +261,12 @@ export function TasksView() {
                   return (
                     <li key={t.id} className={`card flex min-w-0 grow basis-[440px] items-start gap-4 !p-4 transition-colors ${
                       cancelled ? "opacity-60" : t.done ? "!border-[#bfe8cf] !bg-[#f3fbf6]" : "hover:!border-[#c9dafb]"}`}>
-                      <button type="button" disabled={cancelled} onClick={() => toggle(t)} aria-pressed={t.done}
-                        title={cancelled ? "Geri alınıb" : t.done ? "Görülməyib kimi işarələ" : "Görüldü kimi işarələ"}
+                      <button type="button" disabled={cancelled || past} onClick={() => toggle(t)} aria-pressed={t.done}
+                        title={cancelled ? "Geri alınıb" : past ? "Keçmiş günün tapşırığı dəyişdirilmir" : t.done ? "Görülməyib kimi işarələ" : "Görüldü kimi işarələ"}
                         className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 transition-all disabled:cursor-default ${
                           cancelled ? "border-line bg-bg text-muted"
                             : t.done ? "border-ok bg-ok text-white shadow-[0_6px_16px_-6px_rgba(18,161,80,0.8)]"
+                            : past ? "border-line bg-bg text-transparent"
                             : "border-[#c9dafb] text-transparent hover:border-ok hover:bg-ok-soft hover:text-ok"}`}>
                         {cancelled ? <Undo2 size={18} strokeWidth={2.6} /> : <Check size={20} strokeWidth={3} />}
                       </button>
@@ -253,6 +275,17 @@ export function TasksView() {
                           <Icon size={15} className="shrink-0" /><span className="truncate">{placeOf(t)}</span>
                         </p>
                         <p className={`mt-0.5 ${cancelled ? "text-muted line-through" : "text-ink"}`}>{t.reason}</p>
+                        {/* Qrup tapşırığı (0071): biri «görüldü» basanda hamı üçün görülür */}
+                        {t.group_id && (() => {
+                          const others = data!.tasks.filter((x) => x.group_id === t.group_id && x.id !== t.id && !x.cancelled_at)
+                            .map((x) => data!.employees.find((e) => e.id === x.employee_id)).filter((e) => !!e);
+                          return others.length > 0 && (
+                            <p className="mt-1.5 flex items-center gap-2 text-xs text-muted" title="Biri «görüldü» basanda hamı üçün görülür">
+                              <span className="flex -space-x-1.5">{others.map((e) => <Avatar key={e.id} employee={e} className="!h-5 !w-5 !text-[8px] !shadow-none ring-2 ring-white" />)}</span>
+                              <span>Qrup: <b className="text-ink">{others.map((e) => e.full_name).join(", ")}</b> ilə birlikdə</span>
+                            </p>
+                          );
+                        })()}
                         {t.note && <p className="mt-1.5 rounded-lg bg-[#fff7ed] px-2.5 py-1.5 text-xs text-[#b45309]"><b>Təmir:</b> {t.note}</p>}
                         <div className="mt-2.5 flex flex-wrap items-center gap-2">
                           {cancelled ? (
@@ -261,12 +294,14 @@ export function TasksView() {
                             </span>
                           ) : t.done ? (
                             <span className="rounded-full bg-ok-soft px-2.5 py-1 text-xs font-bold text-ok">Görüldü</span>
+                          ) : past ? (
+                            <span className="rounded-full bg-[#fdecec] px-2.5 py-1 text-xs font-bold text-[#c2410c]">Görülmədi</span>
                           ) : (
                             <span className="rounded-full bg-primary-soft px-2.5 py-1 text-xs font-bold text-primary">Gözləyir</span>
                           )}
                           {files > 0 && <span className="inline-flex items-center gap-1 text-xs text-muted" title="Əlavə olunmuş fayllar"><Paperclip size={13} />{files}</span>}
                           {/* Görülmüş tapşırıqda: təmir barədə yaz, akt/şəkil əlavə et */}
-                          {t.done && !cancelled && (
+                          {t.done && !cancelled && !past && (
                             <button type="button" onClick={() => setNoteFor(t)} className="btn btn-sm ml-auto !h-8 bg-ok-soft text-ok hover:bg-ok hover:text-white">
                               <PenLine size={14} /> {t.note || files ? "Təmir qeydi" : "Təmir barədə yaz"}
                             </button>
@@ -281,12 +316,48 @@ export function TasksView() {
           )}
 
           {/* Komanda: digər ustaların tapşırıqları (yalnız baxış) */}
-          {groups.length > 0 && (
+          {(groups.length > 0 || teams.length > 0) && (
             <section>
               <h2 className="mb-3 flex items-center gap-2 text-base font-bold">
                 <Users size={17} className="text-muted" /> Komanda
               </h2>
               <div className="flex flex-wrap gap-3">
+                {/* Qrup tapşırığı: üzvlər birlikdə, tapşırıq bir sətir */}
+                {teams.map((g) => {
+                  const t = g.live[0] ?? g.rows[0];
+                  const cancelled = g.live.length === 0;
+                  const done = !cancelled && g.live.every((x) => x.done);
+                  const members = g.live.map((x) => data!.employees.find((e) => e.id === x.employee_id)).filter((e) => !!e);
+                  return (
+                    <section key={g.id} className="card min-w-0 grow basis-[340px] !p-4">
+                      <header className="flex items-center gap-3">
+                        <span className="flex -space-x-2.5">
+                          {members.map((e) => <Avatar key={e.id} employee={e} className="!h-9 !w-9 !text-xs ring-2 ring-white" />)}
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-sm font-bold">{members.map((e) => e.full_name).join(" + ") || "Qrup"}</span>
+                          <span className="muted block text-xs">Qrup · {members.length} nəfər</span>
+                        </span>
+                        {done && <span className="rounded-full bg-ok-soft px-2 py-0.5 text-[11px] font-bold text-ok">Hazır</span>}
+                      </header>
+                      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-bg">
+                        <div className="h-full rounded-full bg-gradient-to-r from-ok to-[#4ade80] transition-[width] duration-500" style={{ width: done ? "100%" : "0%" }} />
+                      </div>
+                      <ul className="mt-3 space-y-2">
+                        <li className={`flex items-start gap-2.5 text-sm ${cancelled ? "opacity-60" : ""}`}>
+                          <span className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full ${
+                            cancelled ? "bg-bg text-muted" : done ? "bg-ok text-white" : "border-2 border-line"}`}>
+                            {cancelled ? <Undo2 size={11} strokeWidth={3} /> : done ? <Check size={12} strokeWidth={3} /> : null}
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <span className={`block truncate font-semibold ${cancelled ? "text-muted line-through" : done ? "text-ok" : ""}`}>{placeOf(t)}</span>
+                            <span className={`block truncate text-xs ${cancelled ? "line-through" : ""} text-muted`}>{t.reason}</span>
+                          </span>
+                        </li>
+                      </ul>
+                    </section>
+                  );
+                })}
                 {groups.map(({ employee, items }) => {
                   const liveItems = items.filter((t) => !t.cancelled_at);
                   const done = liveItems.filter((t) => t.done).length;

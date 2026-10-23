@@ -24,7 +24,7 @@ function toggleMini() {
 
 // Sol menyu: loqo, qruplu bəndlər (tapşırıq nişanı ilə), altda profil və çıxış.
 // ≥ 1024: sabit, yığıla bilir (yalnız ikonlar); < 1024: üst zolaqdakı ☰ ilə açılan çəkmə panel (səhifə dəyişəndə özü bağlanır).
-function SidebarView({ showDepot, me, pathname }: { showDepot: boolean; me: Me | null; pathname: string | null }) {
+function SidebarView({ showDepot, showFuel = false, me, pathname }: { showDepot: boolean; showFuel?: boolean; me: Me | null; pathname: string | null }) {
   const openTasks = useMyOpenTasks();
   const [openAt, setOpenAt] = useState<string | null>(null); // mobil panel hansı səhifədə açılıb
   const open = openAt !== null && openAt === pathname;
@@ -53,7 +53,7 @@ function SidebarView({ showDepot, me, pathname }: { showDepot: boolean; me: Me |
         </div>
 
         <nav className="panel-nav-scroll">
-          {navGroups(showDepot).map((g) => (
+          {navGroups(showDepot, showFuel).map((g) => (
             <div key={g.title} className="nav-group">
               <p className="nav-group-title"><span className="nav-label">{g.title}</span></p>
               {g.items.map(({ href, label, icon: Icon, tasks }) => (
@@ -94,6 +94,6 @@ export function SidebarFallback() {
   return <SidebarView showDepot={false} me={null} pathname={null} />;
 }
 
-export function Sidebar({ showDepot, me }: { showDepot: boolean; me: Me | null }) {
-  return <SidebarView showDepot={showDepot} me={me} pathname={usePathname()} />;
+export function Sidebar({ showDepot, showFuel, me }: { showDepot: boolean; showFuel: boolean; me: Me | null }) {
+  return <SidebarView showDepot={showDepot} showFuel={showFuel} me={me} pathname={usePathname()} />;
 }
