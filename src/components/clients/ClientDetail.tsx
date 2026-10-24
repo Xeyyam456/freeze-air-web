@@ -5,6 +5,7 @@ import type { Tables } from "@/lib/database.types";
 import { createClient } from "@/lib/supabase/server";
 import { asKind, KIND, type Kind } from "@/lib/kinds";
 import { mapEmbedUrl, wazeUrl } from "@/lib/navigation";
+import { PlaceLocationButton } from "@/components/PlaceLocationButton";
 import { ClientHero } from "./ClientInfo";
 import { monthStartBaku } from "./stats";
 import { UnitList } from "./UnitList";
@@ -32,6 +33,11 @@ function LocationView({ company }: { company: Tables<"companies"> }) {
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
       />
+      {/* Ünvan/koordinat səhvdirsə usta düzəldir (0087) */}
+      <div className="absolute right-4 top-4 max-sm:right-3 max-sm:top-3">
+        <PlaceLocationButton place={{ kind: "company", id: company.id, name: company.name, address: company.address, lat: company.lat, lng: company.lng }}
+          className="btn btn-sm bg-white text-ink shadow-[0_6px_18px_rgba(6,25,43,0.25)] hover:bg-bg" />
+      </div>
       {/* Yalnız telefonda (< 640): Waze ilə ünvana naviqasiya */}
       <a href={wazeUrl(company)} target="_blank" rel="noopener noreferrer"
         className="absolute bottom-5 left-1/2 inline-flex h-10 -translate-x-1/2 items-center gap-2 rounded-full bg-[#33ccff] px-5 text-sm font-bold text-[#06192b] shadow-[0_10px_24px_rgba(6,25,43,0.3)] sm:hidden">

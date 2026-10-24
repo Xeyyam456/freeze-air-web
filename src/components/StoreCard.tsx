@@ -2,6 +2,7 @@ import { History, MapPin, Phone } from "lucide-react";
 import type { Tables } from "@/lib/database.types";
 import { MapButton } from "./MapButton";
 import { NavButton } from "./NavButton";
+import { PlaceLocationButton } from "./PlaceLocationButton";
 
 type Props = {
   store: Tables<"stores">;
@@ -51,7 +52,10 @@ export function StoreCard({ store, companyName, action, onHistory }: Props) {
         <MapButton place={store} />
       </div>
       {/* Yalnız telefonda: Waze / Google Maps seçimi ilə ünvana getmək */}
-      <div className="mt-2 sm:hidden"><NavButton place={store} /></div>
+      <div className="mt-2 flex flex-wrap gap-2 max-sm:[&>*]:flex-1">
+        <PlaceLocationButton place={{ kind: "store", id: store.id, code: store.code, name: store.name, address: store.address, lat: store.lat, lng: store.lng }} className="btn btn-soft btn-sm max-sm:w-full max-sm:justify-center" />
+        <div className="sm:hidden"><NavButton place={store} /></div>
+      </div>
     </div>
   );
 }
