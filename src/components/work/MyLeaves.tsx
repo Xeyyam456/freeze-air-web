@@ -35,18 +35,18 @@ function LeaveCard({ l, today, onGiveUp, onCancel }: { l: Row; today: string; on
         <div className="min-w-0 flex-[1_1_220px] max-sm:flex-1">
           <p className="flex flex-wrap items-center gap-x-2 text-[15px]">
             <span className="font-bold">{leaveRange(l)}</span>
-            <span className="muted text-sm">· {leaveWorkdays(l)} iş günü</span>
+            <span className="muted whitespace-nowrap text-sm"><span className="max-sm:hidden">· </span>{leaveWorkdays(l)} iş günü</span>
             {ongoing && <span className="rounded-full bg-[#fff6e5] px-2 py-0.5 text-[11px] font-semibold text-amber-700">İndi icazədəsən</span>}
           </p>
           <p className="muted line-clamp-2 text-sm">{l.reason || "Səbəb yazılmayıb"}</p>
-          <p className="muted text-[11px]">Göndərilib: {stamp(l.created_at)}{l.decided_at && ` · cavab: ${stamp(l.decided_at)}`}</p>
+          <p className="muted text-[11px] max-[360px]:text-[10px] max-sm:[&>span]:block max-sm:[&>span]:whitespace-nowrap"><span>Göndərilib: {stamp(l.created_at)}</span>{l.decided_at && <span><span className="max-sm:hidden"> · </span>cavab: {stamp(l.decided_at)}</span>}</p>
         </div>
         <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${st.cls}`}>{st.text}</span>
         {onGiveUp && (
-          <button type="button" onClick={onGiveUp} className="btn btn-soft btn-sm shrink-0 max-sm:w-full" title="İcazəni ləğv et, işə gəl">Ehtiyac qalmadı</button>
+          <button type="button" onClick={onGiveUp} className="btn btn-soft btn-sm shrink-0 max-sm:w-full max-sm:!h-7 max-sm:!text-[13px]" title="İcazəni ləğv et, işə gəl">Ehtiyac qalmadı</button>
         )}
         {onCancel && (
-          <button type="button" onClick={onCancel} className="btn btn-soft btn-sm shrink-0 text-danger max-sm:w-full" title="Sorğunu geri götür">
+          <button type="button" onClick={onCancel} className="btn btn-soft btn-sm shrink-0 text-danger max-sm:w-full max-sm:!h-7 max-sm:!text-[13px]" title="Sorğunu geri götür">
             <Trash2 size={14} /> Geri götür
           </button>
         )}
@@ -122,7 +122,7 @@ export function MyLeaves({ employeeId }: { employeeId: number | null }) {
     const n = value === "all" ? past.length : past.filter((l) => l.status === value).length;
     return (
       <button key={value} type="button" onClick={() => setFilter(value)} aria-pressed={filter === value}
-        className={`flex h-9 items-center gap-2 rounded-xl px-3.5 text-sm font-semibold transition-colors max-sm:justify-center max-sm:px-2 ${
+        className={`flex h-9 items-center gap-2 rounded-xl px-3.5 text-sm font-semibold transition-colors max-sm:h-7 max-sm:text-[13px] max-sm:justify-center max-sm:px-2 ${
           filter === value ? "bg-[#0c1b36] text-white" : "bg-surface text-muted ring-1 ring-line hover:text-ink"}`}>
         {label}<span className={`rounded-full px-1.5 text-xs tabular-nums ${filter === value ? "bg-white/15" : "bg-bg"}`}>{n}</span>
       </button>
@@ -131,20 +131,20 @@ export function MyLeaves({ employeeId }: { employeeId: number | null }) {
 
   return (
     <div className="space-y-6">
-      <section className="flex flex-wrap items-center gap-x-10 gap-y-4 rounded-[18px] max-sm:gap-y-3 max-sm:px-4 bg-[#0c1b36] bg-[radial-gradient(520px_220px_at_100%_0%,rgba(34,195,230,0.22),transparent_70%)] px-6 py-5 text-white">
+      <section className="flex flex-wrap items-center gap-x-10 gap-y-4 rounded-[18px] max-sm:gap-y-2.5 max-sm:px-4 max-sm:py-3.5 bg-[#0c1b36] bg-[radial-gradient(520px_220px_at_100%_0%,rgba(34,195,230,0.22),transparent_70%)] px-6 py-5 text-white">
         <div className="flex items-center gap-4">
-          <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white/10 text-frost"><CalendarOff size={26} /></span>
+          <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white/10 text-frost max-sm:h-10 max-sm:w-10"><CalendarOff size={22} /></span>
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-white/50">İcazələrim</p>
-            <p className="text-2xl font-extrabold leading-tight">{stats.year} gün <span className="text-base font-semibold text-white/60">bu il</span></p>
+            <p className="text-2xl font-extrabold leading-tight max-sm:text-xl">{stats.year} gün <span className="text-base font-semibold text-white/60">bu il</span></p>
           </div>
         </div>
-        <dl className="flex flex-1 flex-wrap gap-x-10 gap-y-3 max-sm:grid max-sm:basis-full max-sm:grid-cols-3 max-sm:gap-2 max-sm:[&>div]:rounded-xl max-sm:[&>div]:bg-white/[0.07] max-sm:[&>div]:px-3 max-sm:[&>div]:py-2 max-sm:[&_dd]:text-lg">
+        <dl className="flex flex-1 flex-wrap gap-x-10 gap-y-3 max-sm:grid max-sm:basis-full max-sm:grid-cols-[auto_minmax(0,1fr)_auto] max-[360px]:grid-cols-3 max-sm:gap-1.5 max-sm:[&>div]:rounded-xl max-sm:[&>div]:bg-white/[0.07] max-sm:[&>div]:px-2.5 max-sm:[&>div]:py-1.5 max-[360px]:[&>div]:px-2 max-sm:[&_dd]:whitespace-nowrap max-sm:[&_dd]:text-lg max-[360px]:[&_dd]:!text-[13px]">
           <div><dt className="text-xs text-white/55">Bu ay</dt><dd className="text-2xl font-extrabold tabular-nums">{stats.month} gün</dd></div>
-          <div><dt className="text-xs text-white/55">Növbəti icazə</dt><dd className="text-2xl font-extrabold tabular-nums">{stats.next ? leaveRange(stats.next) : <span className="text-white/50">Yoxdur</span>}</dd></div>
+          <div><dt className="whitespace-nowrap text-xs text-white/55">Növbəti<span className="max-sm:hidden"> icazə</span></dt><dd className="whitespace-nowrap text-2xl font-extrabold tabular-nums">{stats.next ? <><span className="max-[360px]:hidden">{leaveRange(stats.next)}</span><span className="hidden max-[360px]:inline">{leaveRange(stats.next).replaceAll(" ", "")}</span></> : <span className="text-white/50">Yoxdur</span>}</dd></div>
           <div><dt className="text-xs text-white/55">Gözləyən</dt><dd className={`text-2xl font-extrabold tabular-nums ${stats.pending ? "text-frost" : ""}`}>{stats.pending}</dd></div>
         </dl>
-        <button type="button" onClick={() => emitPanel(PANEL_EVENTS.leave)} className="btn shrink-0 !bg-white !text-[#0c1b36] hover:!bg-frost max-sm:w-full">
+        <button type="button" onClick={() => emitPanel(PANEL_EVENTS.leave)} className="btn shrink-0 !bg-white !text-[#0c1b36] hover:!bg-frost max-sm:w-full max-sm:!h-7 max-sm:!text-[13px]">
           <Plus size={16} /> İcazə istə
         </button>
       </section>

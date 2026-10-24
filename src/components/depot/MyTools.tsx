@@ -234,7 +234,7 @@ function AskModal({ stock, pendingIds, initialKind, onClose }: { stock: Tool[]; 
 
   return (
     <Modal onClose={onClose} labelledBy="ask-title" className="flex !max-w-xl flex-col">
-      <DHead id="ask-title" icon={Hand} tone="violet" title={tab === "material" ? "Material istə" : "Alət istə"} sub="Bir neçəsini işarələ, miqdarını yaz, birdən göndər" onClose={onClose} />
+      <DHead id="ask-title" icon={Hand} tone="violet" title={tab === "material" ? "Material istə" : "Alət istə"} sub={<><span className="max-sm:hidden">Bir neçəsini işarələ, miqdarını yaz, birdən göndər</span><span className="sm:hidden">İşarələ, miqdarı yaz, göndər</span></>} onClose={onClose} />
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex gap-1 rounded-xl bg-line/60 p-1" role="tablist" aria-label="Növ">
           {([["tool", "Alətlər", Wrench], ["material", "Materiallar", Package]] as const).map(([k, l, Icon]) => (
@@ -445,14 +445,14 @@ export function MyTools({ employeeId }: { employeeId: number | null }) {
       {asking && <AskModal stock={data.stock} pendingIds={new Set(pendingReq.filter((r) => r.type === "request" && r.tool_id).map((r) => r.tool_id!))} initialKind={tab} onClose={() => setAsking(false)} />}
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 max-sm:gap-2 max-sm:[&>div]:grid max-sm:[&>div]:grid-cols-[auto_minmax(0,1fr)] max-sm:[&>div]:items-center max-sm:[&>div]:gap-x-1.5 max-sm:[&>div]:gap-y-0.5 max-sm:[&>div]:!p-2 max-sm:[&>div>span]:!h-5 max-sm:[&>div>span]:!w-5 max-sm:[&>div>span]:!rounded-md max-sm:[&>div>span>svg]:!h-3 max-sm:[&>div>span>svg]:!w-3 max-sm:[&>div>p]:!mt-0 max-sm:[&>div>p]:leading-tight max-sm:[&>div>p:first-of-type]:truncate max-sm:[&>div>p:first-of-type]:!text-[11px] max-sm:[&>div>p:last-of-type]:col-span-2 max-sm:[&>div>p:last-of-type]:!text-lg">
           <DStat icon={Wrench} tone="blue" label="Məndə alət" value={`${tools.reduce((n, h) => n + h.quantity, 0)} ədəd`} />
           <DStat icon={Package} tone="teal" label="Material" value={`${materials.length} növ`} />
           <DStat icon={Hourglass} tone="amber" label="Təsdiqləməliyəm" value={toConfirm.length} />
           <DStat icon={Clock} tone="violet" label="Gözləyən sorğu" value={pendingReq.length} />
         </div>
         <button type="button" onClick={() => setAsking(true)}
-          className="flex h-12 items-center justify-center gap-2 rounded-2xl xl:h-auto xl:min-h-[88px] bg-[linear-gradient(135deg,#7c3aed,#4f46e5)] px-6 py-4 text-sm font-bold text-white shadow-[0_10px_24px_-10px_rgba(79,70,229,0.7)] transition hover:brightness-110">
+          className="flex h-12 max-sm:h-10 items-center justify-center gap-2 rounded-2xl xl:h-auto xl:min-h-[88px] bg-[linear-gradient(135deg,#7c3aed,#4f46e5)] px-6 py-4 max-sm:py-2 text-sm font-bold text-white shadow-[0_10px_24px_-10px_rgba(79,70,229,0.7)] transition hover:brightness-110">
           <Hand size={18} /> {tab === "material" ? "Material istə" : "Alət istə"}
         </button>
       </div>
@@ -460,7 +460,7 @@ export function MyTools({ employeeId }: { employeeId: number | null }) {
       <div className="grid items-stretch gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
         <div className="min-w-0 space-y-5">
       {toConfirm.length > 0 && (
-        <section className="rounded-3xl border border-[#fde3b4] bg-[#fffaf0] p-5">
+        <section className="rounded-3xl border border-[#fde3b4] bg-[#fffaf0] p-5 max-sm:p-3">
           <h2 className="flex items-center gap-2 text-[15px] font-bold"><CircleAlert size={17} className="text-[#b45309]" /> Sənə verildi: təsdiqlə</h2>
           <p className="muted mb-3 text-xs">Əlinə çatıbsa «Aldım» bas. Çatmayıbsa «Almadım»: depo məsulu yoxlayacaq.</p>
           <ul className="divide-y divide-[#fde3b4] rounded-2xl border border-[#fde3b4] bg-surface px-3">
@@ -474,10 +474,10 @@ export function MyTools({ employeeId }: { employeeId: number | null }) {
                     <span className="muted block text-xs">{dateAz(h.taken_at)} · {timeAz(h.taken_at)}{h.disputed_at ? " · «Almadım» dedin, depo yoxlayır" : ""}</span>
                   </span>
                   <button type="button" onClick={() => rpc(() => createClient().rpc("assignment_confirm", { p_id: h.id, p_received: true }), "Təsdiqləndi: aldın")}
-                    className="btn btn-primary btn-sm !h-9"><Check size={15} /> Aldım</button>
+                    className="btn btn-primary btn-sm !h-9 max-sm:!h-8"><Check size={15} /> Aldım</button>
                   {!h.disputed_at && (
                     <ConfirmButton onConfirm={async () => { await rpc(() => createClient().rpc("assignment_confirm", { p_id: h.id, p_received: false }), "Depo məsuluna bildirildi"); }}
-                      success={false} className="btn btn-cancel btn-sm !h-9" title="Almadım" question="Depo məsulu yoxlayacaq. Sonra yenə «Aldım» basa bilərsən." confirmLabel="Bəli, almamışam">
+                      success={false} className="btn btn-cancel btn-sm !h-9 max-sm:!h-8" title="Almadım" question="Depo məsulu yoxlayacaq. Sonra yenə «Aldım» basa bilərsən." confirmLabel="Bəli, almamışam">
                       Almadım
                     </ConfirmButton>
                   )}
@@ -489,23 +489,23 @@ export function MyTools({ employeeId }: { employeeId: number | null }) {
       )}
 
       <section className="rounded-3xl border border-line bg-surface">
-        <div className="flex flex-wrap items-center gap-3 p-4 sm:p-5">
+        <div className="flex flex-wrap items-center gap-3 p-4 max-sm:gap-2 max-sm:p-3 sm:p-5">
           <div className="min-w-0 flex-1">
-            <h2 className="text-lg font-bold leading-tight">Məndə olanlar</h2>
-            <p className="muted text-[13px]">İşarələ və birdən qaytar, ya da sətirdə «Qaytar»</p>
+            <h2 className="text-lg font-bold leading-tight max-sm:text-base">Məndə olanlar</h2>
+            <p className="muted text-[13px] max-sm:hidden">İşarələ və birdən qaytar, ya da sətirdə «Qaytar»</p>
           </div>
           {chosen.length > 0 && (
-            <button type="button" onClick={() => setReturning(chosen)} className="btn btn-primary !h-10"><Undo2 size={16} /> Seçilənləri qaytar ({chosen.length})</button>
+            <button type="button" onClick={() => setReturning(chosen)} className="btn btn-primary !h-10 max-sm:!h-9 max-sm:w-full"><Undo2 size={16} /> Seçilənləri qaytar ({chosen.length})</button>
           )}
           <label className="relative w-full sm:w-64">
             <Search size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
-            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Axtar..." aria-label="Axtar" className="field !h-10 !rounded-xl !pl-10 !text-sm" />
+            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Axtar..." aria-label="Axtar" className="field !h-10 !rounded-xl !pl-10 !text-sm max-sm:!h-9" />
           </label>
         </div>
         <div className="flex gap-1 border-t border-line px-3 sm:px-4" role="tablist" aria-label="Növ">
           {([["tool", "Alətlər", tools.length, Wrench], ["material", "Materiallar", materials.length, Package]] as const).map(([k, l, n, Icon]) => (
             <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)}
-              className={`-mb-px inline-flex h-12 items-center gap-2 border-b-2 px-3 text-sm font-semibold transition-colors ${tab === k ? "border-primary text-primary" : "border-transparent text-muted hover:text-ink"}`}>
+              className={`-mb-px inline-flex h-12 max-sm:h-10 items-center gap-2 border-b-2 px-3 text-sm font-semibold transition-colors ${tab === k ? "border-primary text-primary" : "border-transparent text-muted hover:text-ink"}`}>
               <Icon size={16} /> {l}
               <span className={`rounded-full px-1.5 text-[11px] font-bold ${tab === k ? "bg-primary-soft text-primary" : "bg-bg text-muted"}`}>{n}</span>
             </button>
@@ -516,7 +516,7 @@ export function MyTools({ employeeId }: { employeeId: number | null }) {
         ) : (
           // Sətirlər (cədvəl deyil): dar yerdə (mobil, "Kimdə nə var"ın yanında) vəziyyət və düymə ikinci sətrə keçir, yana daşmır
           <div className="border-t border-line">
-            <label className="flex items-center gap-3 border-b border-line bg-[#f8fafc] px-4 py-2.5 text-xs font-semibold text-muted sm:px-5">
+            <label className="flex items-center gap-3 border-b border-line bg-[#f8fafc] px-4 py-2.5 max-sm:py-1.5 text-xs font-semibold text-muted sm:px-5">
               <input type="checkbox" checked={allOn} disabled={!selectable.length} aria-label="Hamısını seç"
                 onChange={() => setSelected((s) => { const n = new Set(s); for (const h of selectable) { if (allOn) n.delete(h.id); else n.add(h.id); } return n; })}
                 className="h-4 w-4 accent-[var(--color-primary)]" />
@@ -531,10 +531,10 @@ export function MyTools({ employeeId }: { employeeId: number | null }) {
                 const st: { tone: Tone; label: string } = !h.received_at ? (h.disputed_at ? { tone: "red", label: "«Almadım» dedin" } : { tone: "amber", label: "Təsdiqlə ↑" })
                   : ret ? { tone: "violet", label: "Qaytarma gözləyir" } : { tone: "green", label: "Məndədir" };
                 return (
-                  <li key={h.id} className={`flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3 transition-colors sm:px-5 ${selected.has(h.id) ? "bg-primary-soft/40" : "hover:bg-[#f7f9fd]"}`}>
+                  <li key={h.id} className={`flex flex-wrap items-center gap-x-3 gap-y-1.5 px-4 py-3 max-sm:py-2 transition-colors sm:px-5 ${selected.has(h.id) ? "bg-primary-soft/40" : "hover:bg-[#f7f9fd]"}`}>
                     <input type="checkbox" checked={selected.has(h.id)} disabled={!returnable(h)} onChange={() => toggle(h.id)} aria-label={`${t.name}: seç`}
                       className="h-4 w-4 shrink-0 accent-[var(--color-primary)] disabled:opacity-30" />
-                    <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg ${material ? SOFT.teal : SOFT.blue}`}>{material ? <Package size={16} /> : <Wrench size={16} />}</span>
+                    <span className={`grid h-9 w-9 max-sm:h-8 max-sm:w-8 shrink-0 place-items-center rounded-lg ${material ? SOFT.teal : SOFT.blue}`}>{material ? <Package size={16} /> : <Wrench size={16} />}</span>
                     <span className="min-w-0 flex-[1_1_160px]">
                       <b className="line-clamp-2 text-sm font-semibold">{t.name}</b>
                       <span className="muted block text-xs">götürmüşəm {dateAz(h.taken_at)} · {d === 0 ? "bu gün" : `${d} gün`}</span>
@@ -561,8 +561,8 @@ export function MyTools({ employeeId }: { employeeId: number | null }) {
       </section>
 
       <section className="rounded-3xl border border-line bg-surface">
-        <div className="flex items-center gap-2 px-5 pb-3 pt-5">
-          <h2 className="flex-1 text-lg font-bold">Sorğularım</h2>
+        <div className="flex items-center gap-2 px-5 pb-3 pt-5 max-sm:px-4 max-sm:pb-2 max-sm:pt-3">
+          <h2 className="flex-1 text-lg font-bold max-sm:text-base">Sorğularım</h2>
           <span className="muted text-[13px]">son {data.requests.length}</span>
         </div>
         {data.requests.length === 0 ? (
@@ -572,7 +572,7 @@ export function MyTools({ employeeId }: { employeeId: number | null }) {
             {data.requests.map((r) => {
               const s = STATUS[r.status] ?? STATUS.pending;
               return (
-                <li key={r.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-5 py-3">
+                <li key={r.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-5 py-3 max-sm:px-4 max-sm:py-2">
                   <span className={`w-24 shrink-0 rounded-full px-2.5 py-0.5 text-center text-[11px] font-bold ${REQUEST_TYPES[r.type]?.tone ?? ""}`}>{requestLabel(r)}</span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-sm"><b className="font-semibold">{r.tool_name}</b> <span className="text-ink/70">· {requestLine(r)}</span></span>

@@ -141,6 +141,7 @@ export const TEXT_DEFAULTS = {
   "contact.route_loading": "Yeriniz təyin olunur...",
   "contact.route_denied": "Yerinizi təyin etmək olmadı. Brauzerdə məkana icazə verin.",
   "contact.route_open": "Naviqasiyanı aç",
+  "contact.waze": "Waze ilə aç",
   "form.title": "Bizə yazın",
   "form.lead": "Mesajınızı yazın, sizə özümüz zəng edək.",
   "form.name": "Adınız",

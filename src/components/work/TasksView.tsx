@@ -65,22 +65,22 @@ function Ring({ done, total }: { done: number; total: number }) {
   const c = 2 * Math.PI * r;
   const part = total ? done / total : 0;
   return (
-    <div className="relative grid h-[76px] w-[76px] shrink-0 place-items-center">
+    <div className="relative grid h-[76px] w-[76px] shrink-0 place-items-center max-sm:h-14 max-sm:w-14">
       <svg viewBox="0 0 76 76" className="absolute inset-0 -rotate-90">
         <circle cx="38" cy="38" r={r} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="7" />
         <circle cx="38" cy="38" r={r} fill="none" stroke="#4ade80" strokeWidth="7" strokeLinecap="round"
           strokeDasharray={c} strokeDashoffset={c * (1 - part)} className="transition-[stroke-dashoffset] duration-500" />
       </svg>
-      <span className="text-lg font-extrabold tabular-nums">{done}<span className="text-white/45">/{total}</span></span>
+      <span className="text-lg font-extrabold tabular-nums max-sm:text-sm">{done}<span className="text-white/45">/{total}</span></span>
     </div>
   );
 }
 
 function Tile({ label, value, tone = "" }: { label: string; value: number; tone?: string }) {
   return (
-    <div className="card flex flex-col justify-center !py-3">
+    <div className="card flex flex-col justify-center !py-3 max-sm:!px-3 max-sm:!py-2">
       <span className="muted text-xs font-medium">{label}</span>
-      <span className={`text-2xl font-extrabold tabular-nums ${tone}`}>{value}</span>
+      <span className={`text-2xl font-extrabold tabular-nums max-sm:text-xl max-sm:leading-tight ${tone}`}>{value}</span>
     </div>
   );
 }
@@ -176,12 +176,12 @@ export function TasksView() {
 
       {/* Həftə zolağı: 7 gün, hər gündə tapşırıq sayı; mənim tapşırığım olan gündə nöqtə */}
       <section className="card !p-3">
-        <div className="mb-2 flex items-center gap-2 px-1">
+        <div className="mb-2 flex items-center gap-2 px-1 max-sm:flex-nowrap">
           <button type="button" onClick={() => setDay(shift(day, -7))} className="icon-btn" aria-label="Əvvəlki həftə"><ChevronLeft size={18} /></button>
-          <p className="text-sm font-bold">{range}</p>
+          <p className="whitespace-nowrap text-sm font-bold">{range}</p>
           <button type="button" onClick={() => setDay(shift(day, 7))} className="icon-btn" aria-label="Sonrakı həftə"><ChevronRight size={18} /></button>
           <p className="muted ml-2 truncate text-sm max-sm:hidden">{day === today ? "Bu gün" : formatDateAz(day)}</p>
-          {day !== today && <button type="button" onClick={() => setDay(today)} className="btn btn-soft btn-sm ml-auto">Bu günə qayıt</button>}
+          {day !== today && <button type="button" onClick={() => setDay(today)} className="btn btn-soft btn-sm ml-auto shrink-0 whitespace-nowrap max-sm:!h-7 max-sm:!px-2.5"><span className="max-sm:hidden">Bu günə qayıt</span><span className="sm:hidden">Bu gün</span></button>}
         </div>
         <div className="grid grid-cols-7 gap-1.5">
           {days.map((d, i) => {
@@ -189,16 +189,18 @@ export function TasksView() {
             const count = new Set(rows.filter((r) => r.task_date === d).map((r, i) => r.group_id ?? `t${i}`)).size;
             const mineHere = rows.some((r) => r.task_date === d && r.employee_id === me);
             const selected = d === day;
+            // Həftədə heç bir gündə tapşırıq yoxdursa say xanası yer tutmur (seçilmiş gün qırmızı-mavi boş yerlə hündürləşirdi)
+            const weekHas = rows.some((r) => days.includes(r.task_date));
             return (
               <button key={d} type="button" onClick={() => setDay(d)} aria-pressed={selected}
-                className={`relative flex flex-col items-center rounded-xl py-2 transition-colors ${
+                className={`relative flex flex-col items-center rounded-xl py-2 transition-colors max-sm:py-1.5 ${
                   selected ? "bg-gradient-to-br from-[#0f2a55] to-primary text-white shadow-[0_10px_24px_-12px_rgba(31,111,235,0.9)]"
                     : d === today ? "bg-primary-soft text-primary hover:bg-[#dbe8fd]" : "hover:bg-bg"}`}>
                 <span className={`text-[11px] font-semibold ${selected ? "text-white/70" : "text-muted"}`}>{WEEKDAYS[i]}</span>
                 <span className="text-lg font-extrabold tabular-nums leading-tight">{Number(d.slice(8))}</span>
-                <span className={`mt-0.5 h-5 min-w-5 rounded-full px-1.5 text-[11px] font-bold leading-5 tabular-nums ${
+                <span className={`mt-0.5 h-5 min-w-5 rounded-full ${weekHas ? "" : "hidden"} px-1.5 text-[11px] font-bold leading-5 tabular-nums ${
                   count ? (selected ? "bg-white/20" : "bg-bg text-ink") : "opacity-0"}`}>{count}</span>
-                {mineHere && <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[#ff9f1c]" title="Sənin tapşırığın var" />}
+                {mineHere && <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[#ff9f1c] max-sm:right-1 max-sm:top-1 max-sm:h-1.5 max-sm:w-1.5" title="Sənin tapşırığın var" />}
               </button>
             );
           })}
@@ -219,11 +221,11 @@ export function TasksView() {
         <>
           {/* Mənim günüm (halqa) + komandanın rəqəmləri */}
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
-            <section className="flex items-center gap-5 rounded-[18px] bg-[#0c1b36] bg-[radial-gradient(420px_200px_at_100%_0%,rgba(34,195,230,0.22),transparent_70%)] px-6 py-5 text-white">
+            <section className="flex items-center gap-5 rounded-[18px] max-sm:gap-3 max-sm:px-4 max-sm:py-3 bg-[#0c1b36] bg-[radial-gradient(420px_200px_at_100%_0%,rgba(34,195,230,0.22),transparent_70%)] px-6 py-5 text-white">
               <Ring done={mineLive.filter((t) => t.done).length} total={mineLive.length} />
               <div className="min-w-0">
                 <p className="text-xs font-semibold uppercase tracking-wider text-white/50">Mənim günüm</p>
-                <p className="mt-1 text-xl font-extrabold">
+                <p className="mt-1 text-xl font-extrabold max-sm:mt-0 max-sm:text-base">
                   {me === null ? "Əməkdaş kartın yoxdur"
                     : mineLive.length === 0 ? "Sənə tapşırıq verilməyib"
                     : mineLive.every((t) => t.done) ? "Hamısı görülüb 🎉"
@@ -259,35 +261,42 @@ export function TasksView() {
                   const Icon = placeIcon(t);
                   const files = t.work_logs?.work_files.length ?? 0;
                   return (
-                    <li key={t.id} className={`card flex min-w-0 grow basis-[440px] items-start gap-4 !p-4 transition-colors ${
+                    <li key={t.id} className={`card relative min-w-0 grow basis-[440px] !p-3.5 transition-colors ${
                       cancelled ? "opacity-60" : t.done ? "!border-[#bfe8cf] !bg-[#f3fbf6]" : "hover:!border-[#c9dafb]"}`}>
+                      <div className="flex items-center gap-2.5 pr-16">
                       <button type="button" disabled={cancelled || past} onClick={() => toggle(t)} aria-pressed={t.done}
                         title={cancelled ? "Geri alınıb" : past ? "Keçmiş günün tapşırığı dəyişdirilmir" : t.done ? "Görülməyib kimi işarələ" : "Görüldü kimi işarələ"}
-                        className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 transition-all disabled:cursor-default ${
+                        className={`grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 transition-all disabled:cursor-default ${
                           cancelled ? "border-line bg-bg text-muted"
-                            : t.done ? "border-ok bg-ok text-white shadow-[0_6px_16px_-6px_rgba(18,161,80,0.8)]"
+                            : t.done ? "border-ok bg-ok text-white shadow-[0_4px_10px_-4px_rgba(18,161,80,0.8)]"
                             : past ? "border-line bg-bg text-transparent"
                             : "border-[#c9dafb] text-transparent hover:border-ok hover:bg-ok-soft hover:text-ok"}`}>
-                        {cancelled ? <Undo2 size={18} strokeWidth={2.6} /> : <Check size={20} strokeWidth={3} />}
+                        {cancelled ? <Undo2 size={12} strokeWidth={2.6} /> : <Check size={13} strokeWidth={3} />}
                       </button>
-                      <div className="min-w-0 flex-1">
-                        <p className={`flex items-start gap-1.5 text-sm font-bold ${cancelled ? "text-muted line-through" : t.done ? "text-ok" : "text-primary"}`}>
-                          <Icon size={15} className="mt-[3px] shrink-0" /><span className="line-clamp-2">{placeOf(t)}</span>
-                        </p>
-                        <p className={`mt-0.5 ${cancelled ? "text-muted line-through" : "text-ink"}`}>{t.reason}</p>
+                      <p className={`flex min-w-0 items-center gap-1.5 text-sm font-bold ${cancelled ? "text-muted line-through" : t.done ? "text-ok" : "text-primary"}`}>
+                        <Icon size={15} className="shrink-0" /><span className="line-clamp-2">{placeOf(t)}</span>
+                      </p>
+                      </div>
+                      <div className="mt-2">
+                        {t.group_id && <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-violet-50 px-2 py-0.5 text-[11px] font-bold text-violet-700"><Users size={11} /> Qrup</span>}
+                                                <p className={cancelled ? "text-muted line-through" : "text-ink"}>{t.reason}</p>
                         {/* Qrup tapşırığı (0071): biri «görüldü» basanda hamı üçün görülür */}
                         {t.group_id && (() => {
                           const others = data!.tasks.filter((x) => x.group_id === t.group_id && x.id !== t.id && !x.cancelled_at)
                             .map((x) => data!.employees.find((e) => e.id === x.employee_id)).filter((e) => !!e);
                           return others.length > 0 && (
-                            <p className="mt-1.5 flex items-center gap-2 text-xs text-muted" title="Biri «görüldü» basanda hamı üçün görülür">
-                              <span className="flex -space-x-1.5">{others.map((e) => <Avatar key={e.id} employee={e} className="!h-5 !w-5 !text-[8px] !shadow-none ring-2 ring-white" />)}</span>
-                              <span>Qrup: <b className="text-ink">{others.map((e) => e.full_name).join(", ")}</b> ilə birlikdə</span>
-                            </p>
+                            <div className="mt-2 flex flex-wrap gap-1.5" title="Biri «görüldü» basanda hamı üçün görülür">
+                              {others.map((e) => (
+                                <span key={e.id} className="inline-flex min-w-0 grow basis-[140px] items-center gap-2 rounded-lg bg-violet-50/70 px-2 py-1 text-xs">
+                                  <Avatar employee={e} className="!h-5 !w-5 !text-[8px] !shadow-none" />
+                                  <b className="truncate text-ink">{e.full_name}</b>
+                                </span>
+                              ))}
+                            </div>
                           );
                         })()}
                         {t.note && <p className="mt-1.5 rounded-lg bg-[#fff7ed] px-2.5 py-1.5 text-xs text-[#b45309]"><b>Təmir:</b> {t.note}</p>}
-                        <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                        <div className="mt-2.5 flex flex-wrap items-center gap-2 max-sm:mt-2">
                           {cancelled ? (
                             <span className="inline-flex items-center gap-1 rounded-full bg-bg px-2.5 py-1 text-xs font-semibold text-muted">
                               Geri alınıb{t.nextName && <><ArrowRight size={12} /> {t.nextName}</>}
@@ -297,7 +306,7 @@ export function TasksView() {
                           ) : past ? (
                             <span className="rounded-full bg-[#fdecec] px-2.5 py-1 text-xs font-bold text-[#c2410c]">Görülmədi</span>
                           ) : (
-                            <span className="rounded-full bg-primary-soft px-2.5 py-1 text-xs font-bold text-primary">Gözləyir</span>
+                            <span className="rounded-full bg-[#fff6e5] px-2.5 py-1 text-xs font-bold text-amber-700">Gözləyir</span>
                           )}
                           {files > 0 && <span className="inline-flex items-center gap-1 text-xs text-muted" title="Əlavə olunmuş fayllar"><Paperclip size={13} />{files}</span>}
                           {/* Görülmüş tapşırıqda: təmir barədə yaz, akt/şəkil əlavə et */}
@@ -329,7 +338,7 @@ export function TasksView() {
                   const done = !cancelled && g.live.every((x) => x.done);
                   const members = g.live.map((x) => data!.employees.find((e) => e.id === x.employee_id)).filter((e) => !!e);
                   return (
-                    <section key={g.id} className="card min-w-0 grow basis-[340px] !p-4">
+                    <section key={g.id} className="card min-w-0 grow basis-[340px] !p-4 max-sm:!p-3">
                       <header className="flex items-center gap-3">
                         <span className="flex -space-x-2.5">
                           {members.map((e) => <Avatar key={e.id} employee={e} className="!h-9 !w-9 !text-xs ring-2 ring-white" />)}
@@ -338,6 +347,7 @@ export function TasksView() {
                           <span className="block truncate text-sm font-bold">{members.map((e) => e.full_name).join(" + ") || "Qrup"}</span>
                           <span className="muted block text-xs">Qrup · {members.length} nəfər</span>
                         </span>
+                        <span className="rounded-full bg-violet-50 px-2 py-0.5 text-[11px] font-bold text-violet-700">Qrup</span>
                         {done && <span className="rounded-full bg-ok-soft px-2 py-0.5 text-[11px] font-bold text-ok">Hazır</span>}
                       </header>
                       <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-bg">
@@ -362,7 +372,7 @@ export function TasksView() {
                   const liveItems = items.filter((t) => !t.cancelled_at);
                   const done = liveItems.filter((t) => t.done).length;
                   return (
-                    <section key={employee.id} className="card min-w-0 grow basis-[340px] !p-4">
+                    <section key={employee.id} className="card min-w-0 grow basis-[340px] !p-4 max-sm:!p-3">
                       <header className="flex items-center gap-3">
                         <Avatar employee={employee} className="!h-9 !w-9 !text-xs" />
                         <span className="min-w-0 flex-1">

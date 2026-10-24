@@ -166,7 +166,7 @@ export function MyDay() {
     : !p.out && last ? `${label} · ${timeBaku(last.in)}-dən`
     : `${label} · ${durShort(p.minutes)}`;
   const mins = (a: string, b: string) => Math.max(0, Math.round((new Date(b).getTime() - new Date(a).getTime()) / 60000));
-  const durShort = (m: number) => (m >= 60 ? `${Math.floor(m / 60)} saat ${m % 60} dəq` : m < 1 ? "< 1 dəq" : `${m} dəq`);
+  const durShort = (m: number) => (m >= 60 ? `${Math.floor(m / 60)} saat ${m % 60} dəq` : `${Math.max(1, m)} dəq`);
   const presence = !day ? (
     <span className="muted text-sm">…</span>
   ) : day.status === "pending" ? (

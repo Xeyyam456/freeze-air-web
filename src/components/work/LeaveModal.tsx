@@ -67,14 +67,15 @@ export function LeaveModal({ employeeId, onClose }: { employeeId: number; onClos
         <button type="button" onClick={onClose} className="icon-btn" aria-label="Bağla"><X size={18} /></button>
       </div>
       <form onSubmit={submit} className="space-y-3">
-        <div className="grid grid-cols-2 gap-2">
-          <div>
-            <span className="label">Başlayır</span>
-            <DatePicker value={from} onChange={(v) => { if (!v) return; setFrom(v); if (to < v) setTo(v); }} />
+        {/* Dar ekranda (< 440) iki tarix alt-alta, ad solda: yan-yana "24 oktyabr 2026" kəsilirdi */}
+        <div className="grid grid-cols-2 gap-2 max-[440px]:grid-cols-1">
+          <div className="max-[440px]:flex max-[440px]:items-center max-[440px]:gap-2">
+            <span className="label max-[440px]:!mb-0 max-[440px]:w-[72px] max-[440px]:shrink-0">Başlayır</span>
+            <div className="min-w-0 flex-1"><DatePicker value={from} onChange={(v) => { if (!v) return; setFrom(v); if (to < v) setTo(v); }} /></div>
           </div>
-          <div>
-            <span className="label">Bitir</span>
-            <DatePicker value={end} onChange={(v) => v && setTo(v)} />
+          <div className="max-[440px]:flex max-[440px]:items-center max-[440px]:gap-2">
+            <span className="label max-[440px]:!mb-0 max-[440px]:w-[72px] max-[440px]:shrink-0">Bitir</span>
+            <div className="min-w-0 flex-1"><DatePicker value={end} onChange={(v) => v && setTo(v)} /></div>
           </div>
         </div>
         <p className="muted text-xs">{days} iş günü (bazar günləri sayılmır)</p>
@@ -82,7 +83,7 @@ export function LeaveModal({ employeeId, onClose }: { employeeId: number; onClos
           <span className="label">Səbəb <span className="muted font-normal">(istəyə görə)</span></span>
           <textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={2} className="field resize-none" placeholder="Məs. ailə işi, xəstəlik" />
         </label>
-        <button type="submit" disabled={pending} className="btn btn-primary w-full"><Send size={16} /> {pending ? "..." : "Sorğunu göndər"}</button>
+        <button type="submit" disabled={pending} className="btn btn-primary w-full max-sm:!h-9 max-sm:!text-[13px]"><Send size={16} /> {pending ? "..." : "Sorğunu göndər"}</button>
       </form>
 
       <div className="mt-5">

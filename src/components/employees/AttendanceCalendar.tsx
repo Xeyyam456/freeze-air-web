@@ -60,7 +60,7 @@ export function AttendanceCalendar({ employeeId, name, onClose }: { employeeId: 
       </div>
 
       {/* Solda təqvim və xülasə, sağda gün-gün gəlmə/getmə saatları (dar ekranda alt-alta) */}
-      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
       <div>
       <div className="mb-3 flex items-center gap-2">
         <button type="button" onClick={() => setMonth(shiftMonth(month, -1))} className="icon-btn" aria-label="Əvvəlki ay"><ChevronLeft size={18} /></button>
@@ -82,9 +82,9 @@ export function AttendanceCalendar({ employeeId, name, onClose }: { employeeId: 
           : Array.from({ length: 30 }, (_, i) => <span key={i} className="aspect-square rounded-lg bg-bg" />)}
       </div>
 
-      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
+      <div className="mt-3 flex flex-nowrap justify-between gap-x-4 gap-y-1 max-[385px]:gap-x-1.5">
         {LEGEND.map((l) => (
-          <span key={l.s} className="muted flex items-center gap-1.5 text-xs"><span className={`h-3 w-3 rounded ${CELL[l.s]}`} />{l.label}</span>
+          <span key={l.s} className="muted flex items-center gap-1.5 whitespace-nowrap text-xs max-[385px]:gap-1 max-[385px]:text-[10px]"><span className={`h-3 w-3 shrink-0 rounded max-[385px]:h-2 max-[385px]:w-2 ${CELL[l.s]}`} />{l.label}</span>
         ))}
       </div>
 
@@ -92,17 +92,32 @@ export function AttendanceCalendar({ employeeId, name, onClose }: { employeeId: 
         <div className="mt-4 grid grid-cols-4 gap-1.5 text-center">
           {[
             { label: "İş günü", value: s.workdays, cls: "text-ink" },
-            { label: "İşdə", value: s.present, cls: "text-ok", sub: s.extra ? `+${s.extra} bazar` : undefined },
+            { label: "İşdə", value: s.present, cls: "text-ok" },
             { label: "İcazəli", value: s.leave, cls: "text-violet-600" },
             { label: "Gəlmədi", value: s.absent, cls: s.absent ? "text-danger" : "text-ink" },
           ].map((x) => (
             <div key={x.label} className="rounded-lg bg-bg py-1.5">
-              <p className={`text-base font-bold ${x.cls}`}>{x.value}{"sub" in x && x.sub && <span className="ml-1 text-[11px] font-semibold text-slate-500">{x.sub}</span>}</p>
+              <p className={`text-base font-bold ${x.cls}`}>{x.value}</p>
               <p className="muted text-[11px] font-medium">{x.label}</p>
             </div>
           ))}
         </div>
       )}
+      {/* Bazar günü işi: yoxdursa 0 yox, bir sətir yazı; varsa bazar işi + cəmi işdə (iş günləri + bazar) */}
+      {s && (s.extra > 0 ? (
+        <div className="mt-2 grid grid-cols-2 gap-1.5">
+          <div className="flex items-center justify-between gap-1.5 rounded-lg bg-slate-100 px-3 py-2 max-[360px]:px-2">
+            <span className="whitespace-nowrap text-xs font-semibold leading-tight text-slate-600 max-[360px]:text-[11px]">Bazar günü işdə</span>
+            <span className="text-base font-bold tabular-nums text-slate-700">{s.extra}</span>
+          </div>
+          <div className="flex items-center justify-between gap-1.5 rounded-lg bg-ok-soft px-3 py-2 max-[360px]:px-2">
+            <span className="whitespace-nowrap text-xs font-semibold leading-tight text-ok max-[360px]:text-[11px]">Cəmi işdə</span>
+            <span className="text-base font-bold tabular-nums text-ok">{s.present + s.extra}</span>
+          </div>
+        </div>
+      ) : (
+        <p className="mt-2 whitespace-nowrap rounded-lg bg-slate-100 px-3 py-2 text-center text-xs font-semibold text-slate-600">Bazar günü işdə olmayıb</p>
+      ))}
 
       </div>
 
@@ -119,22 +134,22 @@ export function AttendanceCalendar({ employeeId, name, onClose }: { employeeId: 
               const p = presence!;
               const dur = durationText(p);
               return (
-                <li key={day} className="flex items-center gap-3 px-3 py-2">
+                <li key={day} className="flex items-center gap-3 px-3 py-2 max-[400px]:gap-2 max-[400px]:px-2.5">
                   <span className="min-w-0 flex-1">
-                    <span className="block text-sm font-bold tabular-nums">{fullDate(day)}</span>
-                    <span className="muted block text-[11px]">{weekday(day)}{dur && ` · ${dur}`}{p.sessions.length > 1 && ` · ${p.sessions.length} dəfə`}</span>
+                    <span className="block whitespace-nowrap text-sm font-bold tabular-nums max-[400px]:text-xs">{fullDate(day)}</span>
+                    <span className="muted block whitespace-nowrap text-[11px] max-[400px]:text-[10px] max-[400px]:leading-tight">{weekday(day)}{dur && ` · ${dur}`}</span>
                   </span>
                   {/* Hər seans ayrıca sətir: işi bitirib yenidən işə çıxıbsa bir neçə gəlmə – getmə */}
                   <span className="flex shrink-0 flex-col items-end gap-1" title={presenceText(p)}>
                     {p.sessions.map((x, i) => (
-                      <span key={x.in} className="flex items-center gap-1.5">
-                        {p.sessions.length > 1 && <span className="muted w-5 text-right text-xs font-bold tabular-nums">{sessionNo(i, p.sessions.length).trim()}</span>}
-                        <span className="flex items-center gap-1 rounded-lg bg-ok-soft px-2 py-1 text-xs font-bold tabular-nums text-ok" title="Gəlmə saatı">
-                          <LogIn size={12} /> {timeBaku(x.in)}
+                      <span key={x.in} className="flex items-center gap-1.5 max-[400px]:gap-1">
+                        {p.sessions.length > 1 && <span className="muted w-5 text-right text-xs font-bold tabular-nums max-[400px]:w-3.5 max-[400px]:text-[10px]">{sessionNo(i, p.sessions.length).trim()}</span>}
+                        <span className="flex items-center gap-1 rounded-lg bg-ok-soft px-2 py-1 text-xs font-bold tabular-nums text-ok max-[400px]:gap-0.5 max-[400px]:px-1.5 max-[400px]:py-0.5 max-[400px]:text-[11px]" title="Gəlmə saatı">
+                          <LogIn size={12} className="max-[400px]:h-2.5 max-[400px]:w-2.5" /> {timeBaku(x.in)}
                         </span>
                         {x.out ? (
-                          <span className="flex items-center gap-1 rounded-lg bg-bg px-2 py-1 text-xs font-bold tabular-nums" title="Getmə saatı">
-                            <LogOut size={12} /> {timeBaku(x.out)}
+                          <span className="flex items-center gap-1 rounded-lg bg-bg px-2 py-1 text-xs font-bold tabular-nums max-[400px]:gap-0.5 max-[400px]:px-1.5 max-[400px]:py-0.5 max-[400px]:text-[11px]" title="Getmə saatı">
+                            <LogOut size={12} className="max-[400px]:h-2.5 max-[400px]:w-2.5" /> {timeBaku(x.out)}
                           </span>
                         ) : (
                           <span className="rounded-lg bg-primary-soft px-2 py-1 text-xs font-semibold text-primary">hələ işdədir</span>

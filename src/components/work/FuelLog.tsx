@@ -1,11 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AlertTriangle, CalendarDays, Camera, Check, ChevronLeft, ChevronRight, Fuel, Gauge, HandCoins, ImageIcon, Moon, Pencil, Sun, X } from "lucide-react";
+import { AlertTriangle, CalendarDays, Camera, Check, ChevronDown, ChevronLeft, ChevronRight, FileSpreadsheet, Fuel, Gauge, HandCoins, ImageIcon, Moon, Pencil, Route, Sun, X } from "lucide-react";
 import { MONTHS_AZ, todayBaku } from "@/lib/attendance";
 import { createClient } from "@/lib/supabase/client";
 import type { Tables } from "@/lib/database.types";
 import { toast } from "@/lib/toast";
+import { exportFuel } from "@/lib/export-fuel";
 
 type Row = Tables<"mileage_logs">;
 type Car = { car_plate: string | null; car_model: string | null; fuel_per_100: number | null; fuel_type: string | null };
@@ -50,12 +51,13 @@ function Photo({ path, alt }: { path: string | null; alt: string }) {
 }
 
 // Səhər / axşam addımı: şəkil + km; yazılıbsa göstərir, bu gün ərzində "Dəyiş" ilə düzəlmək olur
-function Step({ kind, value, photo, at, min, disabled, onSave }: {
+function Step({ kind, value, photo, at, min, max, disabled, onSave }: {
   kind: "start" | "end";
   value: number | null;
   photo: string | null;
   at: string | null;
   min?: number;
+  max?: number;
   disabled?: boolean;
   onSave: (km: number, file: File | null) => Promise<boolean>;
 }) {
@@ -77,7 +79,8 @@ function Step({ kind, value, photo, at, min, disabled, onSave }: {
     e.preventDefault();
     const n = Number(km.replace(/\s/g, ""));
     if (!km || !Number.isInteger(n) || n < 0) return toast.error("Km-i tam rəqəmlə yaz.");
-    if (min !== undefined && n < min) return toast.error(`Axşam km səhərdən (${min}) az ola bilməz.`);
+    if (min !== undefined && n < min) return toast.error("Axşam km səhər km-dən az ola bilməz.", `Səhər km: ${min.toLocaleString("az")}. Daha böyük rəqəm yaz.`);
+    if (max !== undefined && n > max) return toast.error("Səhər km axşam km-dən çox ola bilməz.", `Axşam km: ${max.toLocaleString("az")}. Daha kiçik rəqəm yaz və ya əvvəl axşam km-ni düzəlt.`);
     if (!file && !photo) return toast.error("Spidometrin şəklini çək.");
     setPending(true);
     const ok = await onSave(n, file);
@@ -86,27 +89,27 @@ function Step({ kind, value, photo, at, min, disabled, onSave }: {
   }
 
   return (
-    <section className={`card flex min-w-0 grow basis-[340px] flex-col gap-3 !p-4 ${disabled ? "opacity-60" : ""}`}>
-      <header className="flex items-center gap-2.5">
-        <span className={`grid h-9 w-9 place-items-center rounded-xl ${done ? "bg-ok-soft text-ok" : "bg-primary-soft text-primary"}`}>
+    <section className={`card flex min-w-0 grow basis-[340px] flex-col gap-3 !p-4 max-sm:basis-full max-sm:gap-2 max-sm:!p-3 ${disabled ? "opacity-60" : ""}`}>
+      <header className="flex items-center gap-2.5 max-sm:gap-2">
+        <span className={`grid h-9 w-9 max-sm:h-7 max-sm:w-7 shrink-0 place-items-center rounded-xl ${done ? "bg-ok-soft text-ok" : "bg-primary-soft text-primary"}`}>
           {done ? <Check size={18} strokeWidth={3} /> : <Icon size={18} />}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block font-bold">{title}</span>
-          <span className="muted block text-xs">{done && at ? `Yazılıb: ${timeBaku(at)}` : disabled ? "Əvvəl səhər km-ini yaz" : "Spidometrin şəkli + km"}</span>
+          <span className="block truncate font-bold max-sm:text-sm">{title}</span>
+          <span className="muted block truncate text-xs max-sm:text-[11px]">{done && at ? `Yazılıb: ${timeBaku(at)}` : disabled ? "Əvvəl səhər km-ini yaz" : "Spidometrin şəkli + km"}</span>
         </span>
         {done && !disabled && (
-          <button type="button" onClick={() => { setEditing(true); setKm(String(value)); }} className="btn btn-soft btn-sm"><Pencil size={13} /> Dəyiş</button>
+          <button type="button" onClick={() => { setEditing(true); setKm(String(value)); }} className="btn btn-soft btn-sm max-sm:!h-7 max-sm:!px-2.5" aria-label="Dəyiş"><Pencil size={13} /> Dəyiş</button>
         )}
       </header>
 
       {done ? (
         <div className="flex items-center gap-3">
           <Photo path={photo} alt={title} />
-          <p className="text-2xl font-extrabold tabular-nums">{value!.toLocaleString("az")} <span className="muted text-sm font-semibold">km</span></p>
+          <p className="text-2xl font-extrabold tabular-nums max-sm:text-xl">{value!.toLocaleString("az")} <span className="muted text-sm font-semibold">km</span></p>
         </div>
       ) : (
-        <form onSubmit={submit} className="flex flex-wrap items-end gap-3">
+        <form onSubmit={submit} className="flex flex-wrap items-end gap-3 max-sm:gap-2">
           <label className={`grid h-16 w-24 shrink-0 cursor-pointer place-items-center overflow-hidden rounded-lg border-2 border-dashed ${
             preview || photo ? "border-primary" : "border-line hover:border-primary"} ${disabled ? "pointer-events-none" : ""}`} title="Şəkil çək və ya seç">
             {preview
@@ -131,7 +134,73 @@ function Step({ kind, value, photo, at, min, disabled, onSave }: {
   );
 }
 
+// "Aldığım yanacaq pulu": ay boyu hər gün ödəniş ola bilər, ona görə yığcam kart: üstdə yekun, gözləyənlər həmişə görünür (təsdiq lazımdır),
+// qəbul olunanların son 3-ü; "Hamısına bax" günlərə görə qruplaşmış sürüşən siyahı açır (hər günün başlığında günün cəmi)
+function PaymentsCard({ payments, onConfirm }: { payments: Payment[]; onConfirm: (p: Payment, received: boolean) => void }) {
+  const [open, setOpen] = useState(false);
+  const waiting = payments.filter((p) => p.status !== "received");
+  const received = payments.filter((p) => p.status === "received");
+  const sum = (l: Payment[]) => l.reduce((n, p) => n + Number(p.amount), 0);
+  const preview = received.slice(0, Math.max(1, 3 - waiting.length));
+  const hidden = received.length - preview.length;
+  const days = new Map<string, Payment[]>();
+  for (const p of received) days.set(p.day, [...(days.get(p.day) ?? []), p]);
+
+  return (
+    <div className="card overflow-hidden !p-0">
+      <div className="flex items-center justify-between gap-3 border-b border-line bg-[linear-gradient(135deg,#ecfbf1,#ffffff)] px-4 py-3 max-sm:px-3 max-sm:py-2">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted">Cəmi aldığın</p>
+          <p className="text-2xl font-extrabold tabular-nums leading-tight text-ok max-sm:text-xl">{azn(sum(received))}</p>
+        </div>
+        <div className="flex flex-wrap justify-end gap-1.5 text-xs font-semibold max-sm:text-[11px]">
+          <span className="whitespace-nowrap rounded-full bg-bg px-2.5 py-1 text-muted">{payments.length} ödəniş</span>
+          {waiting.length > 0 && <span className="whitespace-nowrap rounded-full bg-[#fff6e5] px-2.5 py-1 text-amber-700">{waiting.length} gözləyir · {azn(sum(waiting))}</span>}
+        </div>
+      </div>
+      {waiting.length > 0 && (
+        <ul className="divide-y divide-line border-b border-line bg-[#fffdf7]">
+          {waiting.map((p) => <PaymentRow key={p.id} p={p} onConfirm={(r) => onConfirm(p, r)} />)}
+        </ul>
+      )}
+      {!open ? (
+        <ul className="divide-y divide-line">
+          {preview.map((p) => <PaymentRow key={p.id} p={p} onConfirm={(r) => onConfirm(p, r)} />)}
+        </ul>
+      ) : (
+        <div className="nice-scroll max-h-[340px] overflow-y-auto">
+          {[...days].map(([day, list]) => (
+            <div key={day}>
+              <p className="sticky top-0 z-10 flex items-center justify-between bg-bg px-4 py-1.5 text-xs font-semibold text-muted max-sm:px-3">
+                <span>{dayName(day)}</span><span className="tabular-nums">{list.length > 1 ? `${list.length} ödəniş · ` : ""}{azn(sum(list))}</span>
+              </p>
+              <ul className="divide-y divide-line">{list.map((p) => <PaymentRow key={p.id} p={p} hideDay onConfirm={(r) => onConfirm(p, r)} />)}</ul>
+            </div>
+          ))}
+        </div>
+      )}
+      {(hidden > 0 || open) && received.length > 0 && (
+        <button type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open}
+          className="flex w-full items-center justify-center gap-1.5 border-t border-line bg-[#f8fafc] py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary-soft/40">
+          {open ? "Yığ" : `Hamısına bax (${received.length})`}
+          <ChevronDown size={16} className={`transition-transform ${open ? "rotate-180" : ""}`} />
+        </button>
+      )}
+    </div>
+  );
+}
+
 type Period = "day" | "week" | "month";
+// Bazanın ingiliscə xətalarını başa düşülən Azərbaycan dilinə çevirir
+function fuelError(msg: string, kind: "start" | "end") {
+  if (/mileage_logs_check/.test(msg)) return kind === "start" ? "Səhər km axşam km-dən çox ola bilməz." : "Axşam km səhər km-dən az ola bilməz.";
+  if (/mileage_logs_(start|end)_km_check/.test(msg)) return "Km mənfi ola bilməz.";
+  if (/mileage_logs_employee_id_day_key|duplicate key/.test(msg)) return "Bu gün üçün qeyd artıq var, səhifəni yenilə.";
+  if (/row-level security|permission denied/.test(msg)) return "Bu əməliyyata icazən yoxdur.";
+  if (/Failed to fetch|NetworkError|network/i.test(msg)) return "İnternet bağlantısı yoxdur, yenidən yoxla.";
+  return msg;
+}
+
 const PERIOD_LABEL: Record<Period, string> = { day: "Gün", week: "Həftə", month: "Ay" };
 const PERIOD_TOTAL: Record<Period, string> = { day: "Günün yanacaq pulu", week: "Həftənin yanacaq pulu", month: "Ayın yanacaq pulu" };
 
@@ -140,6 +209,7 @@ const d12 = (iso: string) => new Date(`${iso}T12:00:00Z`);
 const isoOf = (d: Date) => d.toISOString().slice(0, 10);
 function addDays(iso: string, n: number) { const d = d12(iso); d.setUTCDate(d.getUTCDate() + n); return isoOf(d); }
 function addMonths(iso: string, n: number) { const d = d12(`${iso.slice(0, 7)}-01`); d.setUTCMonth(d.getUTCMonth() + n); return isoOf(d); }
+const WEEKDAY_SHORT = ["Baz", "B.e", "Ç.a", "Çər", "C.a", "Cüm", "Şən"];
 const dayName = (iso: string) => `${Number(iso.slice(8))} ${MONTHS_AZ[Number(iso.slice(5, 7)) - 1]}`;
 
 // Dövrün aralığı və adı: gün; həftə = şirkətin iş həftəsi, 6 gün (bazar ertəsi – şənbə, bazar istirahət); ay.
@@ -201,12 +271,12 @@ function balanceText(b: number) {
 const BAL_CLS = { debt: "text-[#fb7185]", over: "text-amber-300", even: "text-[#4ade80]" } as const;
 
 // Ödəniş: məbləğ, tarix, qeyd; "Aldım" / "Almadım" (fuel_payment_confirm). Cavab dəyişdirilə bilər.
-function PaymentRow({ p, onConfirm }: { p: Payment; onConfirm: (received: boolean) => void }) {
+function PaymentRow({ p, onConfirm, hideDay = false }: { p: Payment; onConfirm: (received: boolean) => void; hideDay?: boolean }) {
   return (
     <li className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 max-sm:gap-x-2 max-sm:gap-y-2 max-sm:px-3 max-sm:py-2.5">
       <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary max-sm:hidden"><HandCoins size={17} /></span>
       <span className="min-w-0 flex-[1_1_160px]">
-        <span className="block font-bold tabular-nums"><span className="whitespace-nowrap">{azn(Number(p.amount))}</span> <span className="muted whitespace-nowrap text-xs font-semibold">· {dayName(p.day)}</span></span>
+        <span className="block font-bold tabular-nums"><span className="whitespace-nowrap">{azn(Number(p.amount))}</span> {!hideDay && <span className="muted whitespace-nowrap text-xs font-semibold">· {dayName(p.day)}</span>}</span>
         {p.note && <span className="muted line-clamp-2 text-xs max-sm:line-clamp-1" title={p.note}>{p.note}</span>}
       </span>
       {p.status === "received" ? (
@@ -232,7 +302,7 @@ function PaymentRow({ p, onConfirm }: { p: Payment; onConfirm: (received: boolea
 // Başlıqda həmişə BU GÜNÜN hesabatı + seçilmiş dövrün (gün / həftə / ay) yanacaq pulu ayrıca; cədvəl dövrə görə (admin ilə eyni).
 export function FuelLog({ employeeId, car }: { employeeId: number; car: Car }) {
   const today = todayBaku();
-  const [period, setPeriod] = useState<Period>("week");
+  const [period, setPeriod] = useState<Period>("day");
   const [anchor, setAnchor] = useState(today);
   const range = rangeOf(period, anchor);
   const [data, setData] = useState<Loaded | null>(null);
@@ -318,7 +388,7 @@ export function FuelLog({ employeeId, car }: { employeeId: number; car: Car }) {
         : await supabase.from("mileage_logs").update(kind === "start"
           ? { start_km: km, ...(photo ? { start_photo: photo } : {}) }
           : { end_km: km, ...(photo ? { end_photo: photo } : {}) }).eq("id", todayRow!.id);
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(fuelError(error.message, kind));
       toast.success(kind === "start" ? "Səhər km-i yazıldı" : "Axşam km-i yazıldı, gün hesablandı");
       await load();
       return true;
@@ -338,14 +408,22 @@ export function FuelLog({ employeeId, car }: { employeeId: number; car: Car }) {
       <div className="lg:sticky lg:top-[var(--header-h)] lg:z-20 lg:-mx-2 lg:-mt-[var(--gap)] lg:bg-bg lg:px-2 lg:pb-1 lg:pt-[var(--gap)]">
         <section className="rounded-[18px] bg-[#0c1b36] bg-[radial-gradient(520px_220px_at_100%_0%,rgba(34,195,230,0.22),transparent_70%)] p-5 text-white max-sm:p-3">
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3 max-sm:gap-y-2">
-            <div className="flex min-w-0 items-center gap-3">
+            <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 max-lg:w-full lg:flex-nowrap">
               <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/10 text-frost max-sm:h-10 max-sm:w-10 max-sm:rounded-xl"><Fuel size={22} /></span>
-              <div className="min-w-0">
+              <div className="min-w-0 max-lg:flex-1">
                 <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-bold">{car.car_plate ? <span className="plate shrink-0">{car.car_plate}</span> : "Maşın"} <span>{car.car_model}</span></p>
-                <p className="text-xs text-white/60">
-                  {fuelName ?? "yanacaq seçilməyib"} · {per100 ? `${per100} l / 100 km` : "sərf yazılmayıb"} · {price ? `${price} ₼ / l` : "qiymət yazılmayıb"}
+                <p className="text-xs text-white/60 max-sm:hidden">
+                  {fuelName ?? "yanacaq seçilməyib"} · {per100 ? `${per100} L / 100 km` : "sərf yazılmayıb"} · {price ? `${price} ₼ / L` : "qiymət yazılmayıb"}
                 </p>
               </div>
+              {/* Ustanın öz yanacaq hesabı: seçilmiş ayın Excel faylı (xülasə, gündəlik, ödənişlər, aylar) */}
+              <button type="button" onClick={() => void exportFuel(employeeId, anchor.slice(0, 7))} title="Bu ayın yanacaq hesabını Excel fayla çıxar" aria-label="Excel"
+                className="ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-white/10 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/20 max-lg:ml-auto max-sm:h-9 max-sm:px-2.5 lg:ml-4">
+                <FileSpreadsheet size={16} className="text-[#4ade80]" /> <span className="max-sm:hidden">Excel</span>
+              </button>
+              <p className="basis-full whitespace-nowrap text-[11px] text-white/60 sm:hidden">
+                {fuelName ?? "yanacaq seçilməyib"} · {per100 ? `${per100} L / 100 km` : "sərf yazılmayıb"} · {price ? `${price} ₼ / L` : "qiymət yazılmayıb"}
+              </p>
             </div>
             <div className="ml-auto flex flex-wrap items-center gap-2 max-lg:ml-0 max-lg:w-full max-lg:justify-between">
               <div className="flex gap-1 rounded-xl bg-white/10 p-1 max-sm:w-full max-sm:[&>button]:flex-1" role="tablist" aria-label="Dövr">
@@ -373,12 +451,12 @@ export function FuelLog({ employeeId, car }: { employeeId: number; car: Car }) {
               </p>
               <div className="mt-2 flex flex-wrap items-end gap-x-8 gap-y-2 max-lg:hidden">
                 <p className="text-3xl font-extrabold tabular-nums leading-none">{todayRow?.km ?? 0} <span className="text-base font-bold text-white/60">km</span></p>
-                <p className="tabular-nums text-white/80">{todayRow?.liters != null ? `${Number(todayRow.liters).toFixed(2)} l` : "— l"}</p>
+                <p className="tabular-nums text-white/80">{todayRow?.liters != null ? `${Number(todayRow.liters).toFixed(2)} L` : "— L"}</p>
                 <p className="text-2xl font-extrabold tabular-nums text-[#4ade80]">{todayRow?.cost != null ? azn(Number(todayRow.cost)) : "—"}</p>
               </div>
               <p className="flex shrink-0 items-baseline gap-2 tabular-nums sm:hidden">
                 <b className="text-base font-extrabold">{todayRow?.km ?? 0} <span className="text-xs font-semibold text-white/60">km</span></b>
-                <span className="text-xs text-white/60 max-[400px]:hidden">{todayRow?.liters != null ? `${Number(todayRow.liters).toFixed(2)} l` : "— l"}</span>
+                <span className="text-xs text-white/60 max-[400px]:hidden">{todayRow?.liters != null ? `${Number(todayRow.liters).toFixed(2)} L` : "— L"}</span>
                 <b className="text-base font-extrabold text-[#4ade80]">{todayRow?.cost != null ? azn(Number(todayRow.cost)) : "—"}</b>
               </p>
               <div className="mt-3 grid grid-cols-3 gap-2 max-sm:hidden lg:hidden">
@@ -393,21 +471,35 @@ export function FuelLog({ employeeId, car }: { employeeId: number; car: Car }) {
               <p className="mt-2 text-xs text-white/60 max-sm:hidden sm:max-lg:mt-auto sm:max-lg:pt-2">
                 {!todayRow ? "Bu gün hələ yazılmayıb: səhər spidometri yaz"
                   : todayRow.end_km == null ? `Açıqdır · səhər ${todayRow.start_km.toLocaleString("az")} km, axşam yaz`
-                  : `${todayRow.start_km.toLocaleString("az")} → ${todayRow.end_km.toLocaleString("az")} km${todayRow.fuel_price != null ? ` · ${todayRow.fuel_price} ₼ / l` : ""}`}
+                  : `${todayRow.start_km.toLocaleString("az")} → ${todayRow.end_km.toLocaleString("az")} km${todayRow.fuel_price != null ? ` · ${todayRow.fuel_price} ₼ / L` : ""}`}
               </p>
             </div>
-            {/* Seçilmiş dövrün yanacaq pulu: sürülən km-ə görə */}
-            <div className="rounded-2xl bg-gradient-to-br from-frost/25 to-primary/30 px-5 py-4 ring-1 ring-frost/30 max-sm:rounded-xl max-sm:px-3 max-sm:py-3">
-              <p className="text-xs font-semibold uppercase tracking-wider text-white/70">{PERIOD_TOTAL[period]}<span className="max-lg:hidden"> · {range.label}</span></p>
-              <p className="mt-1 text-4xl font-extrabold tabular-nums leading-tight max-lg:text-3xl max-sm:mt-0 max-sm:text-[26px]">{azn(total.cost)}</p>
-              <p className="mt-1 text-sm tabular-nums text-white/75 max-sm:mt-0 max-sm:text-xs">{total.km.toLocaleString("az")} km · {total.liters.toFixed(1)} l · {total.days} / {range.workdays} iş günü</p>
-              {/* Ayın balansı (0080): ayda alınan − ayda sərf */}
-              <div className="mt-3 grid grid-cols-3 gap-2 border-t border-white/15 pt-3 text-sm max-sm:mt-2 max-sm:pt-2 [&_p+p]:whitespace-nowrap max-[400px]:gap-1.5 max-[400px]:[&_p+p]:text-xs">
-                <div><p className="text-[11px] text-white/55">Ayda sərf</p><p className="font-extrabold tabular-nums">{azn(month.cost)}</p></div>
-                <div><p className="text-[11px] text-white/55">Ayda aldığın</p><p className="font-extrabold tabular-nums">{azn(month.paid)}</p></div>
-                <div><p className="text-[11px] text-white/55">Ayın balansı</p><p className={`font-extrabold tabular-nums ${BAL_CLS[balanceText(balance).tone]}`}>{balance > 0 ? "+" : ""}{azn(balance)}</p></div>
+            {/* Seçilmiş dövrün yanacaq pulu: sürülən km-ə görə; altda ayın balansı (0080: ayda alınan − ayda sərf) */}
+            <div className="flex flex-col rounded-2xl bg-gradient-to-br from-frost/25 to-primary/30 px-5 py-4 ring-1 ring-frost/30 max-sm:rounded-xl max-sm:px-3 max-sm:py-2.5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-white/70 max-sm:tracking-normal">{PERIOD_TOTAL[period]}<span className="max-lg:hidden"> · {range.label}</span></p>
+              <div className="mt-1 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 max-sm:mt-0.5">
+                <p className="text-4xl font-extrabold tabular-nums leading-tight max-lg:text-3xl max-sm:text-2xl">{azn(total.cost)}</p>
+                <p className="flex flex-wrap gap-1.5 text-xs font-semibold tabular-nums text-white/80 max-sm:gap-1 max-sm:text-[11px]">
+                  {[`${total.km.toLocaleString("az")} km`, `${total.liters.toFixed(1)} L`, `${total.days}/${range.workdays} gün`].map((t) => (
+                    <span key={t} className="whitespace-nowrap rounded-md bg-white/10 px-2 py-0.5 max-sm:px-1.5">{t}</span>
+                  ))}
+                </p>
               </div>
-              <p className={`mt-1 text-xs font-semibold ${BAL_CLS[balanceText(balance).tone]}`}>{balanceText(balance).text}<span className="max-[400px]:hidden"> · {monthR.label}</span></p>
+              <div className="mt-auto border-t border-white/15 pt-2.5 max-sm:mt-2 max-sm:pt-2">
+                <p className={`mb-1.5 flex items-center justify-between gap-2 text-xs font-semibold max-sm:mb-1 ${BAL_CLS[balanceText(balance).tone]}`}>
+                  <span>{balanceText(balance).text}</span>
+                  <span className="text-[11px] font-medium text-white/50 max-[400px]:hidden">{monthR.label}</span>
+                </p>
+                <div className="grid grid-cols-3 gap-2 max-sm:gap-1">
+                  {([["Ayda sərf", azn(month.cost), ""], ["Ayda aldığın", azn(month.paid), ""],
+                    ["Ayın balansı", `${balance > 0 ? "+" : ""}${azn(balance)}`, BAL_CLS[balanceText(balance).tone]]] as const).map(([l, v, c]) => (
+                    <div key={l} className="min-w-0 rounded-lg bg-white/[0.08] px-2.5 py-1.5 text-center max-sm:px-1 max-sm:py-1">
+                      <p className="truncate text-[11px] text-white/55 max-sm:text-[10px]">{l}</p>
+                      <p className={`whitespace-nowrap text-sm font-extrabold tabular-nums max-[400px]:text-xs ${c}`}>{v}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -426,28 +518,42 @@ export function FuelLog({ employeeId, car }: { employeeId: number; car: Car }) {
           <div className="card muted py-10 text-center text-sm">Yüklənir...</div>
         ) : (
           <>
-            <div className="flex flex-wrap gap-3">
-              <Step kind="start" value={todayRow?.start_km ?? null} photo={todayRow?.start_photo ?? null} at={todayRow?.start_at ?? null}
+            <div className="flex flex-wrap gap-3 max-sm:flex-col max-sm:gap-2">
+              <Step kind="start" max={todayRow?.end_km ?? undefined} value={todayRow?.start_km ?? null} photo={todayRow?.start_photo ?? null} at={todayRow?.start_at ?? null}
                 onSave={(km, file) => save("start", km, file)} />
               <Step kind="end" value={todayRow?.end_km ?? null} photo={todayRow?.end_photo ?? null} at={todayRow?.end_at ?? null}
                 min={todayRow?.start_km} disabled={!todayRow} onSave={(km, file) => save("end", km, file)} />
             </div>
             {/* Günün yekunu: axşam km yazılandan sonra (km × sərf / 100 × həmin növün qiyməti) */}
-            {/* Telefonda yığcam: üstdə km | məbləğ, altda bir sətir təfərrüat */}
             {live && (
-              <div className="mt-3 flex flex-wrap items-center gap-x-8 gap-y-3 rounded-2xl bg-gradient-to-r from-ok to-[#16a34a] px-6 py-4 text-white max-sm:gap-x-3 max-sm:gap-y-1.5 max-sm:rounded-xl max-sm:px-4 max-sm:py-3 shadow-[0_12px_28px_-14px_rgba(18,161,80,0.9)]">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-white/75">Günün yekunu</p>
-                  <p className="text-3xl font-extrabold tabular-nums leading-tight max-sm:text-2xl">{live.km} km <span className="text-lg font-bold text-white/80 max-sm:text-sm">getdin</span></p>
+              <div className="relative mt-3 overflow-hidden rounded-2xl bg-[linear-gradient(135deg,#15803d,#16a34a_55%,#22c55e)] px-5 py-4 text-white shadow-[0_14px_30px_-14px_rgba(18,161,80,0.9)] max-sm:mt-2 max-sm:rounded-xl max-sm:px-4 max-sm:py-3">
+                {/* bəzək: yumşaq dairə + solğun yol ikonu */}
+                <span aria-hidden className="pointer-events-none absolute -right-10 -top-12 h-36 w-36 rounded-full bg-white/10" />
+                <Route aria-hidden size={84} strokeWidth={1.4} className="pointer-events-none absolute -bottom-3 right-3 text-white/10 max-sm:hidden" />
+                <p className="relative flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-white/85">
+                  <span className="grid h-5 w-5 place-items-center rounded-full bg-white/20"><Check size={12} strokeWidth={3} /></span> Günün yekunu
+                </p>
+                <div className="relative mt-2 grid grid-cols-2 divide-x divide-white/20 max-sm:mt-1.5">
+                  <div className="pr-4 max-sm:pr-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-white/65">Getdin</p>
+                    <p className="text-3xl font-extrabold tabular-nums leading-tight max-sm:text-2xl">{live.km} <span className="text-base font-bold text-white/75 max-sm:text-sm">km</span></p>
+                  </div>
+                  <div className="pl-4 max-sm:pl-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-white/65">Yanacaq pulu</p>
+                    <p className="text-3xl font-extrabold tabular-nums leading-tight max-sm:text-2xl">{live.cost != null ? azn(Number(live.cost)) : "—"}</p>
+                  </div>
                 </div>
-                <div className="text-sm text-white/85 max-sm:order-last max-sm:flex max-sm:w-full max-sm:flex-wrap max-sm:gap-x-3 max-sm:border-t max-sm:border-white/20 max-sm:pt-1.5 max-sm:text-xs">
-                  <p className="tabular-nums">{live.start_km.toLocaleString("az")} → {live.end_km!.toLocaleString("az")} km</p>
-                  {live.liters != null && <p className="tabular-nums">{Number(live.liters).toFixed(2)} l {live.fuel_type ? FUEL_LABEL[live.fuel_type]?.toLowerCase() : ""}{live.fuel_price != null && ` · ${live.fuel_price} ₼ / l`}</p>}
-                </div>
-                <div className="ml-auto text-right">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-white/75">Yanacaq pulu</p>
-                  <p className="text-3xl font-extrabold tabular-nums leading-tight max-sm:text-2xl">{live.cost != null ? azn(Number(live.cost)) : "—"}</p>
-                </div>
+                {live.liters != null && (
+                  <p className="relative mt-2.5 flex items-center gap-1.5 whitespace-nowrap border-t border-white/20 pt-2 text-xs font-semibold text-white/85 max-sm:mt-2 max-sm:text-[11px]">
+                    <Fuel size={13} className="shrink-0 text-white/70" /> Günlük sərf edilən yanacaq: <b className="text-white">{Number(live.liters).toFixed(2)} L{live.fuel_type ? ` ${FUEL_LABEL[live.fuel_type]?.toLowerCase()}` : ""}</b>
+                  </p>
+                )}
+                <p className="relative mt-2 flex flex-wrap gap-1.5 text-xs font-semibold tabular-nums text-white/90 max-sm:mt-2 max-sm:gap-1 max-sm:text-[11px]">
+                  {[
+                    `${live.start_km.toLocaleString("az")} → ${live.end_km!.toLocaleString("az")} km`,
+                    live.fuel_price != null ? `${live.fuel_price} ₼ / L` : null,
+                  ].filter(Boolean).map((t) => <span key={t} className="whitespace-nowrap rounded-full bg-white/15 px-2.5 py-0.5 max-sm:px-2">{t}</span>)}
+                </p>
               </div>
             )}
           </>
@@ -466,59 +572,67 @@ export function FuelLog({ employeeId, car }: { employeeId: number; car: Car }) {
           {payments.length === 0 ? (
             <p className="card muted py-6 text-center text-sm">Bu dövrdə şirkət yanacaq pulu verməyib.</p>
           ) : (
-            <ul className="card divide-y divide-line !p-0">
-              {payments.map((p) => <PaymentRow key={p.id} p={p} onConfirm={(r) => confirm(p, r)} />)}
-            </ul>
+            <PaymentsCard payments={payments} onConfirm={confirm} />
           )}
         </section>
       )}
 
       {rows && (
         <section>
-          <h2 className="mb-3 text-base font-bold">{PERIOD_LABEL[period]}: {range.label}</h2>
+          <h2 className="mb-3 flex flex-wrap items-center gap-x-2 text-base font-bold">
+            <CalendarDays size={18} className="text-primary" /> Günlük hesab
+            <span className="text-sm font-semibold text-muted">· {PERIOD_LABEL[period].toLowerCase()}: {range.label}</span>
+          </h2>
           {rows.length === 0 ? (
             <p className="card muted py-8 text-center text-sm">Bu dövrdə yürüş yazılmayıb.</p>
-          ) : (
-            <div className="card overflow-x-auto !p-0">
-              <table className="w-full text-sm sm:min-w-[560px] [&_td]:whitespace-nowrap max-sm:[&_td]:px-2.5 max-sm:[&_th]:px-2.5 max-[400px]:text-xs max-[400px]:[&_td]:px-1.5 max-[400px]:[&_th]:px-1.5">
-                <thead className="bg-bg text-left text-xs text-muted">
-                  <tr>
-                    <th className="px-4 py-2 font-semibold">Gün</th>
-                    <th className="px-4 py-2 font-semibold max-sm:hidden">Səhər → axşam</th>
-                    <th className="px-4 py-2 text-right font-semibold">Km</th>
-                    <th className="px-4 py-2 text-right font-semibold max-sm:hidden">Litr</th>
-                    <th className="px-4 py-2 text-right font-semibold">Məbləğ</th>
-                    <th className="px-4 py-2 text-right font-semibold">Alınan</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-line">
-                  {rows.map((r) => (
-                    <tr key={r.id} className={r.day === today ? "bg-primary-soft/40" : ""}>
-                      <td className="px-4 py-2 font-semibold">{dayName(r.day)}{r.day === today && <span className="ml-1.5 text-[11px] text-primary max-[400px]:hidden">bu gün</span>}</td>
-                      <td className="px-4 py-2 tabular-nums max-sm:hidden">{r.start_km.toLocaleString("az")} → {r.end_km != null ? r.end_km.toLocaleString("az") : <span className="muted">axşam yazılmayıb</span>}</td>
-                      <td className="px-4 py-2 text-right font-bold tabular-nums">{r.km ?? "—"}</td>
-                      <td className="px-4 py-2 text-right tabular-nums max-sm:hidden">{r.liters != null ? Number(r.liters).toFixed(2) : "—"}</td>
-                      <td className="px-4 py-2 text-right font-bold tabular-nums">{r.cost != null ? azn(Number(r.cost)) : "—"}</td>
-                      <td className="px-4 py-2 text-right tabular-nums">{(() => {
-                        const got = payments.filter((p) => p.day === r.day).reduce((n, p) => n + Number(p.amount), 0);
-                        return got ? azn(got) : <span className="muted">—</span>;
-                      })()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-                <tfoot className="bg-bg font-bold">
-                  <tr>
-                    <td className="px-4 py-2">Cəmi <span className="font-semibold text-muted">({total.days} / {range.workdays})</span></td>
-                    <td className="px-4 py-2 max-sm:hidden" />
-                    <td className="px-4 py-2 text-right tabular-nums">{total.km}</td>
-                    <td className="px-4 py-2 text-right tabular-nums max-sm:hidden">{total.liters.toFixed(2)}</td>
-                    <td className="px-4 py-2 text-right tabular-nums">{azn(total.cost)}</td>
-                    <td className="px-4 py-2 text-right tabular-nums">{azn(paid)}</td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-          )}
+          ) : (() => {
+            const maxKm = Math.max(1, ...rows.map((r) => r.km ?? 0));
+            const diff = Math.round((paid - total.cost) * 100) / 100;
+            return (
+              <div className="card overflow-hidden !p-0">
+                <div className="flex items-center justify-between border-b border-line bg-[#f8fafc] px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted max-sm:px-3">
+                  <span>Gün və yürüş</span><span>Sərf · alınan</span>
+                </div>
+                <ul className="divide-y divide-line">
+                  {rows.map((r) => {
+                    const got = payments.filter((p) => p.day === r.day).reduce((n, p) => n + Number(p.amount), 0);
+                    const isToday = r.day === today;
+                    return (
+                      <li key={r.id} className={`grid grid-cols-[44px_minmax(0,1fr)_auto] items-center gap-3 px-4 py-2.5 max-sm:gap-2.5 max-sm:px-3 ${isToday ? "bg-primary-soft/40" : ""}`}>
+                        <div className={`grid h-11 w-11 place-items-center rounded-xl text-center leading-none ${isToday ? "bg-primary text-white" : "bg-bg"}`}>
+                          <span><b className="block text-base tabular-nums">{Number(r.day.slice(8))}</b><span className={`text-[10px] font-semibold ${isToday ? "text-white/80" : "text-muted"}`}>{WEEKDAY_SHORT[d12(r.day).getUTCDay()]}</span></span>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="flex items-baseline gap-x-2 gap-y-0.5 whitespace-nowrap">
+                            <b className="text-[15px] tabular-nums">{r.km != null ? r.km.toLocaleString("az") : "—"} <span className="text-xs font-semibold text-muted">km</span></b>
+                            <span className="muted truncate text-xs tabular-nums max-sm:hidden">
+                              {r.start_km.toLocaleString("az")} → {r.end_km != null ? r.end_km.toLocaleString("az") : "axşam yazılmayıb"}{r.liters != null && ` · ${Number(r.liters).toFixed(1)} L`}
+                            </span>
+                            {isToday && <span className="rounded-full bg-primary-soft px-1.5 text-[10px] font-bold text-primary sm:hidden">bu gün</span>}
+                          </p>
+                          <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-bg" aria-hidden>
+                            <div className="h-full rounded-full bg-gradient-to-r from-frost to-primary" style={{ width: `${Math.max(3, ((r.km ?? 0) / maxKm) * 100)}%` }} />
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-extrabold tabular-nums">{r.cost != null ? azn(Number(r.cost)) : "—"}</p>
+                          <p className={`text-xs font-semibold tabular-nums ${got ? "text-ok" : "text-muted"}`}>{got ? `+${azn(got)}` : "—"}</p>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-line bg-[#f8fafc] px-4 py-3 max-sm:px-3 max-sm:py-2.5">
+                  <p className="text-sm font-bold">Cəmi <span className="font-semibold text-muted">· {total.days}/{range.workdays} gün · {total.km.toLocaleString("az")} km · {total.liters.toFixed(1)} L</span></p>
+                  <p className="flex items-center gap-2 text-sm font-extrabold tabular-nums">
+                    <span>{azn(total.cost)}</span>
+                    <span className="text-ok">+{azn(paid)}</span>
+                    <span className={`rounded-full px-2 py-0.5 text-xs ${diff < 0 ? "bg-[#fff0f0] text-[#dc2626]" : diff > 0 ? "bg-[#fff6e5] text-amber-700" : "bg-ok-soft text-ok"}`}>{diff > 0 ? "+" : ""}{azn(diff)}</span>
+                  </p>
+                </div>
+              </div>
+            );
+          })()}
         </section>
       )}
     </div>

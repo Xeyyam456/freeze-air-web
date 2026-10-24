@@ -1,10 +1,10 @@
 import { notFound, redirect } from "next/navigation";
-import { MapPin } from "lucide-react";
+import { MapPin, Navigation2 } from "lucide-react";
 import { Page } from "@/components/Page";
 import type { Tables } from "@/lib/database.types";
 import { createClient } from "@/lib/supabase/server";
 import { asKind, KIND, type Kind } from "@/lib/kinds";
-import { mapEmbedUrl } from "@/lib/navigation";
+import { mapEmbedUrl, wazeUrl } from "@/lib/navigation";
 import { ClientHero } from "./ClientInfo";
 import { monthStartBaku } from "./stats";
 import { UnitList } from "./UnitList";
@@ -24,7 +24,7 @@ function LocationView({ company }: { company: Tables<"companies"> }) {
   }
 
   return (
-    <div className="h-[clamp(320px,calc(100vh-var(--topbar-h)-200px),720px)] overflow-hidden rounded-[18px] border border-line bg-surface p-2">
+    <div className="relative h-[clamp(320px,calc(100vh-var(--topbar-h)-200px),720px)] overflow-hidden rounded-[18px] border border-line bg-surface p-2">
       <iframe
         src={mapEmbedUrl(company)}
         title={`${company.name} xəritədə`}
@@ -32,6 +32,11 @@ function LocationView({ company }: { company: Tables<"companies"> }) {
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
       />
+      {/* Yalnız telefonda (< 640): Waze ilə ünvana naviqasiya */}
+      <a href={wazeUrl(company)} target="_blank" rel="noopener noreferrer"
+        className="absolute bottom-5 left-1/2 inline-flex h-10 -translate-x-1/2 items-center gap-2 rounded-full bg-[#33ccff] px-5 text-sm font-bold text-[#06192b] shadow-[0_10px_24px_rgba(6,25,43,0.3)] sm:hidden">
+        <Navigation2 size={16} /> Waze ilə get
+      </a>
     </div>
   );
 }
@@ -78,7 +83,7 @@ export async function ClientDetail({ id, kind }: { id: number; kind: Kind }) {
 
   return (
     <Page
-      title={client.name}
+      title={k.section}
       subtitle={fixedPlace ? (client.address ?? "Sabit məkan") : `${list.length} ${k.unit}`}
       back={{ href: k.route, label: k.section }}
     >

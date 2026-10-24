@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { LocateFixed, MapPin, Navigation, Route } from "lucide-react";
+import { LocateFixed, MapPin, Navigation, Navigation2, Route } from "lucide-react";
 import { toast } from "@/lib/toast";
 
-type Texts = { reset: string; route: string; routeLoading: string; routeDenied: string; routeOpen: string };
+type Texts = { reset: string; route: string; routeLoading: string; routeDenied: string; routeOpen: string; waze: string };
 
 // Əlaqə xəritəsi.
 // Ünvan rejimi: Google xəritəni ünvana görə ortalayır, bizim döyünən nişan da ortadadır. İstifadəçi xəritəyə toxunanda
@@ -23,6 +23,9 @@ export function ContactMap({ address, title, texts }: { address: string; title: 
     ? `https://www.google.com/maps?saddr=${origin.lat},${origin.lng}&daddr=${dest}&output=embed&hl=az`
     : `https://www.google.com/maps?q=${dest}&z=16&output=embed&hl=az`;
   const navUrl = `https://www.google.com/maps/dir/?api=1&destination=${dest}&travelmode=driving${origin ? `&origin=${origin.lat},${origin.lng}` : ""}`;
+
+  // Waze: ünvanla naviqasiya (telefonda və planşetdə Waze tətbiqi açılır, yoxdursa waze.com); masaüstündə lazım deyil
+  const wazeUrl = `https://waze.com/ul?q=${dest}&navigate=yes`;
 
   useEffect(() => {
     const onBlur = () => {
@@ -89,6 +92,9 @@ export function ContactMap({ address, title, texts }: { address: string; title: 
             <Navigation size={18} /> {texts.routeOpen}
           </a>
         )}
+        <a href={wazeUrl} target="_blank" rel="noopener noreferrer" className={`${btn} bg-[#33ccff] text-night hover:bg-white lg:hidden`}>
+          <Navigation2 size={18} /> {texts.waze}
+        </a>
         {(moved || origin) && (
           <button type="button" onClick={reset} className={`${btn} bg-night text-white hover:bg-cold`}>
             <LocateFixed size={18} /> {texts.reset}

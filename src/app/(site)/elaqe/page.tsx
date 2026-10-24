@@ -78,7 +78,7 @@ async function ContactCards({ t }: { t: Texts }) {
         <Reveal>
           <ContactMap address={c.address} title={`Xəritə: ${c.address}`} texts={{
             reset: t["contact.map_reset"], route: t["contact.route"], routeLoading: t["contact.route_loading"],
-            routeDenied: t["contact.route_denied"], routeOpen: t["contact.route_open"],
+            routeDenied: t["contact.route_denied"], routeOpen: t["contact.route_open"], waze: t["contact.waze"],
           }} />
         </Reveal>
       </section>

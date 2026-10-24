@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CalendarCheck, CalendarX, ChevronLeft, ChevronRight, FileSpreadsheet, Search, Undo2, X } from "lucide-react";
 import { Modal } from "@/components/Modal";
 import { exportAttendanceAll, exportAttendanceEmployee } from "@/lib/export-attendance";
-import { MONTHS_AZ, presenceText, shiftMonth, todayBaku, useMonthAttendance, type MonthAttendance } from "@/lib/attendance";
+import { MONTHS_AZ, presenceText, shiftMonth, timeBaku, todayBaku, useMonthAttendance, type MonthAttendance } from "@/lib/attendance";
 import { initials } from "@/lib/experience";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
@@ -15,18 +15,39 @@ type Emp = { id: number; full_name: string; photo_url: string | null; specialty:
 const norm = (s: string | null | undefined) =>
   (s ?? "").toLowerCase().replace(/ə/g, "e").replace(/ı/g, "i").replace(/ö/g, "o").replace(/ü/g, "u").replace(/ç/g, "c").replace(/ş/g, "s").replace(/ğ/g, "g");
 
-// Bu günün vəziyyət həbi (yalnız cari ayda)
+const durShort = (m: number) => (m >= 60 ? `${Math.floor(m / 60)} saat ${m % 60} dəq` : `${Math.max(1, m)} dəq`);
+
+// Bu günün vəziyyət həbi (yalnız cari ayda). Bir neçə seans (yenidən işə çıxıb) olanda həb qısadır, seanslar nömrəli siyahıdadır (SessionList)
 function todayBadge(a: MonthAttendance) {
   const p = a.today.presence;
+  const multi = !!p && p.sessions.length > 1;
   switch (a.today.status) {
     case "present": return p?.out
-      ? { text: `İşi bitirib · ${presenceText(p)}`, cls: "bg-bg text-ink" }
-      : { text: `İşdədir · ${p ? presenceText(p) : ""}`, cls: "bg-ok-soft text-ok" };
+      ? { text: `İşi bitirib · ${multi ? `${p.sessions.length} seans` : presenceText(p)}`, cls: "bg-bg text-ink" }
+      : { text: `İşdədir · ${p ? (multi ? `${timeBaku(p.sessions[p.sessions.length - 1].in)}-dən` : presenceText(p)) : ""}`, cls: "bg-ok-soft text-ok" };
     case "leave": return { text: "İcazəlidir", cls: "bg-violet-50 text-violet-700" };
     case "off": return { text: "Bazar: istirahət", cls: "bg-slate-200 text-slate-600" };
     case "absent": return { text: "İşdə olmayıb", cls: "bg-danger text-white" };
     default: return { text: "Hələ gəlməyib", cls: "bg-bg text-muted" };
   }
+}
+
+// Bugünkü seanslar: hər biri ayrıca sətir, nömrə ilə (yalnız bir gündə 2+ seans olanda); MyDay-dəki siyahı ilə eyni üslub
+function SessionList({ a }: { a: NonNullable<ReturnType<NonNullable<ReturnType<typeof useMonthAttendance>>["byEmployee"]["get"]>> }) {
+  const p = a.today.presence;
+  if (!p || p.sessions.length < 2) return null;
+  const mins = (x: string, y: string) => Math.max(0, Math.round((new Date(y).getTime() - new Date(x).getTime()) / 60000));
+  return (
+    <ol className="divide-y divide-line rounded-xl border border-line text-left">
+      {p.sessions.map((x, i) => (
+        <li key={x.in} className="flex items-center gap-2.5 px-2.5 py-1.5 text-[13px]">
+          <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[11px] font-bold ${x.out ? "bg-bg text-muted" : "bg-ok text-white"}`}>{i + 1}</span>
+          <span className="whitespace-nowrap font-semibold tabular-nums">{timeBaku(x.in)} – {x.out ? timeBaku(x.out) : "…"}</span>
+          <span className={`ml-auto whitespace-nowrap pl-2 text-xs font-semibold tabular-nums ${x.out ? "text-muted" : "text-ok"}`}>{x.out ? durShort(mins(x.in, x.out)) : "indi işdə"}</span>
+        </li>
+      ))}
+    </ol>
+  );
 }
 
 // Davamiyyət bölməsi (usta panelində /davamiyyet, admin-də /davamiyyet): ay seçimi + bütün ustaların cədvəli
@@ -122,11 +143,11 @@ export function AttendanceBoard({ meId = null, canMark = false }: { meId?: numbe
           <button type="button" onClick={() => setMonth(shiftMonth(month, 1))} disabled={isCurrent} className="icon-btn disabled:opacity-30" aria-label="Sonrakı ay"><ChevronRight size={18} /></button>
           {!isCurrent && <button type="button" onClick={() => setMonth(thisMonth)} className="btn btn-soft btn-sm ml-1">Bu ay</button>}
         </div>
-        <div className="search min-w-56 flex-1 max-sm:order-last max-sm:min-w-0 max-sm:basis-full">
+        <div className="search min-w-56 flex-1 max-sm:order-last max-sm:min-w-0 max-sm:basis-full max-sm:[&_input]:!h-9 max-sm:[&_input]:!rounded-[10px] max-sm:[&_input]:!pl-9 max-sm:[&_input]:!pr-3 max-sm:[&_input]:!text-sm max-sm:[&_input]:!shadow-none max-sm:[&_svg]:!left-3 max-sm:[&_svg]:!h-4 max-sm:[&_svg]:!w-4">
           <Search size={20} />
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Usta adı ilə axtar..." aria-label="Usta axtarışı" />
         </div>
-        <button type="button" onClick={() => setExporting(true)} disabled={!emps?.length} className="btn btn-soft !h-12 shrink-0" title="Davamiyyəti Excel fayla çıxar" aria-label="Excel">
+        <button type="button" onClick={() => setExporting(true)} disabled={!emps?.length} className="btn btn-soft !h-12 shrink-0 max-sm:!h-9" title="Davamiyyəti Excel fayla çıxar" aria-label="Excel">
           <FileSpreadsheet size={18} className="text-ok" /><span className="max-[400px]:hidden">Excel</span>
         </button>
       </div>
@@ -134,16 +155,17 @@ export function AttendanceBoard({ meId = null, canMark = false }: { meId?: numbe
       {isCurrent && (
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
           {[
-            { label: "Hazırda işdə", value: today.here, cls: "text-ok" },
-            { label: "İşi bitirib", value: today.done, cls: "text-ink" },
-            { label: "Bu gün icazəli", value: today.leave, cls: "text-violet-600" },
-            { label: "Bu gün hələ gəlməyib", value: today.missing, cls: "text-ink" },
-            { label: "Bu gün işdə olmayıb", value: today.absent, cls: today.absent ? "text-danger" : "text-ink" },
-            { label: "Gözləyən icazə sorğusu", value: today.pending, cls: "text-primary" },
+            { label: "Hazırda|işdə", value: today.here, cls: "text-ok" },
+            { label: "İşi|bitirib", value: today.done, cls: "text-ink" },
+            { label: "Bu gün|icazəli", value: today.leave, cls: "text-violet-600" },
+            { label: "Bu gün hələ|gəlməyib", value: today.missing, cls: "text-ink" },
+            { label: "Bu gün işdə|olmayıb", value: today.absent, cls: today.absent ? "text-danger" : "text-ink" },
+            { label: "Gözləyən icazə|sorğusu", value: today.pending, cls: "text-primary" },
           ].map((x) => (
-            <div key={x.label} className="card !py-3">
-              <p className="muted text-xs font-semibold">{x.label}</p>
-              <p className={`text-2xl font-extrabold ${x.cls}`}>{att ? x.value : "…"}</p>
+            <div key={x.label} className="card !py-3 max-sm:flex max-sm:items-center max-sm:justify-between max-sm:gap-2 max-sm:!px-3 max-sm:!py-1.5">
+              {/* Mobildə ad həmişə 2 sətir (| yerində sətir sınır), bütün kartlar eyni hündürlükdə */}
+              <p className="muted text-xs font-semibold max-sm:text-[11px] max-sm:leading-[1.15]">{x.label.split("|").map((w, i) => <span key={i} className="max-sm:block">{i ? " " : ""}{w}</span>)}</p>
+              <p className={`text-2xl font-extrabold max-sm:text-lg max-sm:leading-none ${x.cls}`}>{att ? x.value : "…"}</p>
             </div>
           ))}
         </div>
@@ -166,29 +188,34 @@ export function AttendanceBoard({ meId = null, canMark = false }: { meId?: numbe
           ];
           return (
             <div key={e.id} role="button" tabIndex={0} onClick={() => setOpen(e)} onKeyDown={(ev) => ev.key === "Enter" && setOpen(e)}
-              className={`card grow basis-[320px] cursor-pointer !p-4 transition-colors hover:bg-primary-soft/30 ${e.id === meId ? "ring-2 ring-primary/30" : ""}`}>
-              <div className="flex items-center gap-3">
+              className={`card grow basis-[320px] cursor-pointer !p-4 max-sm:!p-2.5 transition-colors hover:bg-primary-soft/30 ${e.id === meId ? "ring-2 ring-primary/30" : ""}`}>
+              <div className="flex items-center gap-3 max-sm:gap-2">
                 {e.photo_url
                   // eslint-disable-next-line @next/next/no-img-element -- storage avatarı
-                  ? <img src={e.photo_url} alt={e.full_name} className="h-10 w-10 shrink-0 rounded-full object-cover" />
-                  : <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary-soft text-xs font-bold text-primary">{initials(e.full_name)}</span>}
+                  ? <img src={e.photo_url} alt={e.full_name} className="h-10 w-10 shrink-0 rounded-full object-cover max-sm:h-8 max-sm:w-8" />
+                  : <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary-soft text-xs font-bold text-primary max-sm:h-8 max-sm:w-8 max-sm:text-[10px]">{initials(e.full_name)}</span>}
                 <span className="min-w-0 flex-1">
-                  <span className="flex items-center gap-2 font-semibold">
+                  <span className="flex items-center gap-2 text-sm font-semibold">
                     <span className="truncate">{e.full_name}</span>
                     {e.id === meId && <span className="shrink-0 rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-bold text-primary">Sən</span>}
                   </span>
                   <span className="muted block truncate text-xs">{e.specialty ?? ""}{a ? `${e.specialty ? " · " : ""}${a.workdays} iş günü` : ""}</span>
                 </span>
               </div>
-              <div className="mt-3 grid grid-cols-4 gap-1.5">
+              <div className="mt-3 grid grid-cols-4 gap-1.5 max-sm:mt-2 max-sm:gap-1">
                 {cells.map(([l, v, c]) => (
-                  <span key={l} className="min-w-0 rounded-xl bg-bg px-2.5 py-2 text-center">
-                    <span className="muted block whitespace-nowrap text-[11px] font-semibold">{l}</span>
-                    <b className={`block text-[15px] tabular-nums ${v === "—" ? "text-muted" : c}`}>{v}</b>
+                  <span key={l} className="min-w-0 rounded-xl bg-bg px-2.5 py-2 text-center max-sm:rounded-lg max-sm:px-1 max-sm:py-1">
+                    <span className="muted block whitespace-nowrap text-[11px] font-semibold max-sm:text-[10px] max-sm:leading-tight">{l}</span>
+                    <b className={`block text-[15px] tabular-nums max-sm:text-sm max-sm:leading-tight ${v === "—" ? "text-muted" : c}`}>{v}</b>
                   </span>
                 ))}
               </div>
-              {t && <div className="mt-3 flex flex-wrap items-center justify-end gap-2 border-t border-line pt-3">{todayCell(e, a, t)}</div>}
+              {t && (
+                <div className="mt-3 space-y-2 border-t border-line pt-3 max-sm:mt-2 max-sm:pt-2">
+                  <div className="flex flex-wrap items-center justify-end gap-2">{todayCell(e, a, t)}</div>
+                  {a && <SessionList a={a} />}
+                </div>
+              )}
             </div>
           );
         })}
@@ -243,6 +270,7 @@ export function AttendanceBoard({ meId = null, canMark = false }: { meId?: numbe
                   <td className="px-2 py-2.5 text-center tabular-nums">{a?.extra ? <><b className="text-slate-600">{a.extra}</b> <span className="muted text-xs">dəfə</span></> : <span className="muted">—</span>}</td>
                   <td className="px-4 py-2.5 text-right">
                     {todayCell(e, a, t)}
+                    {t && a && <div className="ml-auto mt-2 w-56"><SessionList a={a} /></div>}
                   </td>
                 </tr>
               );
