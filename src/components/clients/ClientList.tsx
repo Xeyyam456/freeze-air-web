@@ -95,7 +95,6 @@ export async function ClientList({ kind, emptyHint }: { kind: Kind; emptyHint: s
       <div className="flex flex-wrap gap-4">
         {rows.map((c) => {
           const fixedPlace = kind === "company" && c.units === 0;
-          const pct = coordPercent(c.coords, c.units);
           return (
             <Link key={c.id} href={`${k.route}/${c.id}`} className="card card-link group flex min-w-0 grow basis-[380px] flex-col gap-4 !p-5">
               <div className="flex items-center gap-3">
@@ -120,16 +119,9 @@ export async function ClientList({ kind, emptyHint }: { kind: Kind; emptyHint: s
                   <Stat label="Bu ay iş" value={c.works} tone={c.works ? "text-primary" : ""} />
                 </div>
               ) : (
-                <div>
-                  <div className="grid grid-cols-3 gap-2">
-                    <Stat label={k.Unit} value={c.units} />
-                    <Stat label="Koordinat" value={`${pct}%`} tone={pct === 100 ? "text-ok" : pct < 50 ? "text-amber-600" : ""} />
-                    <Stat label="Bu ay iş" value={c.works} tone={c.works ? "text-primary" : ""} />
-                  </div>
-                  {/* Koordinat örtüyü: xəritədə göstərilə bilən yerlərin payı */}
-                  <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-bg" title={`${c.coords} / ${c.units} koordinatlı`}>
-                    <div className="h-full rounded-full bg-gradient-to-r from-frost to-primary" style={{ width: `${pct}%` }} />
-                  </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <Stat label={k.Unit} value={c.units} />
+                  <Stat label="Bu ay iş" value={c.works} tone={c.works ? "text-primary" : ""} />
                 </div>
               )}
 

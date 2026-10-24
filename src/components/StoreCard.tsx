@@ -1,6 +1,7 @@
 import { History, MapPin, Phone } from "lucide-react";
 import type { Tables } from "@/lib/database.types";
 import { MapButton } from "./MapButton";
+import { NavButton } from "./NavButton";
 
 type Props = {
   store: Tables<"stores">;
@@ -49,6 +50,8 @@ export function StoreCard({ store, companyName, action, onHistory }: Props) {
         )}
         <MapButton place={store} />
       </div>
+      {/* Yalnız telefonda: Waze / Google Maps seçimi ilə ünvana getmək */}
+      <div className="mt-2 sm:hidden"><NavButton place={store} /></div>
     </div>
   );
 }

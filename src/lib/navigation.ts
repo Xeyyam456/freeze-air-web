@@ -16,6 +16,11 @@ export function mapSearchUrl(p: Place) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query(p))}`;
 }
 
+// Google Maps marşrutu (telefonda tətbiq açılır, istifadəçinin yerindən ünvana)
+export function directionsUrl(p: Place) {
+  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(query(p))}&travelmode=driving`;
+}
+
 // Waze ilə naviqasiya: koordinat varsa dəqiq nöqtə, yoxsa ünvan (telefonda Waze tətbiqi açılır)
 export function wazeUrl(p: Place) {
   if (p.lat != null && p.lng != null) return `https://waze.com/ul?ll=${p.lat},${p.lng}&navigate=yes`;
