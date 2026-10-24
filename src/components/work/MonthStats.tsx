@@ -142,7 +142,7 @@ function HeroChart({ y, m, series, todayDay, cumulative }: { y: number; m: numbe
       </div>
       <div className="mt-2 flex" aria-hidden="true">
         {Array.from({ length: days }, (_, i) => (
-          <span key={i} className={`flex-1 text-center text-[10px] tabular-nums ${i >= shown ? "text-white/30" : "text-white/75"}`}>{(i + 1) % 2 === 1 || days <= 16 ? i + 1 : ""}</span>
+          <span key={i} className={`flex-1 text-center text-[10px] tabular-nums ${i >= shown ? "text-white/30" : "text-white/75"}`}><span className="max-sm:hidden">{(i + 1) % 2 === 1 || days <= 16 ? i + 1 : ""}</span><span className="sm:hidden">{i === 0 || (i + 1) % 5 === 0 ? i + 1 : ""}</span></span>
         ))}
       </div>
     </div>
@@ -264,7 +264,7 @@ export function MonthStats() {
       {/* Yenilənəndə çərçivə qalır, məzmun solğunlaşır (skelet və tullanma yox) */}
       <div className={`space-y-5 transition-opacity ${loading && data ? "opacity-60" : ""}`}>
         {/* Hero: parlaq mavi→firuzəyi kart */}
-        <section className="relative overflow-hidden rounded-[22px] bg-[linear-gradient(135deg,#091428,#0f2447_60%,#123a6a)] p-6 text-white shadow-[0_20px_50px_rgba(9,20,40,0.35)]">
+        <section className="relative overflow-hidden rounded-[22px] bg-[linear-gradient(135deg,#091428,#0f2447_60%,#123a6a)] p-6 text-white max-sm:p-4 shadow-[0_20px_50px_rgba(9,20,40,0.35)]">
           <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-frost/20 blur-3xl" aria-hidden="true" />
           <div className="pointer-events-none absolute -bottom-24 left-1/3 h-56 w-56 rounded-full bg-primary/25 blur-3xl" aria-hidden="true" />
           <div className="relative">
@@ -282,15 +282,15 @@ export function MonthStats() {
                   </p>
                 )}
               </div>
-              <div className="flex flex-col items-end gap-3">
-                <div className="flex items-center gap-1.5">
+              <div className="flex flex-col items-end gap-3 max-sm:w-full max-sm:items-stretch">
+                <div className="flex items-center gap-1.5 max-sm:absolute max-sm:right-0 max-sm:top-0">
                   <button type="button" onClick={prevMonth} className={navBtn} aria-label="Əvvəlki ay"><ChevronLeft size={18} /></button>
                   <button type="button" onClick={nextMonth} disabled={isCurrent} className={navBtn} aria-label="Sonrakı ay"><ChevronRight size={18} /></button>
                   {!isCurrent && (
                     <button type="button" onClick={() => setYm({ y: today.y, m: today.m })} className="rounded-xl bg-white px-3 py-2 text-xs font-bold text-primary">Bu ay</button>
                   )}
                 </div>
-                <div className="flex gap-3">
+                <div className="flex gap-3 max-sm:[&>div]:flex-1">
                   <div className="rounded-2xl bg-white/15 px-4 py-2.5 backdrop-blur">
                     <p className="text-[11px] font-semibold text-white/75">İş görülən gün</p>
                     <p className="text-2xl font-extrabold leading-tight">{stats.active}<span className="text-sm font-semibold text-white/70"> / {isCurrent ? today.d : days}</span></p>
@@ -303,12 +303,12 @@ export function MonthStats() {
               </div>
             </div>
 
-            <div className="mt-6 flex items-center justify-between gap-3">
-              <div className="inline-flex gap-0.5 rounded-xl bg-white/15 p-1" role="tablist" aria-label="Rejim">
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+              <div className="inline-flex gap-0.5 rounded-xl bg-white/15 p-1 max-sm:w-full max-sm:[&>button]:flex-1" role="tablist" aria-label="Rejim">
                 <button type="button" role="tab" aria-selected={!cumulative} onClick={() => setCumulative(false)} className={seg(!cumulative)}>Günlük</button>
                 <button type="button" role="tab" aria-selected={cumulative} onClick={() => setCumulative(true)} className={seg(cumulative)}>Yığım</button>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 max-sm:w-full max-sm:[&>button]:flex-1 max-sm:[&>button]:justify-center max-sm:[&>button]:py-2">
                 <button type="button" disabled={!me || exporting} title="Seçilmiş ayın işlərini Excel faylına yaz"
                   onClick={async () => {
                     if (!me) return;

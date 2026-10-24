@@ -51,7 +51,7 @@ export function UnitList({ units, kind }: { units: Tables<"stores">[]; kind: Kin
 
   const chip = (value: Filter, label: string, count: number) => (
     <button type="button" onClick={() => setFilter(value)} aria-pressed={filter === value}
-      className={`flex h-11 shrink-0 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition-colors ${
+      className={`flex h-11 shrink-0 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition-colors max-sm:flex-1 max-sm:justify-center ${
         filter === value ? "bg-[#0c1b36] text-white" : "bg-surface text-muted ring-1 ring-line hover:text-ink"}`}>
       {label}
       <span className={`rounded-full px-2 py-0.5 text-xs tabular-nums ${filter === value ? "bg-white/15" : "bg-bg"}`}>{count}</span>
@@ -64,7 +64,7 @@ export function UnitList({ units, kind }: { units: Tables<"stores">[]; kind: Kin
 
       {/* Axtarış zolağı üst zolağın altında yapışıq qalır */}
       <div className="sticky top-[var(--topbar-h)] z-20 -mx-1 flex flex-wrap items-center gap-2 bg-bg/90 px-1 py-3 backdrop-blur">
-        <label className="flex h-11 min-w-[240px] flex-1 items-center gap-2.5 rounded-xl bg-surface px-3.5 ring-1 ring-line focus-within:ring-2 focus-within:ring-primary">
+        <label className="flex h-11 min-w-[240px] flex-1 items-center gap-2.5 max-sm:min-w-0 max-sm:basis-full rounded-xl bg-surface px-3.5 ring-1 ring-line focus-within:ring-2 focus-within:ring-primary">
           <Search size={18} className="shrink-0 text-muted" />
           <input
             value={query}
@@ -90,7 +90,7 @@ export function UnitList({ units, kind }: { units: Tables<"stores">[]; kind: Kin
       {filtered.length === 0 ? (
         <div className="card muted mt-2 py-10 text-center text-sm">Bu axtarışa uyğun {k.unit} tapılmadı.</div>
       ) : (
-        <div className="mt-1 grid grid-cols-[repeat(auto-fill,minmax(min(100%,380px),1fr))] gap-4">
+        <div className="mt-1 grid grid-cols-[repeat(auto-fill,minmax(min(100%,380px),1fr))] gap-4 sm:max-lg:grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
           {filtered.map((u) => (
             <StoreCard key={u.id} store={u} onHistory={() => setHistoryFor({ title: `${u.code} ${u.name}`, storeId: u.id })} />
           ))}

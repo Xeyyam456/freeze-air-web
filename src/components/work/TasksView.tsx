@@ -229,7 +229,7 @@ export function TasksView() {
                     : mineLive.every((t) => t.done) ? "Hamısı görülüb 🎉"
                     : `${mineLive.filter((t) => !t.done).length} tapşırıq qalıb`}
                 </p>
-                <p className="mt-0.5 text-sm text-white/55">Görüldü işarələyəndə iş avtomatik «Görülən işlər»ə düşür.</p>
+                <p className="mt-0.5 text-sm text-white/55 max-sm:hidden">Görüldü işarələyəndə iş avtomatik «Görülən işlər»ə düşür.</p>
               </div>
             </section>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2 2xl:grid-cols-4">
@@ -271,8 +271,8 @@ export function TasksView() {
                         {cancelled ? <Undo2 size={18} strokeWidth={2.6} /> : <Check size={20} strokeWidth={3} />}
                       </button>
                       <div className="min-w-0 flex-1">
-                        <p className={`flex items-center gap-1.5 text-sm font-bold ${cancelled ? "text-muted line-through" : t.done ? "text-ok" : "text-primary"}`}>
-                          <Icon size={15} className="shrink-0" /><span className="truncate">{placeOf(t)}</span>
+                        <p className={`flex items-start gap-1.5 text-sm font-bold ${cancelled ? "text-muted line-through" : t.done ? "text-ok" : "text-primary"}`}>
+                          <Icon size={15} className="mt-[3px] shrink-0" /><span className="line-clamp-2">{placeOf(t)}</span>
                         </p>
                         <p className={`mt-0.5 ${cancelled ? "text-muted line-through" : "text-ink"}`}>{t.reason}</p>
                         {/* Qrup tapşırığı (0071): biri «görüldü» basanda hamı üçün görülür */}
@@ -350,7 +350,7 @@ export function TasksView() {
                             {cancelled ? <Undo2 size={11} strokeWidth={3} /> : done ? <Check size={12} strokeWidth={3} /> : null}
                           </span>
                           <span className="min-w-0 flex-1">
-                            <span className={`block truncate font-semibold ${cancelled ? "text-muted line-through" : done ? "text-ok" : ""}`}>{placeOf(t)}</span>
+                            <span className={`line-clamp-2 font-semibold ${cancelled ? "text-muted line-through" : done ? "text-ok" : ""}`}>{placeOf(t)}</span>
                             <span className={`block truncate text-xs ${cancelled ? "line-through" : ""} text-muted`}>{t.reason}</span>
                           </span>
                         </li>
@@ -385,7 +385,7 @@ export function TasksView() {
                                 {cancelled ? <Undo2 size={11} strokeWidth={3} /> : t.done ? <Check size={12} strokeWidth={3} /> : null}
                               </span>
                               <span className="min-w-0 flex-1">
-                                <span className={`block truncate font-semibold ${cancelled ? "text-muted line-through" : t.done ? "text-ok" : ""}`}>{placeOf(t)}</span>
+                                <span className={`line-clamp-2 font-semibold ${cancelled ? "text-muted line-through" : t.done ? "text-ok" : ""}`}>{placeOf(t)}</span>
                                 <span className={`block truncate text-xs ${cancelled ? "line-through" : ""} text-muted`}>
                                   {t.reason}{cancelled && t.nextName && <> · → {t.nextName}</>}
                                 </span>

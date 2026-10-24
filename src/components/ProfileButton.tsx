@@ -107,29 +107,29 @@ function ProfileModal({ me, onClose }: { me: Me; onClose: () => void }) {
   return (
     <Modal onClose={onClose} labelledBy="profile-title" className="!max-w-md">
       <div className="mb-5 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <span className="icon-tile !h-11 !w-11"><UserRound size={20} /></span>
-          <div>
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="icon-tile !h-11 !w-11 shrink-0"><UserRound size={20} /></span>
+          <div className="min-w-0">
             <h2 id="profile-title" className="text-lg font-bold">Profil</h2>
-            <p className="muted text-sm">{me.email}</p>
+            <p className="muted truncate text-sm max-[400px]:text-[11px]" title={me.email}>{me.email}</p>
           </div>
         </div>
         <button type="button" onClick={onClose} className="icon-btn" aria-label="Bağla"><X size={18} /></button>
       </div>
 
       {me.employeeId ? (
-        <div className="flex items-center gap-4 rounded-xl border border-line p-3">
+        <div className="flex flex-wrap items-center gap-4 rounded-xl border border-line p-3 max-sm:gap-3">
           {photoUrl
             // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
             ? <img src={photoUrl} alt={me.name} className={`emp-avatar !h-16 !w-16 object-cover ${pending ? "opacity-50" : ""}`} />
             : <span className={`emp-avatar !h-16 !w-16 !text-lg ${pending ? "opacity-50" : ""}`}>{initials(me.name)}</span>}
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-[1_1_140px]">
             <p className="text-sm font-semibold">{me.name}</p>
             <p className="muted text-xs">Şəkil: JPG, PNG və ya WebP. Kvadrat kəsilir.</p>
           </div>
           <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only"
             onChange={(e) => onFile(e.target.files?.[0])} />
-          <button type="button" onClick={() => inputRef.current?.click()} disabled={pending} className="btn btn-secondary btn-sm">
+          <button type="button" onClick={() => inputRef.current?.click()} disabled={pending} className="btn btn-secondary btn-sm max-sm:flex-1">
             <ImagePlus size={14} /> {pending ? "..." : photoUrl ? "Dəyiş" : "Yüklə"}
           </button>
           {photoUrl && (

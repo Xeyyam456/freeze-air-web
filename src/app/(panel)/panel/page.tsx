@@ -8,7 +8,7 @@ const loading = <p className="muted text-sm">Yüklənir...</p>;
 export default function Home() {
   return (
     <Page title="Panel" subtitle="Mənim bugünüm və görülən işlər">
-      <div className="flex h-[calc(100vh-var(--header-h)-2*var(--gap))] flex-col gap-5">
+      <div className="flex flex-col gap-4 sm:gap-5 lg:h-[calc(100vh-var(--header-h)-2*var(--gap))]">
         {/* Üst sıra: mənim bugünüm (depo kartı 2026-10-24 çıxarıldı: "Kimdə nə var" Alətlərim-dədir) */}
         <div className="shrink-0">
           {/* MyDay render zamanı tarixi oxuyur (davamiyyət): Next 16 bunu Suspense daxilində tələb edir */}
@@ -17,7 +17,7 @@ export default function Home() {
           </Suspense>
         </div>
         {/* Görülən işlər (tarixçə) tam endə; tarix render zamanı oxunur (new Date): Suspense daxilində */}
-        <section className="card flex min-h-0 flex-1 flex-col">
+        <section className="card flex min-h-[420px] flex-1 flex-col lg:min-h-0">
           <Suspense fallback={loading}>
             <WorkHistory />
           </Suspense>

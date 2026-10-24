@@ -87,7 +87,7 @@ function EmployeeDetailsModal({ employee, isMe, onClose }: {
               <div className="rounded-xl bg-bg px-3 py-2">
                 <p className="muted flex items-center gap-1.5 text-xs font-medium"><Phone size={13} /> Telefon</p>
                 {employee.phone
-                  ? <a href={`tel:${employee.phone}`} className="link">{employee.phone}</a>
+                  ? <a href={`tel:${employee.phone}`} className="link whitespace-nowrap max-[400px]:text-xs">{employee.phone}</a>
                   : <p className="font-semibold">—</p>}
               </div>
               {/* Maşın (0076): admin paneldə yazılır */}
@@ -156,7 +156,7 @@ export function EmployeeList({ employees, todayWork, monthWork, status, myEmploy
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
-    const words = norm(query).split(/s+/).filter(Boolean);
+    const words = norm(query).split(/\s+/).filter(Boolean);
     return employees
       .filter((e) => {
         const haystack = norm(`${e.full_name} ${e.specialty} ${e.phone}`);
@@ -179,7 +179,7 @@ export function EmployeeList({ employees, todayWork, monthWork, status, myEmploy
 
   return (
     <div className="space-y-5">
-      <section className="flex flex-wrap items-center gap-x-10 gap-y-4 rounded-[18px] bg-[#0c1b36] bg-[radial-gradient(520px_220px_at_100%_0%,rgba(34,195,230,0.22),transparent_70%)] px-6 py-5 text-white">
+      <section className="flex flex-wrap items-center gap-x-10 gap-y-4 rounded-[18px] bg-[#0c1b36] bg-[radial-gradient(520px_220px_at_100%_0%,rgba(34,195,230,0.22),transparent_70%)] px-6 py-5 text-white max-sm:gap-y-3 max-sm:px-4">
         <div className="flex items-center gap-4">
           {/* Komandanın üzləri: ilk 4 usta üst-üstə */}
           <div className="flex -space-x-3">
@@ -190,7 +190,8 @@ export function EmployeeList({ employees, todayWork, monthWork, status, myEmploy
             <p className="text-2xl font-extrabold leading-tight">{employees.length} usta</p>
           </div>
         </div>
-        <dl className="flex flex-1 flex-wrap gap-x-10 gap-y-3">
+        {/* Mobildə 5 xana: üstdə 3, altda 2 (eni doldurur) */}
+        <dl className="flex flex-1 flex-wrap gap-x-10 gap-y-3 max-sm:grid max-sm:basis-full max-sm:grid-cols-6 max-sm:gap-2 max-sm:[&>div]:col-span-2 max-sm:[&>div:nth-child(n+4)]:col-span-3 max-sm:[&>div]:rounded-xl max-sm:[&>div]:bg-white/[0.07] max-sm:[&>div]:px-3 max-sm:[&>div]:py-2 max-sm:[&_dd]:text-xl">
           <SummaryStat label="Bu gün işdə" value={count("in")} tone="text-[#4ade80]" />
           <SummaryStat label="İşi bitirib" value={count("done")} />
           <SummaryStat label="İcazəli" value={count("leave")} tone={count("leave") ? "text-amber-400" : ""} />

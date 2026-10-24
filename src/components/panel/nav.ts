@@ -8,7 +8,7 @@ export const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
   {
     title: "Gündəlik",
     items: [
-      { href: "/panel", label: "Panel", icon: LayoutGrid, hint: "Mənim bugünüm, görülən işlər, depo" },
+      { href: "/panel", label: "Panel", icon: LayoutGrid, hint: "Mənim bugünüm, görülən işlər" },
       { href: "/tapshiriqlar", label: "Tapşırıqlar", icon: ListChecks, hint: "Günün tapşırıqları", tasks: true },
       { href: "/davamiyyet", label: "Davamiyyət", icon: CalendarCheck, hint: "İşə gəlmə, icazələr, təqvim" },
       { href: "/icazelerim", label: "İcazələrim", icon: CalendarOff, hint: "İcazə istə, sorğular və tarixçə" },

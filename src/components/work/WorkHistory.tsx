@@ -78,7 +78,7 @@ export function WorkHistory() {
   }
 
   const chip = (active: boolean) =>
-    `h-9 rounded-lg px-3 text-[13px] font-semibold transition-colors ${active ? "bg-primary text-white" : "bg-bg text-ink hover:bg-primary-soft"}`;
+    `h-9 shrink-0 whitespace-nowrap rounded-lg px-3 text-[13px] max-[400px]:flex-1 font-semibold transition-colors ${active ? "bg-primary text-white" : "bg-bg text-ink hover:bg-primary-soft"}`;
 
   const emptyText = day === today ? "Bu gün hələ iş qeydi yoxdur." : day === yesterday ? "Dünən iş qeydi olmayıb." : "Bu gün iş qeydi olmayıb.";
 
@@ -91,10 +91,10 @@ export function WorkHistory() {
           <ClipboardList size={18} className="text-primary" /> Görülən işlər
           {logs && <span className="rounded-full bg-primary-soft px-2 py-0.5 text-xs font-bold text-primary">{logs.length}</span>}
         </h2>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 max-sm:w-full max-[400px]:flex-wrap">
           <button type="button" onClick={() => changeDay(today)} className={chip(day === today)}>Bu gün</button>
           <button type="button" onClick={() => changeDay(yesterday)} className={chip(day === yesterday)}>Dünən</button>
-          <div className="w-44"><DatePicker value={day} onChange={changeDay} max={today} small /></div>
+          <div className="w-44 max-sm:min-w-0 max-sm:flex-1 max-[400px]:!basis-full"><DatePicker value={day} onChange={changeDay} max={today} small /></div>
         </div>
       </div>
 

@@ -132,14 +132,19 @@ function ReturnLine({ h, d, onChange, employeeId }: { h: Mine; d: Draft; onChang
         )}
       </div>
       {material && (
-        <div className="mt-2 flex flex-wrap items-center gap-2 rounded-xl bg-bg p-2.5 sm:ml-12">
-          <span className="text-xs font-semibold">Qaytarıram</span>
-          <input value={d.ret} onChange={(e) => onChange({ ...d, ret: e.target.value })} inputMode="decimal" placeholder="0" aria-label={`${t.name}: qaytarıram`}
-            className={`field !h-8 !w-20 !px-2 !text-[13px] ${c.over ? "!border-danger" : ""}`} />
-          {isPacked(t) ? <Seg value={d.byPack} onChange={(v) => onChange({ ...d, byPack: v })} items={[[false, t.unit], [true, t.pack_name]]} />
-            : <span className="muted text-xs">{t.unit}</span>}
-          <span className="ml-1 text-xs font-semibold">Qalanı</span>
-          <Seg value={d.restUsed} onChange={(v) => onChange({ ...d, restUsed: v })} items={[[true, "işlətdim"], [false, "məndə qalır"]]} />
+        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl bg-bg p-2.5 max-sm:p-2 sm:ml-12">
+          {/* İki qrup, hər biri bölünmür: dar ekranda alt-alta düşür */}
+          <span className="flex flex-wrap items-center gap-2">
+            <span className="w-16 text-xs font-semibold">Qaytarıram</span>
+            <input value={d.ret} onChange={(e) => onChange({ ...d, ret: e.target.value })} inputMode="decimal" placeholder="0" aria-label={`${t.name}: qaytarıram`}
+              className={`field !h-8 !w-16 !px-2 !text-[13px] ${c.over ? "!border-danger" : ""}`} />
+            {isPacked(t) ? <Seg value={d.byPack} onChange={(v) => onChange({ ...d, byPack: v })} items={[[false, t.unit], [true, t.pack_name]]} />
+              : <span className="muted text-xs">{t.unit}</span>}
+          </span>
+          <span className="flex items-center gap-2">
+            <span className="w-16 text-xs font-semibold">Qalanı</span>
+            <Seg value={d.restUsed} onChange={(v) => onChange({ ...d, restUsed: v })} items={[[true, "işlətdim"], [false, "məndə qalır"]]} />
+          </span>
         </div>
       )}
       <p className={`mt-1.5 text-xs sm:ml-12 ${c.over ? "font-semibold text-danger" : "muted"}`}>{c.hint}</p>
@@ -315,7 +320,7 @@ function PersonView({ p, me, onClose }: { p: Person; me: number; onClose: () => 
   const list = p.items.filter((h) => (h.tools?.kind === "material" ? "material" : "tool") === kind);
   return (
     <Modal onClose={onClose} labelledBy="who-title" className="!max-w-xl">
-      <div className="-mx-6 -mt-6 mb-5 overflow-hidden rounded-t-[18px] bg-[linear-gradient(135deg,#7c3aed,#4f46e5_60%,#2563eb)] px-6 pb-5 pt-5 text-white">
+      <div className="-mx-6 -mt-6 max-sm:-mx-4 max-sm:-mt-5 mb-5 overflow-hidden rounded-t-[18px] bg-[linear-gradient(135deg,#7c3aed,#4f46e5_60%,#2563eb)] px-6 max-sm:px-4 pb-5 pt-5 text-white">
         <div className="flex items-start gap-4">
           <Avatar employee={{ full_name: p.name, photo_url: p.photo }} className="!h-14 !w-14 !text-base ring-4 ring-white/25" />
           <div className="min-w-0 flex-1 pt-1">
@@ -440,14 +445,14 @@ export function MyTools({ employeeId }: { employeeId: number | null }) {
       {asking && <AskModal stock={data.stock} pendingIds={new Set(pendingReq.filter((r) => r.type === "request" && r.tool_id).map((r) => r.tool_id!))} initialKind={tab} onClose={() => setAsking(false)} />}
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <DStat icon={Wrench} tone="blue" label="Məndə alət" value={`${tools.reduce((n, h) => n + h.quantity, 0)} ədəd`} />
           <DStat icon={Package} tone="teal" label="Material" value={`${materials.length} növ`} />
           <DStat icon={Hourglass} tone="amber" label="Təsdiqləməliyəm" value={toConfirm.length} />
           <DStat icon={Clock} tone="violet" label="Gözləyən sorğu" value={pendingReq.length} />
         </div>
         <button type="button" onClick={() => setAsking(true)}
-          className="flex min-h-[88px] items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(135deg,#7c3aed,#4f46e5)] px-6 py-4 text-sm font-bold text-white shadow-[0_10px_24px_-10px_rgba(79,70,229,0.7)] transition hover:brightness-110">
+          className="flex h-12 items-center justify-center gap-2 rounded-2xl xl:h-auto xl:min-h-[88px] bg-[linear-gradient(135deg,#7c3aed,#4f46e5)] px-6 py-4 text-sm font-bold text-white shadow-[0_10px_24px_-10px_rgba(79,70,229,0.7)] transition hover:brightness-110">
           <Hand size={18} /> {tab === "material" ? "Material istə" : "Alət istə"}
         </button>
       </div>
@@ -462,10 +467,10 @@ export function MyTools({ employeeId }: { employeeId: number | null }) {
             {toConfirm.map((h) => {
               const t = h.tools!;
               return (
-                <li key={h.id} className="flex flex-wrap items-center gap-3 py-2.5">
+                <li key={h.id} className="flex flex-wrap items-center gap-3 py-2.5 max-sm:[&>button]:flex-1">
                   <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl ${t.kind === "material" ? SOFT.teal : SOFT.blue}`}>{t.kind === "material" ? <Package size={16} /> : <Wrench size={16} />}</span>
-                  <span className="min-w-0 flex-1">
-                    <b className="block truncate text-sm font-semibold">{t.name} <span className="font-bold text-primary">{showQty(h.quantity, t.kind === "material" ? t.unit : "ədəd", t)}</span></b>
+                  <span className="min-w-0 flex-[1_1_140px]">
+                    <b className="line-clamp-2 text-sm font-semibold">{t.name} <span className="font-bold text-primary">{showQty(h.quantity, t.kind === "material" ? t.unit : "ədəd", t)}</span></b>
                     <span className="muted block text-xs">{dateAz(h.taken_at)} · {timeAz(h.taken_at)}{h.disputed_at ? " · «Almadım» dedin, depo yoxlayır" : ""}</span>
                   </span>
                   <button type="button" onClick={() => rpc(() => createClient().rpc("assignment_confirm", { p_id: h.id, p_received: true }), "Təsdiqləndi: aldın")}
@@ -509,22 +514,15 @@ export function MyTools({ employeeId }: { employeeId: number | null }) {
         {list.length === 0 ? (
           <p className="muted border-t border-line py-10 text-center text-sm">{query ? "Heç nə tapılmadı." : tab === "tool" ? "Üzərində alət yoxdur." : "Üzərində material yoxdur."}</p>
         ) : (
-          <table className="w-full border-t border-line text-sm">
-            <thead className="bg-[#f8fafc] text-left text-xs font-semibold text-muted">
-              <tr>
-                <th className="w-12 py-3 pl-5">
-                  <input type="checkbox" checked={allOn} disabled={!selectable.length} aria-label="Hamısını seç"
-                    onChange={() => setSelected((s) => { const n = new Set(s); for (const h of selectable) { if (allOn) n.delete(h.id); else n.add(h.id); } return n; })}
-                    className="h-4 w-4 accent-[var(--color-primary)]" />
-                </th>
-                <th className="px-3 py-3">Ad</th>
-                <th className="w-32 px-3 py-3 text-right">Məndə</th>
-                <th className="w-36 px-3 py-3 max-md:hidden">Götürmüşəm</th>
-                <th className="w-44 px-3 py-3 max-sm:hidden">Vəziyyət</th>
-                <th className="w-32 py-3 pl-3 pr-5" />
-              </tr>
-            </thead>
-            <tbody>
+          // Sətirlər (cədvəl deyil): dar yerdə (mobil, "Kimdə nə var"ın yanında) vəziyyət və düymə ikinci sətrə keçir, yana daşmır
+          <div className="border-t border-line">
+            <label className="flex items-center gap-3 border-b border-line bg-[#f8fafc] px-4 py-2.5 text-xs font-semibold text-muted sm:px-5">
+              <input type="checkbox" checked={allOn} disabled={!selectable.length} aria-label="Hamısını seç"
+                onChange={() => setSelected((s) => { const n = new Set(s); for (const h of selectable) { if (allOn) n.delete(h.id); else n.add(h.id); } return n; })}
+                className="h-4 w-4 accent-[var(--color-primary)]" />
+              Hamısını seç {selectable.length < list.length && <span className="font-normal">(təsdiqlənməyən və qaytarılan seçilmir)</span>}
+            </label>
+            <ul className="divide-y divide-line">
               {list.map((h) => {
                 const t = h.tools!;
                 const material = t.kind === "material";
@@ -533,21 +531,18 @@ export function MyTools({ employeeId }: { employeeId: number | null }) {
                 const st: { tone: Tone; label: string } = !h.received_at ? (h.disputed_at ? { tone: "red", label: "«Almadım» dedin" } : { tone: "amber", label: "Təsdiqlə ↑" })
                   : ret ? { tone: "violet", label: "Qaytarma gözləyir" } : { tone: "green", label: "Məndədir" };
                 return (
-                  <tr key={h.id} className={`border-t border-line transition-colors ${selected.has(h.id) ? "bg-primary-soft/40" : "hover:bg-[#f7f9fd]"}`}>
-                    <td className="py-3 pl-5">
-                      <input type="checkbox" checked={selected.has(h.id)} disabled={!returnable(h)} onChange={() => toggle(h.id)} aria-label={`${t.name}: seç`}
-                        className="h-4 w-4 accent-[var(--color-primary)] disabled:opacity-30" />
-                    </td>
-                    <td className="px-3 py-3">
-                      <span className="flex items-center gap-3">
-                        <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg ${material ? SOFT.teal : SOFT.blue}`}>{material ? <Package size={15} /> : <Wrench size={15} />}</span>
-                        <b className="truncate font-semibold">{t.name}</b>
-                      </span>
-                    </td>
-                    <td className="px-3 py-3 text-right tabular-nums"><b className="text-[15px]">{fmt(h.quantity)}</b> <span className="text-xs text-muted">{material ? t.unit : "ədəd"}</span></td>
-                    <td className="px-3 py-3 max-md:hidden"><span className="text-[13px]">{dateAz(h.taken_at)}</span><span className="muted block text-[11px]">{d === 0 ? "bu gün" : `${d} gün`}</span></td>
-                    <td className="px-3 py-3 max-sm:hidden"><StatusDot tone={st.tone} label={st.label} /></td>
-                    <td className="py-3 pl-3 pr-5 text-right">
+                  <li key={h.id} className={`flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3 transition-colors sm:px-5 ${selected.has(h.id) ? "bg-primary-soft/40" : "hover:bg-[#f7f9fd]"}`}>
+                    <input type="checkbox" checked={selected.has(h.id)} disabled={!returnable(h)} onChange={() => toggle(h.id)} aria-label={`${t.name}: seç`}
+                      className="h-4 w-4 shrink-0 accent-[var(--color-primary)] disabled:opacity-30" />
+                    <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg ${material ? SOFT.teal : SOFT.blue}`}>{material ? <Package size={16} /> : <Wrench size={16} />}</span>
+                    <span className="min-w-0 flex-[1_1_160px]">
+                      <b className="line-clamp-2 text-sm font-semibold">{t.name}</b>
+                      <span className="muted block text-xs">götürmüşəm {dateAz(h.taken_at)} · {d === 0 ? "bu gün" : `${d} gün`}</span>
+                    </span>
+                    <span className="shrink-0 text-right tabular-nums"><b className="text-[15px]">{fmt(h.quantity)}</b> <span className="text-xs text-muted">{material ? t.unit : "ədəd"}</span></span>
+                    {/* İkinci hissə: dar yerdə alt sətirdə, sağa yığılır */}
+                    <span className="ml-auto flex shrink-0 items-center gap-2">
+                      <StatusDot tone={st.tone} label={st.label} />
                       {ret ? (
                         <ConfirmButton onConfirm={async () => { await rpc(() => createClient().rpc("depot_request_cancel", { p_id: ret.id }), "Sorğu ləğv edildi"); }} success={false}
                           className="btn btn-cancel btn-sm !h-8" title="Sorğunu geri götür" question="Qaytarma sorğusu ləğv olunacaq." confirmLabel="Bəli">
@@ -556,12 +551,12 @@ export function MyTools({ employeeId }: { employeeId: number | null }) {
                       ) : returnable(h) && (
                         <button type="button" onClick={() => setReturning([h])} className="btn btn-secondary btn-sm !h-8"><Undo2 size={14} /> Qaytar</button>
                       )}
-                    </td>
-                  </tr>
+                    </span>
+                  </li>
                 );
               })}
-            </tbody>
-          </table>
+            </ul>
+          </div>
         )}
       </section>
 

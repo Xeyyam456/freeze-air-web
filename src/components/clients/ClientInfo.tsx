@@ -23,7 +23,7 @@ export function ClientHero({ company, stats }: { company: Tables<"companies">; s
   const fixedPlace = kind === "company" && stats.units === 0;
 
   return (
-    <section className="rounded-[18px] bg-[#0c1b36] bg-[radial-gradient(560px_240px_at_100%_0%,rgba(34,195,230,0.22),transparent_70%)] px-6 py-5 text-white">
+    <section className="rounded-[18px] bg-[#0c1b36] bg-[radial-gradient(560px_240px_at_100%_0%,rgba(34,195,230,0.22),transparent_70%)] px-6 py-5 text-white max-sm:px-4">
       <div className="flex flex-wrap items-center gap-x-8 gap-y-5">
         <div className="flex min-w-0 flex-[1_1_320px] items-center gap-4">
           <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-frost to-primary text-2xl font-extrabold shadow-[0_8px_24px_rgba(34,195,230,0.35)]">
@@ -31,7 +31,7 @@ export function ClientHero({ company, stats }: { company: Tables<"companies">; s
           </span>
           <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-wider text-white/50">{k.One}</p>
-            <h2 className="truncate text-2xl font-extrabold leading-tight">{company.name}</h2>
+            <h2 className="line-clamp-2 text-2xl font-extrabold leading-tight max-sm:text-xl">{company.name}</h2>
             <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-white/75">
               <span className="flex min-w-0 items-center gap-1.5"><User size={14} className="shrink-0 text-white/50" />{company.contact_person ?? "Əlaqəli şəxs yoxdur"}</span>
               {company.phone
@@ -44,7 +44,7 @@ export function ClientHero({ company, stats }: { company: Tables<"companies">; s
           </div>
         </div>
 
-        <dl className="flex flex-wrap gap-x-9 gap-y-3">
+        <dl className="flex flex-wrap gap-x-9 gap-y-3 max-sm:grid max-sm:basis-full max-sm:grid-cols-2 max-sm:gap-2 max-sm:[&>div]:rounded-xl max-sm:[&>div]:bg-white/[0.07] max-sm:[&>div]:px-3 max-sm:[&>div]:py-2">
           {!fixedPlace && <HeroStat label={k.Unit} value={stats.units} />}
           {!fixedPlace && <HeroStat label="Koordinatlı" value={`${coordPercent(stats.coords, stats.units)}%`} />}
           <HeroStat label="Bu ay iş" value={stats.monthWorks} tone="text-frost" />
@@ -53,7 +53,7 @@ export function ClientHero({ company, stats }: { company: Tables<"companies">; s
 
         {/* Bütün obyektin (özü + filialları/mağazaları) iş tarixçəsi */}
         <PlaceHistoryButton target={{ title: company.name, companyId: company.id }}
-          className="btn shrink-0 !bg-white/10 !text-white ring-1 ring-white/15 hover:!bg-white/20" />
+          className="btn shrink-0 !bg-white/10 !text-white ring-1 ring-white/15 hover:!bg-white/20 max-sm:w-full sm:max-lg:ml-auto" />
       </div>
       {company.notes && (
         <p className="mt-4 flex items-start gap-2 border-t border-white/10 pt-3 text-sm text-white/70">

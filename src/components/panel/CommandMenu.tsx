@@ -110,7 +110,7 @@ export function CommandMenu({ showDepot, showFuel, onClose }: { showDepot: boole
       <div className="cmdk" role="dialog" aria-modal="true" aria-label="Axtarış">
         <div className="cmdk-input">
           <Search size={20} className="shrink-0 text-muted" />
-          <input autoFocus value={query} onKeyDown={onKeyDown} placeholder="Səhifə, əməl, şirkət, mağaza kodu…"
+          <input autoFocus value={query} onKeyDown={onKeyDown} placeholder="Səhifə, şirkət, mağaza kodu…"
             onChange={(e) => {
               setQuery(e.target.value);
               setActive(0);

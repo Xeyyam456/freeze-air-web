@@ -28,7 +28,7 @@ export function StoreCard({ store, companyName, action, onHistory }: Props) {
 
       <div className="mt-3 min-w-0 flex-1">
         {companyName && <p className="muted text-xs font-semibold">{companyName}</p>}
-        <h3 className="truncate text-[15px] font-bold">{store.name}</h3>
+        <h3 className="line-clamp-2 text-[15px] font-bold">{store.name}</h3>
         <p className="muted mt-1 flex items-start gap-1.5 text-[13px]">
           <MapPin size={14} className="mt-0.5 shrink-0" />
           <span className="line-clamp-1">{store.address ?? "Ünvan yazılmayıb"}</span>
@@ -41,7 +41,7 @@ export function StoreCard({ store, companyName, action, onHistory }: Props) {
         </p>
       </div>
 
-      <div className="mt-3 flex items-center justify-end gap-2 border-t border-dashed border-line pt-3">
+      <div className="mt-3 flex items-center justify-end gap-2 border-t border-dashed border-line pt-3 max-sm:[&>*]:flex-1 max-sm:[&>*]:justify-center">
         {onHistory && (
           <button type="button" onClick={onHistory} className="btn btn-soft btn-sm" title="Bu yerdə görülən işlər">
             <History size={14} /> Tarixçə

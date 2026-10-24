@@ -8,7 +8,7 @@ import { coordPercent, monthStartBaku } from "./stats";
 function Stat({ label, value, tone = "" }: { label: string; value: string | number; tone?: string }) {
   return (
     <div className="min-w-0 rounded-xl bg-bg px-3 py-2">
-      <p className="muted truncate text-[11px] font-semibold uppercase tracking-wide">{label}</p>
+      <p className="muted truncate text-[11px] font-semibold uppercase tracking-wide max-[400px]:text-[10px] max-[400px]:tracking-normal">{label}</p>
       <p className={`text-lg font-extrabold tabular-nums leading-tight ${tone}`}>{value}</p>
     </div>
   );
@@ -60,7 +60,7 @@ export async function ClientList({ kind, emptyHint }: { kind: Kind; emptyHint: s
   return (
     <div className="space-y-6">
       {/* Xülasə: neçə müştəri, neçə filial/mağaza, koordinat örtüyü, bu ay görülən iş */}
-      <section className="flex flex-wrap items-center gap-x-10 gap-y-4 rounded-[18px] bg-[#0c1b36] bg-[radial-gradient(520px_220px_at_100%_0%,rgba(34,195,230,0.22),transparent_70%)] px-6 py-5 text-white">
+      <section className="flex flex-wrap items-center gap-x-10 gap-y-4 rounded-[18px] bg-[#0c1b36] bg-[radial-gradient(520px_220px_at_100%_0%,rgba(34,195,230,0.22),transparent_70%)] px-6 py-5 text-white max-sm:gap-y-3 max-sm:px-4">
         <div className="flex items-center gap-4">
           <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white/10 text-frost"><Icon size={26} /></span>
           <div>
@@ -68,7 +68,7 @@ export async function ClientList({ kind, emptyHint }: { kind: Kind; emptyHint: s
             <p className="text-2xl font-extrabold leading-tight">{rows.length} {k.one}</p>
           </div>
         </div>
-        <dl className="flex flex-1 flex-wrap gap-x-10 gap-y-3">
+        <dl className="flex flex-1 flex-wrap gap-x-10 gap-y-3 max-sm:grid max-sm:basis-full max-sm:grid-cols-2 max-sm:gap-2 max-sm:[&>div]:rounded-xl max-sm:[&>div]:bg-white/[0.07] max-sm:[&>div]:px-3 max-sm:[&>div]:py-2 max-sm:[&_dd]:text-xl max-sm:[&>div:last-child:nth-child(odd)]:col-span-2">
           <div>
             <dt className="text-xs text-white/55">{k.Unit} cəmi</dt>
             <dd className="text-2xl font-extrabold tabular-nums">{totalUnits}</dd>
@@ -103,7 +103,7 @@ export async function ClientList({ kind, emptyHint }: { kind: Kind; emptyHint: s
                   {c.name.charAt(0)}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <h3 className="truncate text-base font-bold">{c.name}</h3>
+                  <h3 className="line-clamp-2 text-base font-bold leading-snug">{c.name}</h3>
                   <p className="muted text-xs font-medium">{fixedPlace ? "Sabit məkan" : `${c.units} ${k.unit}`}</p>
                 </div>
                 <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-bg text-muted transition-colors group-hover:bg-primary group-hover:text-white">
@@ -115,7 +115,7 @@ export async function ClientList({ kind, emptyHint }: { kind: Kind; emptyHint: s
                 <div className="grid grid-cols-[1fr_auto] gap-2">
                   <div className="min-w-0 rounded-xl bg-bg px-3 py-2">
                     <p className="muted flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide"><MapPin size={12} /> Ünvan</p>
-                    <p className="truncate text-sm font-semibold">{c.address ?? "Yazılmayıb"}</p>
+                    <p className="line-clamp-2 text-sm font-semibold">{c.address ?? "Yazılmayıb"}</p>
                   </div>
                   <Stat label="Bu ay iş" value={c.works} tone={c.works ? "text-primary" : ""} />
                 </div>

@@ -157,7 +157,16 @@ export function MyDay() {
   // Təsdiqlənmiş icazə günü "icazəlisən" (Realtime: admin təsdiqləyən kimi dəyişir)
   const day = mine?.today;
   const p = day?.presence;
-  const pill = (cls: string, text: string) => <span className={`rounded-full px-3 py-1.5 text-xs font-bold ${cls}`}>{text}</span>;
+  const pill = (cls: string, text: string) => <span title={text} className={`dpill rounded-full px-3 py-1.5 text-center text-xs font-bold max-sm:col-span-2 max-sm:py-2 sm:max-lg:min-w-0 sm:max-lg:truncate ${cls}`}>{text}</span>;
+  // Bir neçə seans (yenidən işə çıxıb): nişan qısadır (indiki seans və ya cəmi müddət), seanslar aşağıda nömrəli siyahıdadır
+  const multi = !!p && p.sessions.length > 1;
+  const last = p?.sessions[p.sessions.length - 1];
+  const status = (label: string) => !p ? label
+    : !multi ? `${label} · ${presenceText(p)}`
+    : !p.out && last ? `${label} · ${timeBaku(last.in)}-dən`
+    : `${label} · ${durShort(p.minutes)}`;
+  const mins = (a: string, b: string) => Math.max(0, Math.round((new Date(b).getTime() - new Date(a).getTime()) / 60000));
+  const durShort = (m: number) => (m >= 60 ? `${Math.floor(m / 60)} saat ${m % 60} dəq` : m < 1 ? "< 1 dəq" : `${m} dəq`);
   const presence = !day ? (
     <span className="muted text-sm">…</span>
   ) : day.status === "pending" ? (
@@ -166,14 +175,14 @@ export function MyDay() {
     </button>
   ) : day.status === "present" && p && !p.out ? (
     <>
-      {pill("bg-ok-soft text-ok", `İşdəsən · ${presenceText(p)}`)}
+      {pill("bg-ok-soft text-ok", status("İşdəsən"))}
       <button type="button" onClick={checkOut} disabled={checking} className="btn btn-sm !h-9 bg-navy text-white hover:brightness-125">
         <LogOut size={15} /> {checking ? "..." : "İşi bitirdim"}
       </button>
     </>
   ) : day.status === "present" && p ? (
     <>
-      {pill("bg-bg text-ink", `İşi bitirdin · ${presenceText(p)}`)}
+      {pill("bg-bg text-ink", status("İşi bitirdin"))}
       {/* Təcili iş çıxsa yenidən işə çıxır: yeni seans açılır (0066), sonra yenə "İşi bitirdim" */}
       <button type="button" onClick={checkIn} disabled={checking} className="btn btn-soft btn-sm !h-9" title="Yeni seans açılır">
         <LogIn size={15} /> {checking ? "..." : "Yenidən işə çıxdım"}
@@ -199,23 +208,42 @@ export function MyDay() {
     </>
   );
 
+  const leaveBtn = (cls: string) => (
+    <button type="button" disabled={!me} onClick={() => setLeaving(true)} className={`btn btn-soft btn-sm !h-9 ${cls}`} title="İcazə sorğusu: admin təsdiqləyir">
+      <CalendarOff size={15} /> İcazə istə{mine?.pendingLeave ? ` (${mine.pendingLeave})` : ""}
+    </button>
+  );
+
   return (
     <section className="card space-y-3 !py-4">
       {leaving && me && <LeaveModal employeeId={me.id} onClose={() => setLeaving(false)} />}
       {calendar && me && <AttendanceCalendar employeeId={me.id} name={me.name} onClose={() => setCalendar(false)} />}
       <div className="flex flex-wrap items-center gap-3">
         <span className="icon-tile shrink-0"><CalendarCheck size={20} /></span>
-        <p className="muted text-xs font-semibold uppercase tracking-wide">Mənim bugünüm</p>
-        {presence}
-        <div className="ml-auto flex items-center gap-2">
+        <p className="muted text-xs font-semibold uppercase tracking-wide max-sm:flex-1 sm:max-lg:hidden">Mənim bugünüm</p>
+        {/* Planşetdə başlıq yazısı gizlidir ki, hamısı bir sətrə sığsın. < 640: vəziyyət və düymələr ayrıca sətirdə: nişan üstdə tam endə, düymələr altda yarı-yarı
+            (nişandan sonra tək düymə qalırsa o da tam endə); uzun düymə mətni sətrə keçə bilir */}
+        <div className="flex items-center gap-2 sm:[&>.dpill]:whitespace-nowrap sm:max-lg:min-w-0 sm:max-lg:flex-1 sm:max-lg:[&>button]:shrink-0 max-sm:order-last max-sm:w-full max-sm:[&>*]:justify-center max-sm:grid max-sm:grid-cols-2 max-sm:[&>.dpill+*:last-child]:col-span-2 max-sm:[&>button]:!h-auto max-sm:[&>button]:min-h-9 max-sm:[&>button]:py-2 max-sm:[&>button]:leading-tight">{presence}{leaveBtn("sm:hidden")}</div>
+        <div className="ml-auto flex shrink-0 items-center gap-2">
           <button type="button" disabled={!me} onClick={() => setCalendar(true)} className="icon-btn !h-9 !w-9" title="Davamiyyət təqvimim" aria-label="Davamiyyət təqvimim">
             <CalendarRange size={16} />
           </button>
-          <button type="button" disabled={!me} onClick={() => setLeaving(true)} className="btn btn-soft btn-sm !h-9" title="İcazə sorğusu: admin təsdiqləyir">
-            <CalendarOff size={15} /> İcazə istə{mine?.pendingLeave ? ` (${mine.pendingLeave})` : ""}
-          </button>        </div>
+          {leaveBtn("max-sm:hidden")}
+        </div>
       </div>
-      <div className="grid grid-cols-4 gap-2">
+      {/* Bugünkü seanslar: hər biri ayrıca sətir, nömrə ilə (yalnız yenidən işə çıxanda) */}
+      {multi && p && (
+        <ol className="divide-y divide-line rounded-xl border border-line">
+          {p.sessions.map((x, i) => (
+            <li key={x.in} className="flex items-center gap-3 px-3 py-2 text-sm">
+              <span className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-bold ${x.out ? "bg-bg text-muted" : "bg-ok text-white"}`}>{i + 1}</span>
+              <span className="font-semibold tabular-nums">{timeBaku(x.in)} – {x.out ? timeBaku(x.out) : "…"}</span>
+              <span className={`ml-auto text-xs font-semibold tabular-nums ${x.out ? "text-muted" : "text-ok"}`}>{x.out ? durShort(mins(x.in, x.out)) : "indi işdəsən"}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <Stat icon={CalendarCheck} label="Bu gün" value={s ? <span className={s.today ? "text-primary" : ""}>{s.today}</span> : "…"} sub="iş" />
         <Stat icon={CalendarDays} label="Bu ay" value={s?.month ?? "…"} sub="iş" href="/statistika" />
         {/* Admin/rəhbərlik verdiyi bugünkü tapşırıqlar: klik → Tapşırıqlar səhifəsi */}

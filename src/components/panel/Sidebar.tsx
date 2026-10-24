@@ -39,6 +39,10 @@ function SidebarView({ showDepot, showFuel = false, me, pathname }: { showDepot:
     <>
       {open && <div className="panel-nav-scrim" onClick={() => setOpenAt(null)} aria-hidden />}
       <aside className={`panel-nav ${open ? "is-open" : ""}`} aria-label="Panel menyusu">
+        {/* ≥ 1024: menyunu yığ / aç — sağ kənarda yumru düymə (əvvəl ayaqda ayrıca sətir idi, alçaq ekranda bəndləri sıxışdırırdı) */}
+        <button type="button" onClick={toggleMini} className="nav-edge-toggle max-lg:!hidden" title="Menyunu yığ / aç" aria-label="Menyunu yığ / aç">
+          <ChevronsLeft size={14} strokeWidth={2.6} />
+        </button>
         <div className="panel-nav-head">
           <Link href="/panel" className="flex min-w-0 items-center gap-3" title="Freeze Air Service — Panel">
             <span className="logo-mark"><Snowflake size={22} strokeWidth={2.4} /></span>
@@ -79,10 +83,6 @@ function SidebarView({ showDepot, showFuel = false, me, pathname }: { showDepot:
           ) : (
             <div className="nav-profile h-[52px]" />
           )}
-          <button type="button" onClick={toggleMini} className="nav-item nav-collapse max-lg:!hidden" title="Menyunu yığ / aç">
-            <ChevronsLeft size={19} className="shrink-0" />
-            <span className="nav-label">Menyunu yığ</span>
-          </button>
         </div>
       </aside>
     </>
