@@ -1,3 +1,4 @@
+import { fetchGroupMap, jobKey } from "@/lib/jobs";
 import Link from "next/link";
 import { ArrowUpRight, Building2, MapPin, Phone, Store, User } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -17,14 +18,16 @@ function Stat({ label, value, tone = "" }: { label: string; value: string | numb
 // Şirkətlərin və ya market şəbəkələrinin siyahısı: üstdə tünd xülasə, altında iri kartlar (filial/mağaza sayı, koordinat, bu ayın işləri)
 export async function ClientList({ kind, emptyHint }: { kind: Kind; emptyHint: string }) {
   const supabase = await createClient();
-  const [{ data: clients }, { data: works }] = await Promise.all([
+  const monthStart = monthStartBaku();
+  const [{ data: clients }, { data: works }, groups] = await Promise.all([
     supabase
       .from("companies")
       .select("id, name, phone, address, contact_person, stores(lat, lng)")
       .eq("kind", kind)
       .order("name"),
     // Bu ayın işləri: ya birbaşa şirkətə (sabit məkan), ya da filialına/mağazasına yazılır
-    supabase.from("work_logs").select("company_id, s:stores(company_id)").gte("work_date", monthStartBaku()),
+    supabase.from("work_logs").select("id, company_id, s:stores(company_id)").gte("work_date", monthStart),
+    fetchGroupMap(supabase, monthStart),
   ]);
 
   const k = KIND[kind];
@@ -41,7 +44,11 @@ export async function ClientList({ kind, emptyHint }: { kind: Kind; emptyHint: s
   }
 
   const monthWorks = new Map<number, number>();
+  const seen = new Set<string>(); // qrup işi bir say
   for (const w of works ?? []) {
+    const key = jobKey(w.id, groups);
+    if (seen.has(key)) continue;
+    seen.add(key);
     const id = w.company_id ?? w.s?.company_id;
     if (id != null) monthWorks.set(id, (monthWorks.get(id) ?? 0) + 1);
   }

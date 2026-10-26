@@ -321,6 +321,11 @@ Repolar ayrıdır, kod paylaşılmır; bunlar əl ilə eyni saxlanmalıdır:
   - **Açıq qalanlar**: admin kopyaları köhnədir (`DatePicker`, `AttendanceBoard`, `AttendanceCalendar`, `Toaster`; Yanacaq Excel və yeni yanacaq görünüşü admin Yanacaq səhifəsində yoxdur); `DepotUi.tsx` (admin+web) alt yazı dəyişikliyi eynidir; **sınaq məlumatı bazada qalıb**: `fuel_payments` id 5–29 (TEST gündəlik) + id 1, 2, 4 (məbləğlər 1.00/1.00/5.00 oldu, orijinal 1250.75/20/25), `mileage_logs` id 3–7 (19–23 okt., 120–130 km) və id 2 (150 000→155 000, 5000 km), `leave_requests` id 1 (27–29 okt., "Ləğv etdin"); istifadəçi deyəndə sil/qaytar.
 - **Qalır**: admin paneli.
 
+## Admin responsivliyi və qrup işi (2026-10-27) — web-ə təsir edənlər
+- Admin paneli responsivliyi bitdi (ətraflı admin `CLAUDE.md` → "Admin responsivliyi"). Web-ə köçürülənlər: `lib/jobs.ts` (qrup işi sayımı), `WorkLogModal` (bütün qrup üzvləri, qrupun bütün faylları, akt/şəkil iç-içə modalda), `ClientList`/`ClientDetail` (şirkət iş sayı qrup işini bir dəfə sayır), `DepotUi` (`DHead` mobil başlıq), `HistoryModal` (Sayım çipi yoxdur).
+- **Sayım funksiyası ləğv edildi (2026-10-27)**: `CountModal`, `createCount`, menyu bəndi və jurnal çipi çıxarılıb (bazada `depot_count_create` qalır).
+- 0088: iş qeydini yalnız sahibi dəyişir (admin dəyişmir).
+
 ## Landing: qərarlar və qalan işlər (2026-10-19)
 - İstifadəçi tələbi: landing UX/UI "professional" olsun. Responsivlik 2026-10-20-də başladı (yuxarıdakı "Responsivlik" bölməsi).
 - **Edilib**: hero sürətli forma (admin açıb-bağlayır, mətnlər admin-dən), rəqəmlər zolağı, necə işləyirik 3 addım, FAQ, header telefon + əsas düymə, footer sosial/WhatsApp, xəritə `hl=az`, yumşaq animasiyalar. **Ləğv/istənmir**: "Bizə etibar edənlər", xidmət təkrarının təmizlənməsi (4 kart + göy kateqoriyalar + "Xidmət növləri" qalır), hover ilə açılan menyu.

@@ -3,6 +3,7 @@ import { MapPin, Navigation2 } from "lucide-react";
 import { Page } from "@/components/Page";
 import type { Tables } from "@/lib/database.types";
 import { createClient } from "@/lib/supabase/server";
+import { fetchGroupMap, jobKey } from "@/lib/jobs";
 import { asKind, KIND, type Kind } from "@/lib/kinds";
 import { mapEmbedUrl, wazeUrl } from "@/lib/navigation";
 import { PlaceLocationButton } from "@/components/PlaceLocationButton";
@@ -52,13 +53,14 @@ export async function ClientDetail({ id, kind }: { id: number; kind: Kind }) {
   const supabase = await createClient();
   const monthStart = monthStartBaku();
   // İşlər ya birbaşa şirkətə (sabit məkan), ya da filialına/mağazasına yazılır: ikisi ayrıca sayılır
-  const direct = () => supabase.from("work_logs").select("work_date").eq("company_id", id);
-  const viaUnit = () => supabase.from("work_logs").select("work_date, s:stores!inner(company_id)").eq("s.company_id", id);
-  const [{ data: client }, { data: units }, d, u] = await Promise.all([
+  const direct = () => supabase.from("work_logs").select("id, work_date").eq("company_id", id);
+  const viaUnit = () => supabase.from("work_logs").select("id, work_date, s:stores!inner(company_id)").eq("s.company_id", id);
+  const [{ data: client }, { data: units }, d, u, groups] = await Promise.all([
     supabase.from("companies").select("*").eq("id", id).maybeSingle(),
     supabase.from("stores").select("*").eq("company_id", id).order("code"),
     direct().gte("work_date", monthStart),
     viaUnit().gte("work_date", monthStart),
+    fetchGroupMap(supabase, monthStart),
   ]);
 
   if (!client) notFound();
@@ -67,7 +69,10 @@ export async function ClientDetail({ id, kind }: { id: number; kind: Kind }) {
   if (realKind !== kind) redirect(`${KIND[realKind].route}/${id}`);
 
   // Bu ay iş yoxdursa, son işin tarixini ayrıca soruş
-  const monthDates = [...(d.data ?? []), ...(u.data ?? [])].map((w) => w.work_date).sort();
+  const seenJobs = new Set<string>(); // qrup işi bir say
+  const monthDates = [...(d.data ?? []), ...(u.data ?? [])]
+    .filter((w) => { const k = jobKey(w.id, groups); return !seenJobs.has(k) && !!seenJobs.add(k); })
+    .map((w) => w.work_date).sort();
   let lastWork = monthDates.at(-1) ?? null;
   if (!lastWork) {
     const [ld, lu] = await Promise.all([

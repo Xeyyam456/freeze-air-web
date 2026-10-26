@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { ClipboardCheck, FileSpreadsheet, History, PackagePlus, ShoppingCart } from "lucide-react";
+import { FileSpreadsheet, History, PackagePlus, ShoppingCart } from "lucide-react";
 import { Page } from "@/components/Page";
 import { PendingBlock } from "@/components/depot/Approvals";
 import { DepotBoard, type DepotView } from "@/components/depot/DepotBoard";
-import { CountModal, ReceiptModal } from "@/components/depot/DepotDocs";
+import { ReceiptModal } from "@/components/depot/DepotDocs";
 import { ExcelModal } from "@/components/depot/DepotExcel";
 import { MoreMenu, ShoppingModal } from "@/components/depot/DepotExtras";
 import { HistoryModal } from "@/components/depot/HistoryModal";
@@ -42,7 +42,7 @@ export function DepotPage({ myUid, owner }: { myUid: string | null; owner: boole
   const data = useData(fetchDepot);
   const [tab, setTab] = useState<DepotView>("home");
   const [openToolId, setOpenToolId] = useState<number | null>(null);
-  const [modal, setModal] = useState<"receipt" | "count" | "shopping" | "journal" | "excel" | null>(null);
+  const [modal, setModal] = useState<"receipt" | "shopping" | "journal" | "excel" | null>(null);
   const [receiptTool, setReceiptTool] = useState<Tool | null>(null);
   const kind: Kind = tab === "material" ? "material" : "tool";
 
@@ -61,7 +61,6 @@ export function DepotPage({ myUid, owner }: { myUid: string | null; owner: boole
         <span className="flex items-center gap-2">
           {data && (
             <MoreMenu items={[
-              { label: "Sayım", icon: ClipboardCheck, onClick: () => setModal("count") },
               { label: "Alınmalı", icon: ShoppingCart, onClick: () => setModal("shopping"), badge: low },
               { label: "Excel", icon: FileSpreadsheet, onClick: () => setModal("excel") },
               { label: "Jurnal", icon: History, onClick: () => setModal("journal") },
@@ -80,7 +79,6 @@ export function DepotPage({ myUid, owner }: { myUid: string | null; owner: boole
           {modal === "receipt" && (
             <ReceiptModal tools={tools} initialKind={(receiptTool?.kind as Kind) ?? kind} initialToolId={receiptTool?.id ?? null} onClose={() => setModal(null)} />
           )}
-          {modal === "count" && <CountModal tools={tools} kind={kind} onClose={() => setModal(null)} />}
           {modal === "shopping" && <ShoppingModal tools={tools} onReceipt={(t) => openReceipt(t)} onClose={() => setModal(null)} />}
           {modal === "journal" && <HistoryModal kind={kind} onClose={() => setModal(null)} />}
           {modal === "excel" && <ExcelModal tools={tools} holdings={holdings} employees={data.employees} onClose={() => setModal(null)} />}
