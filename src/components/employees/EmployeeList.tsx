@@ -135,22 +135,11 @@ function EmployeeCard({ employee, todayCount, monthCount, status, isMe }: {
   );
 }
 
-// Tünd xülasədəki rəqəm
-function SummaryStat({ label, value, tone = "" }: { label: string; value: number; tone?: string }) {
-  return (
-    <div>
-      <dt className="text-xs text-white/55">{label}</dt>
-      <dd className={`text-2xl font-extrabold tabular-nums ${tone}`}>{value}</dd>
-    </div>
-  );
-}
-
-// Ustalar: tünd xülasə (bu gün işdə, icazəli, işlər), yapışan axtarış, profil kartları. Daxil olmuş usta öz kartını ən başda görür.
-export function EmployeeList({ employees, todayWork, monthWork, totals, status, myEmployeeId }: {
+// Ustalar: yapışan axtarış, profil kartları (tünd xülasə 2026-10-28 silindi, admin kimi). Daxil olmuş usta öz kartını ən başda görür.
+export function EmployeeList({ employees, todayWork, monthWork, status, myEmployeeId }: {
   employees: Employee[];
   todayWork: Record<number, number>; // usta id → bu gün yazılan iş sayı
   monthWork: Record<number, number>; // usta id → bu ay yazılan iş sayı
-  totals: { today: number; month: number }; // komandanın iş sayı: qrup işi bir dəfə
   status: Record<number, TodayStatus>; // usta id → bu günkü davamiyyət vəziyyəti
   myEmployeeId: number | null;
 }) {
@@ -175,31 +164,8 @@ export function EmployeeList({ employees, todayWork, monthWork, totals, status, 
     );
   }
 
-  const count = (kind: TodayStatus["kind"]) => employees.filter((e) => status[e.id]?.kind === kind).length;
-
   return (
     <div className="space-y-5">
-      <section className="flex flex-wrap items-center gap-x-10 gap-y-4 rounded-[18px] bg-[#0c1b36] bg-[radial-gradient(520px_220px_at_100%_0%,rgba(34,195,230,0.22),transparent_70%)] px-6 py-5 text-white max-sm:gap-y-3 max-sm:px-4">
-        <div className="flex items-center gap-4">
-          {/* Komandanın üzləri: ilk 4 usta üst-üstə */}
-          <div className="flex -space-x-3">
-            {employees.slice(0, 4).map((e) => <Avatar key={e.id} employee={e} className="!h-11 !w-11 !text-xs ring-2 ring-[#0c1b36]" />)}
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-white/50">Komanda</p>
-            <p className="text-2xl font-extrabold leading-tight">{employees.length} usta</p>
-          </div>
-        </div>
-        {/* Mobildə 5 xana: üstdə 3, altda 2 (eni doldurur) */}
-        <dl className="flex flex-1 flex-wrap gap-x-10 gap-y-3 max-sm:grid max-sm:basis-full max-sm:grid-cols-6 max-sm:gap-2 max-sm:[&>div]:col-span-2 max-sm:[&>div:nth-child(n+4)]:col-span-3 max-sm:[&>div]:rounded-xl max-sm:[&>div]:bg-white/[0.07] max-sm:[&>div]:px-3 max-sm:[&>div]:py-2 max-sm:[&_dd]:text-xl">
-          <SummaryStat label="Bu gün işdə" value={count("in")} tone="text-[#4ade80]" />
-          <SummaryStat label="İşi bitirib" value={count("done")} />
-          <SummaryStat label="İcazəli" value={count("leave")} tone={count("leave") ? "text-amber-400" : ""} />
-          <SummaryStat label="Bu gün iş" value={totals.today} tone="text-frost" />
-          <SummaryStat label="Bu ay iş" value={totals.month} />
-        </dl>
-      </section>
-
       {/* Axtarış üst zolağın altında yapışıq qalır */}
       <div className="sticky top-[var(--topbar-h)] z-20 -mx-1 bg-bg/90 px-1 py-2 backdrop-blur">
         <label className="flex h-11 items-center gap-2.5 rounded-xl bg-surface px-3.5 ring-1 ring-line focus-within:ring-2 focus-within:ring-primary">

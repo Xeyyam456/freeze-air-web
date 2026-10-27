@@ -2,7 +2,6 @@ import { Suspense } from "react";
 import { Page } from "@/components/Page";
 import { EmployeeList, type TodayStatus } from "@/components/employees/EmployeeList";
 import { monthStartBaku } from "@/components/clients/stats";
-import { countJobs, fetchGroupMap } from "@/lib/jobs";
 import { fetchAll } from "@/lib/fetchAll";
 import { createClient } from "@/lib/supabase/server";
 
@@ -31,18 +30,12 @@ async function Content() {
     supabase.from("leave_requests").select("employee_id").eq("status", "approved").lte("date_from", today).gte("date_to", today),
   ]);
 
-  // Kartda hər usta öz işini görür; xülasədə qrup işi bir dəfə sayılır
-  const groups = await fetchGroupMap(supabase, monthStartBaku());
   const todayWork: Record<number, number> = {};
   const monthWork: Record<number, number> = {};
   for (const l of monthLogs ?? []) {
     monthWork[l.employee_id] = (monthWork[l.employee_id] ?? 0) + 1;
     if (l.work_date === today) todayWork[l.employee_id] = (todayWork[l.employee_id] ?? 0) + 1;
   }
-  const totals = {
-    today: countJobs((monthLogs ?? []).filter((l) => l.work_date === today), groups),
-    month: countJobs(monthLogs ?? [], groups),
-  };
 
   // Bu günkü vəziyyət: işdədir (açıq seans) → işi bitirib → icazəli → bazar → hələ gəlməyib
   const sunday = new Date(`${today}T12:00:00Z`).getUTCDay() === 0;
@@ -58,7 +51,7 @@ async function Content() {
   }
 
   return (
-    <EmployeeList employees={employees ?? []} todayWork={todayWork} monthWork={monthWork} totals={totals} status={status} myEmployeeId={myEmployeeId ?? null} />
+    <EmployeeList employees={employees ?? []} todayWork={todayWork} monthWork={monthWork} status={status} myEmployeeId={myEmployeeId ?? null} />
   );
 }
 
