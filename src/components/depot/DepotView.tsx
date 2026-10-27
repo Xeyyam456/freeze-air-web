@@ -2,6 +2,7 @@
 "use client";
 
 import { useActionState, useEffect, useMemo, useRef, useState } from "react";
+import { rectOf, viewport } from "@/lib/zoom";
 import { createPortal } from "react-dom";
 import {
   ChevronDown, Clock, History, Package, PackageOpen, PackagePlus, Pencil, Plus, Search, Send, Trash2, Undo2, Users, Warehouse, Wrench, X,
@@ -80,8 +81,8 @@ export function HoldersCell({ holders, tool }: { holders: Holding[]; tool: Tool 
           onClick={(e) => {
             e.stopPropagation();
             if (pos) return setPos(null);
-            const r = e.currentTarget.getBoundingClientRect();
-            setPos({ top: r.bottom + 6, left: Math.min(r.left, window.innerWidth - 320) });
+            const r = rectOf(e.currentTarget);
+            setPos({ top: r.bottom + 6, left: Math.min(r.left, viewport().w - 320) });
           }}
           className="inline-flex h-7 items-center gap-1.5 rounded-lg bg-primary-soft px-2.5 text-[13px] font-semibold text-primary transition-colors hover:bg-[#dbe8ff]">
           {holders.length} usta <ChevronDown size={13} className={pos ? "rotate-180" : ""} />
@@ -299,7 +300,7 @@ export function BulkGiveModal({ emp, kind, tools, onClose }: { emp: DepotEmploye
       {available.length === 0 ? (
         <p className="muted py-6 text-center text-sm">Depoda verilə bilən boş {TEXT[kind].word} yoxdur.</p>
       ) : (
-        <ul className="nice-scroll mt-3 max-h-[min(360px,calc(100vh-340px))] divide-y divide-line overflow-y-auto">
+        <ul className="nice-scroll mt-3 max-h-[min(360px,calc(100vh/var(--zoom)-340px))] divide-y divide-line overflow-y-auto">
           {shown.map((t) => {
             const on = qty[t.id] !== undefined;
             return (
@@ -698,7 +699,7 @@ export function PersonModal({ emp, kind: initialKind, holds: allHolds, toolInfo,
       </div>
 
       {holds.length > 0 ? (
-        <ul className="nice-scroll mt-4 max-h-[min(400px,calc(100vh-380px))] divide-y divide-line overflow-y-auto rounded-2xl border border-line px-3">
+        <ul className="nice-scroll mt-4 max-h-[min(400px,calc(100vh/var(--zoom)-380px))] divide-y divide-line overflow-y-auto rounded-2xl border border-line px-3">
           {holds.map((h) => (
             <HolderRow key={h.id} holding={h} canManage={canManage} tool={toolInfo.get(h.tool_id)} toolName={toolInfo.get(h.tool_id)?.name ?? "—"}
               pendingReturn={pendingReturns.has(h.id)} />

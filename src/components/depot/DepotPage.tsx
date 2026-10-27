@@ -39,7 +39,7 @@ async function fetchDepot() {
 }
 
 export function DepotPage({ myUid, owner }: { myUid: string | null; owner: boolean }) {
-  const data = useData(fetchDepot);
+  const data = useData("depot", fetchDepot);
   const [tab, setTab] = useState<DepotView>("home");
   const [openToolId, setOpenToolId] = useState<number | null>(null);
   const [modal, setModal] = useState<"receipt" | "shopping" | "journal" | "excel" | null>(null);

@@ -416,7 +416,7 @@ function WhoHasCard({ all, me }: { all: Held[]; me: number }) {
 }
 
 export function MyTools({ employeeId }: { employeeId: number | null }) {
-  const data = useData(() => (employeeId ? fetchMine(employeeId) : Promise.resolve(null)), [employeeId]);
+  const data = useData("my-tools", () => (employeeId ? fetchMine(employeeId) : Promise.resolve(null)), [employeeId]);
   const [returning, setReturning] = useState<Mine[] | null>(null);
   const [asking, setAsking] = useState(false);
   const [tab, setTab] = useState<Kind>("tool");

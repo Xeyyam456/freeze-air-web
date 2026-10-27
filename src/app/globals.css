@@ -38,6 +38,8 @@
   --topbar-h: yuxarıdakı yapışan zolaq, --header-h: məzmunun başladığı hündürlük, --gap: konteynerlər arası boşluq.
 */
 :root {
+  /* Admin depo faylları (köçürülür) hündürlüyü calc(100dvh / var(--zoom)) ilə hesablayır; usta panelində miqyas yoxdur */
+  --zoom: 1;
   --gutter: clamp(20px, 2.6vw, 56px);
   --panel-w: clamp(340px, 24vw, 420px);
   --nav-w: 264px;

@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
+import { QueryProvider } from "@/components/panel/QueryProvider";
 import { QuickActions } from "@/components/panel/QuickActions";
 import { Sidebar, SidebarFallback } from "@/components/panel/Sidebar";
 import { TasksListener } from "@/components/work/TasksListener";
@@ -32,12 +33,12 @@ async function PanelChrome() {
 // Usta panelinin bütün səhifələri: sol menyu səhifələr arası keçiddə qalır, tapşırıqlar Realtime ilə dinlənir
 export default function PanelLayout({ children }: LayoutProps<"/">) {
   return (
-    <>
+    <QueryProvider>
       <TasksListener />
       <Suspense fallback={<SidebarFallback />}>
         <PanelChrome />
       </Suspense>
       <div className="panel-body">{children}</div>
-    </>
+    </QueryProvider>
   );
 }

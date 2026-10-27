@@ -88,13 +88,13 @@ export function ToolFields({ t, kind, names = [] }: { t?: Tool; kind: Kind; name
         </Field>
       )}
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-end gap-3">
         {!editing && (
           <Field label={pack ? `Neçə ${pack}` : material ? `Miqdar (${unit})` : "Say"}>
             <input name="quantity" inputMode="decimal" value={countText} onChange={(e) => setCountText(e.target.value)} placeholder="0" autoComplete="off" className="field" />
           </Field>
         )}
-        <Field label={`Minimum qalıq (${unit})`}>
+        <Field label={`Min. qalıq (${unit})`}>
           <input name="min_stock" inputMode="decimal" defaultValue={t?.min_stock != null ? fmt(t.min_stock) : ""} placeholder="istəyə görə" autoComplete="off" className="field" />
         </Field>
       </div>
@@ -136,10 +136,10 @@ function NoteRow({ note, onNote, file, onFile, placeholder = "Qeyd (istəyə gö
 
 function Seg<T extends string>({ value, onChange, items, label }: { value: T; onChange: (v: T) => void; items: readonly (readonly [T, string])[]; label: string }) {
   return (
-    <div className="inline-flex shrink-0 gap-1 rounded-xl bg-line/60 p-1" role="tablist" aria-label={label}>
+    <div className="inline-flex shrink-0 gap-1 rounded-xl bg-line/60 p-1 max-sm:flex max-sm:w-full" role="tablist" aria-label={label}>
       {items.map(([v, l]) => (
         <button key={v} type="button" role="tab" aria-selected={value === v} onClick={() => onChange(v)}
-          className={`rounded-lg px-3.5 py-1.5 text-[13px] font-semibold transition-colors ${value === v ? "bg-surface text-ink shadow-sm" : "text-muted hover:text-ink"}`}>
+          className={`rounded-lg px-3.5 py-1.5 text-[13px] font-semibold transition-colors max-sm:flex-1 ${value === v ? "bg-surface text-ink shadow-sm" : "text-muted hover:text-ink"}`}>
           {l}
         </button>
       ))}
