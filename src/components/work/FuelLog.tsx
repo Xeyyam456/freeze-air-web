@@ -116,7 +116,8 @@ function Step({ kind, value, photo, at, min, max, disabled, onSave }: {
               // eslint-disable-next-line @next/next/no-img-element -- yerli önizləmə
               ? <img src={preview} alt="Önizləmə" className="h-full w-full object-cover" />
               : <span className="flex flex-col items-center gap-0.5 text-[11px] font-semibold text-primary"><Camera size={18} /> Şəkil</span>}
-            <input type="file" accept="image/*" capture="environment" className="sr-only" disabled={disabled}
+            {/* capture yoxdur: telefon "Kamera / Qalereya" seçimini özü təklif edir */}
+            <input type="file" accept="image/*" className="sr-only" disabled={disabled}
               onChange={(e) => pick(e.target.files?.[0] ?? null)} />
           </label>
           <label className="min-w-[140px] flex-1">

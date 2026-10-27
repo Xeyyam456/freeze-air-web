@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { Page } from "@/components/Page";
 import { EmployeeList, type TodayStatus } from "@/components/employees/EmployeeList";
 import { monthStartBaku } from "@/components/clients/stats";
+import { countJobs, fetchGroupMap } from "@/lib/jobs";
 import { createClient } from "@/lib/supabase/server";
 
 // Bu günün tarixi Bakı vaxtı ilə ("YYYY-MM-DD"): server başqa saat qurşağında ola bilər
@@ -22,18 +23,24 @@ async function Content() {
     // Daxil olmuş istifadəçinin usta qeydi: öz kartı seçilir, işlərini yalnız özü əlavə edir
     supabase.rpc("my_employee_id"),
     // Bu ayın işləri: kartda "bu gün" və "bu ay" sayı
-    supabase.from("work_logs").select("employee_id, work_date").gte("work_date", monthStartBaku()),
+    supabase.from("work_logs").select("id, employee_id, work_date").gte("work_date", monthStartBaku()),
     // Bu günün davamiyyəti (bir gündə bir neçə seans ola bilər) və təsdiqlənmiş icazələr
     supabase.from("attendance").select("employee_id, checked_in_at, checked_out_at").eq("day", today),
     supabase.from("leave_requests").select("employee_id").eq("status", "approved").lte("date_from", today).gte("date_to", today),
   ]);
 
+  // Kartda hər usta öz işini görür; xülasədə qrup işi bir dəfə sayılır
+  const groups = await fetchGroupMap(supabase, monthStartBaku());
   const todayWork: Record<number, number> = {};
   const monthWork: Record<number, number> = {};
   for (const l of monthLogs ?? []) {
     monthWork[l.employee_id] = (monthWork[l.employee_id] ?? 0) + 1;
     if (l.work_date === today) todayWork[l.employee_id] = (todayWork[l.employee_id] ?? 0) + 1;
   }
+  const totals = {
+    today: countJobs((monthLogs ?? []).filter((l) => l.work_date === today), groups),
+    month: countJobs(monthLogs ?? [], groups),
+  };
 
   // Bu günkü vəziyyət: işdədir (açıq seans) → işi bitirib → icazəli → bazar → hələ gəlməyib
   const sunday = new Date(`${today}T12:00:00Z`).getUTCDay() === 0;
@@ -49,7 +56,7 @@ async function Content() {
   }
 
   return (
-    <EmployeeList employees={employees ?? []} todayWork={todayWork} monthWork={monthWork} status={status} myEmployeeId={myEmployeeId ?? null} />
+    <EmployeeList employees={employees ?? []} todayWork={todayWork} monthWork={monthWork} totals={totals} status={status} myEmployeeId={myEmployeeId ?? null} />
   );
 }
 

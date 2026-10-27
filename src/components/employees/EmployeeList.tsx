@@ -146,10 +146,11 @@ function SummaryStat({ label, value, tone = "" }: { label: string; value: number
 }
 
 // Ustalar: tünd xülasə (bu gün işdə, icazəli, işlər), yapışan axtarış, profil kartları. Daxil olmuş usta öz kartını ən başda görür.
-export function EmployeeList({ employees, todayWork, monthWork, status, myEmployeeId }: {
+export function EmployeeList({ employees, todayWork, monthWork, totals, status, myEmployeeId }: {
   employees: Employee[];
   todayWork: Record<number, number>; // usta id → bu gün yazılan iş sayı
   monthWork: Record<number, number>; // usta id → bu ay yazılan iş sayı
+  totals: { today: number; month: number }; // komandanın iş sayı: qrup işi bir dəfə
   status: Record<number, TodayStatus>; // usta id → bu günkü davamiyyət vəziyyəti
   myEmployeeId: number | null;
 }) {
@@ -175,7 +176,6 @@ export function EmployeeList({ employees, todayWork, monthWork, status, myEmploy
   }
 
   const count = (kind: TodayStatus["kind"]) => employees.filter((e) => status[e.id]?.kind === kind).length;
-  const sum = (r: Record<number, number>) => Object.values(r).reduce((n, v) => n + v, 0);
 
   return (
     <div className="space-y-5">
@@ -195,8 +195,8 @@ export function EmployeeList({ employees, todayWork, monthWork, status, myEmploy
           <SummaryStat label="Bu gün işdə" value={count("in")} tone="text-[#4ade80]" />
           <SummaryStat label="İşi bitirib" value={count("done")} />
           <SummaryStat label="İcazəli" value={count("leave")} tone={count("leave") ? "text-amber-400" : ""} />
-          <SummaryStat label="Bu gün iş" value={sum(todayWork)} tone="text-frost" />
-          <SummaryStat label="Bu ay iş" value={sum(monthWork)} />
+          <SummaryStat label="Bu gün iş" value={totals.today} tone="text-frost" />
+          <SummaryStat label="Bu ay iş" value={totals.month} />
         </dl>
       </section>
 

@@ -6,6 +6,7 @@ import { DatePicker } from "@/components/DatePicker";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { WORK_SAVED } from "@/components/work/MyDay";
 import { WorkLogModal } from "@/components/work/WorkLogModal";
+import { fetchGroupMap, mergeGroupLogs } from "@/lib/jobs";
 import { createClient } from "@/lib/supabase/client";
 
 type LogRow = {
@@ -37,13 +38,18 @@ function placeOf(l: LogRow) {
   return l.place_text ?? "—";
 }
 
+// Qrup işi (bir neçə üzvə eyni tapşırıq) bir sətirdir və bir iş sayılır: "Xəyyam + Fərhad"
 async function fetchDay(day: string): Promise<LogRow[]> {
-  const { data } = await createClient()
-    .from("work_logs")
-    .select("id, created_at, description, place_text, employees(full_name, photo_url), stores(name, companies(name)), companies(name)")
-    .eq("work_date", day)
-    .order("created_at", { ascending: false });
-  return (data ?? []) as LogRow[];
+  const supabase = createClient();
+  const [{ data }, groups] = await Promise.all([
+    supabase
+      .from("work_logs")
+      .select("id, created_at, description, place_text, employees(full_name, photo_url), stores(name, companies(name)), companies(name)")
+      .eq("work_date", day)
+      .order("created_at", { ascending: false }),
+    fetchGroupMap(supabase, day, day),
+  ]);
+  return mergeGroupLogs((data ?? []) as LogRow[], groups);
 }
 
 // Görülən işlər: seçilmiş günün bütün ustalar üzrə işləri. Standart bu gün; dünən və köhnə günləri təqvimlə seçmək olur.
