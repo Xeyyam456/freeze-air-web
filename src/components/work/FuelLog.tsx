@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { AlertTriangle, CalendarDays, Camera, Check, ChevronDown, ChevronLeft, ChevronRight, FileSpreadsheet, Fuel, Gauge, HandCoins, ImageIcon, Moon, Pencil, Route, Sun, X } from "lucide-react";
 import { MONTHS_AZ, todayBaku } from "@/lib/attendance";
 import { createClient } from "@/lib/supabase/client";
+import { getQueryClient } from "@/lib/queryClient";
+import { useData } from "@/lib/useData";
 import type { Tables } from "@/lib/database.types";
 import { toast } from "@/lib/toast";
 import { exportFuel } from "@/lib/export-fuel";
@@ -306,17 +308,12 @@ export function FuelLog({ employeeId, car }: { employeeId: number; car: Car }) {
   const [period, setPeriod] = useState<Period>("day");
   const [anchor, setAnchor] = useState(today);
   const range = rangeOf(period, anchor);
-  const [data, setData] = useState<Loaded | null>(null);
-
   const monthR = rangeOf("month", anchor); // balansın ayı
-  const load = useCallback(async () => {
-    setData(await fetchRange(employeeId, range.from, range.to, today, monthR.from, monthR.to));
-  }, [employeeId, range.from, range.to, today, monthR.from, monthR.to]);
-  useEffect(() => {
-    let cancelled = false;
-    fetchRange(employeeId, range.from, range.to, today, monthR.from, monthR.to).then((d) => { if (!cancelled) setData(d); });
-    return () => { cancelled = true; };
-  }, [employeeId, range.from, range.to, today, monthR.from, monthR.to]);
+  // Keşdə: dövr dəyişəndə köhnə dövr yeni gələnə qədər qalır, səhifəyə qayıdanda dərhal görünür
+  const data: Loaded | null = useData("fuel-log", () => fetchRange(employeeId, range.from, range.to, today, monthR.from, monthR.to),
+    [employeeId, range.from, range.to, today, monthR.from, monthR.to]);
+  // Yazıdan / canlı hadisədən sonra: keş təzələnənə qədər gözlənilir (km yazıb dərhal yeni rəqəmi görmək üçün)
+  const load = useCallback(() => getQueryClient().invalidateQueries({ queryKey: ["fuel-log"] }), []);
 
   // Canlı (0080-0082): şirkət pul verəndə / dəyişəndə və admin yürüşü düzəldəndə səhifə özü yenilənir; yeni ödənişdə tost.
   // Kanal sessiya ilə qoşulur (yoxsa RLS hadisə göndərmir), yalnız bu ustanın sətirləri.
