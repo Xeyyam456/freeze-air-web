@@ -1,12 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight, Clock, FileText, Home, MapPin, Pencil, Plus, Trash2, Video, X } from "lucide-react";
 import { ConfirmButton } from "@/components/ConfirmButton";
 import { DatePicker, formatDateAz } from "@/components/DatePicker";
 import { Modal } from "@/components/Modal";
 import { createClient } from "@/lib/supabase/client";
+import { useMe } from "@/lib/me";
+import { revalidate } from "@/lib/revalidate";
+import { useData } from "@/lib/useData";
 import { fetchFileCounts, type FileCount } from "@/lib/jobs";
 import { FileBadges } from "./FileBadges";
 import { WorkLogForm } from "./WorkLogForm";
@@ -79,8 +82,9 @@ function placeLabel(log: WorkLog) {
 export function WorkTab({ employeeId, employeeName }: { employeeId: number; employeeName: string }) {
   // Standart olaraq bu günün işləri; dünən və daha əvvəlki günləri seçmək olur
   const [day, setDay] = useState(() => dayIso());
-  const [logs, setLogs] = useState<WorkLog[] | null>(null);
-  const [myEmployeeId, setMyEmployeeId] = useState<number | null>(null);
+  // Keşdə (fayl linkləri 1 saatlıqdır, keş ən çox 10 dəq. saxlayır): pəncərəni təkrar açanda dərhal görünür
+  const logs = useData("work-tab", () => fetchLogs(employeeId, day), [employeeId, day]);
+  const myEmployeeId = useMe()?.id ?? null;
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState<WorkLog | null>(null);
   const [playing, setPlaying] = useState<string | null>(null); // açılmış videonun linki (pəncərədə oynayır)
@@ -88,36 +92,21 @@ export function WorkTab({ employeeId, employeeName }: { employeeId: number; empl
 
   const router = useRouter();
   // İş dəyişəndə həm bu siyahı, həm də kartdakı "bu gün" sayı yenilənir
-  const load = useCallback(async () => {
-    setLogs(await fetchLogs(employeeId, day));
+  const load = () => {
+    revalidate("work-tab", "my-day-stats", "work-history", "month-stats");
     router.refresh();
-  }, [employeeId, day, router]);
-
-  useEffect(() => {
-    let cancelled = false;
-    fetchLogs(employeeId, day).then((list) => {
-      if (!cancelled) setLogs(list);
-    });
-    return () => {
-      cancelled = true; // gün tez-tez dəyişəndə köhnə cavab yenisinin üstünə yazılmasın
-    };
-  }, [employeeId, day]);
+  };
 
   const today = dayIso();
   const yesterday = dayIso(-1);
 
   function changeDay(value: string) {
     if (!value || value > today) return;
-    setLogs(null); // yeni gün yüklənənə qədər "Yüklənir..."
-    setDay(value);
+    setDay(value); // yeni gün gələnə qədər köhnə günün siyahısı qalır
   }
 
   const chip = (active: boolean) =>
     `h-9 rounded-lg px-3 text-[13px] font-semibold transition-colors ${active ? "bg-primary text-white" : "bg-bg text-ink hover:bg-primary-soft"}`;
-
-  useEffect(() => {
-    createClient().rpc("my_employee_id").then(({ data }) => setMyEmployeeId(data ?? null));
-  }, []);
 
   // Hər kəs baxır; iş əlavə etmək, dəyişmək və silmək yalnız ustanın özünə aiddir
   const canAdd = myEmployeeId === employeeId;
