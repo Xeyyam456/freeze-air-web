@@ -1,13 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ArrowRight, Building2, Check, ChevronLeft, ChevronRight, ListChecks, Lock, MapPin, Paperclip, PenLine, Store, Undo2, Users } from "lucide-react";
+import { ArrowRight, Building2, Check, ChevronLeft, ChevronRight, ListChecks, Lock, MapPin, Paperclip, PenLine, Play, Store, Undo2, Users } from "lucide-react";
 import { formatDateAz } from "@/components/DatePicker";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { createClient } from "@/lib/supabase/client";
 import { TASKS_CHANGED } from "@/lib/tasks-live";
 import { toast } from "@/lib/toast";
 import { TaskNoteModal } from "./TaskNoteModal";
+import { WorkLogModal } from "./WorkLogModal";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const iso = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -94,6 +95,7 @@ export function TasksView() {
   const [data, setData] = useState<Awaited<ReturnType<typeof fetchTasks>> | null>(null);
   const [week, setWeek] = useState<{ from: string; rows: Awaited<ReturnType<typeof fetchWeek>> } | null>(null);
   const [noteFor, setNoteFor] = useState<Task | null>(null); // təmir barədə yazı pəncərəsi
+  const [viewLog, setViewLog] = useState<number | null>(null); // işin pəncərəsi (fayllara baxmaq)
   const from = weekStart(day);
 
   useEffect(() => {
@@ -168,6 +170,7 @@ export function TasksView() {
 
   return (
     <div className="space-y-5">
+      {viewLog && <WorkLogModal key={viewLog} logId={viewLog} onClose={() => setViewLog(null)} />}
       {noteFor && <TaskNoteModal key={noteFor.id} task={{
         id: noteFor.id, logId: noteFor.work_log_id, reason: noteFor.reason, place: placeOf(noteFor),
         // Əvvəl yazılan: tapşırıqdakı yazı, yoxdursa iş qeydinin təsviri (avtomatik yaranan təsvir = səbəb sayılmır)
@@ -308,7 +311,14 @@ export function TasksView() {
                           ) : (
                             <span className="rounded-full bg-[#fff6e5] px-2.5 py-1 text-xs font-bold text-amber-700">Gözləyir</span>
                           )}
-                          {files > 0 && <span className="inline-flex items-center gap-1 text-xs text-muted" title="Əlavə olunmuş fayllar"><Paperclip size={13} />{files}</span>}
+                          {/* Fayllar (akt, şəkil, video): klik → iş pəncərəsi, orada hər biri pəncərədə açılır */}
+                          {files > 0 && t.work_log_id && (
+                            <button type="button" onClick={() => setViewLog(t.work_log_id)} title="Akt, şəkil və videoya bax"
+                              className="inline-flex h-8 items-center gap-1.5 rounded-full bg-bg px-2.5 text-xs font-semibold text-ink hover:bg-primary-soft hover:text-primary">
+                              {t.work_logs?.work_files.some((f) => f.kind === "video") ? <Play size={12} fill="currentColor" /> : <Paperclip size={13} />}
+                              Fayllar · {files}
+                            </button>
+                          )}
                           {/* Görülmüş tapşırıqda: təmir barədə yaz, akt/şəkil əlavə et */}
                           {t.done && !cancelled && !past && (
                             <button type="button" onClick={() => setNoteFor(t)} className="btn btn-sm ml-auto !h-8 bg-ok-soft text-ok hover:bg-ok hover:text-white">
