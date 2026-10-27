@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FileText, ImagePlus, X } from "lucide-react";
+import { FileText, ImagePlus, Video, X } from "lucide-react";
 import { Buttons, Field } from "@/components/forms";
 import { Modal } from "@/components/Modal";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
+import type { CompressedVideo } from "@/lib/video";
+import { VideoPicker, VideoSummary } from "./VideoPicker";
 
 type SavedFile = { id: number; kind: string; path: string; url?: string | null };
 
@@ -25,6 +27,8 @@ export function TaskNoteModal({ task, onClose, onSaved }: {
   const [removed, setRemoved] = useState<Set<number>>(new Set()); // silinməsi seçilmiş mövcud fayllar
   const [act, setAct] = useState<File | null>(null);
   const [photos, setPhotos] = useState<File[]>([]);
+  const [video, setVideo] = useState<CompressedVideo | null>(null);
+  const [videoBusy, setVideoBusy] = useState(false);
   const [pending, setPending] = useState(false);
 
   // Mövcud fayllar (şəkillər imzalı linklə, bucket gizlidir)
@@ -52,6 +56,7 @@ export function TaskNoteModal({ task, onClose, onSaved }: {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (videoBusy) return toast.error("Video hələ hazırlanır, bir az gözlə.");
     const note = String(new FormData(e.currentTarget).get("note") ?? "");
     setPending(true);
     const supabase = createClient();
@@ -70,7 +75,8 @@ export function TaskNoteModal({ task, onClose, onSaved }: {
     }
 
     // Yeni fayllar: work/<iş id>/<təsadüfi ad>
-    const files = [...(act ? [{ file: act, kind: "act" }] : []), ...photos.map((f) => ({ file: f, kind: "photo" }))];
+    const files = [...(act ? [{ file: act, kind: "act" }] : []), ...photos.map((f) => ({ file: f, kind: "photo" })),
+      ...(video ? [{ file: video.file, kind: "video" }] : [])];
     const failed: string[] = [];
     for (const { file, kind } of files) {
       const path = `${logId}/${crypto.randomUUID()}.${ext(file)}`;
@@ -85,7 +91,7 @@ export function TaskNoteModal({ task, onClose, onSaved }: {
     setPending(false);
     onSaved();
     if (failed.length) {
-      return toast.error(`Yazı saxlanıldı, amma bu fayllar yüklənmədi: ${failed.join(", ")}. Fayl 10 MB-dan böyük olmamalı, şəkil və ya PDF olmalıdır.`);
+      return toast.error(`Yazı saxlanıldı, amma bu fayllar yüklənmədi: ${failed.join(", ")}. Şəkil və PDF 10 MB-dan, video 50 MB-dan böyük olmamalıdır.`);
     }
     toast.success("Təmir barədə məlumat saxlanıldı");
     onClose();
@@ -119,6 +125,10 @@ export function TaskNoteModal({ task, onClose, onSaved }: {
                       <span className="flex h-14 items-center gap-1.5 rounded-lg border border-line bg-bg px-3 text-xs font-semibold">
                         <FileText size={16} className="text-primary" /> Akt
                       </span>
+                    ) : f.kind === "video" ? (
+                      <span className="flex h-14 items-center gap-1.5 rounded-lg border border-line bg-bg px-3 text-xs font-semibold">
+                        <Video size={16} className="text-primary" /> Video
+                      </span>
                     ) : (
                       // eslint-disable-next-line @next/next/no-img-element -- imzalı storage linki
                       <img src={f.url ?? undefined} alt="İşin şəkli" className="h-14 w-14 rounded-lg border border-line object-cover" />
@@ -136,7 +146,7 @@ export function TaskNoteModal({ task, onClose, onSaved }: {
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-3 max-sm:gap-2 max-[400px]:grid-cols-2">
           <label className="flex cursor-pointer flex-col items-center gap-1 rounded-xl border-2 border-dashed border-line px-3 py-3 text-center hover:border-primary">
             <FileText size={18} className="text-primary" />
             <span className="text-sm font-semibold">Akt</span>
@@ -149,7 +159,9 @@ export function TaskNoteModal({ task, onClose, onSaved }: {
             <span className="muted text-xs">{photos.length ? `${photos.length} yeni şəkil seçildi` : "bir neçə şəkil əlavə et"}</span>
             <input type="file" accept="image/*" multiple className="sr-only" onChange={(e) => setPhotos(Array.from(e.target.files ?? []))} />
           </label>
+          <VideoPicker value={video} onChange={setVideo} onBusy={setVideoBusy} className="max-[400px]:col-span-2" />
         </div>
+        <VideoSummary value={video} onRemove={() => setVideo(null)} />
 
         <Buttons pending={pending} label="Yadda saxla" onCancel={onClose} />
       </form>

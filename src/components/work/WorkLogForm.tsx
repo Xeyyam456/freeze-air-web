@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { FileText, ImagePlus, Package, X } from "lucide-react";
+import { FileText, ImagePlus, Package, Video, X } from "lucide-react";
 import { ConfirmModal } from "@/components/ConfirmModal";
 import { DatePicker } from "@/components/DatePicker";
 import { Buttons, Field } from "@/components/forms";
@@ -9,6 +9,8 @@ import { Modal } from "@/components/Modal";
 import { createClient } from "@/lib/supabase/client";
 import { norm, PlacePicker, type Place } from "./PlacePicker";
 import { toast } from "@/lib/toast";
+import type { CompressedVideo } from "@/lib/video";
+import { VideoPicker, VideoSummary } from "./VideoPicker";
 
 export type { Place };
 
@@ -104,6 +106,8 @@ export function WorkLogForm({ employeeId, employeeName, existing, onClose, onSav
   const usedRef = useRef(used); // qaralama üçün son dəyər (formun onChange-i input-dan sonra köhnə state ilə gəlir)
   const [act, setAct] = useState<File | null>(null);
   const [photos, setPhotos] = useState<File[]>([]);
+  const [video, setVideo] = useState<CompressedVideo | null>(null); // seçiləndə dərhal 720p-yə sıxılır
+  const [videoBusy, setVideoBusy] = useState(false); // sıxılma gedir
   const [removed, setRemoved] = useState<Set<number>>(new Set()); // silinməsi seçilmiş mövcud fayllar
   const [confirmData, setConfirmData] = useState<FormData | null>(null); // redaktədə təsdiq gözləyən forma
   const [pending, setPending] = useState(false);
@@ -151,6 +155,7 @@ export function WorkLogForm({ employeeId, employeeName, existing, onClose, onSav
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (videoBusy) return toast.error("Video hələ hazırlanır, bir az gözlə.");
     const form = new FormData(e.currentTarget);
     if (!place) return toast.error("İşin görüldüyü yeri seç.");
     if (!String(form.get("description") ?? "").trim()) return toast.error("Görülən işi yaz.");
@@ -203,7 +208,8 @@ export function WorkLogForm({ employeeId, employeeName, existing, onClose, onSav
     }
 
     // Yeni fayllar: work/<log id>/<təsadüfi ad>
-    const files = [...(act ? [{ file: act, kind: "act" }] : []), ...photos.map((f) => ({ file: f, kind: "photo" }))];
+    const files = [...(act ? [{ file: act, kind: "act" }] : []), ...photos.map((f) => ({ file: f, kind: "photo" })),
+      ...(video ? [{ file: video.file, kind: "video" }] : [])];
     const failed: string[] = [];
     for (const { file, kind } of files) {
       const path = `${logId}/${crypto.randomUUID()}.${ext(file)}`;
@@ -227,7 +233,7 @@ export function WorkLogForm({ employeeId, employeeName, existing, onClose, onSav
     if (failed.length) {
       // İş yazılıb, amma bəzi fayllar yüklənməyib: istifadəçiyə deyirik, pəncərəni bağlamırıq
       onSaved();
-      return toast.error(`İş saxlanıldı, amma bu fayllar yüklənmədi: ${failed.join(", ")}. Fayl 10 MB-dan böyük olmamalı, şəkil və ya PDF olmalıdır.`);
+      return toast.error(`İş saxlanıldı, amma bu fayllar yüklənmədi: ${failed.join(", ")}. Şəkil və PDF 10 MB-dan, video 50 MB-dan böyük olmamalıdır.`);
     }
     if (!existing) writeDraft(employeeId, null);
     onSaved();
@@ -305,6 +311,10 @@ export function WorkLogForm({ employeeId, employeeName, existing, onClose, onSav
                       <span className="flex h-14 items-center gap-1.5 rounded-lg border border-line bg-bg px-3 text-xs font-semibold">
                         <FileText size={16} className="text-primary" /> Akt
                       </span>
+                    ) : f.kind === "video" ? (
+                      <span className="flex h-14 items-center gap-1.5 rounded-lg border border-line bg-bg px-3 text-xs font-semibold">
+                        <Video size={16} className="text-primary" /> Video
+                      </span>
                     ) : (
                       // eslint-disable-next-line @next/next/no-img-element -- imzalı storage linki
                       <img src={f.url} alt="İşin şəkli" className="h-14 w-14 rounded-lg border border-line object-cover" />
@@ -322,7 +332,7 @@ export function WorkLogForm({ employeeId, employeeName, existing, onClose, onSav
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-3 max-sm:gap-2 max-[400px]:grid-cols-2">
           <label className="flex cursor-pointer flex-col items-center gap-1 rounded-xl border-2 border-dashed border-line px-3 py-3 text-center hover:border-primary">
             <FileText size={18} className="text-primary" />
             <span className="text-sm font-semibold">Akt</span>
@@ -337,7 +347,9 @@ export function WorkLogForm({ employeeId, employeeName, existing, onClose, onSav
             <input type="file" accept="image/*" multiple className="sr-only"
               onChange={(e) => setPhotos(Array.from(e.target.files ?? []))} />
           </label>
+          <VideoPicker value={video} onChange={setVideo} onBusy={setVideoBusy} className="max-[400px]:col-span-2" />
         </div>
+        <VideoSummary value={video} onRemove={() => setVideo(null)} />
 
         <Buttons pending={pending} label={existing ? "Yadda saxla" : "İşi yadda saxla"} onCancel={onClose} />
         <ConfirmModal

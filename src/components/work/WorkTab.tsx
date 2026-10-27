@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, ChevronRight, Clock, FileText, Home, MapPin, Pencil, Plus, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Clock, FileText, Home, MapPin, Pencil, Plus, Trash2, Video } from "lucide-react";
 import { ConfirmButton } from "@/components/ConfirmButton";
 import { DatePicker, formatDateAz } from "@/components/DatePicker";
 import { createClient } from "@/lib/supabase/client";
@@ -176,6 +176,7 @@ export function WorkTab({ employeeId, employeeName }: { employeeId: number; empl
             {logs.map((log) => {
               const act = log.work_files.find((f) => f.kind === "act");
               const photos = log.work_files.filter((f) => f.kind === "photo");
+              const videos = log.work_files.filter((f) => f.kind === "video");
               return (
                 <li key={log.id} className="rounded-xl border border-line p-3">
                   <div className="flex items-start justify-between gap-2">
@@ -203,7 +204,7 @@ export function WorkTab({ employeeId, employeeName }: { employeeId: number; empl
                   </div>
                   <p className="mt-1.5 whitespace-pre-line text-[13px]">{log.description}</p>
 
-                  {(act || photos.length > 0) && (
+                  {(act || photos.length > 0 || videos.length > 0) && (
                     <div className="mt-2 flex flex-wrap items-center gap-2">
                       {act?.url && (
                         <a href={act.url} target="_blank" rel="noopener noreferrer"
@@ -215,6 +216,12 @@ export function WorkTab({ employeeId, employeeName }: { employeeId: number; empl
                         <a key={p.id} href={p.url} target="_blank" rel="noopener noreferrer" title="Şəkli böyüt">
                           {/* eslint-disable-next-line @next/next/no-img-element -- imzalı storage linki */}
                           <img src={p.url} alt="İşin şəkli" className="h-14 w-14 rounded-lg border border-line object-cover hover:border-primary" />
+                        </a>
+                      ))}
+                      {videos.map((v) => v.url && (
+                        <a key={v.id} href={v.url} target="_blank" rel="noopener noreferrer"
+                          className="flex h-14 items-center gap-1.5 rounded-lg border border-line bg-bg px-3 text-xs font-semibold hover:border-primary">
+                          <Video size={16} className="text-primary" /> Video
                         </a>
                       ))}
                     </div>
