@@ -1,9 +1,11 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { CalendarClock, CalendarOff, History, Plus, Trash2 } from "lucide-react";
 import { emitPanel, PANEL_EVENTS } from "@/components/panel/nav";
-import { MONTHS_AZ, leaveRange, leaveWorkdays, todayBaku, useAttendanceLive, type Leave } from "@/lib/attendance";
+import { MONTHS_AZ, leaveRange, leaveWorkdays, todayBaku, useAttendanceLive, ATTENDANCE_KEYS, type Leave } from "@/lib/attendance";
+import { revalidate } from "@/lib/revalidate";
+import { useData } from "@/lib/useData";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
 
@@ -58,17 +60,17 @@ function LeaveCard({ l, today, onGiveUp, onCancel }: { l: Row; today: string; on
 // İcazələrim: xülasə + "İcazə istə" (qlobal LeaveModal), aktiv və gözləyən sorğular, aylara görə tarixçə (statusla süzgəc). Realtime.
 export function MyLeaves({ employeeId }: { employeeId: number | null }) {
   const today = todayBaku();
-  const [rows, setRows] = useState<Row[] | null>(null);
-  const [filter, setFilter] = useState<Filter>("all");
-
-  const load = useCallback(async () => {
-    if (!employeeId) return setRows([]);
+  // Keşdə + canlı (lib/attendance.ts → "my-leaves"): imtina/geri götürmədən sonra da yenilənir
+  useAttendanceLive();
+  const rows: Row[] | null = useData("my-leaves", async () => {
+    if (!employeeId) return [];
     const { data } = await createClient().from("leave_requests")
       .select("id, employee_id, date_from, date_to, reason, status, created_at, decided_at")
       .eq("employee_id", employeeId).order("date_from", { ascending: false }).limit(300);
-    setRows(data ?? []);
+    return data ?? [];
   }, [employeeId]);
-  useAttendanceLive(load);
+  const [filter, setFilter] = useState<Filter>("all");
+  const load = () => revalidate(...ATTENDANCE_KEYS);
 
   async function giveUp(l: Row) {
     const { error } = await createClient().rpc("leave_cancel", { p_id: l.id });
