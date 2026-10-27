@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { History, MapPin, Search, X } from "lucide-react";
 import { formatDateAz } from "@/components/DatePicker";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { Modal } from "@/components/Modal";
 import { createClient } from "@/lib/supabase/client";
+import { useData } from "@/lib/useData";
 import { fetchFileCounts, fetchGroupMap, mergeGroupLogs, type FileCount } from "@/lib/jobs";
 import { FileBadges } from "./FileBadges";
 import { WorkLogModal } from "./WorkLogModal";
@@ -69,16 +70,11 @@ function norm(s: string) {
 // Obyektin iş tarixçəsi: usta obyektə getməzdən əvvəl orada kim, nə vaxt, nə edib görür. Günlərə görə qruplu, axtarışlı;
 // sətrə klik → işin ətraflı pəncərəsi (akt, şəkillər)
 export function PlaceHistoryModal({ target, onClose }: { target: HistoryTarget; onClose: () => void }) {
-  const [rows, setRows] = useState<Row[] | null>(null);
+  // Keşdə: eyni mağazanın tarixçəsini təkrar açanda dərhal görünür
+  const rows = useData("place-history", () => fetchHistory(target), [target.storeId ?? null, target.companyId ?? null]);
   const [query, setQuery] = useState("");
   const [openLog, setOpenLog] = useState<number | null>(null);
   const showStore = !target.storeId; // şirkətin tarixçəsində hansı filial olduğu da yazılır
-
-  useEffect(() => {
-    let cancelled = false;
-    fetchHistory(target).then((r) => { if (!cancelled) setRows(r); });
-    return () => { cancelled = true; };
-  }, [target]);
 
   const days = useMemo(() => {
     const words = norm(query).split(/\s+/).filter(Boolean);
