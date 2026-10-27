@@ -43,7 +43,9 @@ export function StoreCard({ store, companyName, action, onHistory }: Props) {
         </p>
       </div>
 
-      <div className="mt-3 flex items-center justify-end gap-2 border-t border-dashed border-line pt-3 max-sm:[&>*]:flex-1 max-sm:[&>*]:justify-center">
+      <div className="mt-3 flex flex-wrap items-center justify-end gap-2 border-t border-dashed border-line pt-3 max-sm:[&>*]:flex-1 max-sm:[&>*]:justify-center">
+        {/* Planşet/kompüterdə "Konumu düzəlt" eyni sətirdə solda; telefonda aşağıda tam endə (Naviqatorla) */}
+        <PlaceLocationButton place={{ kind: "store", id: store.id, code: store.code, name: store.name, address: store.address, lat: store.lat, lng: store.lng }} className="btn btn-soft btn-sm mr-auto max-sm:!hidden" />
         {onHistory && (
           <button type="button" onClick={onHistory} className="btn btn-soft btn-sm" title="Bu yerdə görülən işlər">
             <History size={14} /> Tarixçə
@@ -51,8 +53,8 @@ export function StoreCard({ store, companyName, action, onHistory }: Props) {
         )}
         <MapButton place={store} />
       </div>
-      {/* Yalnız telefonda: Waze / Google Maps seçimi ilə ünvana getmək */}
-      <div className="mt-2 flex flex-wrap gap-2 max-sm:[&>*]:flex-1">
+      {/* Yalnız telefonda: konumu düzəlt + Waze / Google Maps seçimi ilə ünvana getmək */}
+      <div className="mt-2 flex flex-wrap gap-2 sm:hidden [&>*]:flex-1">
         <PlaceLocationButton place={{ kind: "store", id: store.id, code: store.code, name: store.name, address: store.address, lat: store.lat, lng: store.lng }} className="btn btn-soft btn-sm max-sm:w-full max-sm:justify-center" />
         <div className="sm:hidden"><NavButton place={store} /></div>
       </div>
