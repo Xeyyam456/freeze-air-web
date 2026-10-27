@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Box, Search, TriangleAlert, Wrench } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { useData } from "@/lib/useData";
 
 type Model = { id: number; name: string };
 type Code = { id: number; model_id: number; code: string; title: string; solution: string | null };
@@ -11,22 +12,20 @@ const norm = (s: string | null | undefined) =>
   (s ?? "").toLowerCase().replace(/ə/g, "e").replace(/ı/g, "i").replace(/ö/g, "o").replace(/ü/g, "u").replace(/ç/g, "c").replace(/ş/g, "s").replace(/ğ/g, "g");
 
 // Xəta kodları (yalnız baxış; admin paneldən idarə olunur): modeli dropdown-dan seç, kodları gör; kod/açıqlama yazıb da axtarmaq olar
+// Keşdə: kodlar nadir dəyişir, səhifəyə qayıdanda dərhal görünür
+async function fetchCodes(): Promise<{ models: Model[]; codes: Code[] }> {
+  const supabase = createClient();
+  const [models, codes] = await Promise.all([
+    supabase.from("ac_models").select("id, name").order("name").then((r) => r.data ?? []),
+    supabase.from("ac_error_codes").select("id, model_id, code, title, solution").order("code").then((r) => r.data ?? []),
+  ]);
+  return { models: models.sort((a, b) => a.name.localeCompare(b.name, "az")), codes };
+}
+
 export function ErrorCodeView() {
-  const [data, setData] = useState<{ models: Model[]; codes: Code[] } | null>(null);
+  const data = useData("error-codes", fetchCodes);
   const [modelId, setModelId] = useState("");
   const [query, setQuery] = useState("");
-
-  useEffect(() => {
-    let cancelled = false;
-    const supabase = createClient();
-    Promise.all([
-      supabase.from("ac_models").select("id, name").order("name").then((r) => r.data ?? []),
-      supabase.from("ac_error_codes").select("id, model_id, code, title, solution").order("code").then((r) => r.data ?? []),
-    ]).then(([models, codes]) => {
-      if (!cancelled) setData({ models: models.sort((a, b) => a.name.localeCompare(b.name, "az")), codes });
-    });
-    return () => { cancelled = true; };
-  }, []);
 
   const names = useMemo(() => new Map((data?.models ?? []).map((m) => [m.id, m.name])), [data]);
   const filtered = useMemo(() => {
