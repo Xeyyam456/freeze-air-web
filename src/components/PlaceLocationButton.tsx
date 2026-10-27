@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Crosshair, LocateFixed, MapPinned, X } from "lucide-react";
+import { ConfirmModal } from "@/components/ConfirmModal";
 import { Modal } from "@/components/Modal";
 import { mapEmbedUrl, parseCoordinates } from "@/lib/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -143,23 +144,31 @@ export function PlaceLocationButton({ place, className = "btn btn-soft btn-sm", 
               </div>
             )}
 
-            {fix && !confirm && (
+            {fix && (
               <button type="button" disabled={!goodFix || busy !== null} onClick={() => setConfirm(true)} className="btn btn-primary btn-sm mt-2 w-full">
                 <Check size={14} /> Bu koordinatı yaz
               </button>
             )}
-            {fix && confirm && (
-              <div className="mt-2 rounded-xl bg-[#fff6e5] p-3 text-sm text-amber-900">
-                <p className="font-semibold">Əminsən? {hasCoords ? "Köhnə koordinat dəyişəcək" : "Koordinat yazılacaq"} (dəyişiklik jurnala düşür).</p>
-                <div className="mt-2 flex gap-2">
-                  <button type="button" onClick={() => setConfirm(false)} className="btn btn-soft btn-sm flex-1">Ləğv et</button>
-                  <button type="button" disabled={busy !== null} onClick={() => save("coord")} className="btn btn-primary btn-sm flex-1">{busy === "coord" ? "..." : "Bəli, yaz"}</button>
-                </div>
-              </div>
-            )}
           </section>
         </Modal>
       )}
+      {/* Təsdiq ayrıca pəncərədə (ekranın ortasında): aşağı sürüşdürmək lazım olmasın */}
+      <ConfirmModal
+        open={confirm && !!fix}
+        title={hasCoords ? "Koordinat dəyişsin?" : "Koordinat yazılsın?"}
+        message={fix && (
+          <>
+            {hasCoords && <>Köhnə: <b className="tabular-nums">{place.lat!.toFixed(5)}, {place.lng!.toFixed(5)}</b><br /></>}
+            Yeni: <b className="tabular-nums">{fix.lat}, {fix.lng}</b>
+            {dist !== null && <> · köhnədən {fmtDist(dist)}</>}
+            <br />Dəyişiklik jurnala düşür.
+          </>
+        )}
+        confirmLabel="Bəli, yaz"
+        pending={busy === "coord"}
+        onCancel={() => setConfirm(false)}
+        onConfirm={() => save("coord")}
+      />
     </>
   );
 }
