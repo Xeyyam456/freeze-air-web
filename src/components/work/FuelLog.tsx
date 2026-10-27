@@ -1,8 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AlertTriangle, CalendarDays, Camera, Check, ChevronDown, ChevronLeft, ChevronRight, FileSpreadsheet, Fuel, Gauge, HandCoins, ImageIcon, Moon, Pencil, Route, Sun, Users, X } from "lucide-react";
-import { Avatar } from "@/components/employees/EmployeeList";
+import { AlertTriangle, CalendarDays, Camera, Check, ChevronDown, ChevronLeft, ChevronRight, FileSpreadsheet, Fuel, Gauge, HandCoins, ImageIcon, Moon, Pencil, Route, Sun, X } from "lucide-react";
 import { MONTHS_AZ, todayBaku } from "@/lib/attendance";
 import { createClient } from "@/lib/supabase/client";
 import type { Tables } from "@/lib/database.types";
@@ -40,16 +39,15 @@ function useSigned(path: string | null) {
   return path ? url : null;
 }
 
-function Photo({ path, alt, small = false }: { path: string | null; alt: string; small?: boolean }) {
+function Photo({ path, alt }: { path: string | null; alt: string }) {
   const url = useSigned(path);
-  const size = small ? "h-12 w-16" : "h-16 w-24";
-  if (!path) return <span className={`grid ${size} shrink-0 place-items-center rounded-lg bg-surface text-muted`}><ImageIcon size={18} /></span>;
+  if (!path) return <span className="grid h-16 w-24 shrink-0 place-items-center rounded-lg bg-bg text-muted"><ImageIcon size={18} /></span>;
   return url ? (
     <a href={url} target="_blank" rel="noreferrer" className="shrink-0" title="Şəkli böyüt">
       {/* eslint-disable-next-line @next/next/no-img-element -- imzalı link, optimizasiyaya ehtiyac yoxdur */}
-      <img src={url} alt={alt} className={`${size} rounded-lg object-cover ring-1 ring-line`} />
+      <img src={url} alt={alt} className="h-16 w-24 rounded-lg object-cover ring-1 ring-line" />
     </a>
-  ) : <span className={`${size} shrink-0 animate-pulse rounded-lg bg-bg`} />;
+  ) : <span className="h-16 w-24 shrink-0 animate-pulse rounded-lg bg-bg" />;
 }
 
 // Səhər / axşam addımı: şəkil + km; yazılıbsa göstərir, bu gün ərzində "Dəyiş" ilə düzəlmək olur
@@ -139,65 +137,6 @@ function Step({ kind, value, photo, at, min, max, disabled, onSave }: {
 
 // "Aldığım yanacaq pulu": ay boyu hər gün ödəniş ola bilər, ona görə yığcam kart: üstdə yekun, gözləyənlər həmişə görünür (təsdiq lazımdır),
 // qəbul olunanların son 3-ü; "Hamısına bax" günlərə görə qruplaşmış sürüşən siyahı açır (hər günün başlığında günün cəmi)
-// Komandanın spidometrləri (0090): maşını olan digər ustaların seçilmiş günün səhər/axşam km-i və şəkilləri (yalnız baxış).
-// Pul (sərf, ödəniş) göstərilmir.
-type Mate = { id: number; full_name: string; photo_url: string | null; car_plate: string | null; car_model: string | null };
-function TeamMileage({ me, day, dayText }: { me: number; day: string; dayText: string }) {
-  const [data, setData] = useState<{ mates: Mate[]; rows: Map<number, Row> } | null>(null);
-  useEffect(() => {
-    let cancelled = false;
-    const supabase = createClient();
-    Promise.all([
-      supabase.from("employees").select("id, full_name, photo_url, car_plate, car_model").eq("has_car", true).eq("is_active", true).neq("id", me).order("full_name"),
-      supabase.from("mileage_logs").select("*").eq("day", day).neq("employee_id", me),
-    ]).then(([e, m]) => {
-      if (!cancelled) setData({ mates: (e.data ?? []) as Mate[], rows: new Map((m.data ?? []).map((r) => [r.employee_id, r])) });
-    });
-    return () => { cancelled = true; };
-  }, [me, day]);
-  if (!data || data.mates.length === 0) return null;
-  return (
-    <section>
-      <h2 className="mb-3 flex flex-wrap items-center gap-x-2 text-base font-bold">
-        <Users size={18} className="text-primary" /> Komandanın spidometrləri
-        <span className="text-sm font-semibold text-muted">· {dayText}</span>
-      </h2>
-      <ul className="flex flex-wrap gap-3">
-        {data.mates.map((m) => {
-          const r = data.rows.get(m.id);
-          return (
-            <li key={m.id} className="card min-w-0 grow basis-[340px] !p-4 max-sm:!p-3">
-              <div className="flex items-center gap-3">
-                <Avatar employee={m} className="!h-9 !w-9 !text-xs" />
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-bold">{m.full_name}</span>
-                  <span className="muted block truncate text-xs">{m.car_plate ?? "Nömrəsiz"}{m.car_model && ` · ${m.car_model}`}</span>
-                </span>
-                {r?.km != null && <b className="shrink-0 text-sm tabular-nums">{r.km.toLocaleString("az")} km</b>}
-              </div>
-              {!r ? (
-                <p className="muted mt-3 rounded-lg bg-bg px-3 py-2 text-xs">Bu gün spidometr yazılmayıb.</p>
-              ) : (
-                <div className="mt-3 grid grid-cols-2 gap-2">
-                  {([["Səhər", r.start_km, r.start_photo, r.start_at], ["Axşam", r.end_km, r.end_photo, r.end_at]] as const).map(([label, km, photo, at]) => (
-                    <div key={label} className="flex items-center gap-2 rounded-lg bg-bg p-2">
-                      <Photo path={photo} alt={`${m.full_name}: ${label.toLowerCase()} spidometr`} small />
-                      <span className="min-w-0">
-                        <span className="muted block text-[11px] font-semibold">{label}{at && ` · ${timeBaku(at)}`}</span>
-                        <b className="block text-sm tabular-nums">{km != null ? km.toLocaleString("az") : "—"}</b>
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </section>
-  );
-}
-
 function PaymentsCard({ payments, onConfirm }: { payments: Payment[]; onConfirm: (p: Payment, received: boolean) => void }) {
   const [open, setOpen] = useState(false);
   const waiting = payments.filter((p) => p.status !== "received");
@@ -621,10 +560,6 @@ export function FuelLog({ employeeId, car }: { employeeId: number; car: Car }) {
           </>
         )}
       </section>
-
-      {/* Digər ustaların spidometrləri: gün seçilibsə həmin gün, həftə/ay seçilibsə bu gün */}
-      <TeamMileage me={employeeId} day={period === "day" ? anchor : today}
-        dayText={(period === "day" ? anchor : today) === today ? "bu gün" : dayName(anchor)} />
 
       {/* Şirkətin verdiyi yanacaq pulu: hər ödənişi təsdiqlə */}
       {data && (
