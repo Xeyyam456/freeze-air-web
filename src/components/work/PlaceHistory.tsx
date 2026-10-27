@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { History, MapPin, Paperclip, Search, X } from "lucide-react";
+import { History, MapPin, Search, X } from "lucide-react";
 import { formatDateAz } from "@/components/DatePicker";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { Modal } from "@/components/Modal";
 import { createClient } from "@/lib/supabase/client";
+import { fetchFileCounts, fetchGroupMap, mergeGroupLogs, type FileCount } from "@/lib/jobs";
+import { FileBadges } from "./FileBadges";
 import { WorkLogModal } from "./WorkLogModal";
 
 // Neçə iş göstərilir (ən yenilər); obyektdə bundan çox iş olanda altda qeyd çıxır
@@ -18,16 +20,26 @@ type Row = {
   description: string;
   employees: { full_name: string; photo_url: string | null } | null;
   stores: { code: string; name: string } | null;
-  work_files: { id: number }[];
+  files?: FileCount;
 };
 
 // Tarixçə hədəfi: bir mağaza/filial və ya bütün şirkət/market (özü + bütün filialları/mağazaları)
 export type HistoryTarget = { title: string; storeId?: number; companyId?: number };
 
-const SELECT = "id, work_date, created_at, description, employees(full_name, photo_url), stores(code, name), work_files(id)";
+const SELECT = "id, work_date, created_at, description, employees(full_name, photo_url), stores(code, name)";
 
+// Qrup işi bir sətir ("Xəyyam + Fərhad"), fayl nişanları qrup üzrə (video/şəkil istənilən üzvün qeydinə yüklənə bilər)
 async function fetchHistory(t: HistoryTarget): Promise<Row[]> {
   const supabase = createClient();
+  const rows = await fetchRows(supabase, t);
+  const oldest = rows.at(-1)?.work_date;
+  const groups = oldest ? await fetchGroupMap(supabase, oldest) : new Map<number, string>();
+  const merged = mergeGroupLogs(rows, groups);
+  const files = await fetchFileCounts(supabase, merged.map((r) => r.id));
+  return merged.map((r) => ({ ...r, files: files.get(r.id) }));
+}
+
+async function fetchRows(supabase: ReturnType<typeof createClient>, t: HistoryTarget): Promise<Row[]> {
   const newest = <Q extends { order: (c: string, o: { ascending: boolean }) => Q }>(q: Q) =>
     q.order("work_date", { ascending: false }).order("created_at", { ascending: false });
   if (t.storeId) {
@@ -140,9 +152,7 @@ export function PlaceHistoryModal({ target, onClose }: { target: HistoryTarget; 
                         </div>
                         <span className="flex shrink-0 flex-col items-end gap-1">
                           <span className="text-sm font-semibold tabular-nums">{timeOf(r.created_at)}</span>
-                          {r.work_files.length > 0 && (
-                            <span className="inline-flex items-center gap-0.5 text-xs text-muted" title="Akt və şəkillər"><Paperclip size={12} />{r.work_files.length}</span>
-                          )}
+                          <FileBadges files={r.files} />
                         </span>
                       </button>
                     </li>

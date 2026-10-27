@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ArrowRight, Building2, Check, ChevronLeft, ChevronRight, ListChecks, Lock, MapPin, Paperclip, PenLine, Play, Store, Undo2, Users } from "lucide-react";
+import { ArrowRight, Building2, Check, ChevronLeft, ChevronRight, ListChecks, Lock, MapPin, PenLine, Store, Undo2, Users } from "lucide-react";
 import { formatDateAz } from "@/components/DatePicker";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { createClient } from "@/lib/supabase/client";
@@ -9,6 +9,8 @@ import { TASKS_CHANGED } from "@/lib/tasks-live";
 import { toast } from "@/lib/toast";
 import { TaskNoteModal } from "./TaskNoteModal";
 import { WorkLogModal } from "./WorkLogModal";
+import { FileBadges } from "./FileBadges";
+import type { FileCount } from "@/lib/jobs";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const iso = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -40,7 +42,18 @@ async function fetchTasks(day: string) {
     const { data } = await supabase.from("tasks").select("id, employees(full_name)").in("id", nextIds);
     for (const n of data ?? []) if (n.employees) nextName.set(n.id, n.employees.full_name);
   }
-  return { tasks: tasks.map((t) => ({ ...t, nextName: t.reassigned_to ? nextName.get(t.reassigned_to) : undefined })), employees };
+  // Fayllar qrup üzrə: video/şəkil istənilən üzvün iş qeydinə yüklənə bilər, hər üzvün kartında görünsün
+  const filesBy = new Map<string, FileCount>();
+  const fkey = (t: (typeof tasks)[number]) => t.group_id ?? `t${t.id}`;
+  for (const t of tasks) {
+    const c = filesBy.get(fkey(t)) ?? { act: 0, photo: 0, video: 0 };
+    for (const f of t.work_logs?.work_files ?? []) if (f.kind === "act" || f.kind === "photo" || f.kind === "video") c[f.kind] += 1;
+    filesBy.set(fkey(t), c);
+  }
+  return {
+    tasks: tasks.map((t) => ({ ...t, files: filesBy.get(fkey(t))!, nextName: t.reassigned_to ? nextName.get(t.reassigned_to) : undefined })),
+    employees,
+  };
 }
 
 // Həftə zolağı üçün: hər gün neçə tapşırıq (geri alınanlar sayılmır) və onlardan neçəsi mənimdir
@@ -96,6 +109,18 @@ export function TasksView() {
   const [week, setWeek] = useState<{ from: string; rows: Awaited<ReturnType<typeof fetchWeek>> } | null>(null);
   const [noteFor, setNoteFor] = useState<Task | null>(null); // təmir barədə yazı pəncərəsi
   const [viewLog, setViewLog] = useState<number | null>(null); // işin pəncərəsi (fayllara baxmaq)
+  // İş qeydi: özününkü, yoxdursa qrupun başqa üzvününkü (pəncərə qrupun bütün fayllarını göstərir)
+  const logOf = (t: Task) => t.work_log_id ?? data?.tasks.find((x) => t.group_id && x.group_id === t.group_id && x.work_log_id)?.work_log_id ?? null;
+  // Komanda kartlarında: ▶ Video / şəkil / akt nişanı, klik → iş pəncərəsi
+  const filesButton = (t: Task) => {
+    const id = logOf(t);
+    if (!id || t.files.act + t.files.photo + t.files.video === 0) return null;
+    return (
+      <button type="button" onClick={() => setViewLog(id)} title="Akt, şəkil və videoya bax" className="mt-1 rounded-full hover:opacity-80">
+        <FileBadges files={t.files} />
+      </button>
+    );
+  };
   const from = weekStart(day);
 
   useEffect(() => {
@@ -262,7 +287,8 @@ export function TasksView() {
                 {mine.map((t) => {
                   const cancelled = !!t.cancelled_at; // admin geri alıb: tarixçə kimi qalır, işarələnmir
                   const Icon = placeIcon(t);
-                  const files = t.work_logs?.work_files.length ?? 0;
+                  const files = t.files.act + t.files.photo + t.files.video;
+                  const fileLog = logOf(t);
                   return (
                     <li key={t.id} className={`card relative min-w-0 grow basis-[440px] !p-3.5 transition-colors ${
                       cancelled ? "opacity-60" : t.done ? "!border-[#bfe8cf] !bg-[#f3fbf6]" : "hover:!border-[#c9dafb]"}`}>
@@ -312,11 +338,10 @@ export function TasksView() {
                             <span className="rounded-full bg-[#fff6e5] px-2.5 py-1 text-xs font-bold text-amber-700">Gözləyir</span>
                           )}
                           {/* Fayllar (akt, şəkil, video): klik → iş pəncərəsi, orada hər biri pəncərədə açılır */}
-                          {files > 0 && t.work_log_id && (
-                            <button type="button" onClick={() => setViewLog(t.work_log_id)} title="Akt, şəkil və videoya bax"
-                              className="inline-flex h-8 items-center gap-1.5 rounded-full bg-bg px-2.5 text-xs font-semibold text-ink hover:bg-primary-soft hover:text-primary">
-                              {t.work_logs?.work_files.some((f) => f.kind === "video") ? <Play size={12} fill="currentColor" /> : <Paperclip size={13} />}
-                              Fayllar · {files}
+                          {files > 0 && fileLog && (
+                            <button type="button" onClick={() => setViewLog(fileLog)} title="Akt, şəkil və videoya bax"
+                              className="inline-flex h-8 items-center gap-1.5 rounded-full px-1 text-xs font-semibold hover:bg-primary-soft">
+                              <FileBadges files={t.files} />
                             </button>
                           )}
                           {/* Görülmüş tapşırıqda: təmir barədə yaz, akt/şəkil əlavə et */}
@@ -372,6 +397,7 @@ export function TasksView() {
                           <span className="min-w-0 flex-1">
                             <span className={`line-clamp-2 font-semibold ${cancelled ? "text-muted line-through" : done ? "text-ok" : ""}`}>{placeOf(t)}</span>
                             <span className={`block truncate text-xs ${cancelled ? "line-through" : ""} text-muted`}>{t.reason}</span>
+                            {filesButton(t)}
                           </span>
                         </li>
                       </ul>
@@ -409,6 +435,7 @@ export function TasksView() {
                                 <span className={`block truncate text-xs ${cancelled ? "line-through" : ""} text-muted`}>
                                   {t.reason}{cancelled && t.nextName && <> · → {t.nextName}</>}
                                 </span>
+                                {filesButton(t)}
                               </span>
                             </li>
                           );

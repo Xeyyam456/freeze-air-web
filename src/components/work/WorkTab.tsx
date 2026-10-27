@@ -7,7 +7,10 @@ import { ConfirmButton } from "@/components/ConfirmButton";
 import { DatePicker, formatDateAz } from "@/components/DatePicker";
 import { Modal } from "@/components/Modal";
 import { createClient } from "@/lib/supabase/client";
+import { fetchFileCounts, type FileCount } from "@/lib/jobs";
+import { FileBadges } from "./FileBadges";
 import { WorkLogForm } from "./WorkLogForm";
+import { WorkLogModal } from "./WorkLogModal";
 
 // "14:32"
 function timeOf(iso: string) {
@@ -28,6 +31,7 @@ type WorkLog = {
   companies: { name: string } | null;
   work_files: WorkFile[];
   created_at: string;
+  groupFiles?: FileCount; // qrup işi: yoldaşın qeydinə yüklənmiş fayllar (bu qeyddə yoxdur)
 };
 
 // Yerli tarix "YYYY-MM-DD"; offset gün qədər irəli/geri (dünən: -1)
@@ -54,6 +58,15 @@ async function fetchLogs(employeeId: number, day: string): Promise<WorkLog[]> {
     const urlByPath = new Map((signed ?? []).map((s) => [s.path, s.signedUrl]));
     list.forEach((l) => l.work_files.forEach((f) => { f.url = urlByPath.get(f.path) ?? undefined; }));
   }
+  // Qrup işi: fayl başqa üzvün qeydinə yüklənibsə, burada nişan kimi göstərilir (klik → iş pəncərəsi)
+  const all = await fetchFileCounts(supabase, list.map((l) => l.id));
+  for (const l of list) {
+    const a = all.get(l.id);
+    if (!a) continue;
+    const own = (k: string) => l.work_files.filter((x) => x.kind === k).length;
+    const rest = { act: Math.max(0, a.act - own("act")), photo: Math.max(0, a.photo - own("photo")), video: Math.max(0, a.video - own("video")) };
+    if (rest.act + rest.photo + rest.video > 0) l.groupFiles = rest;
+  }
   return list;
 }
 
@@ -71,6 +84,7 @@ export function WorkTab({ employeeId, employeeName }: { employeeId: number; empl
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState<WorkLog | null>(null);
   const [playing, setPlaying] = useState<string | null>(null); // açılmış videonun linki (pəncərədə oynayır)
+  const [openLog, setOpenLog] = useState<number | null>(null); // qrupun faylları: iş pəncərəsi
 
   const router = useRouter();
   // İş dəyişəndə həm bu siyahı, həm də kartdakı "bu gün" sayı yenilənir
@@ -122,6 +136,7 @@ export function WorkTab({ employeeId, employeeName }: { employeeId: number; empl
 
   return (
     <div className="flex h-full flex-col gap-2">
+      {openLog && <WorkLogModal key={openLog} logId={openLog} onClose={() => setOpenLog(null)} />}
       {playing && (
         <Modal onClose={() => setPlaying(null)} labelledBy="work-video-title" className="!max-w-3xl">
           <div className="mb-3 flex items-center justify-between gap-3">
@@ -214,6 +229,12 @@ export function WorkTab({ employeeId, employeeName }: { employeeId: number; empl
                     )}
                   </div>
                   <p className="mt-1.5 whitespace-pre-line text-[13px]">{log.description}</p>
+                  {log.groupFiles && (
+                    <button type="button" onClick={() => setOpenLog(log.id)} title="Qrup yoldaşının əlavə etdiyi fayllar: bax"
+                      className="mt-2 flex flex-wrap items-center gap-1.5 rounded-lg bg-violet-50/60 px-2 py-1 text-[11px] font-semibold text-violet-700 hover:bg-violet-50">
+                      Qrupun faylları <FileBadges files={log.groupFiles} />
+                    </button>
+                  )}
 
                   {(act || photos.length > 0 || videos.length > 0) && (
                     <div className="mt-2 flex flex-wrap items-center gap-2">

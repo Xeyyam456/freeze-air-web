@@ -6,7 +6,8 @@ import { DatePicker } from "@/components/DatePicker";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { WORK_SAVED } from "@/components/work/MyDay";
 import { WorkLogModal } from "@/components/work/WorkLogModal";
-import { fetchGroupMap, mergeGroupLogs } from "@/lib/jobs";
+import { fetchFileCounts, fetchGroupMap, mergeGroupLogs, type FileCount } from "@/lib/jobs";
+import { FileBadges } from "./FileBadges";
 import { createClient } from "@/lib/supabase/client";
 
 type LogRow = {
@@ -17,6 +18,7 @@ type LogRow = {
   employees: { full_name: string; photo_url: string | null } | null;
   stores: { name: string; companies: { name: string } | null } | null;
   companies: { name: string } | null;
+  files?: FileCount;
 };
 
 // Yerli tarix "YYYY-MM-DD"; offset gün qədər irəli/geri (dünən: -1)
@@ -49,7 +51,9 @@ async function fetchDay(day: string): Promise<LogRow[]> {
       .order("created_at", { ascending: false }),
     fetchGroupMap(supabase, day, day),
   ]);
-  return mergeGroupLogs((data ?? []) as LogRow[], groups);
+  const merged = mergeGroupLogs((data ?? []) as LogRow[], groups);
+  const files = await fetchFileCounts(supabase, merged.map((l) => l.id)); // ▶ Video / şəkil / akt (qrup üzrə)
+  return merged.map((l) => ({ ...l, files: files.get(l.id) }));
 }
 
 // Görülən işlər: seçilmiş günün bütün ustalar üzrə işləri. Standart bu gün; dünən və köhnə günləri təqvimlə seçmək olur.
@@ -123,7 +127,10 @@ export function WorkHistory() {
                   <span className="flex min-w-0 items-center gap-1 text-xs font-semibold text-primary"><MapPin size={12} className="shrink-0" /> <span className="truncate">{placeOf(l)}</span></span>
                 </p>
                 <p className="muted mt-0.5 text-sm">{l.description}</p>
+                {/* Mobildə nişanlar mətnin altında (sağda yer yoxdur) */}
+                <FileBadges files={l.files} className="mt-1 sm:hidden" />
               </div>
+              <FileBadges files={l.files} className="max-sm:hidden" />
               <p className="shrink-0 text-sm font-semibold tabular-nums">{timeOf(l.created_at)}</p>
               </button>
             </li>
