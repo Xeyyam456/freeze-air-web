@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ClipboardList, MapPin } from "lucide-react";
 import { DatePicker } from "@/components/DatePicker";
 import { Avatar } from "@/components/employees/EmployeeList";
-import { WORK_SAVED } from "@/components/work/MyDay";
 import { WorkLogModal } from "@/components/work/WorkLogModal";
 import { fetchFileCounts, fetchGroupMap, mergeGroupLogs, type FileCount } from "@/lib/jobs";
 import { FileBadges } from "./FileBadges";
 import { createClient } from "@/lib/supabase/client";
+import { useData } from "@/lib/useData";
 
 type LogRow = {
   id: number;
@@ -59,32 +59,15 @@ async function fetchDay(day: string): Promise<LogRow[]> {
 // Görülən işlər: seçilmiş günün bütün ustalar üzrə işləri. Standart bu gün; dünən və köhnə günləri təqvimlə seçmək olur.
 export function WorkHistory() {
   const [day, setDay] = useState(() => dayIso());
-  const [logs, setLogs] = useState<LogRow[] | null>(null);
+  // Keşdə: iş yazılanda / tapşırıq dəyişəndə QueryProvider "work-history"-ni yeniləyir; Panelə qayıdanda dərhal görünür
+  const logs = useData("work-history", () => fetchDay(day), [day]);
   const [openLog, setOpenLog] = useState<number | null>(null);
-  const [tick, setTick] = useState(0); // iş yazılanda (MyDay) artır → siyahı yenidən yüklənir
   const today = dayIso();
   const yesterday = dayIso(-1);
 
-  useEffect(() => {
-    const onSaved = () => setTick((t) => t + 1);
-    window.addEventListener(WORK_SAVED, onSaved);
-    return () => window.removeEventListener(WORK_SAVED, onSaved);
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    fetchDay(day).then((list) => {
-      if (!cancelled) setLogs(list);
-    });
-    return () => {
-      cancelled = true; // gün tez-tez dəyişəndə köhnə cavab yenisinin üstünə yazılmasın
-    };
-  }, [day, tick]);
-
   function changeDay(value: string) {
     if (!value || value > today || value === day) return;
-    setLogs(null); // yeni gün yüklənənə qədər "Yüklənir..."
-    setDay(value);
+    setDay(value); // yeni gün gələnə qədər köhnə günün siyahısı qalır
   }
 
   const chip = (active: boolean) =>

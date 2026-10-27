@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { CalendarCheck, CalendarDays, CalendarOff, CalendarRange, ListChecks, LogIn, LogOut, Wrench } from "lucide-react";
 import { AttendanceCalendar } from "@/components/employees/AttendanceCalendar";
@@ -8,7 +8,8 @@ import { presenceText, timeBaku, todayBaku, useMonthAttendance } from "@/lib/att
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
 import { LeaveModal } from "./LeaveModal";
-import { TASKS_CHANGED } from "@/lib/tasks-live";
+import { useMe } from "@/lib/me";
+import { useData } from "@/lib/useData";
 
 // İş yazılanda (həm burada, həm başqa yerdə) bu hadisə atılır: sayğac və iş siyahısı yenilənir
 export const WORK_SAVED = "work-saved";
@@ -66,12 +67,12 @@ function Stat({ icon: Icon, label, value, sub, href }: { icon: typeof Wrench; la
 // Əməkdaş kartı olmayan hesabda (məs. yalnız admin) görünmür. Tapşırıq dəyişəndə (Realtime) və iş yazılanda yenilənir.
 export function MyDay() {
   // undefined = yüklənir, null = əməkdaş kartı yoxdur
-  const [me, setMe] = useState<{ id: number; name: string } | null | undefined>(undefined);
-  const [stats, setStats] = useState<Stats | null>(null);
+  const me = useMe();
+  // Keşdə: iş yazılanda və tapşırıq dəyişəndə QueryProvider "my-day-stats"-ı yeniləyir
+  const stats = useData("my-day-stats", () => (me ? fetchStats(me.id) : Promise.resolve(null)), [me?.id]);
   const [leaving, setLeaving] = useState(false); // "İcazə istə" pəncərəsi
   const [checking, setChecking] = useState(false);
   const [calendar, setCalendar] = useState(false); // davamiyyət təqvimi
-  const [tick, setTick] = useState(0);
   const attendance = useMonthAttendance(); // bu günün vəziyyəti Realtime ilə
   const mine = me && attendance ? attendance.byEmployee.get(me.id) ?? attendance.empty : null;
 
@@ -110,44 +111,6 @@ export function MyDay() {
     if (error) return toast.error(error.message);
     toast.success("İş günü bitdi", data ? `Bitmə saatı: ${timeBaku(data)}` : undefined);
   }
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const supabase = createClient();
-      const { data: id } = await supabase.rpc("my_employee_id");
-      if (!id) {
-        if (!cancelled) setMe(null);
-        return;
-      }
-      const { data: emp } = await supabase.from("employees").select("full_name").eq("id", id).maybeSingle();
-      if (!cancelled) setMe({ id, name: emp?.full_name ?? "" });
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  useEffect(() => {
-    const onChange = () => setTick((t) => t + 1);
-    window.addEventListener(WORK_SAVED, onChange);
-    window.addEventListener(TASKS_CHANGED, onChange);
-    return () => {
-      window.removeEventListener(WORK_SAVED, onChange);
-      window.removeEventListener(TASKS_CHANGED, onChange);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!me) return;
-    let cancelled = false;
-    fetchStats(me.id).then((s) => {
-      if (!cancelled) setStats(s);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [me, tick]);
 
   if (me === null) return null;
   const s = stats;

@@ -1,11 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ArrowRight, Building2, Check, ChevronLeft, ChevronRight, ListChecks, Lock, MapPin, PenLine, Store, Undo2, Users } from "lucide-react";
 import { formatDateAz } from "@/components/DatePicker";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { createClient } from "@/lib/supabase/client";
-import { TASKS_CHANGED } from "@/lib/tasks-live";
+import { useMe } from "@/lib/me";
+import { getQueryClient } from "@/lib/queryClient";
+import { revalidate } from "@/lib/revalidate";
+import { useData } from "@/lib/useData";
 import { toast } from "@/lib/toast";
 import { TaskNoteModal } from "./TaskNoteModal";
 import { WorkLogModal } from "./WorkLogModal";
@@ -104,9 +107,13 @@ function Tile({ label, value, tone = "" }: { label: string; value: number; tone?
 export function TasksView() {
   const [today] = useState(() => iso(new Date()));
   const [day, setDay] = useState(today);
-  const [me, setMe] = useState<number | null | undefined>(undefined);
-  const [data, setData] = useState<Awaited<ReturnType<typeof fetchTasks>> | null>(null);
-  const [week, setWeek] = useState<{ from: string; rows: Awaited<ReturnType<typeof fetchWeek>> } | null>(null);
+  const meCard = useMe(); // undefined = yüklənir, null = əməkdaş kartı yoxdur
+  const me = meCard === null ? null : meCard?.id;
+  const from = weekStart(day);
+  // Keşdə: tapşırıq dəyişəndə (Realtime → TASKS_CHANGED) QueryProvider "tasks-view" və "tasks-week"-i yeniləyir
+  const data = useData("tasks-view", () => fetchTasks(day), [day]);
+  const weekRows = useData("tasks-week", () => fetchWeek(from), [from]);
+  const week = weekRows && { from, rows: weekRows };
   const [noteFor, setNoteFor] = useState<Task | null>(null); // təmir barədə yazı pəncərəsi
   const [viewLog, setViewLog] = useState<number | null>(null); // işin pəncərəsi (fayllara baxmaq)
   // İş qeydi: özününkü, yoxdursa qrupun başqa üzvününkü (pəncərə qrupun bütün fayllarını göstərir)
@@ -121,33 +128,7 @@ export function TasksView() {
       </button>
     );
   };
-  const from = weekStart(day);
-
-  useEffect(() => {
-    let cancelled = false;
-    createClient().rpc("my_employee_id").then(({ data: id }) => { if (!cancelled) setMe(id ?? null); });
-    return () => { cancelled = true; };
-  }, []);
-
-  const load = useCallback(() => {
-    fetchTasks(day).then(setData);
-    fetchWeek(from).then((rows) => setWeek({ from, rows }));
-  }, [day, from]);
-  useEffect(() => {
-    let cancelled = false;
-    fetchTasks(day).then((d) => { if (!cancelled) setData(d); });
-    return () => { cancelled = true; };
-  }, [day]);
-  useEffect(() => {
-    let cancelled = false;
-    fetchWeek(from).then((rows) => { if (!cancelled) setWeek({ from, rows }); });
-    return () => { cancelled = true; };
-  }, [from]);
-  // Admin tapşırıq verəndə, dəyişəndə və ya başqa usta işarələyəndə siyahı dərhal yenilənir (Realtime, TasksListener)
-  useEffect(() => {
-    window.addEventListener(TASKS_CHANGED, load);
-    return () => window.removeEventListener(TASKS_CHANGED, load);
-  }, [load]);
+  const load = () => revalidate("tasks-view", "tasks-week", "my-day-stats", "work-history");
 
   // Keçmiş gün bağlıdır (bazada da: 0070): nə işarələmək, nə təmir qeydi
   const past = day < today;
@@ -155,7 +136,7 @@ export function TasksView() {
   async function toggle(t: Task) {
     if (past) return;
     // Dərhal əks olunur, xəta olsa geri qayıdır
-    setData((d) => d && { ...d, tasks: d.tasks.map((x) => (x.id === t.id ? { ...x, done: !t.done } : x)) });
+    getQueryClient().setQueryData<typeof data>(["tasks-view", day], (d) => d && { ...d, tasks: d.tasks.map((x) => (x.id === t.id ? { ...x, done: !t.done } : x)) });
     // Görüldü: iş avtomatik "Görülən işlər"ə düşür; geri alınanda boş avtomatik iş silinir (bazada task_set_done)
     const { error } = await createClient().rpc("task_set_done", { p_task_id: t.id, p_done: !t.done });
     if (error) toast.error(error.message);
