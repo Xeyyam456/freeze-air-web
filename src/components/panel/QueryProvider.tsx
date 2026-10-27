@@ -11,8 +11,8 @@ import { TASKS_CHANGED } from "@/lib/tasks-live";
 // Pəncərə hadisələri → aid keş açarları yenilənir (komponentlər hadisəni ayrıca dinləmir):
 // iş yazılanda (WORK_SAVED) və tapşırıq dəyişəndə (TASKS_CHANGED, Realtime; "görüldü" iş qeydi də yaradır)
 const ON = {
-  [WORK_SAVED]: ["my-day-stats", "work-history"],
-  [TASKS_CHANGED]: ["my-day-stats", "work-history", "tasks-view", "tasks-week"],
+  [WORK_SAVED]: ["my-day-stats", "work-history", "month-stats"],
+  [TASKS_CHANGED]: ["my-day-stats", "work-history", "tasks-view", "tasks-week", "month-stats"],
 };
 
 export function QueryProvider({ children }: { children: React.ReactNode }) {

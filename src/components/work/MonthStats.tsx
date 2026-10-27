@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { CalendarDays, ChevronLeft, ChevronRight, Download, MapPin, Sparkles, Table2, TrendingDown, TrendingUp, Trophy } from "lucide-react";
 import { exportMonthXlsx } from "@/lib/export-month";
 import { createClient } from "@/lib/supabase/client";
+import { useMe } from "@/lib/me";
+import { useData } from "@/lib/useData";
 
 const MONTHS = ["Yanvar", "Fevral", "Mart", "Aprel", "May", "İyun", "İyul", "Avqust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"];
 const WEEKDAYS = ["Bazar", "Bazar ertəsi", "Çərşənbə axşamı", "Çərşənbə", "Cümə axşamı", "Cümə", "Şənbə"];
@@ -199,33 +201,14 @@ export function MonthStats() {
     return { y: t.getFullYear(), m: t.getMonth(), d: t.getDate() };
   });
   const [ym, setYm] = useState({ y: today.y, m: today.m });
-  const [me, setMe] = useState<number | null | undefined>(undefined); // undefined = yüklənir, null = əməkdaş kartı yoxdur
-  const [data, setData] = useState<MonthData | null>(null);
+  const meCard = useMe(); // undefined = yüklənir, null = əməkdaş kartı yoxdur
+  const me = meCard === null ? null : meCard?.id;
+  // Keşdə: ay dəyişəndə köhnə ay yeni gələnə qədər qalır (data.key ilə ayırd edilir); iş yazılanda QueryProvider yeniləyir
+  const data = useData("month-stats", () => (me ? fetchMonth(me, ym.y, ym.m) : Promise.resolve(null)), [me, ym.y, ym.m]);
   const [cumulative, setCumulative] = useState(false);
   const [table, setTable] = useState(false);
   const [exporting, setExporting] = useState(false);
   const key = `${ym.y}-${ym.m}`;
-
-  useEffect(() => {
-    let cancelled = false;
-    createClient().rpc("my_employee_id").then(({ data: id }) => {
-      if (!cancelled) setMe(id ?? null);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!me) return;
-    let cancelled = false;
-    fetchMonth(me, ym.y, ym.m).then((d) => {
-      if (!cancelled) setData(d);
-    });
-    return () => {
-      cancelled = true; // ay tez-tez dəyişəndə köhnə cavab yenisinin üstünə yazılmasın
-    };
-  }, [me, ym]);
 
   const days = new Date(ym.y, ym.m + 1, 0).getDate();
   const isCurrent = ym.y === today.y && ym.m === today.m;
