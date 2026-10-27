@@ -3,6 +3,7 @@ import { Page } from "@/components/Page";
 import { EmployeeList, type TodayStatus } from "@/components/employees/EmployeeList";
 import { monthStartBaku } from "@/components/clients/stats";
 import { countJobs, fetchGroupMap } from "@/lib/jobs";
+import { fetchAll } from "@/lib/fetchAll";
 import { createClient } from "@/lib/supabase/server";
 
 // Bu günün tarixi Bakı vaxtı ilə ("YYYY-MM-DD"): server başqa saat qurşağında ola bilər
@@ -23,7 +24,8 @@ async function Content() {
     // Daxil olmuş istifadəçinin usta qeydi: öz kartı seçilir, işlərini yalnız özü əlavə edir
     supabase.rpc("my_employee_id"),
     // Bu ayın işləri: kartda "bu gün" və "bu ay" sayı
-    supabase.from("work_logs").select("id, employee_id, work_date").gte("work_date", monthStartBaku()),
+    // ayda 1000-dən çox iş ola bilər: hissələrlə (fetchAll)
+    fetchAll((a, b) => supabase.from("work_logs").select("id, employee_id, work_date").gte("work_date", monthStartBaku()).order("id").range(a, b)).then((data) => ({ data })),
     // Bu günün davamiyyəti (bir gündə bir neçə seans ola bilər) və təsdiqlənmiş icazələr
     supabase.from("attendance").select("employee_id, checked_in_at, checked_out_at").eq("day", today),
     supabase.from("leave_requests").select("employee_id").eq("status", "approved").lte("date_from", today).gte("date_to", today),

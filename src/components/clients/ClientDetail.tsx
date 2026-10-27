@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { MapPin, Navigation2 } from "lucide-react";
 import { Page } from "@/components/Page";
 import type { Tables } from "@/lib/database.types";
+import { fetchAll } from "@/lib/fetchAll";
 import { createClient } from "@/lib/supabase/server";
 import { fetchGroupMap, jobKey } from "@/lib/jobs";
 import { asKind, KIND, type Kind } from "@/lib/kinds";
@@ -58,8 +59,9 @@ export async function ClientDetail({ id, kind }: { id: number; kind: Kind }) {
   const [{ data: client }, { data: units }, d, u, groups] = await Promise.all([
     supabase.from("companies").select("*").eq("id", id).maybeSingle(),
     supabase.from("stores").select("*").eq("company_id", id).order("code"),
-    direct().gte("work_date", monthStart),
-    viaUnit().gte("work_date", monthStart),
+    // ayda 1000-dən çox iş ola bilər (böyük şəbəkə): hissələrlə (fetchAll)
+    fetchAll((a, b) => direct().gte("work_date", monthStart).order("id").range(a, b)).then((data) => ({ data })),
+    fetchAll((a, b) => viaUnit().gte("work_date", monthStart).order("id").range(a, b)).then((data) => ({ data })),
     fetchGroupMap(supabase, monthStart),
   ]);
 

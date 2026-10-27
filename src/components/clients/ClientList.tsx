@@ -1,6 +1,7 @@
 import { fetchGroupMap, jobKey } from "@/lib/jobs";
 import Link from "next/link";
 import { ArrowUpRight, Building2, MapPin, Phone, Store, User } from "lucide-react";
+import { fetchAll } from "@/lib/fetchAll";
 import { createClient } from "@/lib/supabase/server";
 import { KIND, type Kind } from "@/lib/kinds";
 import { coordPercent, monthStartBaku } from "./stats";
@@ -26,7 +27,8 @@ export async function ClientList({ kind, emptyHint }: { kind: Kind; emptyHint: s
       .eq("kind", kind)
       .order("name"),
     // Bu ayın işləri: ya birbaşa şirkətə (sabit məkan), ya da filialına/mağazasına yazılır
-    supabase.from("work_logs").select("id, company_id, s:stores(company_id)").gte("work_date", monthStart),
+    // ayda 1000-dən çox iş ola bilər: hissələrlə (fetchAll)
+    fetchAll((a, b) => supabase.from("work_logs").select("id, company_id, s:stores(company_id)").gte("work_date", monthStart).order("id").range(a, b)).then((data) => ({ data })),
     fetchGroupMap(supabase, monthStart),
   ]);
 
