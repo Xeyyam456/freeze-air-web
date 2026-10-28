@@ -7,7 +7,7 @@ import { Modal } from "@/shared/components/Modal";
 import type { Tables } from "@/types/database";
 import { createClient } from "@/lib/supabase/client";
 import { useData } from "@/lib/useData";
-import { DHead } from "./DepotUi";
+import { DHead } from "@/views/Depot/components/ui";
 
 type Kind = "tool" | "material";
 type Movement = Tables<"stock_movements"> & { employees: { full_name: string } | null };

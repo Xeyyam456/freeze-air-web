@@ -6,7 +6,7 @@ import { Modal } from "@/shared/components/Modal";
 import { ToolPicker } from "@/components/ToolPicker";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
-import { DHead, SOFT, type Tone } from "./DepotUi";
+import { DHead, SOFT, type Tone } from "@/views/Depot/components/ui";
 import { daysSince, fmt, isLowStock, isPacked, REASONS, STALE_DAYS, unitOf, type DepotEmployee, type Holding, type Tool } from "@/views/Depot/utils";
 
 // Depo hesabatları Excel-də (2026-10-23, istifadəçi: "bütün hesabatlar Excel-də pro dizaynda, tam detallı: tam depo, təkcə alət,
