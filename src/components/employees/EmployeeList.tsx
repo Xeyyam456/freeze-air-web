@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Briefcase, CalendarDays, Car, ClipboardList, Phone, Search, User, Users, X } from "lucide-react";
 import { Modal } from "@/components/Modal";
 import { WorkTab } from "@/components/work/WorkTab";
-import type { Tables } from "@/lib/database.types";
+import type { Tables } from "@/types/database";
 import { experience, initials } from "@/lib/experience";
 import { PersonCard, type PersonStatus } from "./PersonCard";
 

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { leaveRange } from "@/lib/attendance";
 import { isSoundReady, playNotify } from "@/lib/sound";
 import { createClient } from "@/lib/supabase/client";
-import type { Tables } from "@/lib/database.types";
+import type { Tables } from "@/types/database";
 import { revalidate } from "@/lib/revalidate";
 import { refreshMyOpenTasks, TASKS_CHANGED } from "@/lib/tasks-live";
 import { toast } from "@/lib/toast";

@@ -1,7 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { SITE_CACHE, SITE_TAG } from "@/lib/site-cache";
 import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/lib/database.types";
+import type { Database } from "@/types/database";
 
 // Saytın bütün sabit mətnləri. Admin panelində "Sayt" → Mətnlər-dən dəyişir (cədvəl site_texts).
 // Bazada sətir yoxdursa və ya boşdursa, buradakı mətn göstərilir.

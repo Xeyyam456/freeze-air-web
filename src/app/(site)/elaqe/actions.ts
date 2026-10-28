@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/lib/database.types";
+import type { Database } from "@/types/database";
 
 export type ContactFormState = { ok?: boolean; error?: string } | null;
 

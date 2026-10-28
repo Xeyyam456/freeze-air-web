@@ -1,7 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { SITE_CACHE, SITE_TAG } from "@/lib/site-cache";
 import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/lib/database.types";
+import type { Database } from "@/types/database";
 import { experience } from "@/lib/experience";
 
 export type PublicEmployee = {

@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Building2, Search, Store, X } from "lucide-react";
 import { StoreCard } from "@/components/StoreCard";
 import { PlaceHistoryModal, type HistoryTarget } from "@/components/work/PlaceHistory";
-import type { Tables } from "@/lib/database.types";
+import type { Tables } from "@/types/database";
 import { KIND, type Kind } from "@/lib/kinds";
 
 // Axtarış üçün sadələşdirmə: "Nərimanov" və "nerimanov" eyni tapılsın.

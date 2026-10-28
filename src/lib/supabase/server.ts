@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { connection } from "next/server";
-import type { Database } from "@/lib/database.types";
+import type { Database } from "@/types/database";
 
 export async function createClient() {
   // Supabase klienti daxildə Date.now() işlədir; prerender-dən çıxarıb sorğu vaxtına keçiririk.

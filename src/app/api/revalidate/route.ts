@@ -1,6 +1,6 @@
 import { revalidateTag } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/lib/database.types";
+import type { Database } from "@/types/database";
 import { SITE_TAG } from "@/lib/site-cache";
 
 // Admin paneli saytın məzmununu dəyişəndən sonra bunu çağırır: açıq saytın keşi dərhal təmizlənir.

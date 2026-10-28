@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { MapPin, Navigation2 } from "lucide-react";
 import { Page } from "@/components/Page";
-import type { Tables } from "@/lib/database.types";
+import type { Tables } from "@/types/database";
 import { fetchAll } from "@/lib/fetchAll";
 import { createClient } from "@/lib/supabase/server";
 import { fetchGroupMap, jobKey } from "@/lib/jobs";

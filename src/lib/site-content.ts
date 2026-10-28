@@ -1,7 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { SITE_CACHE, SITE_TAG } from "@/lib/site-cache";
 import { createClient } from "@supabase/supabase-js";
-import type { Database, Tables } from "@/lib/database.types";
+import type { Database, Tables } from "@/types/database";
 
 export type Segment = Tables<"site_segments">;
 export type Service = Tables<"site_services">;

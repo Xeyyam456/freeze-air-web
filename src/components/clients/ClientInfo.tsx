@@ -1,5 +1,5 @@
 import { MapPin, Phone, StickyNote, User } from "lucide-react";
-import type { Tables } from "@/lib/database.types";
+import type { Tables } from "@/types/database";
 import { asKind, KIND } from "@/lib/kinds";
 import { PlaceHistoryButton } from "@/components/work/PlaceHistory";
 import { coordPercent, shortDateAz } from "./stats";

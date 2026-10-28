@@ -6,7 +6,7 @@ import { MONTHS_AZ, todayBaku } from "@/lib/attendance";
 import { createClient } from "@/lib/supabase/client";
 import { getQueryClient } from "@/lib/queryClient";
 import { useData } from "@/lib/useData";
-import type { Tables } from "@/lib/database.types";
+import type { Tables } from "@/types/database";
 import { toast } from "@/lib/toast";
 import { exportFuel } from "@/lib/export-fuel";
 
