@@ -13,7 +13,7 @@ import { RecentMovements } from "./HistoryModal";
 import {
   daysSince, fmt, isLowStock, isPacked, lossText, norm, pieceWord, REASONS, round2, STALE_DAYS, unitOf,
   type DepotEmployee, type DepotRequest, type Holding, type Kind, type Piece, type Loss, type Repair, type Tool,
-} from "./depotUtils";
+} from "@/views/Depot/utils";
 
 // Depo lövhəsi (2026-10-23 sadələşdirilib; istifadəçi: "çox qəlizdir, uşaq belə rahat istifadə edə bilməlidir").
 // Üç böyük tab (Alətlər / Materiallar / Ustalar) + axtarış + sadə siyahı (hər alət bir sətir; ayrıca kartlar "kobud" göründü):

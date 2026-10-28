@@ -9,7 +9,7 @@ import { ReceiptModal } from "@/components/depot/DepotDocs";
 import { ExcelModal } from "@/components/depot/DepotExcel";
 import { MoreMenu, ShoppingModal } from "@/components/depot/DepotExtras";
 import { HistoryModal } from "@/components/depot/HistoryModal";
-import { isLowStock, type DepotRequest, type Holding, type Kind, type Piece, type Loss, type Repair, type Tool } from "@/components/depot/depotUtils";
+import { isLowStock, type DepotRequest, type Holding, type Kind, type Piece, type Loss, type Repair, type Tool } from "@/views/Depot/utils";
 import { createClient } from "@/lib/supabase/client";
 import { useData } from "@/lib/useData";
 

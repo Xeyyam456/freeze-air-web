@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Check, ChevronRight, CircleAlert, Clock, Hand, Hourglass, Package, Search, Send, Undo2, Users, Wrench, X } from "lucide-react";
 import { useLoggedUse } from "@/components/depot/Approvals";
 import { DHead, DStat, SOFT, type Tone } from "@/components/depot/DepotUi";
-import { dateAz, daysSince, fmt, isPacked, norm, parseQty, pieceWord, REQUEST_TYPES, requestLabel, round2, showQty, timeAz, withUnit, type DepotRequest, type Kind, type Tool } from "@/components/depot/depotUtils";
+import { dateAz, daysSince, fmt, isPacked, norm, parseQty, pieceWord, REQUEST_TYPES, requestLabel, round2, showQty, timeAz, withUnit, type DepotRequest, type Kind, type Tool } from "@/views/Depot/utils";
 import { ConfirmButton } from "@/components/ConfirmButton";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { Modal } from "@/shared/components/Modal";

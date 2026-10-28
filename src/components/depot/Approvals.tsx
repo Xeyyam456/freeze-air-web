@@ -9,7 +9,7 @@ import { revalidate } from "@/lib/revalidate";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
 import { DHead } from "./DepotUi";
-import { dateAz, fmt, needsOtherApprover, requestLabel, parseQty, REASONS, REQUEST_TYPES, timeAz, type DepotRequest, type Holding, type Tool } from "./depotUtils";
+import { dateAz, fmt, needsOtherApprover, requestLabel, parseQty, REASONS, REQUEST_TYPES, timeAz, type DepotRequest, type Holding, type Tool } from "@/views/Depot/utils";
 
 // Sənədin əsas sətri: nə, nə qədər
 function summary(r: DepotRequest) {
