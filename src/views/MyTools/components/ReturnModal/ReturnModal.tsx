@@ -5,13 +5,13 @@ import { Modal } from "@/shared/components/Modal";
 import { revalidate } from "@/lib/revalidate";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
-import type { Mine } from "@/types/myTools/Mine";
 import type { Draft } from "@/types/myTools/Draft";
-import { emptyDraft, calc } from "@/views/MyTools/utils/draft";
-import { ReturnLine } from "@/views/MyTools/components/ReturnLine";
+import { emptyDraft, calc } from "../../utils/draft";
+import { ReturnLine } from "../ReturnLine";
+import type { ReturnModalProps } from "@/types/myTools";
 
 // Qaytarma (bir və ya bir neçə): hər biri ayrıca sorğu olur, depo məsulu qəbul edəndə səndən çıxır
-export function ReturnModal({ holds, employeeId, onClose }: { holds: Mine[]; employeeId: number; onClose: () => void }) {
+export function ReturnModal({ holds, employeeId, onClose }: ReturnModalProps) {
   const [drafts, setDrafts] = useState<Record<number, Draft>>(() => Object.fromEntries(holds.map((h) => [h.id, emptyDraft(h)])));
   const [note, setNote] = useState("");
   const [pending, setPending] = useState(false);

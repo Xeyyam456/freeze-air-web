@@ -2,14 +2,14 @@ import { useState } from "react";
 import { ChevronRight, Search, Users } from "lucide-react";
 import { norm } from "@/shared/utils/norm";
 import { Avatar } from "@/components/employees/EmployeeList";
-import type { Held } from "@/types/myTools/Held";
 import type { Person } from "@/types/myTools/Person";
-import { groupPeople, counts } from "@/views/MyTools/utils/people";
-import { PersonView } from "@/views/MyTools/components/PersonView";
+import { groupPeople, counts } from "../../utils/people";
+import { PersonView } from "../PersonView";
+import type { WhoHasCardProps } from "@/types/myTools";
 
 // "Kimdə nə var" (2026-10-24, paneldən köçdü): bütün ustaların üzərindəkilər. Kartda usta siyahısı, basanda pəncərə (yalnız baxış).
 
-export function WhoHasCard({ all, me }: { all: Held[]; me: number }) {
+export function WhoHasCard({ all, me }: WhoHasCardProps) {
   const [open, setOpen] = useState<Person | null>(null);
   const [q, setQ] = useState("");
   const people = groupPeople(all, me).filter((p) => norm(p.name).includes(norm(q.trim())) || p.items.some((h) => norm(h.tools?.name).includes(norm(q.trim()))));

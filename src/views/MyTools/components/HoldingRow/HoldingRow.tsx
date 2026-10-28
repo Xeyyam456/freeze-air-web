@@ -4,14 +4,14 @@ import { createClient } from "@/lib/supabase/client";
 import { rpc } from "@/services/myTools/rpc";
 import { Button } from "@/shared/components/Button";
 import type { Tone } from "@/types/depot";
-import type { Mine, MyToolsView } from "@/types/myTools";
+import type { HoldingRowProps } from "@/types/myTools";
 import { SOFT } from "@/views/Depot/constants/tones";
 import { dateAz, daysSince } from "@/views/Depot/utils/dates";
 import { fmt } from "@/views/Depot/utils/quantity";
 import { StatusDot } from "../StatusDot";
 
 // "Məndə olanlar" sətri: seç qutusu, ad + nə vaxtdan, miqdar, vəziyyət, Qaytar / Geri götür
-export function HoldingRow({ h, v }: { h: Mine; v: MyToolsView }) {
+export function HoldingRow({ h, v }: HoldingRowProps) {
   const t = h.tools!;
   const material = t.kind === "material";
   const ret = v.pendingReturn.get(h.id);

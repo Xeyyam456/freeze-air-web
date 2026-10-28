@@ -2,13 +2,12 @@ import { Package, Wrench } from "lucide-react";
 import { useLoggedUse } from "@/views/Depot/hooks/useLoggedUse";
 import { SOFT } from "@/views/Depot/constants/tones";
 import { fmt, isPacked, showQty } from "@/views/Depot/utils/quantity";
-import type { Mine } from "@/types/myTools/Mine";
-import type { Draft } from "@/types/myTools/Draft";
-import { calc } from "@/views/MyTools/utils/draft";
-import { Seg } from "@/views/MyTools/components/Seg";
+import { calc } from "../../utils/draft";
+import { Seg } from "../Seg";
+import type { ReturnLineProps } from "@/types/myTools";
 
 // Toplu qaytarma pəncərəsinin bir sətri
-export function ReturnLine({ h, d, onChange, employeeId }: { h: Mine; d: Draft; onChange: (d: Draft) => void; employeeId: number }) {
+export function ReturnLine({ h, d, onChange, employeeId }: ReturnLineProps) {
   const t = h.tools!;
   const material = t.kind === "material";
   const c = calc(h, d);

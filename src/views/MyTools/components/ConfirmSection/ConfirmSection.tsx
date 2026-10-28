@@ -3,13 +3,13 @@ import { ConfirmButton } from "@/components/ConfirmButton";
 import { createClient } from "@/lib/supabase/client";
 import { rpc } from "@/services/myTools/rpc";
 import { Button } from "@/shared/components/Button";
-import type { Mine } from "@/types/myTools";
+import type { ConfirmSectionProps } from "@/types/myTools";
 import { SOFT } from "@/views/Depot/constants/tones";
 import { dateAz, timeAz } from "@/views/Depot/utils/dates";
 import { showQty } from "@/views/Depot/utils/quantity";
 
 // "Sənə verildi: təsdiqlə": əlinə çatıbsa «Aldım», çatmayıbsa «Almadım» (depo məsulu yoxlayır)
-export function ConfirmSection({ items }: { items: Mine[] }) {
+export function ConfirmSection({ items }: ConfirmSectionProps) {
   return (
     <section className="rounded-3xl border border-[#fde3b4] bg-[#fffaf0] p-5 max-sm:p-3">
       <h2 className="flex items-center gap-2 text-[15px] font-bold"><CircleAlert size={17} className="text-[#b45309]" /> Sənə verildi: təsdiqlə</h2>

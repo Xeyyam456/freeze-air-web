@@ -7,11 +7,12 @@ import type { Kind, Tool } from "@/types/depot";
 import { Modal } from "@/shared/components/Modal";
 import { sendToolRequests } from "@/services/myTools/sendToolRequests";
 import { toast } from "@/lib/toast";
-import { Seg } from "@/views/MyTools/components/Seg";
+import { Seg } from "../Seg";
+import type { AskModalProps } from "@/types/myTools";
 
 // Alət istə (bir dəfəyə bir neçə; 0086): siyahıdan işarələ, hər birinin miqdarını yaz. Depoda olmayanı da istəmək olar
 // (depo məsulu görür ki, verə bilmir). Hamısı eyni batch ilə yazılır: depoda bir qrup kimi görünür.
-export function AskModal({ stock, pendingIds, initialKind, onClose }: { stock: Tool[]; pendingIds: Set<number>; initialKind: Kind; onClose: () => void }) {
+export function AskModal({ stock, pendingIds, initialKind, onClose }: AskModalProps) {
   const [tab, setTab] = useState<Kind>(initialKind);
   const [query, setQuery] = useState("");
   const [qty, setQty] = useState<Record<number, string>>({}); // seçilənlər: id → miqdar (mətn)

@@ -1,9 +1,9 @@
 import { Clock, Hand, Hourglass, Package, Wrench } from "lucide-react";
 import { DStat } from "@/views/Depot/components/DStat";
-import type { MyToolsView } from "@/types/myTools";
+import type { MyStatsProps } from "@/types/myTools";
 
 // 4 göstərici (Məndə alət, Material, Təsdiqləməliyəm, Gözləyən sorğu) + bənövşəyi "Alət istə"
-export function MyStats({ v }: { v: MyToolsView }) {
+export function MyStats({ v }: MyStatsProps) {
   return (
     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 max-sm:gap-2 max-sm:[&>div]:grid max-sm:[&>div]:grid-cols-[auto_minmax(0,1fr)] max-sm:[&>div]:items-center max-sm:[&>div]:gap-x-1.5 max-sm:[&>div]:gap-y-0.5 max-sm:[&>div]:!p-2 max-sm:[&>div>span]:!h-5 max-sm:[&>div>span]:!w-5 max-sm:[&>div>span]:!rounded-md max-sm:[&>div>span>svg]:!h-3 max-sm:[&>div>span>svg]:!w-3 max-sm:[&>div>p]:!mt-0 max-sm:[&>div>p]:leading-tight max-sm:[&>div>p:first-of-type]:truncate max-sm:[&>div>p:first-of-type]:!text-[11px] max-sm:[&>div>p:last-of-type]:col-span-2 max-sm:[&>div>p:last-of-type]:!text-lg">

@@ -1,11 +1,11 @@
 import { Package, Search, Undo2, Wrench } from "lucide-react";
 import { Button } from "@/shared/components/Button";
 import { Input } from "@/shared/components/Input";
-import type { MyToolsView } from "@/types/myTools";
+import type { HoldingsSectionProps } from "@/types/myTools";
 import { HoldingRow } from "../HoldingRow";
 
 // "Məndə olanlar": axtarış, Alətlər | Materiallar tabı, "Hamısını seç" + "Seçilənləri qaytar", sətirlər
-export function HoldingsSection({ v }: { v: MyToolsView }) {
+export function HoldingsSection({ v }: HoldingsSectionProps) {
   const { tab, query, list, selectable, allOn } = v;
   return (
     <section className="rounded-3xl border border-line bg-surface">

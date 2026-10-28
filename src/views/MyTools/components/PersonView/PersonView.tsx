@@ -6,10 +6,10 @@ import { fmt, showQty } from "@/views/Depot/utils/quantity";
 import type { Kind } from "@/types/depot";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { Modal } from "@/shared/components/Modal";
-import type { Person } from "@/types/myTools/Person";
-import { counts } from "@/views/MyTools/utils/people";
+import { counts } from "../../utils/people";
+import type { PersonViewProps } from "@/types/myTools";
 
-export function PersonView({ p, me, onClose }: { p: Person; me: number; onClose: () => void }) {
+export function PersonView({ p, me, onClose }: PersonViewProps) {
   const [kind, setKind] = useState<Kind>(counts(p).tools || !counts(p).mats ? "tool" : "material");
   const c = counts(p);
   const list = p.items.filter((h) => (h.tools?.kind === "material" ? "material" : "tool") === kind);

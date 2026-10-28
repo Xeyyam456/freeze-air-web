@@ -11,12 +11,13 @@ import { MyStats } from "../MyStats";
 import { RequestsSection } from "../RequestsSection";
 import { ReturnModal } from "../ReturnModal";
 import { WhoHasCard } from "../WhoHasCard";
+import type { MyToolsProps } from "@/types/myTools";
 
 // Alətlərim (usta paneli, 0084; 2026-10-23 yeni dizayn): üzərimdəki alət və materiallar. Usta depoya özü heç nə qoya bilmir:
 // verilən aləti "Aldım / Almadım" ilə təsdiqləyir, qaytarmaq və ya yeni alət istəmək üçün sorğu yazır;
 // depo məsulu və ya admin qəbul edəndə say dəyişir. Hadisələr Realtime ilə gəlir (TasksListener → revalidate()).
 // Toplu qaytarma (istifadəçi istəyi): cədvəldə işarələ → "Seçilənləri qaytar": hər biri üçün ayrıca sorğu yazılır.
-export function MyTools({ employeeId }: { employeeId: number | null }) {
+export function MyTools({ employeeId }: MyToolsProps) {
   const data = useData("my-tools", () => (employeeId ? fetchMine(employeeId) : Promise.resolve(null)), [employeeId]);
   const s = useMyToolsState();
 

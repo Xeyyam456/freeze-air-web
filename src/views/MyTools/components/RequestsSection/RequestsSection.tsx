@@ -2,16 +2,16 @@ import { X } from "lucide-react";
 import { ConfirmButton } from "@/components/ConfirmButton";
 import { createClient } from "@/lib/supabase/client";
 import { rpc } from "@/services/myTools/rpc";
-import type { DepotRequest } from "@/types/depot";
 import { REQUEST_TYPES } from "@/views/Depot/constants/requests";
 import { dateAz, timeAz } from "@/views/Depot/utils/dates";
 import { requestLabel } from "@/views/Depot/utils/requests";
 import { STATUS } from "../../constants/status";
 import { requestLine } from "../../utils/requestLine";
 import { StatusDot } from "../StatusDot";
+import type { RequestsSectionProps } from "@/types/myTools";
 
 // "Sorğularım": qaytarma, istək, silinmə (son 60); vəziyyət, kim cavab verib, səbəb; gözləyən istəyi geri götürmək olar
-export function RequestsSection({ requests }: { requests: DepotRequest[] }) {
+export function RequestsSection({ requests }: RequestsSectionProps) {
   return (
     <section className="rounded-3xl border border-line bg-surface">
       <div className="flex items-center gap-2 px-5 pb-3 pt-5 max-sm:px-4 max-sm:pb-2 max-sm:pt-3">

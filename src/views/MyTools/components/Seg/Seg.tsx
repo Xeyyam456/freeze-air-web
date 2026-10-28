@@ -1,4 +1,6 @@
-export function Seg({ value, onChange, items }: { value: boolean; onChange: (v: boolean) => void; items: [boolean, string][] }) {
+import type { SegProps } from "@/types/myTools";
+
+export function Seg({ value, onChange, items }: SegProps) {
   return (
     <span className="inline-flex shrink-0 gap-0.5 rounded-lg bg-line/60 p-0.5">
       {items.map(([v, l]) => (
