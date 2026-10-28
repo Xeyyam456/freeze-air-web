@@ -2,21 +2,21 @@
 
 import { useState } from "react";
 import { Check, Clock, Hand } from "lucide-react";
-import { decideRequest } from "@/services/depot";
+import { decideRequest } from "@/services/depot/documents";
 import { ConfirmButton } from "@/components/ConfirmButton";
 import { Modal } from "@/shared/components/Modal";
 import { toast } from "@/lib/toast";
-import { DHead } from "@/views/Depot/components/ui";
-import { needsOtherApprover, REQUEST_TYPES, type DepotRequest, type Holding, type Tool } from "@/views/Depot/utils";
-import { giveable } from "@/views/Depot/utils/giveable";
-import { RequestRow } from "@/views/Depot/components/RequestRow";
-import { DisputeRow } from "@/views/Depot/components/DisputeRow";
+import { DHead } from "../DHead";
+import { needsOtherApprover } from "../../utils/requests";
+import { REQUEST_TYPES } from "../../constants/requests";
+import type { PendingBlockProps } from "@/types/depot";
+import { giveable } from "../../utils/giveable";
+import { RequestRow } from "../RequestRow";
+import { DisputeRow } from "../DisputeRow";
 
 // "Təsdiq gözləyir": səhifədə yalnız nazik zolaq (sayı ilə), basanda pəncərə açılır: yığcam sətirlər + "Hamısını qəbul et".
 // (Əvvəl hər sənəd iri kart idi: 50 qaytarma bütün ekranı tuturdu.) Boşdursa heç nə göstərmir.
-export function PendingBlock({ requests, holdings, tools, myUid, owner }: {
-  requests: DepotRequest[]; holdings: Holding[]; tools: Tool[]; myUid: string | null; owner: boolean;
-}) {
+export function PendingBlock({ requests, holdings, tools, myUid, owner }: PendingBlockProps) {
   const [open, setOpen] = useState(false);
   const [bulk, setBulk] = useState(false);
   const disputes = holdings.filter((h) => h.disputed_at && !h.received_at);

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Trash2, Wrench } from "lucide-react";
-import { WriteoffModal } from "@/views/Depot/components/WriteoffModal";
-import { type WriteoffSource } from "@/types/depot/WriteoffSource";
+import { WriteoffModal } from "../WriteoffModal";
+import type { WriteoffSource } from "@/types/depot/WriteoffSource";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { ActionForm } from "@/components/forms";
 import { QuantityInput } from "@/components/QuantityInput";

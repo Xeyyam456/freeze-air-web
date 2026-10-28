@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
-import { WriteoffModal } from "@/views/Depot/components/WriteoffModal";
-import { dateAz, fmt, type DepotEmployee, type Piece, type Tool } from "@/views/Depot/utils";
-import { PieceGiveModal } from "@/views/Depot/components/PieceGiveModal";
+import { WriteoffModal } from "../WriteoffModal";
+import { dateAz } from "../../utils/dates";
+import { fmt } from "../../utils/quantity";
+import type { PieceRowProps } from "@/types/depot";
+import { PieceGiveModal } from "../PieceGiveModal";
 
 // Depodakı bir parça / açıq balon: nə qədər, kimdən qalıb, nə vaxt; ustaya vermək və ya silinmə aktı (təsdiqdən sonra silinir)
-export function PieceRow({ piece, tool, employees, canManage, writeoffPending }: { piece: Piece; tool: Tool; employees: DepotEmployee[]; canManage: boolean; writeoffPending: boolean }) {
+export function PieceRow({ piece, tool, employees, canManage, writeoffPending }: PieceRowProps) {
   const unit = tool.unit;
   const [giving, setGiving] = useState(false);
   const [writeoff, setWriteoff] = useState(false);

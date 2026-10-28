@@ -1,7 +1,7 @@
 "use client";
 
 import { FileSpreadsheet, History, PackagePlus, ShoppingCart } from "lucide-react";
-import { MoreMenu } from "@/views/Depot/components/MoreMenu";
+import { MoreMenu } from "../MoreMenu";
 import { Button } from "@/shared/components/Button";
 import type { DepotActionsProps } from "@/types/depot";
 

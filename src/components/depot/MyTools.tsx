@@ -3,8 +3,15 @@
 import { useState } from "react";
 import { Check, ChevronRight, CircleAlert, Clock, Hand, Hourglass, Package, Search, Send, Undo2, Users, Wrench, X } from "lucide-react";
 import { useLoggedUse } from "@/views/Depot/hooks/useLoggedUse";
-import { DHead, DStat, SOFT, type Tone } from "@/views/Depot/components/ui";
-import { dateAz, daysSince, fmt, isPacked, norm, parseQty, pieceWord, REQUEST_TYPES, requestLabel, round2, showQty, timeAz, withUnit, type DepotRequest, type Kind, type Tool } from "@/views/Depot/utils";
+import { DHead } from "@/views/Depot/components/DHead";
+import { DStat } from "@/views/Depot/components/DStat";
+import { SOFT } from "@/views/Depot/constants/tones";
+import { REQUEST_TYPES } from "@/views/Depot/constants/requests";
+import { dateAz, daysSince, timeAz } from "@/views/Depot/utils/dates";
+import { fmt, isPacked, parseQty, pieceWord, round2, showQty, withUnit } from "@/views/Depot/utils/quantity";
+import { requestLabel } from "@/views/Depot/utils/requests";
+import { norm } from "@/shared/utils/norm";
+import type { DepotRequest, Kind, Tone, Tool } from "@/types/depot";
 import { ConfirmButton } from "@/components/ConfirmButton";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { Modal } from "@/shared/components/Modal";

@@ -2,15 +2,13 @@
 
 import { ArrowRight } from "lucide-react";
 import { Avatar } from "@/components/employees/EmployeeList";
-import type { Tone } from "@/views/Depot/components/ui";
-import { fmt, type DepotEmployee, type Holding, type Kind, type Tool } from "@/views/Depot/utils";
-import { StatusDot } from "@/views/Depot/components/StatusDot";
-import { HoldMenu } from "@/views/Depot/components/HoldMenu";
+import type { Tone, Holding, Kind, PersonRowProps } from "@/types/depot";
+import { fmt } from "../../utils/quantity";
+import { StatusDot } from "../StatusDot";
+import { HoldMenu } from "../HoldMenu";
 
 // Ustalar cədvəlinin sətri: şəkil + ad + say xülasəsi, üzərindəki alətlər və materiallar (açılan siyahı), vəziyyət
-export function PersonRow({ emp, holds, toolInfo, onOpen }: {
-  emp: DepotEmployee; holds: Holding[]; toolInfo: Map<number, Tool>; onOpen: (kind: Kind) => void;
-}) {
+export function PersonRow({ emp, holds, toolInfo, onOpen }: PersonRowProps) {
   const tools = holds.filter((h) => toolInfo.get(h.tool_id)?.kind !== "material");
   const mats = holds.filter((h) => toolInfo.get(h.tool_id)?.kind === "material");
   const toolsN = tools.reduce((n, h) => n + h.quantity, 0);

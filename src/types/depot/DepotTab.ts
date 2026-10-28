@@ -1,3 +1,3 @@
-import type { Kind } from "@/views/Depot/utils";
+import type { Kind } from "@/types/depot";
 
 export type DepotTab = Kind | "people";
