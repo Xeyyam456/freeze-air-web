@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Page } from "@/components/Page";
-import { MyTools } from "@/components/depot/MyTools";
+import { MyTools } from "@/views/MyTools/components/MyTools";
 import { createClient } from "@/lib/supabase/server";
 
 // Alətlərim: ustanın üzərindəki alət və materiallar; "Aldım / Almadım", qaytarma və alət istəmə sorğuları (0084)
