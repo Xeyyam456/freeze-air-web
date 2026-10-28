@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
-import { WriteoffModal } from "@/components/depot/DepotDocs";
+import { WriteoffModal } from "@/views/Depot/components/WriteoffModal";
 import { dateAz, fmt, type DepotEmployee, type Piece, type Tool } from "@/views/Depot/utils";
 import { PieceGiveModal } from "@/views/Depot/components/PieceGiveModal";
 

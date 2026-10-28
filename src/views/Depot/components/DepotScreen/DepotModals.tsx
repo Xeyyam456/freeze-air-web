@@ -1,9 +1,9 @@
 "use client";
 
-import { ReceiptModal } from "@/components/depot/DepotDocs";
+import { ReceiptModal } from "@/views/Depot/components/ReceiptModal";
 import { ExcelModal } from "@/components/depot/DepotExcel";
-import { ShoppingModal } from "@/components/depot/DepotExtras";
-import { HistoryModal } from "@/components/depot/HistoryModal";
+import { ShoppingModal } from "@/views/Depot/components/ShoppingModal";
+import { HistoryModal } from "@/views/Depot/components/HistoryModal";
 import type { DepotModalsProps, Kind } from "@/types/depot";
 
 // Başlıqdan açılan pəncərələr: Mədaxil, Alınmalı, Jurnal, Excel

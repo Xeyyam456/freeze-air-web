@@ -8,7 +8,7 @@ import { Avatar } from "@/components/employees/EmployeeList";
 import { useEscapeLayer } from "@/shared/hooks/useEscapeLayer";
 import { urlQuery } from "@/lib/urlQuery";
 import { IconTile, PersonModal, QuickGiveModal, SOFT, ToolModal, type Tone } from "@/views/Depot/components/ui";
-import { RecentMovements } from "./HistoryModal";
+import { RecentMovements } from "@/views/Depot/components/RecentMovements";
 import {
   daysSince, fmt, isLowStock, isPacked, lossText, norm, pieceWord, REASONS, round2, STALE_DAYS, unitOf,
   type DepotEmployee, type DepotRequest, type Holding, type Kind, type Piece, type Loss, type Repair, type Tool,
