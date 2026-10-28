@@ -1,7 +1,7 @@
 "use client";
 
 import { ReceiptModal } from "@/views/Depot/components/ReceiptModal";
-import { ExcelModal } from "@/components/depot/DepotExcel";
+import { ExcelModal } from "@/views/Depot/components/ExcelModal";
 import { ShoppingModal } from "@/views/Depot/components/ShoppingModal";
 import { HistoryModal } from "@/views/Depot/components/HistoryModal";
 import type { DepotModalsProps, Kind } from "@/types/depot";

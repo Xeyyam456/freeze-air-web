@@ -9,8 +9,6 @@
   "components/clients/ClientList.tsx": 147,
   "components/clients/UnitList.tsx": 101,
   "components/DatePicker.tsx": 194,
-  "components/depot/DepotBoard.tsx": 511,
-  "components/depot/DepotExcel.tsx": 363,
   "components/depot/MyTools.tsx": 601,
   "components/employees/AttendanceBoard.tsx": 331,
   "components/employees/AttendanceCalendar.tsx": 170,
