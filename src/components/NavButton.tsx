@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Navigation, Navigation2, X } from "lucide-react";
 import { directionsUrl, wazeUrl } from "@/lib/navigation";
-import { Modal } from "./Modal";
+import { Modal } from "@/shared/components/Modal";
 
 type Place = { name: string; address: string | null; lat: number | null; lng: number | null };
 

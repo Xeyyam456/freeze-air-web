@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight, Clock, FileText, Home, MapPin, Pencil, Plus, Trash2, Video, X } from "lucide-react";
 import { ConfirmButton } from "@/components/ConfirmButton";
 import { DatePicker, formatDateAz } from "@/components/DatePicker";
-import { Modal } from "@/components/Modal";
+import { Modal } from "@/shared/components/Modal";
 import { createClient } from "@/lib/supabase/client";
 import { useMe } from "@/lib/me";
 import { revalidate } from "@/lib/revalidate";

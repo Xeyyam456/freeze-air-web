@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { History, MapPin, Search, X } from "lucide-react";
 import { formatDateAz } from "@/components/DatePicker";
 import { Avatar } from "@/components/employees/EmployeeList";
-import { Modal } from "@/components/Modal";
+import { Modal } from "@/shared/components/Modal";
 import { createClient } from "@/lib/supabase/client";
 import { useData } from "@/lib/useData";
 import { fetchFileCounts, fetchGroupMap, mergeGroupLogs, type FileCount } from "@/lib/jobs";

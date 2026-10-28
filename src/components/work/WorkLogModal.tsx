@@ -5,7 +5,7 @@ import { CalendarDays, Clock, FileText, Home, MapPin, Play, X } from "lucide-rea
 import { formatDateAz } from "@/components/DatePicker";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { MapButton } from "@/components/MapButton";
-import { Modal } from "@/components/Modal";
+import { Modal } from "@/shared/components/Modal";
 import { createClient } from "@/lib/supabase/client";
 
 type Place = { code?: string | null; name: string; address: string | null; lat: number | null; lng: number | null };

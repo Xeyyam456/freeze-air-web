@@ -7,7 +7,7 @@ import { DHead, DStat, SOFT, type Tone } from "@/components/depot/DepotUi";
 import { dateAz, daysSince, fmt, isPacked, norm, parseQty, pieceWord, REQUEST_TYPES, requestLabel, round2, showQty, timeAz, withUnit, type DepotRequest, type Kind, type Tool } from "@/components/depot/depotUtils";
 import { ConfirmButton } from "@/components/ConfirmButton";
 import { Avatar } from "@/components/employees/EmployeeList";
-import { Modal } from "@/components/Modal";
+import { Modal } from "@/shared/components/Modal";
 import { revalidate } from "@/lib/revalidate";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";

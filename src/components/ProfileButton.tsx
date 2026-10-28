@@ -6,7 +6,7 @@ import { ImagePlus, Trash2, UserRound, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { initials } from "@/lib/experience";
 import { toast } from "@/lib/toast";
-import { Modal } from "./Modal";
+import { Modal } from "@/shared/components/Modal";
 
 const BUCKET = "avatars";
 const SIZE = 512;

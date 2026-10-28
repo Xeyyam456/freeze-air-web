@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { FileText, ImagePlus, Package, Video, X } from "lucide-react";
-import { ConfirmModal } from "@/components/ConfirmModal";
+import { ConfirmModal } from "@/shared/components/ConfirmModal";
 import { DatePicker } from "@/components/DatePicker";
 import { Buttons, Field } from "@/components/forms";
-import { Modal } from "@/components/Modal";
+import { Modal } from "@/shared/components/Modal";
 import { createClient } from "@/lib/supabase/client";
 import { norm, PlacePicker, type Place } from "./PlacePicker";
 import { toast } from "@/lib/toast";

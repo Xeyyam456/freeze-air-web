@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Crosshair, LocateFixed, MapPinned, X } from "lucide-react";
-import { ConfirmModal } from "@/components/ConfirmModal";
-import { Modal } from "@/components/Modal";
+import { ConfirmModal } from "@/shared/components/ConfirmModal";
+import { Modal } from "@/shared/components/Modal";
 import { mapEmbedUrl, parseCoordinates } from "@/lib/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";

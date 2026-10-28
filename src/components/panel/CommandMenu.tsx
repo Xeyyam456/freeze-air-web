@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { Building2, CalendarOff, CornerDownLeft, Plus, Search, Store, type LucideIcon } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { useEscapeLayer } from "@/components/Modal";
+import { useEscapeLayer } from "@/shared/hooks/useEscapeLayer";
 import { emitPanel, navGroups, PANEL_EVENTS } from "./nav";
 
 type Item = { key: string; group: string; label: string; hint?: string; icon: LucideIcon; run: () => void };

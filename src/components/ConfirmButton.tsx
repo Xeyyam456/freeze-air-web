@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { ConfirmModal } from "./ConfirmModal";
+import { ConfirmModal } from "@/shared/components/ConfirmModal";
 import { toast } from "@/lib/toast";
 
 type Props = {

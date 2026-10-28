@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { LogOut } from "lucide-react";
 import { logout } from "@/app/login/actions";
-import { ConfirmModal } from "./ConfirmModal";
+import { ConfirmModal } from "@/shared/components/ConfirmModal";
 
 // Çıxış: təsadüfi klikdən qorunmaq üçün əvvəlcə təsdiq soruşulur
 export function LogoutButton() {

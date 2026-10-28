@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { CalendarOff, Send, Trash2, X } from "lucide-react";
 import { DatePicker } from "@/components/DatePicker";
-import { Modal } from "@/components/Modal";
+import { Modal } from "@/shared/components/Modal";
 import { leaveRange, leaveWorkdays, todayBaku, type Leave } from "@/lib/attendance";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";

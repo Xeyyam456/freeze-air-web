@@ -14,7 +14,7 @@
   "components/depot/DepotDocs.tsx": 344,
   "components/depot/DepotExcel.tsx": 363,
   "components/depot/depotUtils.ts": 122,
-  "components/depot/DepotView.tsx": 716,
+  "components/depot/DepotView.tsx": 717,
   "components/depot/HistoryModal.tsx": 209,
   "components/depot/MyTools.tsx": 601,
   "components/employees/AttendanceBoard.tsx": 331,

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { FileText, ImagePlus, Video, X } from "lucide-react";
 import { Buttons, Field } from "@/components/forms";
-import { Modal } from "@/components/Modal";
+import { Modal } from "@/shared/components/Modal";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
 import type { CompressedVideo } from "@/lib/video";

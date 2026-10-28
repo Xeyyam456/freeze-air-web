@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Briefcase, CalendarDays, Crown, Phone, UserCog, X } from "lucide-react";
-import { Modal } from "@/components/Modal";
+import { Modal } from "@/shared/components/Modal";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { PersonCard } from "@/components/employees/PersonCard";
 import type { Tables } from "@/types/database";
