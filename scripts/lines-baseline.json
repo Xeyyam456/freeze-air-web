@@ -13,7 +13,7 @@
   "components/depot/DepotBoard.tsx": 512,
   "components/depot/DepotDocs.tsx": 344,
   "components/depot/DepotExcel.tsx": 363,
-  "components/depot/DepotView.tsx": 717,
+  "components/depot/DepotView.tsx": 715,
   "components/depot/HistoryModal.tsx": 209,
   "components/depot/MyTools.tsx": 601,
   "components/employees/AttendanceBoard.tsx": 331,
@@ -47,6 +47,5 @@
   "lib/export-attendance.ts": 176,
   "lib/export-fuel.ts": 368,
   "lib/site-settings.ts": 136,
-  "lib/site-texts.ts": 187,
-  "lib/tools.ts": 267
+  "lib/site-texts.ts": 187
 }
