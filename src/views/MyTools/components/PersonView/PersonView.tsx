@@ -6,7 +6,6 @@ import { fmt, showQty } from "@/views/Depot/utils/quantity";
 import type { Kind } from "@/types/depot";
 import { Avatar } from "@/components/employees/EmployeeList";
 import { Modal } from "@/shared/components/Modal";
-import { calc } from "@/views/MyTools/utils/draft";
 import type { Person } from "@/types/myTools/Person";
 import { counts } from "@/views/MyTools/utils/people";
 

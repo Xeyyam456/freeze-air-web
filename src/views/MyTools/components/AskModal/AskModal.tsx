@@ -7,7 +7,6 @@ import type { Kind, Tool } from "@/types/depot";
 import { Modal } from "@/shared/components/Modal";
 import { sendToolRequests } from "@/services/myTools/sendToolRequests";
 import { toast } from "@/lib/toast";
-import { calc } from "@/views/MyTools/utils/draft";
 import { Seg } from "@/views/MyTools/components/Seg";
 
 // Alət istə (bir dəfəyə bir neçə; 0086): siyahıdan işarələ, hər birinin miqdarını yaz. Depoda olmayanı da istəmək olar
