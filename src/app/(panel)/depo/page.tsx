@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { DepotPage } from "@/components/depot/DepotPage";
+import { DepotPage } from "@/views/Depot";
 import { createClient } from "@/lib/supabase/server";
 
 // Depo yalnız depo məsulu (və adminlər) üçündür: başqası bu ünvana girsə panelə qayıdır.
