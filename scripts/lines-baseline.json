@@ -26,7 +26,6 @@
   "components/work/MonthStats.tsx": 371,
   "components/work/MyDay.tsx": 220,
   "components/work/MyLeaves.tsx": 198,
-  "components/work/WorkTab.tsx": 258,
   "lib/attendance.ts": 220,
   "lib/export-attendance.ts": 176,
   "lib/site-settings.ts": 136,
