@@ -23,7 +23,6 @@
   "components/ProfileButton.tsx": 147,
   "components/ToolPicker.tsx": 158,
   "components/work/LeaveModal.tsx": 125,
-  "components/work/MonthStats.tsx": 371,
   "components/work/MyLeaves.tsx": 198,
   "lib/attendance.ts": 220,
   "lib/export-attendance.ts": 176,
