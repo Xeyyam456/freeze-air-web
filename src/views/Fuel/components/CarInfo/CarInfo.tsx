@@ -1,5 +1,5 @@
 import { FileSpreadsheet, Fuel } from "lucide-react";
-import { exportFuel } from "@/lib/export-fuel";
+import { exportFuel } from "../../utils/excel/exportFuel";
 import type { CarInfoProps } from "@/types/myFuel";
 
 // Maşın: nömrə, model, yanacaq növü, sərf, qiymət + Excel düyməsi

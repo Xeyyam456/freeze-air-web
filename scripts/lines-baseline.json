@@ -37,7 +37,6 @@
   "components/work/WorkTab.tsx": 258,
   "lib/attendance.ts": 220,
   "lib/export-attendance.ts": 176,
-  "lib/export-fuel.ts": 368,
   "lib/site-settings.ts": 136,
   "lib/site-texts.ts": 187
 }
