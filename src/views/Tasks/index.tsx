@@ -1,10 +1,10 @@
 "use client";
 
-import { TaskNoteModal } from "@/components/work/TaskNoteModal";
 import { WorkLogModal } from "@/components/work/WorkLogModal";
 import { DaySummary } from "./components/DaySummary";
 import { EmptyDay } from "./components/EmptyDay";
 import { MyTasksSection } from "./components/MyTasksSection";
+import { TaskNoteModal } from "./components/TaskNoteModal";
 import { TeamSection } from "./components/TeamSection";
 import { WeekStrip } from "./components/WeekStrip";
 import { useTasksView } from "./hooks/useTasksView";

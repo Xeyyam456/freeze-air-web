@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { QueryProvider } from "@/components/panel/QueryProvider";
 import { QuickActions } from "@/components/panel/QuickActions";
 import { Sidebar, SidebarFallback } from "@/components/panel/Sidebar";
-import { TasksListener } from "@/components/work/TasksListener";
+import { TasksListener } from "@/views/Tasks/live/TasksListener";
 
 // Sol menyu + qlobal pəncərələr: Depo bəndi yalnız depo məsulu (və müdir) üçün; altda profil (ad, rol, şəkil)
 async function PanelChrome() {

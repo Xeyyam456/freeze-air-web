@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-// Tapşırıq dəyişəndə (Realtime, components/work/TasksListener.tsx) bu hadisə atılır: Tapşırıqlar siyahısı və "Mənim bugünüm" yenilənir
+// Tapşırıq dəyişəndə (Realtime, views/Tasks/live/) bu hadisə atılır: Tapşırıqlar siyahısı və "Mənim bugünüm" yenilənir
 export const TASKS_CHANGED = "tasks-changed";
 
 // Menyudakı nişan: bugünkü görülməmiş (və geri alınmamış) öz tapşırıqlarımın sayı (əməkdaş kartı olmayan hesabda 0)
