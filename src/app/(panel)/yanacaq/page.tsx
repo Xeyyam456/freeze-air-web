@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { Page } from "@/components/Page";
-import { FuelLog } from "@/components/work/FuelLog";
+import { FuelLog } from "@/views/Fuel";
 import { createClient } from "@/lib/supabase/server";
 
 // Yanacaq (0077): yalnız maşını olan usta; başqası ünvanı yazsa Panelə qaytarılır

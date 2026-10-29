@@ -22,7 +22,6 @@
   "components/PlaceLocationButton.tsx": 174,
   "components/ProfileButton.tsx": 147,
   "components/ToolPicker.tsx": 158,
-  "components/work/FuelLog.tsx": 598,
   "components/work/LeaveModal.tsx": 125,
   "components/work/MonthStats.tsx": 371,
   "components/work/MyDay.tsx": 220,

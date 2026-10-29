@@ -1,0 +1,1 @@
+export { DailyFooter } from "./DailyFooter";
