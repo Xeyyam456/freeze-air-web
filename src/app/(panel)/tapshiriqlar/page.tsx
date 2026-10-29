@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Page } from "@/components/Page";
-import { TasksView } from "@/components/work/TasksView";
+import { TasksView } from "@/views/Tasks";
 
 // Çərçivəsiz: səhifə özü sürüşür (həftə zolağı, mənim günüm, mənim tapşırıqlarım, komanda)
 export default function TasksPage() {
