@@ -26,17 +26,17 @@ export function RequestsSection({ requests }: RequestsSectionProps) {
             const s = STATUS[r.status] ?? STATUS.pending;
             return (
               <li key={r.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-5 py-3 max-sm:px-4 max-sm:py-2">
-                <span className={`w-24 shrink-0 rounded-full px-2.5 py-0.5 text-center text-[11px] font-bold ${REQUEST_TYPES[r.type]?.tone ?? ""}`}>{requestLabel(r)}</span>
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm"><b className="font-semibold">{r.tool_name}</b> <span className="text-ink/70">· {requestLine(r)}</span></span>
-                  <span className="muted block truncate text-xs">
+                <span className={`w-24 shrink-0 rounded-full px-2.5 py-0.5 text-center text-[11px] font-bold max-sm:w-auto max-sm:px-2 max-sm:text-[10px] ${REQUEST_TYPES[r.type]?.tone ?? ""}`}>{requestLabel(r)}</span>
+                <span className="min-w-0 flex-1 max-sm:order-3 max-sm:basis-full">
+                  <span className="block truncate text-sm max-sm:whitespace-normal max-sm:text-[13px]"><b className="font-semibold">{r.tool_name}</b> <span className="text-ink/70">· {requestLine(r)}</span></span>
+                  <span className="muted block truncate text-xs max-sm:whitespace-normal max-sm:text-[11px]">
                     {dateAz(r.created_at)} {timeAz(r.created_at)}{r.decided_by_name && ` · ${r.decided_by_name}`}{r.decision_note ? ` · “${r.decision_note}”` : ""}
                   </span>
                 </span>
-                <StatusDot tone={s.tone} label={s.label} />
+                <span className="max-sm:order-2 max-sm:ml-auto"><StatusDot tone={s.tone} label={s.label} /></span>
                 {r.status === "pending" && r.type === "request" && (
                   <ConfirmButton onConfirm={async () => { await rpc(() => createClient().rpc("depot_request_cancel", { p_id: r.id }), "İstək ləğv edildi"); }}
-                    success={false} className="icon-btn !h-8 !w-8" title="İstəyi geri götür" question="İstək ləğv olunacaq." confirmLabel="Bəli">
+                    success={false} className="icon-btn !h-8 !w-8 max-sm:order-2 max-sm:!h-6 max-sm:!w-6" title="İstəyi geri götür" question="İstək ləğv olunacaq." confirmLabel="Bəli">
                     <X size={14} />
                   </ConfirmButton>
                 )}
