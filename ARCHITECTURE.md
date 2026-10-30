@@ -6,7 +6,7 @@ Qəlib: `github.com/Xeyyam456/TikTak-Project-NextJS-Web` + admin panelin qovluq 
 1. **Hər kod faylı ən çox 100 sətir** (`.ts`, `.tsx`, `.mjs`). CSS faylları istisnadır. Yoxlama: `npm run check:lines`.
 2. **Bir fayl — bir iş.** Bir komponent, bir hook, bir servis funksiyaları qrupu, bir tip.
 3. **Görünüş və davranış dəyişmir.** Refaktor yalnız struktur dəyişikliyidir.
-4. **Admin və web arasında ortaq paket yoxdur**: repolar ayrıdır, eyni fayllar kopyadır (admin mənbədir, sinxron skriptlə gəlir).
+4. **Admin və web arasında ortaq paket yoxdur**: repolar ayrıdır, bir-birinə bağlı deyil; ortaq fayl yoxdur, başlanğıcda kopyalanan fayllar sonra ayrı yaşayır.
 
 ## Qovluq xəritəsi
 ```
@@ -51,7 +51,7 @@ Server komponenti (sayt, `use cache`) və klient komponenti qarışmır: `"use c
 - Supabase 1000 sətir həddi: ay/il sorğuları `fetchAll` ilə.
 
 ## Admin ↔ web kopyaları
-- `src/shared/**` və `src/types/shared/**` admin-dən web-ə **skriptlə** köçür: kökdə `node scripts/sync-shared-to-web.mjs` (`--check`: fərqləri göstər). Web-də bu qovluqları əl ilə dəyişmə; dəyişiklik admin-də edilir, sonra skript.
+- `src/shared/**` və `src/types/shared/**` hər repoda öz kopyasıdır. Sinxron skript YOXDUR: bir repoda dəyişiklik digərinə avtomatik getmir, lazımdırsa əl ilə köçürülür.
 - Skript hook/portal/hadisə işlədən `.tsx`-ə `"use client"` əlavə edir; qalanı (Button, Input) server komponentində də işləyir.
 
 ## Keçid dövrü (CSS)
