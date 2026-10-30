@@ -46,12 +46,12 @@ export function ReturnModal({ holds, employeeId, onClose }: ReturnModalProps) {
           <ReturnLine key={h.id} h={h} d={drafts[h.id]} employeeId={employeeId} onChange={(d) => setDrafts((all) => ({ ...all, [h.id]: d }))} />
         ))}
       </ul>
-      <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Qeyd (istəyə görə)" aria-label="Qeyd" className="field mt-3" />
-      <div className="mt-4 flex gap-2">
-        <button type="button" disabled={pending || !ready} onClick={submit} className="btn btn-primary flex-1">
+      <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Qeyd (istəyə görə)" aria-label="Qeyd" className="field mt-3 max-sm:!h-8 max-sm:!text-xs" />
+      <div className="mt-4 flex gap-2 max-sm:mt-3">
+        <button type="button" disabled={pending || !ready} onClick={submit} className="btn btn-primary min-w-0 flex-1 max-sm:!h-8 max-sm:!px-2 max-sm:!text-xs">
           <Send size={15} /> {pending ? "Göndərilir..." : holds.length === 1 ? "Sorğu göndər" : `${holds.length} sorğu göndər`}
         </button>
-        <button type="button" onClick={onClose} className="btn btn-cancel">Ləğv et</button>
+        <button type="button" onClick={onClose} className="btn btn-cancel max-sm:!h-8 max-sm:!px-3 max-sm:!text-xs">Ləğv et</button>
       </div>
     </Modal>
   );
