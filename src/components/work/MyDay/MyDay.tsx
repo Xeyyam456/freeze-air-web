@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { CalendarCheck, CalendarOff, CalendarRange } from "lucide-react";
-import { AttendanceCalendar } from "@/components/employees/AttendanceCalendar";
-import { LeaveModal } from "../LeaveModal";
+import { AttendanceCalendar } from "@/views/Attendance/components/AttendanceCalendar";
+import { LeaveModal } from "@/views/Leaves/components/LeaveModal";
 import { MyDayStatsGrid } from "./MyDayStatsGrid";
 import { PresenceActions } from "./PresenceActions";
 import { SessionList } from "./SessionList";

@@ -9,8 +9,6 @@
   "components/clients/ClientList.tsx": 147,
   "components/clients/UnitList.tsx": 101,
   "components/DatePicker.tsx": 194,
-  "components/employees/AttendanceBoard.tsx": 331,
-  "components/employees/AttendanceCalendar.tsx": 170,
   "components/employees/EmployeeList.tsx": 200,
   "components/landing/AirflowCanvas.tsx": 126,
   "components/landing/ContactMap.tsx": 106,
@@ -22,10 +20,6 @@
   "components/PlaceLocationButton.tsx": 174,
   "components/ProfileButton.tsx": 147,
   "components/ToolPicker.tsx": 158,
-  "components/work/LeaveModal.tsx": 125,
-  "components/work/MyLeaves.tsx": 198,
-  "lib/attendance.ts": 220,
-  "lib/export-attendance.ts": 176,
   "lib/site-settings.ts": 136,
   "lib/site-texts.ts": 187
 }

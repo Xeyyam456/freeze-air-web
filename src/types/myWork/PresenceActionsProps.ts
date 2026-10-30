@@ -1,4 +1,4 @@
-import type { MonthAttendance } from "@/lib/attendance";
+import type { MonthAttendance } from "@/types/attendance";
 
 export type PresenceActionsProps = {
   day: MonthAttendance["today"] | undefined;

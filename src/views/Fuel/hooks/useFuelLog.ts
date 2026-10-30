@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { todayBaku } from "@/lib/attendance";
+import { todayBaku } from "@/shared/utils/todayBaku";
 import type { Period } from "@/types/fuel";
 import type { FuelCarInfo } from "@/types/myFuel";
 import { useMyFuelData, useMyFuelReload } from "../queries/useMyFuelData";

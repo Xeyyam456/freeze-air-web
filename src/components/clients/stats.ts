@@ -1,4 +1,4 @@
-// Server komponentlərində də işləyir: lib/attendance.ts React hook-ları daşıyır, ona görə buradan import olunmur
+// Server komponentlərində də işləyir: shared/hooks/useMonthAttendance.ts React hook-ları daşıyır, ona görə buradan import olunmur
 const MONTHS = ["Yanvar", "Fevral", "Mart", "Aprel", "May", "İyun", "İyul", "Avqust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"];
 
 // Bakı vaxtı ilə bu ayın ilk günü "YYYY-MM-01"

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Page } from "@/components/Page";
-import { AttendanceBoard } from "@/components/employees/AttendanceBoard";
+import { AttendanceBoard } from "@/views/Attendance/components/AttendanceBoard";
 import { createClient } from "@/lib/supabase/server";
 
 // Davamiyyət: bütün ustaların ay üzrə gəlməsi, icazəsi (öz sətrin birinci). "İşə gəldim / İşi bitirdim / İcazə istə" Panel-dədir.

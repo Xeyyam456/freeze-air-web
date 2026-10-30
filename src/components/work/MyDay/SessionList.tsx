@@ -1,4 +1,4 @@
-import { timeBaku } from "@/lib/attendance";
+import { timeBaku } from "@/shared/utils/timeBaku";
 import type { SessionListProps } from "@/types/myWork";
 import { durShort, mins } from "./dayTime";
 

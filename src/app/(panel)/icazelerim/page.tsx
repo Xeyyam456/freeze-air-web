@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Page } from "@/components/Page";
-import { MyLeaves } from "@/components/work/MyLeaves";
+import { MyLeaves } from "@/views/Leaves/components/MyLeaves";
 import { createClient } from "@/lib/supabase/server";
 
 // İcazələrim: ustanın öz icazə sorğuları (aktiv, gözləyən, tarixçə); "İcazə istə" qlobal pəncərəni açır (QuickActions)

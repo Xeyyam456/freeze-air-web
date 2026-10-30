@@ -1,5 +1,5 @@
 import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
-import { leaveRange } from "@/lib/attendance";
+import { leaveRange } from "@/shared/utils/attendance/leaveRange";
 import { playNotify } from "@/lib/sound";
 import { toast } from "@/lib/toast";
 import type { Tables } from "@/types/database";

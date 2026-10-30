@@ -1,4 +1,4 @@
-import { todayBaku } from "@/lib/attendance";
+import { todayBaku } from "@/shared/utils/todayBaku";
 import { createClient } from "@/lib/supabase/client";
 import type { MyDayStats } from "@/types/myWork";
 

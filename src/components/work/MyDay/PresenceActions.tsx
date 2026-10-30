@@ -1,5 +1,6 @@
 import { LogIn, LogOut } from "lucide-react";
-import { presenceText, timeBaku } from "@/lib/attendance";
+import { presenceText } from "@/shared/utils/attendance/presenceText";
+import { timeBaku } from "@/shared/utils/timeBaku";
 import type { PresenceActionsProps } from "@/types/myWork";
 import { durShort } from "./dayTime";
 

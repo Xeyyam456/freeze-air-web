@@ -1,4 +1,5 @@
-import { MONTHS_AZ, todayBaku } from "@/lib/attendance";
+import { MONTHS_AZ } from "@/shared/utils/monthsAz";
+import { todayBaku } from "@/shared/utils/todayBaku";
 import { fetchFuelYear } from "@/services/myFuel/fetchFuelYear";
 import type { ExcelBalance, ExcelTotals, FuelExcelCtx } from "@/types/myFuel";
 import { emptyTotals } from "./cells";

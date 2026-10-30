@@ -1,3 +1,3 @@
-import type { Session } from "@/lib/attendance";
+import type { Session } from "@/types/attendance";
 
 export type SessionListProps = { sessions: Session[] };

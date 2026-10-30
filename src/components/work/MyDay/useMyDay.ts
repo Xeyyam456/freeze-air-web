@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { timeBaku, useMonthAttendance } from "@/lib/attendance";
+import { useMonthAttendance } from "@/shared/hooks/useMonthAttendance";
+import { timeBaku } from "@/shared/utils/timeBaku";
 import { useMe } from "@/lib/me";
 import { toast } from "@/lib/toast";
 import { useData } from "@/lib/useData";

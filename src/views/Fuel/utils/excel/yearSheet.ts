@@ -1,4 +1,4 @@
-import { MONTHS_AZ } from "@/lib/attendance";
+import { MONTHS_AZ } from "@/shared/utils/monthsAz";
 import type { FuelExcelCtx } from "@/types/myFuel";
 import { emptyTotals, totalBase } from "./cells";
 import { round2 } from "./dates";
