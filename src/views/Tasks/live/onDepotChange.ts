@@ -2,22 +2,27 @@ import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { revalidate } from "@/lib/revalidate";
 import { playNotify } from "@/lib/sound";
 import { toast } from "@/lib/toast";
-import { toolName } from "@/services/myTasks/names";
+import { toolLabel } from "@/services/myTasks/names";
 import type { Tables } from "@/types/database";
 import type { LiveCtx } from "@/types/myTasks";
 
 type Payload = RealtimePostgresChangesPayload<Record<string, unknown>>;
 
 // Depo (0084): mənə alət verildi → "Aldım" xatırlatması. Hər dəyişiklikdə Alətlərim və Depo səhifələri yenilənir (useData → revalidate).
+// Eyni alətdən ustada artıq açıq təhvil varsa yeni sətir yaranmır: baza sayı artırır (give_tool), ona görə say artımı da "verildi" sayılır.
+const fmtQty = (n: number) => String(Math.round(n * 100) / 100).replace(".", ",");
 export async function onAssignmentChange(payload: Payload, { me }: LiveCtx) {
   revalidate();
   const a = payload.new as Partial<Tables<"tool_assignments">>;
   const o = payload.old as Partial<Tables<"tool_assignments">>;
-  if (!me || a.employee_id !== me || a.returned_at || a.received_at) return;
-  const given = payload.eventType === "INSERT" || (o.received_at && !a.received_at);
+  if (!me || a.employee_id !== me || a.returned_at) return;
+  const added = payload.eventType === "UPDATE" ? Number(a.quantity) - Number(o.quantity ?? a.quantity) : 0;
+  if (a.received_at && added <= 0) return;
+  const given = payload.eventType === "INSERT" || (o.received_at && !a.received_at) || added > 0;
   if (!given) return;
-  const name = await toolName(a.tool_id!);
-  toast.success(`Sənə verildi: ${name ?? "alət"}`, "Alətlərim bölməsində «Aldım» ilə təsdiqlə");
+  const t = await toolLabel(a.tool_id!);
+  const qty = added > 0 ? `+${fmtQty(added)}` : fmtQty(Number(a.quantity));
+  toast.success(`${added > 0 ? "Sənə əlavə verildi" : "Sənə verildi"}: ${t?.name ?? "alət"}`, `${qty} ${t?.unit ?? ""} · Alətlərim bölməsində «Aldım» ilə təsdiqlə`);
   playNotify();
 }
 

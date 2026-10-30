@@ -19,3 +19,9 @@ export async function toolName(id: number) {
   const { data } = await createClient().from("tools").select("name").eq("id", id).maybeSingle();
   return data?.name ?? null;
 }
+
+// Alət/material adı və ölçü vahidi (tostda "5 kq" kimi göstərmək üçün); alətdə "ədəd"
+export async function toolLabel(id: number) {
+  const { data } = await createClient().from("tools").select("name, kind, unit").eq("id", id).maybeSingle();
+  return data ? { name: data.name, unit: data.kind === "material" ? data.unit : "ədəd" } : null;
+}
