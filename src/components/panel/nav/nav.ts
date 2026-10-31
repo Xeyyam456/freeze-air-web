@@ -1,6 +1,5 @@
-import { BarChart3, Building2, CalendarCheck, CalendarOff, Fuel, LayoutGrid, ListChecks, Package, Store, TriangleAlert, UserCog, Users, Warehouse, type LucideIcon } from "lucide-react";
-
-export type NavItem = { href: string; label: string; icon: LucideIcon; hint: string; tasks?: boolean; depot?: boolean; fuel?: boolean };
+import { BarChart3, Building2, CalendarCheck, CalendarOff, Fuel, LayoutGrid, ListChecks, Package, Store, TriangleAlert, UserCog, Users, Warehouse } from "lucide-react";
+import type { NavItem } from "@/types/panel";
 
 // Usta panelinin menyusu: qruplar sol menyuda və Ctrl+K axtarışında eyni sırada.
 // Depo yalnız depo məsulu (və adminlər) üçündür: showDepot serverdə can_manage_tools() ilə təyin olunur.

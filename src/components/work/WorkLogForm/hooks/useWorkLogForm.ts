@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import type { CompressedVideo } from "@/lib/video";
 import { toast } from "@/lib/toast";
 import { saveUsedMaterials } from "@/services/myWork/materials";
 import { loadPlaces } from "@/services/myWork/places";
@@ -7,6 +6,7 @@ import { removeLogFiles, uploadLogFiles, upsertLog } from "@/services/myWork/sav
 import type { Place, WorkDraft, WorkLogFormProps } from "@/types/myWork";
 import { fmtNum, readDraft, toNum, writeDraft } from "../utils/draft";
 import { useHeldMaterials } from "./useHeldMaterials";
+import type { CompressedVideo } from "@/types/shared";
 
 // İş formunun vəziyyəti: qaralama, yer, material, fayllar (akt, şəkil, video), redaktədə təsdiq, yadda saxlama
 export function useWorkLogForm({ employeeId, existing, onClose, onSaved }: WorkLogFormProps) {

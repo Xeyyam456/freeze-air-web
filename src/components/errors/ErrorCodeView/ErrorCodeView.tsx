@@ -4,16 +4,15 @@ import { useMemo, useState } from "react";
 import { Box, Search, TriangleAlert, Wrench } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useData } from "@/lib/useData";
-
-type Model = { id: number; name: string };
-type Code = { id: number; model_id: number; code: string; title: string; solution: string | null };
+import type { ErrorModel } from "@/types/errorCodes";
+import type { ErrorCode } from "@/types/errorCodes";
 
 const norm = (s: string | null | undefined) =>
   (s ?? "").toLowerCase().replace(/ə/g, "e").replace(/ı/g, "i").replace(/ö/g, "o").replace(/ü/g, "u").replace(/ç/g, "c").replace(/ş/g, "s").replace(/ğ/g, "g");
 
 // Xəta kodları (yalnız baxış; admin paneldən idarə olunur): modeli dropdown-dan seç, kodları gör; kod/açıqlama yazıb da axtarmaq olar
 // Keşdə: kodlar nadir dəyişir, səhifəyə qayıdanda dərhal görünür
-async function fetchCodes(): Promise<{ models: Model[]; codes: Code[] }> {
+async function fetchCodes(): Promise<{ models: ErrorModel[]; codes: ErrorCode[] }> {
   const supabase = createClient();
   const [models, codes] = await Promise.all([
     supabase.from("ac_models").select("id, name").order("name").then((r) => r.data ?? []),

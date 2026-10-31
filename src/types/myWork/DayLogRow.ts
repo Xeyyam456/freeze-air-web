@@ -1,4 +1,4 @@
-import type { FileCount } from "@/lib/jobs";
+import type { FileCount } from "@/types/workLogs";
 
 // Görülən işlər (Panel): günün işi; qrup işi bir sətir
 export type DayLogRow = {

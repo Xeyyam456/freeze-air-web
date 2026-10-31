@@ -1,3 +1,4 @@
+import type { CompressedVideo } from "@/types/shared";
 // İş videosunu telefonda (brauzerdə) yükləmədən əvvəl sıxır: qısa tərəf 720px, H.264 (MP4), ≤ 1,8 Mbps + səs 96 kbps.
 // 2 dəqiqəlik telefon videosu (1080p ~240 MB) ~28 MB olur. WebCodecs işlədilir (mediabunny), server lazım deyil.
 // mediabunny yalnız video seçiləndə yüklənir (dinamik import): forma ağırlaşmır.
@@ -11,8 +12,6 @@ const SHORT_SIDE = 720;
 const MAX_VIDEO_BITRATE = 1_800_000;
 const MIN_VIDEO_BITRATE = 450_000; // bundan aşağı görüntü yararsızdır (~13 dəq.-dən uzun video)
 const AUDIO_BITRATE = 96_000;
-
-export type CompressedVideo = { file: File; originalBytes: number; bytes: number; seconds: number; width: number; height: number };
 
 export class VideoError extends Error {}
 

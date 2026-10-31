@@ -1,4 +1,5 @@
 export type { DaySummaryProps } from "./DaySummaryProps";
+export type { DepotPayload } from "./DepotPayload";
 export type { EmptyDayProps } from "./EmptyDayProps";
 export type { ExistingFilesProps } from "./ExistingFilesProps";
 export type { GroupMatesProps } from "./GroupMatesProps";
@@ -8,9 +9,9 @@ export type { MyEmployeeTasks } from "./MyEmployeeTasks";
 export type { MyTask } from "./MyTask";
 export type { MyTaskCardProps } from "./MyTaskCardProps";
 export type { MyTaskEmployee } from "./MyTaskEmployee";
+export type { MyTaskTeam } from "./MyTaskTeam";
 export type { MyTasksData } from "./MyTasksData";
 export type { MyTasksSectionProps } from "./MyTasksSectionProps";
-export type { MyTaskTeam } from "./MyTaskTeam";
 export type { NewWorkFile } from "./NewWorkFile";
 export type { NoteFilePickersProps } from "./NoteFilePickersProps";
 export type { RingProps } from "./RingProps";

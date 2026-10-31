@@ -1,5 +1,6 @@
 import { AC_ILLUSTRATION } from "../AcIllustrations";
-import { isIllustrated, type Segment } from "@/lib/site-content";
+import { isIllustrated } from "@/lib/site-content";
+import type { Segment } from "@/types/site";
 
 // Şəkil kəsiləndə hansı hissəsi görünsün (admin seçir)
 const POSITION: Record<string, string> = { top: "object-top", center: "object-center", bottom: "object-bottom" };

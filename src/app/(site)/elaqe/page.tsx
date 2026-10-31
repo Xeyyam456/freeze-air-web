@@ -7,7 +7,8 @@ import { PageIntro } from "@/components/landing/PageIntro";
 import { Reveal } from "@/components/landing/Reveal";
 import { WhatsAppIcon } from "@/components/landing/WhatsAppIcon";
 import { getContact, telHref, whatsappHref } from "@/lib/site-settings";
-import { getTexts, pageTitle, type Texts } from "@/lib/site-texts";
+import { getTexts, pageTitle } from "@/lib/site-texts";
+import type { Texts } from "@/types/site";
 
 export async function generateMetadata(): Promise<Metadata> {
   return { title: await pageTitle("contact.title") };

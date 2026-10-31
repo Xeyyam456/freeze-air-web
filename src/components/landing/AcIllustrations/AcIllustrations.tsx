@@ -1,12 +1,11 @@
+import type { AcIllustrationProps } from "@/types/site";
 // Kondisioner növlərinin sadə illüstrasiyaları (marka yox, növ)
 const INK = "#06192B";
 const ICE = "#CFE8F3";
 const COLD = "#00A3D9";
 
-type Props = { className?: string };
-
 // Divar tipli split (daxili blok)
-export function SplitUnit({ className }: Props) {
+export function SplitUnit({ className }: AcIllustrationProps) {
   return (
     <svg viewBox="0 0 240 120" className={className} role="img" aria-label="Divar tipli split kondisioner">
       <rect x="10" y="22" width="220" height="64" rx="18" fill="#fff" stroke={INK} strokeWidth="2.5" />
@@ -20,7 +19,7 @@ export function SplitUnit({ className }: Props) {
 }
 
 // Kaset tipli (tavana quraşdırılan, aşağıdan görünüş)
-export function CassetteUnit({ className }: Props) {
+export function CassetteUnit({ className }: AcIllustrationProps) {
   return (
     <svg viewBox="0 0 240 120" className={className} role="img" aria-label="Kaset tipli kondisioner">
       <rect x="70" y="10" width="100" height="100" rx="12" fill="#fff" stroke={INK} strokeWidth="2.5" />
@@ -35,7 +34,7 @@ export function CassetteUnit({ className }: Props) {
 }
 
 // Döşəmə-tavan tipli
-export function FloorCeilingUnit({ className }: Props) {
+export function FloorCeilingUnit({ className }: AcIllustrationProps) {
   return (
     <svg viewBox="0 0 240 120" className={className} role="img" aria-label="Döşəmə-tavan tipli kondisioner">
       <rect x="14" y="30" width="212" height="56" rx="10" fill="#fff" stroke={INK} strokeWidth="2.5" />
@@ -48,7 +47,7 @@ export function FloorCeilingUnit({ className }: Props) {
 }
 
 // Kanal tipli (tavan arxasında gizli blok + barmaqlıq)
-export function DuctedUnit({ className }: Props) {
+export function DuctedUnit({ className }: AcIllustrationProps) {
   return (
     <svg viewBox="0 0 240 120" className={className} role="img" aria-label="Kanal tipli kondisioner">
       <path d="M10 30 H230" stroke={INK} strokeWidth="2.5" strokeDasharray="6 6" opacity="0.4" />
@@ -63,7 +62,7 @@ export function DuctedUnit({ className }: Props) {
 }
 
 // Xarici blok
-export function OutdoorUnit({ className }: Props) {
+export function OutdoorUnit({ className }: AcIllustrationProps) {
   return (
     <svg viewBox="0 0 240 120" className={className} role="img" aria-label="Kondisionerin xarici bloku">
       <rect x="50" y="12" width="140" height="92" rx="10" fill="#fff" stroke={INK} strokeWidth="2.5" />

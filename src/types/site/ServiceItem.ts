@@ -1,3 +1,3 @@
-import type { Service } from "@/lib/site-content";
+import type { Service } from "@/types/site";
 
 export type ServiceItem = Service;

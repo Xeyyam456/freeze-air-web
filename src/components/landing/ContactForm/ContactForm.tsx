@@ -2,9 +2,9 @@
 
 import { useActionState, useRef, useTransition } from "react";
 import { Mail, MessageSquare, Phone, Send, User } from "lucide-react";
-import { sendContactRequest, type ContactFormState } from "@/app/(site)/elaqe/actions";
-import type { Texts } from "@/lib/site-texts";
+import { sendContactRequest } from "@/app/(site)/elaqe/actions";
 import { toast } from "@/lib/toast";
+import type { ContactFormState, Texts } from "@/types/site";
 
 // Sahə qutusu (ikon + input): fokus qutunun özünə düşür (focus-within)
 const field =

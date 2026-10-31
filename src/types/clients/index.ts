@@ -16,6 +16,7 @@ export type { EmptyUnitsProps } from "./EmptyUnitsProps";
 export type { FilterChipProps } from "./FilterChipProps";
 export type { FixPreviewProps } from "./FixPreviewProps";
 export type { HeroContactProps } from "./HeroContactProps";
+export type { Kind } from "./Kind";
 export type { LocationViewProps } from "./LocationViewProps";
 export type { Place } from "./Place";
 export type { PlaceFix } from "./PlaceFix";

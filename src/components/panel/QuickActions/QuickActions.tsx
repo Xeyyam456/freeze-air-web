@@ -8,16 +8,15 @@ import { WORK_SAVED } from "@/components/work/MyDay";
 import { WorkLogForm } from "@/components/work/WorkLogForm";
 import { CommandMenu } from "../CommandMenu";
 import { PANEL_EVENTS } from "../nav";
-
-type Me = { id: number; name: string };
+import type { PanelMe } from "@/types/panel";
 
 // Panelin hər səhifəsindən əlçatan pəncərələr: "İş əlavə et", "İcazə istə" və Ctrl+K axtarışı.
 // Üst zolaq, Ctrl+K və "Mənim bugünüm" bunları PANEL_EVENTS hadisələri ilə açır.
 export function QuickActions({ showDepot, showFuel }: { showDepot: boolean; showFuel: boolean }) {
   const [dialog, setDialog] = useState<"work" | "leave" | null>(null);
-  const [me, setMe] = useState<Me | null>(null);
+  const [me, setMe] = useState<PanelMe | null>(null);
   const [search, setSearch] = useState(false);
-  const meRef = useRef<Me | null>(null);
+  const meRef = useRef<PanelMe | null>(null);
 
   useEffect(() => {
     // Əməkdaş kartı ilk lazım olanda bir dəfə oxunur

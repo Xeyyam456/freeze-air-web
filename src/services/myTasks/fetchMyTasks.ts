@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
-import type { FileCount } from "@/lib/jobs";
+import type { FileCount } from "@/types/workLogs";
 
 // Günün bütün tapşırıqları və aktiv ustalar (rəhbərlik yox)
 export async function fetchMyTasks(day: string) {

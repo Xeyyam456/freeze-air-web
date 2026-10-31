@@ -2,13 +2,12 @@ import { Building2, CalendarOff, Plus, Store } from "lucide-react";
 import { norm } from "@/shared/utils/norm";
 import type { Found, PaletteItem } from "@/types/panel";
 import { navGroups, PANEL_EVENTS } from "../../nav";
-
-type Handlers = { go: (href: string) => () => void; act: (name: (typeof PANEL_EVENTS)[keyof typeof PANEL_EVENTS]) => () => void };
+import type { MenuHandlers } from "@/types/panel";
 
 const route = (kind: string) => (kind === "market" ? "/magazalar" : "/sirketler");
 
 // Nəticə siyahısı: tez əməllər + səhifələr (söz-söz süzgəc) + bazadan tapılan şirkət / mağaza
-export function buildItems(query: string, found: Found | null, showDepot: boolean, showFuel: boolean, { go, act }: Handlers): PaletteItem[] {
+export function buildItems(query: string, found: Found | null, showDepot: boolean, showFuel: boolean, { go, act }: MenuHandlers): PaletteItem[] {
   const words = norm(query).split(/\s+/).filter(Boolean);
   const match = (s: string) => words.every((w) => norm(s).includes(w));
   const actions: PaletteItem[] = [

@@ -2,10 +2,10 @@ import { cacheLife, cacheTag } from "next/cache";
 import { publicSiteClient } from "@/lib/site-client";
 import { SITE_CACHE, SITE_TAG } from "@/lib/site-cache";
 import { TEXT_DEFAULTS } from "./defaults";
+import type { TextKey } from "@/types/site";
+import type { Texts } from "@/types/site";
 
 export { TEXT_DEFAULTS };
-export type TextKey = keyof typeof TEXT_DEFAULTS;
-export type Texts = Record<TextKey, string>;
 
 // Bütün mətnlər bir sorğu ilə; keşdə saxlanır və hər dəqiqə yenilənir
 export async function getTexts(): Promise<Texts> {

@@ -1,9 +1,9 @@
 import { fetchAll } from "@/lib/fetchAll";
 import { fetchGroupMap } from "@/lib/jobs";
-import type { Kind } from "@/lib/kinds";
 import { createClient } from "@/lib/supabase/server";
 import { monthStartBaku } from "@/shared/utils/monthStartBaku";
 import type { ClientListRaw } from "@/types/clients";
+import type { Kind } from "@/types/clients";
 
 // Şirkətlərin/marketlərin siyahısı: filialların koordinatları + bu ayın işləri
 export async function fetchClientList(kind: Kind): Promise<ClientListRaw> {

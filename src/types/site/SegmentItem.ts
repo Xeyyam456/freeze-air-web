@@ -1,3 +1,3 @@
-import type { Segment } from "@/lib/site-content";
+import type { Segment } from "@/types/site";
 
 export type SegmentItem = Segment;

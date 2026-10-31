@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Video } from "lucide-react";
 import { toast } from "@/lib/toast";
-import { compressVideo, formatBytes, formatSeconds, VideoError, type CompressedVideo } from "@/lib/video";
+import { compressVideo, formatBytes, formatSeconds, VideoError } from "@/lib/video";
+import type { CompressedVideo } from "@/types/shared";
 
 // İş videosu (0089): seçilən kimi telefonda 720p-yə sıxılır (lib/video.ts), müddət limiti yoxdur.
 // İş formasında (WorkLogForm) və tapşırığın təmir qeydində (TaskNoteModal). Sıxılma gedərkən onBusy(true): forma göndərilməsin.

@@ -1,7 +1,7 @@
 import { Snowflake } from "lucide-react";
 import { isIllustrated } from "@/lib/illustrated";
-import type { Equipment } from "@/lib/site-content";
 import { AC_ILLUSTRATION } from "../AcIllustrations";
+import type { Equipment } from "@/types/site";
 
 // Avadanlığın vizualı: admin şəkil yükləyibsə şəkil, yoxdursa hazır illüstrasiya, o da yoxdursa ikon
 export function EquipmentVisual({ item, className = "", artClassName = "w-full max-w-[220px]" }: {

@@ -1,17 +1,10 @@
 import { History, MapPin, Phone } from "lucide-react";
-import type { Tables } from "@/types/database";
 import { MapButton } from "../MapButton";
 import { NavButton } from "../NavButton";
 import { PlaceLocationButton } from "@/shared/components/PlaceLocationButton";
+import type { StoreCardProps } from "@/types/shared";
 
-type Props = {
-  store: Tables<"stores">;
-  companyName?: string;
-  action?: React.ReactNode;
-  onHistory?: () => void; // "Tarixçə": bu filialda/mağazada görülən işlər (work/PlaceHistory.tsx)
-};
-
-export function StoreCard({ store, companyName, action, onHistory }: Props) {
+export function StoreCard({ store, companyName, action, onHistory }: StoreCardProps) {
   const hasCoords = store.lat != null && store.lng != null;
 
   return (

@@ -1,4 +1,4 @@
-import type { FileCount } from "@/lib/jobs";
+import type { FileCount } from "@/types/workLogs";
 
 // Obyektin tarixçəsində iş
 export type HistoryRow = {

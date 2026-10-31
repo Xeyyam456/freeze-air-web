@@ -4,12 +4,11 @@ import { useState } from "react";
 import { Navigation, Navigation2, X } from "lucide-react";
 import { directionsUrl, wazeUrl } from "@/lib/navigation";
 import { Modal } from "@/shared/components/Modal";
-
-type Place = { name: string; address: string | null; lat: number | null; lng: number | null };
+import type { NavButtonPlace } from "@/types/shared";
 
 // "Naviqator" (yalnız telefonda, < 640): filialın/mağazanın ünvanına getmək üçün Waze və ya Google Maps seçimi.
 // Seçim pəncərədə iki iri düymə; hər biri telefonda öz tətbiqini açır (yoxdursa brauzerdə).
-export function NavButton({ place }: { place: Place }) {
+export function NavButton({ place }: { place: NavButtonPlace }) {
   const [open, setOpen] = useState(false);
   const hasLocation = (place.lat != null && place.lng != null) || !!place.address;
 

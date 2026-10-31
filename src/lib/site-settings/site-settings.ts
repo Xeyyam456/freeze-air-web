@@ -3,12 +3,12 @@ import { publicSiteClient } from "@/lib/site-client";
 import { SITE_CACHE, SITE_TAG } from "@/lib/site-cache";
 import { formatPhone } from "@/shared/utils/phone";
 import type { HomeContent } from "@/types/site";
+import type { Contact } from "@/types/site";
 
 // Telefon köməkçiləri shared/utils/phone.ts-dədir; köhnə import yolu işləsin deyə burdan da ixrac olunur
 export { formatPhone, telHref, whatsappHref } from "@/shared/utils/phone";
 
 export type { HomeContent } from "@/types/site";
-export type Contact = { phone: string; address: string; hours: string; email: string | null; instagram: string | null; facebook: string | null };
 
 // Admin hələ doldurmayıbsa göstərilən yer tutucular
 const FALLBACK: Contact = {

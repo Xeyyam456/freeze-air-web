@@ -1,13 +1,12 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { SITE_CACHE, SITE_TAG } from "@/lib/site-cache";
 import { createClient } from "@supabase/supabase-js";
-import type { Database, Tables } from "@/types/database";
+import type { Database } from "@/types/database";
+import type { Segment } from "@/types/site";
+import type { Service } from "@/types/site";
+import type { Equipment } from "@/types/site";
 
-export type Segment = Tables<"site_segments">;
-export type Service = Tables<"site_services">;
-export type Equipment = Tables<"site_equipment">;
-
-export { ILLUSTRATED_KEYS, isIllustrated, type IllustratedKey } from "@/lib/illustrated";
+export { ILLUSTRATED_KEYS, isIllustrated } from "@/lib/illustrated";
 
 // "Xidmətlər" və "Avadanlıq" bölmələrinin məzmunu: admin panelindəki "Sayt" səhifəsindən idarə olunur.
 // Keşdə saxlanır, hər dəqiqə yenilənir. Cookie-siz klient: qonaq yalnız aktiv sətirləri görür.

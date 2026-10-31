@@ -4,8 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Wrench } from "lucide-react";
-
-type NavService = { slug: string; title: string };
+import type { NavService } from "@/types/site";
 
 // Açıq saytın menyusu (header-in ortasında həb düymələr): hər bənd ayrıca səhifədir, aktiv səhifə ağ həblə seçilir.
 // Sonda "Xidmət növləri" düyməsi: klikləyəndə xidmətlərin siyahısı açılır (masaüstündə; mobildə siyahı /xidmetler səhifəsindədir).

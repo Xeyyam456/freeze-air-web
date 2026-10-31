@@ -1,17 +1,15 @@
-import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { revalidate } from "@/lib/revalidate";
 import { playNotify } from "@/lib/sound";
 import { toast } from "@/lib/toast";
 import { toolLabel } from "@/services/myTasks/names";
 import type { Tables } from "@/types/database";
 import type { LiveCtx } from "@/types/myTasks";
-
-type Payload = RealtimePostgresChangesPayload<Record<string, unknown>>;
+import type { DepotPayload } from "@/types/myTasks";
 
 // Depo (0084): mənə alət verildi → "Aldım" xatırlatması. Hər dəyişiklikdə Alətlərim və Depo səhifələri yenilənir (useData → revalidate).
 // Eyni alətdən ustada artıq açıq təhvil varsa yeni sətir yaranmır: baza sayı artırır (give_tool), ona görə say artımı da "verildi" sayılır.
 const fmtQty = (n: number) => String(Math.round(n * 100) / 100).replace(".", ",");
-export async function onAssignmentChange(payload: Payload, { me }: LiveCtx) {
+export async function onAssignmentChange(payload: DepotPayload, { me }: LiveCtx) {
   revalidate();
   const a = payload.new as Partial<Tables<"tool_assignments">>;
   const o = payload.old as Partial<Tables<"tool_assignments">>;
@@ -27,7 +25,7 @@ export async function onAssignmentChange(payload: Payload, { me }: LiveCtx) {
 }
 
 // Sorğuma cavab → tost; depo məsuluna yeni sənəd → tost
-export function onDepotChange(payload: Payload, { me, keeper }: LiveCtx) {
+export function onDepotChange(payload: DepotPayload, { me, keeper }: LiveCtx) {
   revalidate();
   const r = payload.new as Tables<"depot_requests">;
   const o = payload.old as Partial<Tables<"depot_requests">>;

@@ -3,16 +3,8 @@ import { SITE_CACHE, SITE_TAG } from "@/lib/site-cache";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
 import { experience } from "@/lib/experience";
-
-export type PublicEmployee = {
-  id: number;
-  full_name: string;
-  specialty: string | null;
-  photo_url: string | null;
-  experience: string | null;
-  worker_type: string; // master | assistant | driver (admin işə qəbulda seçir)
-  months: number; // təcrübə ayla (saytda təcrübə zolağı və cəmi üçün); tarix yoxdursa 0
-};
+import type { PublicEmployee } from "@/types/site";
+import type { PublicManager } from "@/types/site";
 
 // İşə başlama tarixindən tam ay sayı (experience() ilə eyni hesab; lib/experience.ts admin ilə sinxrondur, ona toxunmuruq)
 function monthsSince(startDate: string | null, now = new Date()) {
@@ -48,8 +40,6 @@ export async function getPublicEmployees(): Promise<PublicEmployee[]> {
     months: monthsSince(e.start_date),
   }));
 }
-
-export type PublicManager = { id: number; full_name: string; job_title: string; photo_url: string | null };
 
 // Açıq saytda "Rəhbərlik": yalnız ad, vəzifə və şəkil (bazada public_management(); müdir birinci)
 export async function getPublicManagement(): Promise<PublicManager[]> {

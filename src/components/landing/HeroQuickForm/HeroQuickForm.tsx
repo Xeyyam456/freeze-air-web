@@ -2,9 +2,9 @@
 
 import { useActionState, useRef, useTransition } from "react";
 import { PhoneCall } from "lucide-react";
-import { sendContactRequest, type ContactFormState } from "@/app/(site)/elaqe/actions";
-import type { Texts } from "@/lib/site-texts";
+import { sendContactRequest } from "@/app/(site)/elaqe/actions";
 import { toast } from "@/lib/toast";
+import type { ContactFormState, Texts } from "@/types/site";
 
 const input =
   "h-12 w-full rounded-2xl border border-transparent bg-white px-4 text-night outline-none transition-colors placeholder:text-night/40 focus:border-cold";

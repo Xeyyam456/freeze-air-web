@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import type { CompressedVideo } from "@/lib/video";
 import { toast } from "@/lib/toast";
 import { fetchLogFiles, removeWorkFiles, saveTaskNote, uploadWorkFiles } from "@/services/myTasks/taskNote";
 import type { SavedFile, TaskNoteModalProps } from "@/types/myTasks";
+import type { CompressedVideo } from "@/types/shared";
 
 // Təmir qeydi pəncərəsinin vəziyyəti: mövcud fayllar (silinməyə işarələnir), yeni akt/şəkil/video, yadda saxlama
 export function useTaskNote({ task, onClose, onSaved }: TaskNoteModalProps) {

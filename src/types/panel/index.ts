@@ -3,4 +3,7 @@ export type { CommandRowProps } from "./CommandRowProps";
 export type { Found } from "./Found";
 export type { FoundCompany } from "./FoundCompany";
 export type { FoundStore } from "./FoundStore";
+export type { MenuHandlers } from "./MenuHandlers";
+export type { NavItem } from "./NavItem";
 export type { PaletteItem } from "./PaletteItem";
+export type { PanelMe } from "./PanelMe";

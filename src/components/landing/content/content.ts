@@ -1,5 +1,5 @@
 import { ClipboardCheck, Fan, History, Image as ImageIcon, MapPin, PhoneCall, Refrigerator, Wrench } from "lucide-react";
-import type { TextKey, Texts } from "@/lib/site-texts";
+import type { TextKey, Texts } from "@/types/site";
 
 // Saytın quruluşu: ünvanlar və ikonlar burada, mətnlər bazadadır (lib/site-texts.ts, admin → "Sayt" → Mətnlər)
 

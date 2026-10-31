@@ -1,18 +1,11 @@
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { MenuButton, TopbarTools } from "../panel/TopbarTools";
-
-type Props = {
-  title: string;
-  subtitle?: string;
-  back?: { href: string; label: string };
-  actions?: React.ReactNode;
-  children: React.ReactNode;
-};
+import type { PageProps } from "@/types/shared";
 
 // Səhifə şablonu: yuxarıda yapışan nazik zolaq (başlıq + səhifənin düymələri + axtarış və "İş əlavə et"), altında məzmun.
 // Sol menyu panel layout-undadır (components/panel/Sidebar.tsx).
-export function Page({ title, subtitle, back, actions, children }: Props) {
+export function Page({ title, subtitle, back, actions, children }: PageProps) {
   return (
     <>
       <header className="app-topbar">

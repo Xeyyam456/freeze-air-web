@@ -1,28 +1,28 @@
-type Place = { lat: number | null; lng: number | null; address: string | null };
+import type { NavPlace } from "@/types/shared";
 
 // Koordinat varsa dəqiq nöqtə, yoxdursa ünvan.
-function query(p: Place) {
+function query(p: NavPlace) {
   if (p.lat != null && p.lng != null) return `${p.lat},${p.lng}`;
   return p.address ?? "";
 }
 
 // Panel içində iframe ilə göstərmək üçün
-export function mapEmbedUrl(p: Place) {
+export function mapEmbedUrl(p: NavPlace) {
   return `https://www.google.com/maps?q=${encodeURIComponent(query(p))}&z=16&output=embed`;
 }
 
 // Ayrıca tabda Google Maps-də açmaq üçün
-export function mapSearchUrl(p: Place) {
+export function mapSearchUrl(p: NavPlace) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query(p))}`;
 }
 
 // Google Maps marşrutu (telefonda tətbiq açılır, istifadəçinin yerindən ünvana)
-export function directionsUrl(p: Place) {
+export function directionsUrl(p: NavPlace) {
   return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(query(p))}&travelmode=driving`;
 }
 
 // Waze ilə naviqasiya: koordinat varsa dəqiq nöqtə, yoxsa ünvan (telefonda Waze tətbiqi açılır)
-export function wazeUrl(p: Place) {
+export function wazeUrl(p: NavPlace) {
   if (p.lat != null && p.lng != null) return `https://waze.com/ul?ll=${p.lat},${p.lng}&navigate=yes`;
   return `https://waze.com/ul?q=${encodeURIComponent(p.address ?? "")}&navigate=yes`;
 }

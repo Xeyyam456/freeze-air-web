@@ -1,4 +1,4 @@
-import type { CompressedVideo } from "@/lib/video";
+import type { CompressedVideo } from "@/types/shared";
 
 export type NewWorkFilesProps = {
   act: File | null;

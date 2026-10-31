@@ -1,3 +1,3 @@
-import type { Equipment } from "@/lib/site-content";
+import type { Equipment } from "@/types/site";
 
 export type EquipmentItem = Equipment;

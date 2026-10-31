@@ -2,8 +2,7 @@
 
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
-
-export type ContactFormState = { ok?: boolean; error?: string } | null;
+import type { ContactFormState } from "@/types/site";
 
 const field = (fd: FormData, key: string) => String(fd.get(key) ?? "").trim();
 
