@@ -5,11 +5,11 @@ import { formatDateAz } from "@/shared/utils/formatDateAz";
 import type { EmployeeLog, WorkTabProps } from "@/types/myWork";
 import { WorkLogForm } from "../WorkLogForm";
 import { WorkLogModal } from "../WorkLogModal";
-import { DayNav } from "./DayNav";
-import { LogCard } from "./LogCard";
-import { placeLabel } from "./placeLabel";
-import { useWorkTab } from "./useWorkTab";
-import { VideoModal } from "./VideoModal";
+import { DayNav } from "./components/DayNav";
+import { LogCard } from "./components/LogCard";
+import { placeLabel } from "./utils/placeLabel";
+import { useWorkTab } from "./hooks/useWorkTab";
+import { VideoModal } from "./components/VideoModal";
 
 // Ustanın kartında "İşlər" tabı: günə görə işlər; hər kəs baxır, əlavə etmək, dəyişmək və silmək yalnız ustanın özünə aiddir
 export function WorkTab({ employeeId, employeeName }: WorkTabProps) {

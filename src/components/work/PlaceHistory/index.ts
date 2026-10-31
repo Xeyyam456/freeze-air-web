@@ -1,3 +1,3 @@
 export type { HistoryTarget } from "@/types/myWork";
-export { PlaceHistoryButton } from "./PlaceHistoryButton";
-export { PlaceHistoryModal } from "./PlaceHistoryModal";
+export { PlaceHistoryButton } from "./components/PlaceHistoryButton";
+export { PlaceHistoryModal } from "./components/PlaceHistoryModal";

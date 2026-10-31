@@ -6,13 +6,13 @@ import { exportMonthXlsx } from "@/lib/export-month";
 import { useMe } from "@/lib/me";
 import { useData } from "@/lib/useData";
 import { fetchMonthStats } from "@/services/myWork/monthStats";
-import { DaysTable } from "./DaysTable";
-import { Heatmap } from "./Heatmap";
-import { HeroChart } from "./HeroChart";
-import { HeroControls } from "./HeroControls";
-import { HeroTop } from "./HeroTop";
-import { TopPlaces } from "./TopPlaces";
-import { useMonthSummary } from "./useMonthSummary";
+import { DaysTable } from "./components/DaysTable";
+import { Heatmap } from "./components/Heatmap";
+import { HeroChart } from "./components/HeroChart";
+import { HeroControls } from "./components/HeroControls";
+import { HeroTop } from "./components/HeroTop";
+import { TopPlaces } from "./components/TopPlaces";
+import { useMonthSummary } from "./hooks/useMonthSummary";
 
 // Aylıq statistika (usta paneli): öz işlərim. Parlaq mavi hero kart (iri rəqəm + əyri), kalendar istilik xəritəsi, ən çox işlənən yerlər.
 export function MonthStats() {

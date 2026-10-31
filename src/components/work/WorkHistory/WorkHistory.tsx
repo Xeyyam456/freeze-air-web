@@ -7,7 +7,7 @@ import { useData } from "@/lib/useData";
 import { fetchDayLogs } from "@/services/myWork/workHistory";
 import { dayIso } from "../time";
 import { WorkLogModal } from "../WorkLogModal";
-import { DayLogRow } from "./DayLogRow";
+import { DayLogRow } from "./components/DayLogRow";
 
 const chip = (active: boolean) =>
   `h-9 shrink-0 whitespace-nowrap rounded-lg px-3 text-[13px] max-[400px]:flex-1 font-semibold transition-colors ${active ? "bg-primary text-white" : "bg-bg text-ink hover:bg-primary-soft"}`;

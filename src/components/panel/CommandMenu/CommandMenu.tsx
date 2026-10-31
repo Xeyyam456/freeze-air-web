@@ -4,8 +4,8 @@ import { createPortal } from "react-dom";
 import { Search } from "lucide-react";
 import { useEscapeLayer } from "@/shared/hooks/useEscapeLayer";
 import type { CommandMenuProps } from "@/types/panel";
-import { CommandRow } from "./CommandRow";
-import { useCommandMenu } from "./useCommandMenu";
+import { CommandRow } from "./components/CommandRow";
+import { useCommandMenu } from "./hooks/useCommandMenu";
 
 // Ctrl+K: səhifələr, tez əməllər (iş əlavə et, icazə istə) və bazadan şirkət / market / mağaza axtarışı.
 // ↑ ↓ ilə seçilir, Enter açır, Esc bağlayır.

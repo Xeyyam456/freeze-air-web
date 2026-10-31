@@ -4,10 +4,10 @@ import { useState } from "react";
 import { CalendarCheck, CalendarOff, CalendarRange } from "lucide-react";
 import { AttendanceCalendar } from "@/views/Attendance/components/AttendanceCalendar";
 import { LeaveModal } from "@/views/Leaves/components/LeaveModal";
-import { MyDayStatsGrid } from "./MyDayStatsGrid";
-import { PresenceActions } from "./PresenceActions";
-import { SessionList } from "./SessionList";
-import { useMyDay } from "./useMyDay";
+import { MyDayStatsGrid } from "./components/MyDayStatsGrid";
+import { PresenceActions } from "./components/PresenceActions";
+import { SessionList } from "./components/SessionList";
+import { useMyDay } from "./hooks/useMyDay";
 
 // Mənim bugünüm: davamiyyət ("İşə gəldim" / vəziyyət, "İcazə istə"), dörd göstərici (bu gün, bu ay, bugünkü tapşırıqlar, məndə olan alət/material) "İş əlavə et" üst zolaqdadır (hər səhifədə, components/panel/TopbarTools.tsx).
 // Əməkdaş kartı olmayan hesabda (məs. yalnız admin) görünmür. Tapşırıq dəyişəndə (Realtime) və iş yazılanda yenilənir.

@@ -8,12 +8,12 @@ import { Modal } from "@/shared/components/Modal";
 import type { WorkLogFormProps } from "@/types/myWork";
 import { PlacePicker } from "../PlacePicker";
 import { VideoSummary } from "../VideoPicker";
-import { DraftNotice } from "./DraftNotice";
-import { today, writeDraft } from "./draft";
-import { ExistingFilesEditor } from "./ExistingFilesEditor";
-import { MaterialsUsed } from "./MaterialsUsed";
-import { NewWorkFiles } from "./NewWorkFiles";
-import { useWorkLogForm } from "./useWorkLogForm";
+import { DraftNotice } from "./components/DraftNotice";
+import { today, writeDraft } from "./utils/draft";
+import { ExistingFilesEditor } from "./components/ExistingFilesEditor";
+import { MaterialsUsed } from "./components/MaterialsUsed";
+import { NewWorkFiles } from "./components/NewWorkFiles";
+import { useWorkLogForm } from "./hooks/useWorkLogForm";
 
 // Yeni iş və ya redaktə: tarix, yer, görülən iş, işlədilən material, akt/şəkil/video; yeni işdə qaralama saxlanır
 export function WorkLogForm(props: WorkLogFormProps) {
