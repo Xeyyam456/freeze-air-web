@@ -1,27 +1,11 @@
 import { Briefcase, Phone } from "lucide-react";
-import type { Tables } from "@/types/database";
 import { experience } from "@/lib/experience";
-import { Avatar } from "./EmployeeList";
-
-export type PersonStatus = { kind: "in" | "done" | "leave" | "none"; text: string };
-
-const STATUS_TONE: Record<PersonStatus["kind"], { dot: string; pill: string }> = {
-  in: { dot: "bg-ok", pill: "bg-[#e8f7ee] text-ok" },
-  done: { dot: "bg-[#98a2b3]", pill: "bg-bg text-muted" },
-  leave: { dot: "bg-amber-500", pill: "bg-[#fff6e5] text-amber-700" },
-  none: { dot: "", pill: "bg-bg text-muted" },
-};
+import { Avatar } from "@/shared/components/Avatar";
+import type { PersonCardProps } from "@/types/employees";
+import { STATUS_TONE } from "./constants";
 
 // Profil kartı (Ustalar, Rəhbərlik): tünd zolaq, üstünə çıxan şəkil, ad, vəzifə, vəziyyət, rəqəmlər, zəng; klik → məlumat pəncərəsi
-export function PersonCard({ person, subtitle, badge, highlight = false, status, stats, onOpen }: {
-  person: Tables<"employees">;
-  subtitle: string;
-  badge?: string;
-  highlight?: boolean;
-  status?: PersonStatus;
-  stats?: { label: string; value: number | string; tone?: string }[];
-  onOpen: () => void;
-}) {
+export function PersonCard({ person, subtitle, badge, highlight = false, status, stats, onOpen }: PersonCardProps) {
   const exp = experience(person.start_date);
   const tone = status ? STATUS_TONE[status.kind] : null;
 

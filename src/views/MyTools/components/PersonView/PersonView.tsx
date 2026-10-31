@@ -4,7 +4,7 @@ import { SOFT } from "@/views/Depot/constants/tones";
 import { dateAz, daysSince } from "@/views/Depot/utils/dates";
 import { fmt, showQty } from "@/views/Depot/utils/quantity";
 import type { Kind } from "@/types/depot";
-import { Avatar } from "@/components/employees/EmployeeList";
+import { Avatar } from "@/shared/components/Avatar";
 import { Modal } from "@/shared/components/Modal";
 import { counts } from "../../utils/people";
 import type { PersonViewProps } from "@/types/myTools";

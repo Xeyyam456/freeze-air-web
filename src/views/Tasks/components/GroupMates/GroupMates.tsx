@@ -1,4 +1,4 @@
-import { Avatar } from "@/components/employees/EmployeeList";
+import { Avatar } from "@/shared/components/Avatar";
 import type { GroupMatesProps } from "@/types/myTasks";
 
 // Qrup tapşırığı (0071): yoldaşlar; biri «görüldü» basanda hamı üçün görülür

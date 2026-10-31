@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChevronRight, Search, Users } from "lucide-react";
 import { norm } from "@/shared/utils/norm";
-import { Avatar } from "@/components/employees/EmployeeList";
+import { Avatar } from "@/shared/components/Avatar";
 import type { Person } from "@/types/myTools/Person";
 import { groupPeople, counts } from "../../utils/people";
 import { PersonView } from "../PersonView";

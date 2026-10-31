@@ -1,4 +1,4 @@
-import { Avatar } from "@/components/employees/EmployeeList";
+import { Avatar } from "@/shared/components/Avatar";
 import type { TeamGroupCardProps } from "@/types/myTasks";
 import { TeamTaskLine } from "../TeamTaskLine";
 

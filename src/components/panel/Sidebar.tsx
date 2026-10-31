@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 import { ChevronsLeft, Snowflake, X } from "lucide-react";
 import { useMyOpenTasks } from "@/lib/tasks-live";
 import { LogoutButton } from "@/components/LogoutButton";
-import { ProfileButton, type Me } from "@/components/ProfileButton";
+import { ProfileButton } from "@/views/Profile/components/ProfileButton";
+import type { Me } from "@/types/profile";
 import { isActive, navGroups, PANEL_EVENTS } from "./nav";
 
 export const NAV_STORAGE_KEY = "panel-nav";

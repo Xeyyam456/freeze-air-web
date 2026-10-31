@@ -279,7 +279,7 @@ Repolar ayrıdır, kod paylaşılmır; bunlar əl ilə eyni saxlanmalıdır:
 - Dizayn: `src/app/globals.css` ↔ admin `src/index.css` (tokenlər eynidir). Kopya komponentlər: Modal, ConfirmModal, ConfirmButton, forms, Toaster + `lib/toast.ts`, DatePicker, StoreCard, MapButton, SidePanel, Page, LogoutButton, `work/WorkLogForm`, `work/PlacePicker`, `lib/{experience,kinds,navigation,form-state}.ts`. Fərq: burada `"use client"` və `router.refresh()`, admin-də `revalidate()`.
 - İş qeydi pəncərəsi: `components/work/WorkLogModal/` ↔ admin `components/work/WorkLogModal/` (burada `"use client"`, `useData` əvəzinə `useEffect`, vaxt Bakı saatı ilə).
 - Depo, Yanacaq, `shared/` və bəzi `lib/` faylları admin-dən bir dəfə kopyalanıb, **indi ayrıdır, sinxron skript yoxdur (silindi 2026-10-30)**; hər repo öz kodunu dəyişir. Web-ə məxsus: `views/Depot/index.tsx`, "Alətlərim" `views/MyTools/` + `services/myTools/` + `types/myTools/`. `components/{ToolPicker,QuantityInput}.tsx` ↔ admin (əl ilə); `nice-scroll` sinfi ↔ admin `index.css`.
-- Avatar çevirmə (`toSquareWebp`): `components/ProfileButton.tsx` ↔ admin `components/employees/AvatarUpload.tsx`.
+- Avatar çevirmə (`toSquareWebp`): `views/Profile/` (useProfilePhoto + utils) ↔ admin `shared/components/AvatarUpload/`.
 
 ## Responsivlik (2026-10-20-dən başlayır)
 - İstifadəçi qərarı: 4 cihaz sinfi üçün tam responsivlik. Tailwind breakpoint-ləri ilə: **Mobil** < 640px (əsas sinif, prefikssiz), **Planşet** 640–1023px (`sm:`, `md:`), **Large** 1024–1535px (`lg:`, `xl:`), **XLarge** ≥ 1536px (`2xl:`). Əvvəl "mobil sonda" qaydası var idi; indi bu iş başlayır, səhifə-səhifə yoxlanır (Chrome-da `resize_window`).

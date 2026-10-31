@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { Avatar } from "@/components/employees/EmployeeList";
+import { Avatar } from "@/shared/components/Avatar";
 import type { DayLogRowProps } from "@/types/myWork";
 import { FileBadges } from "../FileBadges";
 import { bakuTime } from "../time";
