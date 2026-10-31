@@ -1,6 +1,6 @@
 "use client";
 
-import { PlaceHistoryModal } from "@/components/work/PlaceHistory";
+import { PlaceHistoryModal } from "@/components/work/PlaceHistory/components/PlaceHistoryModal";
 import { StoreCard } from "@/components/StoreCard";
 import { KIND } from "@/lib/kinds";
 import type { UnitListProps } from "@/types/clients";

@@ -4,11 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
 import { LeaveModal } from "@/views/Leaves/components/LeaveModal";
-import { WORK_SAVED } from "@/components/work/MyDay";
 import { WorkLogForm } from "@/components/work/WorkLogForm";
 import { CommandMenu } from "../CommandMenu";
 import { PANEL_EVENTS } from "../nav";
 import type { PanelMe } from "@/types/panel";
+import { WORK_SAVED } from "@/components/work/MyDay/utils/events";
 
 // Panelin hər səhifəsindən əlçatan pəncərələr: "İş əlavə et", "İcazə istə" və Ctrl+K axtarışı.
 // Üst zolaq, Ctrl+K və "Mənim bugünüm" bunları PANEL_EVENTS hadisələri ilə açır.

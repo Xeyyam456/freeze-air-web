@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { History } from "lucide-react";
 import type { PlaceHistoryButtonProps } from "@/types/myWork";
-import { PlaceHistoryModal } from "../PlaceHistoryModal";
+import { PlaceHistoryModal } from "./components/PlaceHistoryModal";
 
 // Düymə + pəncərə (server komponentlərindən, məs. şirkətin vizit kartından işlətmək üçün)
 export function PlaceHistoryButton({ target, className = "btn btn-soft btn-sm" }: PlaceHistoryButtonProps) {

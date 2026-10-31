@@ -2,10 +2,10 @@
 
 import { useEffect } from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { WORK_SAVED } from "@/components/work/MyDay";
 import { getQueryClient } from "@/lib/queryClient";
 import { revalidate } from "@/lib/revalidate";
 import { TASKS_CHANGED } from "@/lib/tasks-live";
+import { WORK_SAVED } from "@/components/work/MyDay/utils/events";
 
 // Usta panelinin məlumat keşi (TanStack Query): useData / revalidate() bunu işlədir (admin ilə eyni, lib/queryClient.ts).
 // Pəncərə hadisələri → aid keş açarları yenilənir (komponentlər hadisəni ayrıca dinləmir):
