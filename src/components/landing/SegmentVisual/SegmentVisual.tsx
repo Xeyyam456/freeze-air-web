@@ -1,4 +1,4 @@
-import { AC_ILLUSTRATION } from "./AcIllustrations";
+import { AC_ILLUSTRATION } from "../AcIllustrations";
 import { isIllustrated, type Segment } from "@/lib/site-content";
 
 // Şəkil kəsiləndə hansı hissəsi görünsün (admin seçir)

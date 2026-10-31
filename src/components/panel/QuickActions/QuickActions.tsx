@@ -6,8 +6,8 @@ import { toast } from "@/lib/toast";
 import { LeaveModal } from "@/views/Leaves/components/LeaveModal";
 import { WORK_SAVED } from "@/components/work/MyDay";
 import { WorkLogForm } from "@/components/work/WorkLogForm";
-import { CommandMenu } from "./CommandMenu";
-import { PANEL_EVENTS } from "./nav";
+import { CommandMenu } from "../CommandMenu";
+import { PANEL_EVENTS } from "../nav";
 
 type Me = { id: number; name: string };
 

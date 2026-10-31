@@ -5,9 +5,9 @@ import { createClient } from "@/lib/supabase/server";
 import { getContact, getLogo, telHref } from "@/lib/site-settings";
 import { getServices } from "@/lib/site-content";
 import { getTexts, type Texts } from "@/lib/site-texts";
-import { sitePages } from "./content";
-import { SiteMenu } from "./SiteMenu";
-import { SiteNav } from "./SiteNav";
+import { sitePages } from "../content";
+import { SiteMenu } from "../SiteMenu";
+import { SiteNav } from "../SiteNav";
 
 const accountClass =
   "grid h-11 w-11 place-items-center rounded-full text-night/60 ring-1 ring-night/10 transition-colors hover:bg-night hover:text-white hover:ring-night";

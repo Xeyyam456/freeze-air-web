@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { getTexts } from "@/lib/site-texts";
-import { HeroTitle } from "./HeroTitle";
+import { HeroTitle } from "../HeroTitle";
 
 // Alt səhifələrin başlıq banneri: tünd aurora fon (ana səhifənin tünd bölmələri ilə eyni dil),
 // yol (Əsas / [valideyn] / Səhifə), sözbəsöz açılan böyük başlıq, bir cümləlik izah

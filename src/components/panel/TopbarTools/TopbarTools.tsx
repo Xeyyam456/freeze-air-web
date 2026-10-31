@@ -1,7 +1,7 @@
 "use client";
 
 import { Menu, Plus } from "lucide-react";
-import { emitPanel, PANEL_EVENTS } from "./nav";
+import { emitPanel, PANEL_EVENTS } from "../nav";
 
 // < 1024: sol menyunu açan ☰ düyməsi (başlığın solunda)
 export function MenuButton() {

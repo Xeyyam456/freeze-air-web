@@ -2,8 +2,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { getSegments } from "@/lib/site-content";
 import { getTexts } from "@/lib/site-texts";
-import { SegmentVisual } from "./SegmentVisual";
-import { Spotlight } from "./Spotlight";
+import { SegmentVisual } from "../SegmentVisual";
+import { Spotlight } from "../Spotlight";
 
 // Obyekt növlərinin kartları (bazadan): ana səhifədə ətraflı, Xidmətlər səhifəsində yığcam.
 // Ətraflı kartlar subgrid-dir (şəkil / başlıq / izah / keçid = 4 ortaq sətir): bir sırada başlıqlardan biri

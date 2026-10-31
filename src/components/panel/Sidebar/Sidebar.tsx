@@ -8,7 +8,7 @@ import { useMyOpenTasks } from "@/lib/tasks-live";
 import { LogoutButton } from "@/components/LogoutButton";
 import { ProfileButton } from "@/views/Profile/components/ProfileButton";
 import type { Me } from "@/types/profile";
-import { isActive, navGroups, PANEL_EVENTS } from "./nav";
+import { isActive, navGroups, PANEL_EVENTS } from "../nav";
 
 export const NAV_STORAGE_KEY = "panel-nav";
 
