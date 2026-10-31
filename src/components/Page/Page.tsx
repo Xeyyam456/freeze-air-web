@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
-import { MenuButton, TopbarTools } from "./panel/TopbarTools";
+import { MenuButton, TopbarTools } from "../panel/TopbarTools";
 
 type Props = {
   title: string;
