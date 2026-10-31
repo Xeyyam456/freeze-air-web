@@ -6,6 +6,7 @@ import type { Person } from "@/types/myTools/Person";
 import { groupPeople, counts } from "../../utils/people";
 import { PersonView } from "../PersonView";
 import type { WhoHasCardProps } from "@/types/myTools";
+import { Input } from "@/shared/components/Input";
 
 // "Kimdə nə var" (2026-10-24, paneldən köçdü): bütün ustaların üzərindəkilər. Kartda usta siyahısı, basanda pəncərə (yalnız baxış).
 
@@ -25,7 +26,7 @@ export function WhoHasCard({ all, me }: WhoHasCardProps) {
       </div>
       <label className="relative mb-3 block">
         <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Usta və ya alət axtar..." aria-label="Axtar" className="field !h-9 !rounded-xl !pl-9 !text-[13px]" />
+        <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Usta və ya alət axtar..." aria-label="Axtar" className="!h-9 !rounded-xl !pl-9 !text-[13px]" />
       </label>
       {people.length === 0 ? (
         <p className="muted grid flex-1 place-items-center rounded-2xl border border-dashed border-line text-center text-sm">{q ? "Heç nə tapılmadı" : "Heç kimdə heç nə yoxdur"}</p>

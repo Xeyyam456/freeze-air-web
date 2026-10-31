@@ -10,6 +10,7 @@ import { emptyDraft, calc } from "../../utils/draft";
 import { ReturnLine } from "../ReturnLine";
 import type { ReturnModalProps } from "@/types/myTools";
 import { Button } from "@/shared/components/Button";
+import { Input } from "@/shared/components/Input";
 
 // Qaytarma (bir və ya bir neçə): hər biri ayrıca sorğu olur, depo məsulu qəbul edəndə səndən çıxır
 export function ReturnModal({ holds, employeeId, onClose }: ReturnModalProps) {
@@ -47,7 +48,7 @@ export function ReturnModal({ holds, employeeId, onClose }: ReturnModalProps) {
           <ReturnLine key={h.id} h={h} d={drafts[h.id]} employeeId={employeeId} onChange={(d) => setDrafts((all) => ({ ...all, [h.id]: d }))} />
         ))}
       </ul>
-      <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Qeyd (istəyə görə)" aria-label="Qeyd" className="field mt-3 max-sm:!h-8 max-sm:!text-xs" />
+      <Input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Qeyd (istəyə görə)" aria-label="Qeyd" className="mt-3 max-sm:!h-8 max-sm:!text-xs" />
       <div className="mt-4 flex gap-2 max-sm:mt-3">
         <Button type="button" disabled={pending || !ready} onClick={submit} className="min-w-0 flex-1 max-sm:!h-8 max-sm:!px-2 max-sm:!text-xs">
           <Send size={15} /> {pending ? "Göndərilir..." : holds.length === 1 ? "Sorğu göndər" : `${holds.length} sorğu göndər`}

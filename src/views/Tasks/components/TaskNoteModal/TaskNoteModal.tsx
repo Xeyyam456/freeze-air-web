@@ -5,6 +5,7 @@ import type { TaskNoteModalProps } from "@/types/myTasks";
 import { useTaskNote } from "../../hooks/useTaskNote";
 import { ExistingFiles } from "../ExistingFiles";
 import { NoteFilePickers } from "../NoteFilePickers";
+import { Textarea } from "@/shared/components/Textarea";
 
 // Görülmüş tapşırığın altına təmir barədə yazı və akt/şəkil əlavə etmək, əvvəl qoyulanları dəyişmək və ya silmək.
 // İş artıq "Görülən işlər"dədir (✓ basılanda avtomatik düşüb): yazı həmin işin təsvirini yeniləyir (RPC task_set_note; yazı
@@ -21,7 +22,7 @@ export function TaskNoteModal(props: TaskNoteModalProps) {
 
       <form onSubmit={n.onSubmit} className="space-y-4">
         <Field label="Nə edildi?">
-          <textarea name="note" rows={4} defaultValue={task.note ?? ""} autoFocus className="field resize-none"
+          <Textarea name="note" rows={4} defaultValue={task.note ?? ""} autoFocus className="resize-none"
             placeholder="Məs. kompressor klapanı dəyişdirildi, qaz sızması aradan qalxdı, sistem yoxlanıldı" />
         </Field>
         <ExistingFiles saved={n.saved} removed={n.removed} onToggle={n.toggleRemove} />

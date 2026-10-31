@@ -14,6 +14,7 @@ import { ExistingFilesEditor } from "./components/ExistingFilesEditor";
 import { MaterialsUsed } from "./components/MaterialsUsed";
 import { NewWorkFiles } from "./components/NewWorkFiles";
 import { useWorkLogForm } from "./hooks/useWorkLogForm";
+import { Textarea } from "@/shared/components/Textarea";
 
 // Yeni iş və ya redaktə: tarix, yer, görülən iş, işlədilən material, akt/şəkil/video; yeni işdə qaralama saxlanır
 export function WorkLogForm(props: WorkLogFormProps) {
@@ -44,7 +45,7 @@ export function WorkLogForm(props: WorkLogFormProps) {
         </div>
 
         <Field label="Görülən iş">
-          <textarea name="description" rows={3} required className="field resize-none" defaultValue={existing?.description ?? draft?.description}
+          <Textarea name="description" rows={3} required className="resize-none" defaultValue={existing?.description ?? draft?.description}
             placeholder="Məs. 2 ədəd split kondisionerin profilaktikası, freon dolduruldu" />
         </Field>
 

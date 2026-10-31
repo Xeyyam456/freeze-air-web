@@ -9,6 +9,7 @@ import type { Movement, HistoryModalProps } from "@/types/depot";
 import { norm } from "@/shared/utils/norm";
 import { dayOf, timeOf, dayLabel, KINDS, FILTERS, amount } from "../../utils/journal";
 import { fetchJournal } from "@/services/depot/fetchJournal";
+import { Input } from "@/shared/components/Input";
 
 // Depo jurnalı: hər say dəyişikliyi (mədaxil, vermə, qaytarma, sərf, silinmə, sayım, təmir), kim edib, kim təsdiqləyib.
 // toolId verilsə yalnız həmin alətin hərəkətləri.
@@ -17,7 +18,6 @@ export function HistoryModal({ kind, toolId, toolName, onClose }: HistoryModalPr
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<(typeof FILTERS)[number][0]>("all");
   const q = norm(query.trim());
-
   const groups = useMemo(() => {
     const list = (rows ?? []).filter((m) =>
       (filter === "all" || m.kind === filter || (filter === "repair" && m.kind.startsWith("repair")))
@@ -41,7 +41,7 @@ export function HistoryModal({ kind, toolId, toolName, onClose }: HistoryModalPr
       <div className="space-y-3 px-6 pt-4">
         <label className="relative block">
           <Search size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
-          <input value={query} onChange={(e) => setQuery(e.target.value)} autoFocus placeholder="Usta, ad və ya kim yazıb..." className="field !pl-10 max-sm:!text-[13px] max-sm:placeholder:text-[12px]" aria-label="Jurnalda axtar" />
+          <Input value={query} onChange={(e) => setQuery(e.target.value)} autoFocus placeholder="Usta, ad və ya kim yazıb..." className="!pl-10 max-sm:!text-[13px] max-sm:placeholder:text-[12px]" aria-label="Jurnalda axtar" />
         </label>
         <div className="flex flex-wrap gap-1.5" role="tablist" aria-label="Hərəkət növü">
           {FILTERS.map(([v, label]) => (

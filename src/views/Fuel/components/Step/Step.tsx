@@ -4,6 +4,7 @@ import { useStep } from "../../hooks/useStep";
 import { timeBaku } from "../../shared/dates";
 import { SignedPhoto } from "../SignedPhoto";
 import { Button } from "@/shared/components/Button";
+import { Input } from "@/shared/components/Input";
 
 // Səhər / axşam addımı: şəkil + km; yazılıbsa göstərir, bu gün ərzində "Dəyiş" ilə düzəlmək olur
 export function Step(props: StepProps) {
@@ -46,8 +47,8 @@ export function Step(props: StepProps) {
           </label>
           <label className="min-w-[140px] flex-1">
             <span className="label">Spidometr (km)</span>
-            <input value={s.km} onChange={(e) => s.setKm(e.target.value)} inputMode="numeric" disabled={disabled}
-              placeholder={min !== undefined ? `≥ ${min}` : "məs. 52 000"} className="field tabular-nums" />
+            <Input value={s.km} onChange={(e) => s.setKm(e.target.value)} inputMode="numeric" disabled={disabled}
+              placeholder={min !== undefined ? `≥ ${min}` : "məs. 52 000"} className="tabular-nums" />
           </label>
           <div className="flex gap-2 max-xl:w-full max-xl:[&>button]:flex-1">
             {s.editing && <Button type="button" onClick={s.cancel} variant="soft">Ləğv et</Button>}

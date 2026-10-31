@@ -10,6 +10,7 @@ import { toast } from "@/lib/toast";
 import { MiniSeg } from "@/views/Depot/components/MiniSeg";
 import type { AskModalProps } from "@/types/myTools";
 import { Button } from "@/shared/components/Button";
+import { Input } from "@/shared/components/Input";
 
 // Alət istə (bir dəfəyə bir neçə; 0086): siyahıdan işarələ, hər birinin miqdarını yaz. Depoda olmayanı da istəmək olar
 // (depo məsulu görür ki, verə bilmir). Hamısı eyni batch ilə yazılır: depoda bir qrup kimi görünür.
@@ -51,7 +52,7 @@ export function AskModal({ stock, pendingIds, initialKind, onClose }: AskModalPr
         </div>
         <label className="relative min-w-[180px] flex-1">
           <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Axtar..." aria-label="Axtar" className="field !h-10 !rounded-xl !pl-9 !text-sm max-sm:!h-8 max-sm:!text-xs" />
+          <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Axtar..." aria-label="Axtar" className="!h-10 !rounded-xl !pl-9 !text-sm max-sm:!h-8 max-sm:!text-xs" />
         </label>
       </div>
       <ul className="mt-3 max-h-[min(360px,calc(100dvh-400px))] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden divide-y divide-line overflow-y-auto rounded-2xl border border-line px-3">
@@ -86,7 +87,7 @@ export function AskModal({ stock, pendingIds, initialKind, onClose }: AskModalPr
         })}
         {shown.length === 0 && <li className="muted py-6 text-center text-sm">Heç nə tapılmadı.</li>}
       </ul>
-      <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Nə üçün (istəyə görə)" aria-label="Nə üçün" className="field mt-3 max-sm:!h-8 max-sm:!text-xs" />
+      <Input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Nə üçün (istəyə görə)" aria-label="Nə üçün" className="mt-3 max-sm:!h-8 max-sm:!text-xs" />
       <div className="mt-4 flex gap-2 max-sm:mt-3">
         <Button type="button" disabled={pending || !valid} onClick={submit} className="min-w-0 flex-1 max-sm:!h-8 max-sm:!px-2 max-sm:!text-xs">
           <Send size={15} /> {pending ? "Göndərilir..." : chosen.length ? `İstə (${chosen.length})` : "Yuxarıdan seç"}

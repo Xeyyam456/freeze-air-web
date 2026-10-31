@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useData } from "@/lib/useData";
 import type { ErrorModel } from "@/types/errorCodes";
 import type { ErrorCode } from "@/types/errorCodes";
+import { Select } from "@/shared/components/Select";
 
 const norm = (s: string | null | undefined) =>
   (s ?? "").toLowerCase().replace(/ə/g, "e").replace(/ı/g, "i").replace(/ö/g, "o").replace(/ü/g, "u").replace(/ç/g, "c").replace(/ş/g, "s").replace(/ğ/g, "g");
@@ -41,11 +42,11 @@ export function ErrorCodeView() {
       <div className="flex flex-wrap gap-3">
         <label className="relative block w-full sm:w-72">
           <Box size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
-          <select value={modelId} onChange={(e) => setModelId(e.target.value)} aria-label="Kondisioner modeli"
-            className="field !h-14 cursor-pointer !rounded-[14px] !pl-11 font-semibold">
+          <Select value={modelId} onChange={(e) => setModelId(e.target.value)} aria-label="Kondisioner modeli"
+            className="!h-14 cursor-pointer !rounded-[14px] !pl-11 font-semibold">
             <option value="">Bütün modellər</option>
             {(data?.models ?? []).map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
-          </select>
+          </Select>
         </label>
         <div className="search min-w-0 flex-1 sm:min-w-64">
           <Search size={20} />
