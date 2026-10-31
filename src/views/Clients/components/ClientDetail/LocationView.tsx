@@ -2,6 +2,7 @@ import { MapPin, Navigation2 } from "lucide-react";
 import { mapEmbedUrl, wazeUrl } from "@/lib/navigation";
 import { PlaceLocationButton } from "@/shared/components/PlaceLocationButton";
 import type { LocationViewProps } from "@/types/clients";
+import { Card } from "@/shared/components/Card";
 
 // Filialı olmayan (sabit məkanlı) şirkət: siyahı əvəzinə yeri böyük xəritədə
 export function LocationView({ company }: LocationViewProps) {
@@ -9,11 +10,11 @@ export function LocationView({ company }: LocationViewProps) {
 
   if (!hasLocation) {
     return (
-      <div className="card flex flex-col items-center justify-center py-16 text-center">
+      <Card className="flex flex-col items-center justify-center py-16 text-center">
         <span className="icon-tile"><MapPin size={20} /></span>
         <p className="mt-3 font-semibold">Ünvan yazılmayıb</p>
         <p className="muted text-sm">Bu şirkətin ünvanı hələ daxil edilməyib.</p>
-      </div>
+      </Card>
     );
   }
 

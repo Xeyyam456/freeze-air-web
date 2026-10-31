@@ -13,6 +13,7 @@ import { HeroControls } from "./components/HeroControls";
 import { HeroTop } from "./components/HeroTop";
 import { TopPlaces } from "./components/TopPlaces";
 import { useMonthSummary } from "./hooks/useMonthSummary";
+import { Card } from "@/shared/components/Card";
 
 // Aylıq statistika (usta paneli): öz işlərim. Parlaq mavi hero kart (iri rəqəm + əyri), kalendar istilik xəritəsi, ən çox işlənən yerlər.
 export function MonthStats() {
@@ -30,7 +31,7 @@ export function MonthStats() {
   const stats = useMonthSummary(data, days);
 
   if (me === null) {
-    return <div className="card muted py-10 text-center text-sm">Hesabın əməkdaş kartına bağlı deyil, ona görə şəxsi statistika yoxdur.</div>;
+    return <Card className="muted py-10 text-center text-sm">Hesabın əməkdaş kartına bağlı deyil, ona görə şəxsi statistika yoxdur.</Card>;
   }
   const loading = me === undefined || !data || data.key !== `${ym.y}-${ym.m}`;
 
@@ -69,10 +70,10 @@ export function MonthStats() {
 
         {data && (
           <div className="grid gap-5 lg:grid-cols-[1.1fr_1fr]">
-            <section className="card">
+            <Card as="section">
               <h3 className="card-title mb-4 flex items-center gap-2"><CalendarDays size={18} className="text-primary" /> Ayın kalendarı</h3>
               <Heatmap y={ym.y} m={ym.m} counts={stats.counts} todayDay={isCurrent ? today.d : null} />
-            </section>
+            </Card>
             <TopPlaces top={stats.top} />
           </div>
         )}

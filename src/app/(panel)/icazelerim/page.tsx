@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { Page } from "@/components/Page";
 import { MyLeaves } from "@/views/Leaves/components/MyLeaves";
 import { createClient } from "@/lib/supabase/server";
+import { Card } from "@/shared/components/Card";
 
 // İcazələrim: ustanın öz icazə sorğuları (aktiv, gözləyən, tarixçə); "İcazə istə" qlobal pəncərəni açır (QuickActions)
 async function Content() {
@@ -14,7 +15,7 @@ export default function MyLeavesPage() {
   return (
     <Page title="İcazələrim" subtitle="İcazə sorğularım: gözləyən, təsdiqlənən və tarixçə">
       {/* Tarix render zamanı oxunur: Next 16 bunu Suspense daxilində tələb edir */}
-      <Suspense fallback={<div className="card muted">Yüklənir...</div>}>
+      <Suspense fallback={<Card className="muted">Yüklənir...</Card>}>
         <Content />
       </Suspense>
     </Page>

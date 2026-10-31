@@ -7,6 +7,7 @@ import type { UnitListProps } from "@/types/clients";
 import { useUnitList } from "../../hooks/useUnitList";
 import { EmptyUnits } from "./EmptyUnits";
 import { UnitSearch } from "./UnitSearch";
+import { Card } from "@/shared/components/Card";
 
 // Şirkətin filialları və ya marketin mağazaları: yapışan axtarış zolağı (+ "Koordinatsız" süzgəci) və kartlar; səhifə özü sürüşür
 export function UnitList({ units, kind }: UnitListProps) {
@@ -26,7 +27,7 @@ export function UnitList({ units, kind }: UnitListProps) {
       )}
 
       {l.filtered.length === 0 ? (
-        <div className="card muted mt-2 py-10 text-center text-sm">Bu axtarışa uyğun {k.unit} tapılmadı.</div>
+        <Card className="muted mt-2 py-10 text-center text-sm">Bu axtarışa uyğun {k.unit} tapılmadı.</Card>
       ) : (
         <div className="mt-1 grid grid-cols-[repeat(auto-fill,minmax(min(100%,380px),1fr))] gap-4 sm:max-lg:grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
           {l.filtered.map((u) => (

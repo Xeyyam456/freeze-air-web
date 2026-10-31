@@ -3,6 +3,7 @@ import type { DailySectionProps } from "@/types/myFuel";
 import { PERIOD_LABEL } from "../../shared/period";
 import { DailyFooter } from "../DailyFooter";
 import { DailyRow } from "../DailyRow";
+import { Card } from "@/shared/components/Card";
 
 // Günlük hesab: dövrün günləri (km zolağı, sərf, alınan) və yekun
 export function DailySection({ rows, payments, total, paid, period, range, today }: DailySectionProps) {
@@ -16,7 +17,7 @@ export function DailySection({ rows, payments, total, paid, period, range, today
       {rows.length === 0 ? (
         <p className="card muted py-8 text-center text-sm">Bu dövrdə yürüş yazılmayıb.</p>
       ) : (
-        <div className="card overflow-hidden !p-0">
+        <Card className="overflow-hidden !p-0">
           <div className="flex items-center justify-between border-b border-line bg-[#f8fafc] px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted max-sm:px-3">
             <span>Gün və yürüş</span><span>Sərf · alınan</span>
           </div>
@@ -27,7 +28,7 @@ export function DailySection({ rows, payments, total, paid, period, range, today
             ))}
           </ul>
           <DailyFooter total={total} paid={paid} range={range} />
-        </div>
+        </Card>
       )}
     </section>
   );

@@ -12,6 +12,7 @@ import { RequestsSection } from "../RequestsSection";
 import { ReturnModal } from "../ReturnModal";
 import { WhoHasCard } from "../WhoHasCard";
 import type { MyToolsProps } from "@/types/myTools";
+import { Card } from "@/shared/components/Card";
 
 // Alətlərim (usta paneli, 0084; 2026-10-23 yeni dizayn): üzərimdəki alət və materiallar. Usta depoya özü heç nə qoya bilmir:
 // verilən aləti "Aldım / Almadım" ilə təsdiqləyir, qaytarmaq və ya yeni alət istəmək üçün sorğu yazır;
@@ -21,7 +22,7 @@ export function MyTools({ employeeId }: MyToolsProps) {
   const data = useData("my-tools", () => (employeeId ? fetchMine(employeeId) : Promise.resolve(null)), [employeeId]);
   const s = useMyToolsState();
 
-  if (!employeeId) return <div className="card muted py-10 text-center text-sm">Hesabın əməkdaş kartına bağlı deyil.</div>;
+  if (!employeeId) return <Card className="muted py-10 text-center text-sm">Hesabın əməkdaş kartına bağlı deyil.</Card>;
   if (!data) return <div className="h-64 animate-pulse rounded-3xl bg-line/60" />;
 
   const v = { ...s, ...deriveMine(data, s) };

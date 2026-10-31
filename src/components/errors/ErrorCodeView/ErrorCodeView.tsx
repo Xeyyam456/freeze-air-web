@@ -7,6 +7,7 @@ import { useData } from "@/lib/useData";
 import type { ErrorModel } from "@/types/errorCodes";
 import type { ErrorCode } from "@/types/errorCodes";
 import { Select } from "@/shared/components/Select";
+import { Card } from "@/shared/components/Card";
 
 const norm = (s: string | null | undefined) =>
   (s ?? "").toLowerCase().replace(/ə/g, "e").replace(/ı/g, "i").replace(/ö/g, "o").replace(/ü/g, "u").replace(/ç/g, "c").replace(/ş/g, "s").replace(/ğ/g, "g");
@@ -55,15 +56,15 @@ export function ErrorCodeView() {
       </div>
 
       {data === null ? (
-        <div className="card muted py-10 text-center text-sm">Yüklənir...</div>
+        <Card className="muted py-10 text-center text-sm">Yüklənir...</Card>
       ) : data.codes.length === 0 ? (
-        <div className="card py-14 text-center">
+        <Card className="py-14 text-center">
           <span className="icon-tile mx-auto"><TriangleAlert size={20} /></span>
           <p className="mt-3 font-semibold">Hələ xəta kodu əlavə olunmayıb</p>
           <p className="muted text-sm">Xəta kodlarını admin əlavə edir.</p>
-        </div>
+        </Card>
       ) : filtered.length === 0 ? (
-        <div className="card muted py-10 text-center text-sm">Bu modeldə heç nə tapılmadı.</div>
+        <Card className="muted py-10 text-center text-sm">Bu modeldə heç nə tapılmadı.</Card>
       ) : (
         <ul className="grid gap-4 lg:grid-cols-2">
           {filtered.map((c) => (

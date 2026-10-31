@@ -1,13 +1,14 @@
 import { Avatar } from "@/shared/components/Avatar";
 import type { TeamEmployeeCardProps } from "@/types/myTasks";
 import { TeamTaskLine } from "../TeamTaskLine";
+import { Card } from "@/shared/components/Card";
 
 // Başqa ustanın tək tapşırıqları: "N/M görülüb", irəliləmə zolağı, tapşırıq sətirləri
 export function TeamEmployeeCard({ employee, items, logOf, onViewLog }: TeamEmployeeCardProps) {
   const liveItems = items.filter((t) => !t.cancelled_at);
   const done = liveItems.filter((t) => t.done).length;
   return (
-    <section className="card min-w-0 grow basis-[340px] !p-4 max-sm:!p-3">
+    <Card as="section" className="min-w-0 grow basis-[340px] !p-4 max-sm:!p-3">
       <header className="flex items-center gap-3">
         <Avatar employee={employee} className="!h-9 !w-9 !text-xs" />
         <span className="min-w-0 flex-1">
@@ -23,6 +24,6 @@ export function TeamEmployeeCard({ employee, items, logOf, onViewLog }: TeamEmpl
       <ul className="mt-3 space-y-2">
         {items.map((t) => <TeamTaskLine key={t.id} t={t} cancelled={!!t.cancelled_at} done={!!t.done} showNext logId={logOf(t)} onViewLog={onViewLog} />)}
       </ul>
-    </section>
+    </Card>
   );
 }

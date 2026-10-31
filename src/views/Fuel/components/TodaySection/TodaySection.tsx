@@ -2,6 +2,7 @@ import { Gauge } from "lucide-react";
 import type { TodaySectionProps } from "@/types/myFuel";
 import { DayResult } from "../DayResult";
 import { Step } from "../Step";
+import { Card } from "@/shared/components/Card";
 
 // Bu gün: səhər və axşam addımları; axşam km yazılandan sonra günün yekunu
 export function TodaySection({ loading, row, onSave }: TodaySectionProps) {
@@ -10,7 +11,7 @@ export function TodaySection({ loading, row, onSave }: TodaySectionProps) {
     <section>
       <h2 className="mb-3 flex items-center gap-2 text-base font-bold"><Gauge size={18} className="text-primary" /> Bu gün</h2>
       {loading ? (
-        <div className="card muted py-10 text-center text-sm">Yüklənir...</div>
+        <Card className="muted py-10 text-center text-sm">Yüklənir...</Card>
       ) : (
         <>
           <div className="flex flex-wrap gap-3 max-sm:flex-col max-sm:gap-2">

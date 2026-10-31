@@ -9,6 +9,7 @@ import { TeamSection } from "./components/TeamSection";
 import { WeekStrip } from "./components/WeekStrip";
 import { useTasksView } from "./hooks/useTasksView";
 import { placeOf } from "./utils/place";
+import { Card } from "@/shared/components/Card";
 
 // Tapşırıqlar: admin/rəhbərlik ustaya gün üçün iş verir (admin paneldə). Hamı görür; usta yalnız ÖZ tapşırığını "görüldü" işarələyir.
 // Düzülüş: həftə zolağı (gün seçimi, hər gündə say) → mənim günüm (halqa) + komandanın rəqəmləri → mənim tapşırıqlarım (iri kartlar) → komanda (usta kartları).
@@ -27,7 +28,7 @@ export function TasksView() {
       <WeekStrip day={v.day} today={v.today} from={v.from} rows={v.weekRows} me={v.me} onDay={v.setDay} />
 
       {data === null ? (
-        <div className="card muted py-16 text-center text-sm">Yüklənir...</div>
+        <Card className="muted py-16 text-center text-sm">Yüklənir...</Card>
       ) : v.live.length === 0 && v.mine.length === 0 && v.groups.length === 0 && v.teams.length === 0 ? (
         <EmptyDay day={v.day} today={v.today} />
       ) : (

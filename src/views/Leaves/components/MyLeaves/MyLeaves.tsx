@@ -6,6 +6,7 @@ import { useMyLeaveActions } from "../../queries/useMyLeaveActions";
 import { ActiveLeaves } from "../ActiveLeaves";
 import { LeaveHistory } from "../LeaveHistory";
 import { LeavesHero } from "../LeavesHero";
+import { Card } from "@/shared/components/Card";
 
 // İcazələrim: xülasə + "İcazə istə" (qlobal LeaveModal), aktiv və gözləyən sorğular, aylara görə tarixçə (statusla süzgəc). Realtime.
 export function MyLeaves({ employeeId }: MyLeavesProps) {
@@ -13,14 +14,14 @@ export function MyLeaves({ employeeId }: MyLeavesProps) {
   const { giveUp, cancel } = useMyLeaveActions();
 
   if (!employeeId) {
-    return <div className="card muted py-12 text-center text-sm">İcazə yalnız usta kartı olan hesabla istənilir.</div>;
+    return <Card className="muted py-12 text-center text-sm">İcazə yalnız usta kartı olan hesabla istənilir.</Card>;
   }
 
   return (
     <div className="space-y-6">
       <LeavesHero stats={m.stats} />
       {m.rows === null ? (
-        <div className="card muted py-12 text-center text-sm">Yüklənir...</div>
+        <Card className="muted py-12 text-center text-sm">Yüklənir...</Card>
       ) : (
         <>
           <ActiveLeaves items={m.active} today={m.today} onGiveUp={giveUp} onCancel={cancel} />

@@ -5,6 +5,7 @@ import type { PaymentsCardProps } from "@/types/myFuel";
 import { dayName } from "../../shared/dates";
 import { azn } from "../../shared/money";
 import { PaymentRow } from "../PaymentRow";
+import { Card } from "@/shared/components/Card";
 
 const total = (l: FuelPayment[]) => l.reduce((n, p) => n + Number(p.amount), 0);
 
@@ -20,7 +21,7 @@ export function PaymentsCard({ payments, onConfirm }: PaymentsCardProps) {
   for (const p of received) days.set(p.day, [...(days.get(p.day) ?? []), p]);
 
   return (
-    <div className="card overflow-hidden !p-0">
+    <Card className="overflow-hidden !p-0">
       <div className="flex items-center justify-between gap-3 border-b border-line bg-[linear-gradient(135deg,#ecfbf1,#ffffff)] px-4 py-3 max-sm:px-3 max-sm:py-2">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-wider text-muted">Cəmi aldığın</p>
@@ -59,6 +60,6 @@ export function PaymentsCard({ payments, onConfirm }: PaymentsCardProps) {
           <ChevronDown size={16} className={`transition-transform ${open ? "rotate-180" : ""}`} />
         </button>
       )}
-    </div>
+    </Card>
   );
 }

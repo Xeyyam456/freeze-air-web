@@ -2,7 +2,7 @@
 
 import { X } from "lucide-react";
 import { DatePicker } from "@/shared/components/DatePicker";
-import { Buttons, Field } from "@/components/forms";
+import { Buttons } from "@/components/forms";
 import { ConfirmModal } from "@/shared/components/ConfirmModal";
 import { Modal } from "@/shared/components/Modal";
 import type { WorkLogFormProps } from "@/types/myWork";
@@ -15,6 +15,7 @@ import { MaterialsUsed } from "./components/MaterialsUsed";
 import { NewWorkFiles } from "./components/NewWorkFiles";
 import { useWorkLogForm } from "./hooks/useWorkLogForm";
 import { Textarea } from "@/shared/components/Textarea";
+import { FormField } from "@/shared/components/FormField";
 
 // Yeni iş və ya redaktə: tarix, yer, görülən iş, işlədilən material, akt/şəkil/video; yeni işdə qaralama saxlanır
 export function WorkLogForm(props: WorkLogFormProps) {
@@ -35,19 +36,19 @@ export function WorkLogForm(props: WorkLogFormProps) {
 
       <form ref={formRef} onSubmit={onSubmit} onChange={() => saveDraft()} className="space-y-4">
         {draft && <DraftNotice onDiscard={() => { writeDraft(employeeId, null); onClose(); }} />}
-        <Field label="Tarix">
+        <FormField label="Tarix">
           <DatePicker name="work_date" defaultValue={existing?.work_date ?? draft?.work_date ?? today()} max={today()} required />
-        </Field>
+        </FormField>
 
         <div>
           <span className="label">Yer</span>
           <PlacePicker places={places} value={place} onChange={(p) => { setPlace(p); saveDraft({ place: p }); }} />
         </div>
 
-        <Field label="Görülən iş">
+        <FormField label="Görülən iş">
           <Textarea name="description" rows={3} required className="resize-none" defaultValue={existing?.description ?? draft?.description}
             placeholder="Məs. 2 ədəd split kondisionerin profilaktikası, freon dolduruldu" />
-        </Field>
+        </FormField>
 
         <MaterialsUsed held={held} used={used} onUse={use} />
         {existing && existing.files.length > 0 && <ExistingFilesEditor files={existing.files} removed={removed} onToggle={toggleRemove} />}

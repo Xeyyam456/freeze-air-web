@@ -8,6 +8,7 @@ import { MyDayStatsGrid } from "./components/MyDayStatsGrid";
 import { PresenceActions } from "./components/PresenceActions";
 import { SessionList } from "./components/SessionList";
 import { useMyDay } from "./hooks/useMyDay";
+import { Card } from "@/shared/components/Card";
 
 // Mənim bugünüm: davamiyyət ("İşə gəldim" / vəziyyət, "İcazə istə"), dörd göstərici (bu gün, bu ay, bugünkü tapşırıqlar, məndə olan alət/material) "İş əlavə et" üst zolaqdadır (hər səhifədə, components/panel/TopbarTools.tsx).
 // Əməkdaş kartı olmayan hesabda (məs. yalnız admin) görünmür. Tapşırıq dəyişəndə (Realtime) və iş yazılanda yenilənir.
@@ -25,7 +26,7 @@ export function MyDay() {
   );
 
   return (
-    <section className="card space-y-3 !py-4">
+    <Card as="section" className="space-y-3 !py-4">
       {leaving && me && <LeaveModal employeeId={me.id} onClose={() => setLeaving(false)} />}
       {calendar && me && <AttendanceCalendar employeeId={me.id} name={me.name} onClose={() => setCalendar(false)} />}
       <div className="flex flex-wrap items-center gap-3">
@@ -47,6 +48,6 @@ export function MyDay() {
       {/* Bugünkü seanslar: hər biri ayrıca sətir, nömrə ilə (yalnız yenidən işə çıxanda) */}
       {p && p.sessions.length > 1 && <SessionList sessions={p.sessions} />}
       <MyDayStatsGrid s={stats} />
-    </section>
+    </Card>
   );
 }

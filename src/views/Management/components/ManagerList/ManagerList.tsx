@@ -5,15 +5,16 @@ import type { ManagerListProps } from "@/types/management";
 import { rank, sortManagers } from "../../utils/rank";
 import { LeadCard } from "../LeadCard";
 import { ManagerCard } from "../ManagerCard";
+import { Card } from "@/shared/components/Card";
 
 // Rəhbərlik (yalnız baxış): müdir üstdə iri kartda, altında digər rəhbərlər; klik → məlumat pəncərəsi
 export function ManagerList({ managers }: ManagerListProps) {
   if (managers.length === 0) {
     return (
-      <div className="card py-12 text-center">
+      <Card className="py-12 text-center">
         <span className="icon-tile mx-auto"><UserCog size={20} /></span>
         <p className="mt-3 font-semibold">Hələ rəhbər əlavə olunmayıb</p>
-      </div>
+      </Card>
     );
   }
 

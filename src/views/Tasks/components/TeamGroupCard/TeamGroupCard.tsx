@@ -1,6 +1,7 @@
 import { Avatar } from "@/shared/components/Avatar";
 import type { TeamGroupCardProps } from "@/types/myTasks";
 import { TeamTaskLine } from "../TeamTaskLine";
+import { Card } from "@/shared/components/Card";
 
 // Başqalarının qrup tapşırığı: üzvlər birlikdə, tapşırıq bir sətir
 export function TeamGroupCard({ g, employees, logOf, onViewLog }: TeamGroupCardProps) {
@@ -9,7 +10,7 @@ export function TeamGroupCard({ g, employees, logOf, onViewLog }: TeamGroupCardP
   const done = !cancelled && g.live.every((x) => x.done);
   const members = g.live.map((x) => employees.find((e) => e.id === x.employee_id)).filter((e) => !!e);
   return (
-    <section className="card min-w-0 grow basis-[340px] !p-4 max-sm:!p-3">
+    <Card as="section" className="min-w-0 grow basis-[340px] !p-4 max-sm:!p-3">
       <header className="flex items-center gap-3">
         <span className="flex -space-x-2.5">
           {members.map((e) => <Avatar key={e.id} employee={e} className="!h-9 !w-9 !text-xs ring-2 ring-white" />)}
@@ -27,6 +28,6 @@ export function TeamGroupCard({ g, employees, logOf, onViewLog }: TeamGroupCardP
       <ul className="mt-3 space-y-2">
         <TeamTaskLine t={t} cancelled={cancelled} done={done} showNext={false} logId={logOf(t)} onViewLog={onViewLog} />
       </ul>
-    </section>
+    </Card>
   );
 }

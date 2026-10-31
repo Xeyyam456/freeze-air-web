@@ -3,6 +3,7 @@ import { formatDateAz } from "@/shared/utils/formatDateAz";
 import type { WeekStripProps } from "@/types/myTasks";
 import { shift, WEEKDAYS, weekRange } from "../../utils/days";
 import { Button } from "@/shared/components/Button";
+import { Card } from "@/shared/components/Card";
 
 // Həftə zolağı: 7 gün, hər gündə tapşırıq sayı; mənim tapşırığım olan gündə nöqtə
 export function WeekStrip({ day, today, from, rows, me, onDay }: WeekStripProps) {
@@ -10,7 +11,7 @@ export function WeekStrip({ day, today, from, rows, me, onDay }: WeekStripProps)
   // Həftədə heç bir gündə tapşırıq yoxdursa say xanası yer tutmur (seçilmiş gün qırmızı-mavi boş yerlə hündürləşirdi)
   const weekHas = rows.some((r) => days.includes(r.task_date));
   return (
-    <section className="card !p-3">
+    <Card as="section" className="!p-3">
       <div className="mb-2 flex items-center gap-2 px-1 max-sm:flex-nowrap">
         <button type="button" onClick={() => onDay(shift(day, -7))} className="icon-btn" aria-label="Əvvəlki həftə"><ChevronLeft size={18} /></button>
         <p className="whitespace-nowrap text-sm font-bold">{weekRange(from)}</p>
@@ -38,6 +39,6 @@ export function WeekStrip({ day, today, from, rows, me, onDay }: WeekStripProps)
           );
         })}
       </div>
-    </section>
+    </Card>
   );
 }
