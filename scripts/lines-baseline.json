@@ -1,6 +1,4 @@
 {
-  "app/login/page.tsx": 112,
   "components/DatePicker.tsx": 194,
-  "components/panel/CommandMenu.tsx": 151,
   "components/ToolPicker.tsx": 158
 }
