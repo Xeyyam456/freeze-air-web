@@ -1,0 +1,28 @@
+// Saytın sabit mətnlərinin standart dəyərləri (əlaqə)
+export const CONTACT_TEXTS = {
+  // Əlaqə
+  "contact.title": "Əlaqə",
+  "contact.lead": "Obyektinizə usta lazımdırsa və ya müqavilə bağlamaq istəyirsinizsə, zəng edin.",
+  "contact.call_label": "Bizə zəng edin",
+  "contact.call": "Zəng et",
+  "contact.whatsapp": "WhatsApp",
+  "contact.address": "Ünvan",
+  "contact.hours": "İş saatları",
+  "contact.email": "E-poçt",
+  "contact.map_reset": "Ünvana qayıt",
+  "contact.route": "Marşrut qur",
+  "contact.route_loading": "Yeriniz təyin olunur...",
+  "contact.route_denied": "Yerinizi təyin etmək olmadı. Brauzerdə məkana icazə verin.",
+  "contact.route_open": "Naviqasiyanı aç",
+  "contact.waze": "Waze ilə aç",
+  "form.title": "Bizə yazın",
+  "form.lead": "Mesajınızı yazın, sizə özümüz zəng edək.",
+  "form.name": "Adınız",
+  "form.phone": "Telefon",
+  "form.email": "E-poçt (istəyə bağlı)",
+  "form.message": "Nə lazımdır? Obyekt, ünvan, kondisionerin növü...",
+  "form.submit": "Göndər",
+  "form.sending": "Göndərilir...",
+  "form.success_title": "Mesajınız göndərildi",
+  "form.success_text": "Tezliklə sizinlə əlaqə saxlayacağıq. Təcili işdirsə, zəng edin.",
+} as const;

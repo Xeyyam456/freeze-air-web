@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { EquipmentShowcase } from "@/components/landing/EquipmentShowcase";
+import { EquipmentShowcase } from "@/views/Site/Equipment/components/EquipmentShowcase";
 import { PageIntro } from "@/components/landing/PageIntro";
 import { getEquipment } from "@/lib/site-content";
 import { getTexts, pageTitle } from "@/lib/site-texts";

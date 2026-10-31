@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { ContactForm } from "@/components/landing/ContactForm";
-import { ContactMap } from "@/components/landing/ContactMap";
+import { ContactMap } from "@/views/Site/Contact/components/ContactMap";
 import { PageIntro } from "@/components/landing/PageIntro";
 import { Reveal } from "@/components/landing/Reveal";
 import { WhatsAppIcon } from "@/components/landing/WhatsAppIcon";

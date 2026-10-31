@@ -1,18 +1,6 @@
 {
-  "app/(site)/xidmet/[slug]/page.tsx": 204,
-  "app/(site)/xidmetler/[slug]/page.tsx": 189,
-  "app/(site)/xidmetler/page.tsx": 132,
-  "app/(site)/page.tsx": 295,
-  "app/(site)/ustalarimiz/page.tsx": 133,
   "app/login/page.tsx": 112,
   "components/DatePicker.tsx": 194,
-  "components/landing/AirflowCanvas.tsx": 126,
-  "components/landing/ContactMap.tsx": 106,
-  "components/landing/EquipmentShowcase.tsx": 126,
-  "components/landing/SiteFooter.tsx": 145,
-  "components/landing/TrustSections.tsx": 129,
   "components/panel/CommandMenu.tsx": 151,
-  "components/ToolPicker.tsx": 158,
-  "lib/site-settings.ts": 136,
-  "lib/site-texts.ts": 187
+  "components/ToolPicker.tsx": 158
 }
