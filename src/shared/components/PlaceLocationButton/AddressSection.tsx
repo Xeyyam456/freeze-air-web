@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import type { PlaceSectionProps } from "@/types/clients";
+import { Button } from "@/shared/components/Button";
 
 // 1) Ünvan: yerdə olmasan da dəyişmək olar
 export function AddressSection({ loc }: PlaceSectionProps) {
@@ -8,9 +9,9 @@ export function AddressSection({ loc }: PlaceSectionProps) {
       <span className="label">Dəqiq ünvan</span>
       <textarea value={loc.address} onChange={(e) => loc.setAddress(e.target.value)} rows={2} maxLength={300} className="field resize-none" placeholder="Məs. Bakı, Nəsimi r., Neftçilər pr. 120" />
       <p className="muted mt-1 text-xs">Mağazada olmasan belə, düzgün ünvanı bilirsənsə yaza bilərsən.</p>
-      <button type="button" disabled={!loc.addrChanged || loc.busy !== null} onClick={() => loc.save("addr")} className="btn btn-secondary btn-sm mt-2 w-full">
+      <Button type="button" disabled={!loc.addrChanged || loc.busy !== null} onClick={() => loc.save("addr")} variant="secondary" size="sm" className="mt-2 w-full">
         <Check size={14} /> {loc.busy === "addr" ? "..." : "Ünvanı yadda saxla"}
-      </button>
+      </Button>
     </section>
   );
 }

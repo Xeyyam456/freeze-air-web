@@ -5,6 +5,7 @@ import { Navigation, Navigation2, X } from "lucide-react";
 import { directionsUrl, wazeUrl } from "@/lib/navigation";
 import { Modal } from "@/shared/components/Modal";
 import type { NavButtonPlace } from "@/types/shared";
+import { Button } from "@/shared/components/Button";
 
 // "Naviqator" (yalnız telefonda, < 640): filialın/mağazanın ünvanına getmək üçün Waze və ya Google Maps seçimi.
 // Seçim pəncərədə iki iri düymə; hər biri telefonda öz tətbiqini açır (yoxdursa brauzerdə).
@@ -14,10 +15,10 @@ export function NavButton({ place }: { place: NavButtonPlace }) {
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} disabled={!hasLocation} title={hasLocation ? undefined : "Nə ünvan, nə koordinat yazılıb"}
-        className="btn btn-primary btn-sm !h-9 w-full sm:hidden">
+      <Button type="button" onClick={() => setOpen(true)} disabled={!hasLocation} title={hasLocation ? undefined : "Nə ünvan, nə koordinat yazılıb"}
+        size="sm" className="!h-9 w-full sm:hidden">
         <Navigation size={14} /> Naviqator
-      </button>
+      </Button>
 
       {open && (
         <Modal onClose={() => setOpen(false)} labelledBy="nav-title" className="!max-w-sm">

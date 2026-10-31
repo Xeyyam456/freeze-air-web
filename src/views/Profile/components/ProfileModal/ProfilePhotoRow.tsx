@@ -2,6 +2,7 @@ import { ImagePlus, Trash2 } from "lucide-react";
 import { initials } from "@/lib/experience";
 import type { ProfileButtonProps } from "@/types/profile";
 import { useProfilePhoto } from "../../hooks/useProfilePhoto";
+import { Button } from "@/shared/components/Button";
 
 // Şəkil sətri: önizləmə, "Yüklə / Dəyiş", sil
 export function ProfilePhotoRow({ me }: ProfileButtonProps) {
@@ -19,9 +20,9 @@ export function ProfilePhotoRow({ me }: ProfileButtonProps) {
       </div>
       <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only"
         onChange={(e) => onFile(e.target.files?.[0])} />
-      <button type="button" onClick={() => inputRef.current?.click()} disabled={pending} className="btn btn-secondary btn-sm max-sm:flex-1">
+      <Button type="button" onClick={() => inputRef.current?.click()} disabled={pending} variant="secondary" size="sm" className="max-sm:flex-1">
         <ImagePlus size={14} /> {pending ? "..." : photoUrl ? "Dəyiş" : "Yüklə"}
-      </button>
+      </Button>
       {photoUrl && (
         <button type="button" onClick={onRemove} disabled={pending} className="icon-btn icon-btn-danger" title="Şəkli sil" aria-label="Şəkli sil">
           <Trash2 size={16} />

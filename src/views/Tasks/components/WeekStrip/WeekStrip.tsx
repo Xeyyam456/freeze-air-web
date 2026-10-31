@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { formatDateAz } from "@/shared/utils/formatDateAz";
 import type { WeekStripProps } from "@/types/myTasks";
 import { shift, WEEKDAYS, weekRange } from "../../utils/days";
+import { Button } from "@/shared/components/Button";
 
 // Həftə zolağı: 7 gün, hər gündə tapşırıq sayı; mənim tapşırığım olan gündə nöqtə
 export function WeekStrip({ day, today, from, rows, me, onDay }: WeekStripProps) {
@@ -15,7 +16,7 @@ export function WeekStrip({ day, today, from, rows, me, onDay }: WeekStripProps)
         <p className="whitespace-nowrap text-sm font-bold">{weekRange(from)}</p>
         <button type="button" onClick={() => onDay(shift(day, 7))} className="icon-btn" aria-label="Sonrakı həftə"><ChevronRight size={18} /></button>
         <p className="muted ml-2 truncate text-sm max-sm:hidden">{day === today ? "Bu gün" : formatDateAz(day)}</p>
-        {day !== today && <button type="button" onClick={() => onDay(today)} className="btn btn-soft btn-sm ml-auto shrink-0 whitespace-nowrap max-sm:!h-7 max-sm:!px-2.5"><span className="max-sm:hidden">Bu günə qayıt</span><span className="sm:hidden">Bu gün</span></button>}
+        {day !== today && <Button type="button" onClick={() => onDay(today)} variant="soft" size="sm" className="ml-auto shrink-0 whitespace-nowrap max-sm:!h-7 max-sm:!px-2.5"><span className="max-sm:hidden">Bu günə qayıt</span><span className="sm:hidden">Bu gün</span></Button>}
       </div>
       <div className="grid grid-cols-7 gap-1.5">
         {days.map((d, i) => {

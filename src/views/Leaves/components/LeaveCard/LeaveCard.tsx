@@ -6,6 +6,7 @@ import { leaveWorkdays } from "@/shared/utils/attendance/leaveWorkdays";
 import type { LeaveCardProps } from "@/types/leaves";
 import { stamp } from "../../utils/stamp";
 import { statusOf } from "../../utils/statusOf";
+import { Button } from "@/shared/components/Button";
 
 // Bir sorğunun kartı: tarix bloku, gün sayı, səbəb, vəziyyət; aktivlərdə "Ehtiyac qalmadı" / "Geri götür"
 export function LeaveCard({ leave: l, today, onGiveUp, onCancel }: LeaveCardProps) {
@@ -29,12 +30,12 @@ export function LeaveCard({ leave: l, today, onGiveUp, onCancel }: LeaveCardProp
         </div>
         <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${st.cls}`}>{st.text}</span>
         {onGiveUp && (
-          <button type="button" onClick={onGiveUp} className="btn btn-soft btn-sm shrink-0 max-sm:w-full max-sm:!h-7 max-sm:!text-[13px]" title="İcazəni ləğv et, işə gəl">Ehtiyac qalmadı</button>
+          <Button type="button" onClick={onGiveUp} variant="soft" size="sm" className="shrink-0 max-sm:w-full max-sm:!h-7 max-sm:!text-[13px]" title="İcazəni ləğv et, işə gəl">Ehtiyac qalmadı</Button>
         )}
         {onCancel && (
-          <button type="button" onClick={onCancel} className="btn btn-soft btn-sm shrink-0 text-danger max-sm:w-full max-sm:!h-7 max-sm:!text-[13px]" title="Sorğunu geri götür">
+          <Button type="button" onClick={onCancel} variant="soft" size="sm" className="shrink-0 text-danger max-sm:w-full max-sm:!h-7 max-sm:!text-[13px]" title="Sorğunu geri götür">
             <Trash2 size={14} /> Geri götür
-          </button>
+          </Button>
         )}
       </div>
     </li>

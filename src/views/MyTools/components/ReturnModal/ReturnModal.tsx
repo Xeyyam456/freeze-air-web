@@ -9,6 +9,7 @@ import type { Draft } from "@/types/myTools/Draft";
 import { emptyDraft, calc } from "../../utils/draft";
 import { ReturnLine } from "../ReturnLine";
 import type { ReturnModalProps } from "@/types/myTools";
+import { Button } from "@/shared/components/Button";
 
 // Qaytarma (bir və ya bir neçə): hər biri ayrıca sorğu olur, depo məsulu qəbul edəndə səndən çıxır
 export function ReturnModal({ holds, employeeId, onClose }: ReturnModalProps) {
@@ -48,10 +49,10 @@ export function ReturnModal({ holds, employeeId, onClose }: ReturnModalProps) {
       </ul>
       <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Qeyd (istəyə görə)" aria-label="Qeyd" className="field mt-3 max-sm:!h-8 max-sm:!text-xs" />
       <div className="mt-4 flex gap-2 max-sm:mt-3">
-        <button type="button" disabled={pending || !ready} onClick={submit} className="btn btn-primary min-w-0 flex-1 max-sm:!h-8 max-sm:!px-2 max-sm:!text-xs">
+        <Button type="button" disabled={pending || !ready} onClick={submit} className="min-w-0 flex-1 max-sm:!h-8 max-sm:!px-2 max-sm:!text-xs">
           <Send size={15} /> {pending ? "Göndərilir..." : holds.length === 1 ? "Sorğu göndər" : `${holds.length} sorğu göndər`}
-        </button>
-        <button type="button" onClick={onClose} className="btn btn-cancel max-sm:!h-8 max-sm:!px-3 max-sm:!text-xs">Ləğv et</button>
+        </Button>
+        <Button type="button" onClick={onClose} variant="cancel" className="max-sm:!h-8 max-sm:!px-3 max-sm:!text-xs">Ləğv et</Button>
       </div>
     </Modal>
   );

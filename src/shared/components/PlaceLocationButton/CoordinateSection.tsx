@@ -1,6 +1,7 @@
 import { Check, LocateFixed } from "lucide-react";
 import type { PlaceSectionProps } from "@/types/clients";
 import { FixPreview } from "./FixPreview";
+import { Button } from "@/shared/components/Button";
 
 // 2) Koordinat: GPS ilə (həmin yerdə olanda) və ya əl ilə
 export function CoordinateSection({ place, loc }: PlaceSectionProps) {
@@ -13,9 +14,9 @@ export function CoordinateSection({ place, loc }: PlaceSectionProps) {
       </p>
       <p className="muted mt-1 text-xs">Həmin yerdəsənsə açıq yerdə dayan və «Mövcud yerimi tap» bas; yerdə deyilsənsə koordinatı aşağıda əl ilə yaz.</p>
 
-      <button type="button" onClick={loc.find} disabled={loc.locating} className="btn btn-soft btn-sm mt-2 w-full">
+      <Button type="button" onClick={loc.find} disabled={loc.locating} variant="soft" size="sm" className="mt-2 w-full">
         <LocateFixed size={14} className={loc.locating ? "animate-pulse" : ""} /> {loc.locating ? "Yer təyin olunur..." : fix && !fix.manual ? "Yenidən tap" : "Mövcud yerimi tap"}
-      </button>
+      </Button>
 
       <div className="mt-3">
         <span className="label">Və ya koordinatı əl ilə yaz</span>
@@ -29,9 +30,9 @@ export function CoordinateSection({ place, loc }: PlaceSectionProps) {
       {fix && <FixPreview fix={fix} goodFix={loc.goodFix} dist={loc.dist} />}
 
       {fix && (
-        <button type="button" disabled={!loc.goodFix || loc.busy !== null} onClick={() => loc.setConfirm(true)} className="btn btn-primary btn-sm mt-2 w-full">
+        <Button type="button" disabled={!loc.goodFix || loc.busy !== null} onClick={() => loc.setConfirm(true)} size="sm" className="mt-2 w-full">
           <Check size={14} /> Bu koordinatı yaz
-        </button>
+        </Button>
       )}
     </section>
   );

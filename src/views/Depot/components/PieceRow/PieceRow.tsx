@@ -7,6 +7,7 @@ import { dateAz } from "../../utils/dates";
 import { fmt } from "../../utils/quantity";
 import type { PieceRowProps } from "@/types/depot";
 import { PieceGiveModal } from "../PieceGiveModal";
+import { Button } from "@/shared/components/Button";
 
 // Depodakı bir parça / açıq balon: nə qədər, kimdən qalıb, nə vaxt; ustaya vermək və ya silinmə aktı (təsdiqdən sonra silinir)
 export function PieceRow({ piece, tool, employees, canManage, writeoffPending }: PieceRowProps) {
@@ -28,7 +29,7 @@ export function PieceRow({ piece, tool, employees, canManage, writeoffPending }:
       {writeoffPending && <span className="shrink-0 rounded-full bg-danger-soft px-2 py-0.5 text-[11px] font-bold text-danger">silinmə gözləyir</span>}
       {canManage && (
         <>
-          <button type="button" onClick={() => setGiving(true)} className="btn btn-secondary btn-sm !h-8">Ver</button>
+          <Button type="button" onClick={() => setGiving(true)} variant="secondary" size="sm" className="!h-8">Ver</Button>
           {!writeoffPending && (
             <button type="button" onClick={() => setWriteoff(true)} className="icon-btn icon-btn-danger" title="Silinmə aktı (sərf olunub)" aria-label="Silinmə aktı">
               <Trash2 size={15} />

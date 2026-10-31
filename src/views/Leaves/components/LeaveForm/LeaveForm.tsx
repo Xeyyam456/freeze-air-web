@@ -4,6 +4,7 @@ import { Send } from "lucide-react";
 import { DatePicker } from "@/shared/components/DatePicker";
 import type { LeaveFormProps } from "@/types/leaves";
 import { useLeaveForm } from "../../hooks/useLeaveForm";
+import { Button } from "@/shared/components/Button";
 
 // Tarix aralığı + səbəb + göndər. Dar ekranda (< 440) iki tarix alt-alta, ad solda: yan-yana "24 oktyabr 2026" kəsilirdi
 export function LeaveForm({ employeeId }: LeaveFormProps) {
@@ -26,7 +27,7 @@ export function LeaveForm({ employeeId }: LeaveFormProps) {
         <span className="label">Səbəb <span className="muted font-normal">(istəyə görə)</span></span>
         <textarea value={f.reason} onChange={(e) => f.setReason(e.target.value)} rows={2} className="field resize-none" placeholder="Məs. ailə işi, xəstəlik" />
       </label>
-      <button type="submit" disabled={f.pending} className="btn btn-primary w-full max-sm:!h-9 max-sm:!text-[13px]"><Send size={16} /> {f.pending ? "..." : "Sorğunu göndər"}</button>
+      <Button type="submit" disabled={f.pending} className="w-full max-sm:!h-9 max-sm:!text-[13px]"><Send size={16} /> {f.pending ? "..." : "Sorğunu göndər"}</Button>
     </form>
   );
 }

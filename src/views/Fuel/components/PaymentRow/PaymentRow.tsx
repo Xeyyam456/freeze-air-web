@@ -2,6 +2,7 @@ import { AlertTriangle, Check, HandCoins, X } from "lucide-react";
 import type { PaymentRowProps } from "@/types/myFuel";
 import { dayName } from "../../shared/dates";
 import { azn } from "../../shared/money";
+import { Button } from "@/shared/components/Button";
 
 // Ödəniş: məbləğ, tarix, qeyd; "Aldım" / "Almadım" (fuel_payment_confirm). Cavab dəyişdirilə bilər.
 export function PaymentRow({ p, onConfirm, hideDay = false }: PaymentRowProps) {
@@ -21,9 +22,9 @@ export function PaymentRow({ p, onConfirm, hideDay = false }: PaymentRowProps) {
       {p.status !== "received" && (
         // Telefonda düymələr alt sətirdə, bərabər enli
         <span className="flex gap-1.5 max-sm:w-full max-sm:[&>button]:!h-8 max-sm:[&>button]:flex-1">
-          <button type="button" onClick={() => onConfirm(true)} className="btn btn-sm bg-ok text-white hover:brightness-110"><Check size={14} /> Aldım</button>
+          <Button type="button" onClick={() => onConfirm(true)} variant="plain" size="sm" className="bg-ok text-white hover:brightness-110"><Check size={14} /> Aldım</Button>
           {p.status !== "disputed" && (
-            <button type="button" onClick={() => onConfirm(false)} className="btn btn-soft btn-sm text-danger"><X size={14} /> Almadım</button>
+            <Button type="button" onClick={() => onConfirm(false)} variant="soft" size="sm" className="text-danger"><X size={14} /> Almadım</Button>
           )}
         </span>
       )}

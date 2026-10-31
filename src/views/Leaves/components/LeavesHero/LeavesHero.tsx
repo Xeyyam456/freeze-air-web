@@ -4,6 +4,7 @@ import { CalendarOff, Plus } from "lucide-react";
 import { emitPanel, PANEL_EVENTS } from "@/components/panel/nav";
 import { leaveRange } from "@/shared/utils/attendance/leaveRange";
 import type { LeavesHeroProps } from "@/types/leaves";
+import { Button } from "@/shared/components/Button";
 
 // Tünd xülasə: bu il / bu ay icazə günü, növbəti icazə, gözləyən + "İcazə istə"
 export function LeavesHero({ stats }: LeavesHeroProps) {
@@ -26,9 +27,9 @@ export function LeavesHero({ stats }: LeavesHeroProps) {
         </div>
         <div><dt className="text-xs text-white/55">Gözləyən</dt><dd className={`text-2xl font-extrabold tabular-nums ${stats.pending ? "text-frost" : ""}`}>{stats.pending}</dd></div>
       </dl>
-      <button type="button" onClick={() => emitPanel(PANEL_EVENTS.leave)} className="btn shrink-0 !bg-white !text-[#0c1b36] hover:!bg-frost max-sm:w-full max-sm:!h-7 max-sm:!text-[13px]">
+      <Button type="button" onClick={() => emitPanel(PANEL_EVENTS.leave)} variant="plain" className="shrink-0 !bg-white !text-[#0c1b36] hover:!bg-frost max-sm:w-full max-sm:!h-7 max-sm:!text-[13px]">
         <Plus size={16} /> İcazə istə
-      </button>
+      </Button>
     </section>
   );
 }

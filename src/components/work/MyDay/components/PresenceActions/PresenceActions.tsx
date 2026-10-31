@@ -3,6 +3,7 @@ import { presenceText } from "@/shared/utils/attendance/presenceText";
 import { timeBaku } from "@/shared/utils/timeBaku";
 import type { PresenceActionsProps } from "@/types/myWork";
 import { durShort } from "../../utils/dayTime";
+import { Button } from "@/shared/components/Button";
 
 const pill = (cls: string, text: string) => <span title={text} className={`dpill rounded-full px-3 py-1.5 text-center text-xs font-bold max-sm:col-span-2 max-sm:py-2 sm:max-lg:min-w-0 sm:max-lg:truncate ${cls}`}>{text}</span>;
 
@@ -20,33 +21,33 @@ export function PresenceActions({ day, checking, onCheckIn, onCheckOut, onGiveUp
 
   if (!day) return <span className="muted text-sm">…</span>;
   if (day.status === "pending") return (
-    <button type="button" onClick={onCheckIn} disabled={checking} className="btn btn-sm !h-9 bg-ok text-white hover:brightness-110">
+    <Button type="button" onClick={onCheckIn} disabled={checking} variant="plain" size="sm" className="!h-9 bg-ok text-white hover:brightness-110">
       <LogIn size={15} /> {checking ? "..." : "İşə gəldim"}
-    </button>
+    </Button>
   );
   if (day.status === "present" && p && !p.out) return (
     <>
       {pill("bg-ok-soft text-ok", status("İşdəsən"))}
-      <button type="button" onClick={onCheckOut} disabled={checking} className="btn btn-sm !h-9 bg-navy text-white hover:brightness-125">
+      <Button type="button" onClick={onCheckOut} disabled={checking} variant="plain" size="sm" className="!h-9 bg-navy text-white hover:brightness-125">
         <LogOut size={15} /> {checking ? "..." : "İşi bitirdim"}
-      </button>
+      </Button>
     </>
   );
   if (day.status === "present" && p) return (
     <>
       {pill("bg-bg text-ink", status("İşi bitirdin"))}
       {/* Təcili iş çıxsa yenidən işə çıxır: yeni seans açılır (0066), sonra yenə "İşi bitirdim" */}
-      <button type="button" onClick={onCheckIn} disabled={checking} className="btn btn-soft btn-sm !h-9" title="Yeni seans açılır">
+      <Button type="button" onClick={onCheckIn} disabled={checking} variant="soft" size="sm" className="!h-9" title="Yeni seans açılır">
         <LogIn size={15} /> {checking ? "..." : "Yenidən işə çıxdım"}
-      </button>
+      </Button>
     </>
   );
   if (day.status === "leave") return (
     <>
       {pill("bg-violet-50 text-violet-700", "Bu gün icazəlisən")}
-      <button type="button" onClick={onGiveUpLeave} disabled={checking} className="btn btn-soft btn-sm !h-9" title="İcazə ləğv olunur, işə gəlmə yazılır">
+      <Button type="button" onClick={onGiveUpLeave} disabled={checking} variant="soft" size="sm" className="!h-9" title="İcazə ləğv olunur, işə gəlmə yazılır">
         <LogIn size={15} /> {checking ? "..." : "İcazəyə ehtiyac qalmadı, işdəyəm"}
-      </button>
+      </Button>
     </>
   );
   // Admin bu günü "işdə olmayıb" qeyd edib (0065): usta işə gəldim basa bilmir, səhvdirsə admin geri alır
@@ -55,9 +56,9 @@ export function PresenceActions({ day, checking, onCheckIn, onCheckOut, onGiveUp
   return (
     <>
       {pill("bg-slate-200 text-slate-600", "Bazar: iş günü deyil")}
-      <button type="button" onClick={onCheckIn} disabled={checking} className="btn btn-soft btn-sm !h-9" title="Bazar günü işə çağırılmısansa">
+      <Button type="button" onClick={onCheckIn} disabled={checking} variant="soft" size="sm" className="!h-9" title="Bazar günü işə çağırılmısansa">
         <LogIn size={15} /> {checking ? "..." : "Bazar günü işdəyəm"}
-      </button>
+      </Button>
     </>
   );
 }

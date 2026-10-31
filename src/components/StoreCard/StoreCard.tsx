@@ -3,6 +3,7 @@ import { MapButton } from "../MapButton";
 import { NavButton } from "../NavButton";
 import { PlaceLocationButton } from "@/shared/components/PlaceLocationButton";
 import type { StoreCardProps } from "@/types/shared";
+import { Button } from "@/shared/components/Button";
 
 export function StoreCard({ store, companyName, action, onHistory }: StoreCardProps) {
   const hasCoords = store.lat != null && store.lng != null;
@@ -40,9 +41,9 @@ export function StoreCard({ store, companyName, action, onHistory }: StoreCardPr
         {/* Planşet/kompüterdə "Konumu düzəlt" eyni sətirdə solda; telefonda aşağıda tam endə (Naviqatorla) */}
         <PlaceLocationButton place={{ kind: "store", id: store.id, code: store.code, name: store.name, address: store.address, lat: store.lat, lng: store.lng }} className="btn btn-soft btn-sm mr-auto max-sm:!hidden" />
         {onHistory && (
-          <button type="button" onClick={onHistory} className="btn btn-soft btn-sm" title="Bu yerdə görülən işlər">
+          <Button type="button" onClick={onHistory} variant="soft" size="sm" title="Bu yerdə görülən işlər">
             <History size={14} /> Tarixçə
-          </button>
+          </Button>
         )}
         <MapButton place={store} />
       </div>

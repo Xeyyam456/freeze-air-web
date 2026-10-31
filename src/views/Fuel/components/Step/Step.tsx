@@ -3,6 +3,7 @@ import type { StepProps } from "@/types/myFuel";
 import { useStep } from "../../hooks/useStep";
 import { timeBaku } from "../../shared/dates";
 import { SignedPhoto } from "../SignedPhoto";
+import { Button } from "@/shared/components/Button";
 
 // Səhər / axşam addımı: şəkil + km; yazılıbsa göstərir, bu gün ərzində "Dəyiş" ilə düzəlmək olur
 export function Step(props: StepProps) {
@@ -22,7 +23,7 @@ export function Step(props: StepProps) {
           <span className="muted block truncate text-xs max-sm:text-[11px]">{s.done && at ? `Yazılıb: ${timeBaku(at)}` : disabled ? "Əvvəl səhər km-ini yaz" : "Spidometrin şəkli + km"}</span>
         </span>
         {s.done && !disabled && (
-          <button type="button" onClick={s.startEdit} className="btn btn-soft btn-sm max-sm:!h-7 max-sm:!px-2.5" aria-label="Dəyiş"><Pencil size={13} /> Dəyiş</button>
+          <Button type="button" onClick={s.startEdit} variant="soft" size="sm" className="max-sm:!h-7 max-sm:!px-2.5" aria-label="Dəyiş"><Pencil size={13} /> Dəyiş</Button>
         )}
       </header>
 
@@ -49,8 +50,8 @@ export function Step(props: StepProps) {
               placeholder={min !== undefined ? `≥ ${min}` : "məs. 52 000"} className="field tabular-nums" />
           </label>
           <div className="flex gap-2 max-xl:w-full max-xl:[&>button]:flex-1">
-            {s.editing && <button type="button" onClick={s.cancel} className="btn btn-soft">Ləğv et</button>}
-            <button type="submit" disabled={s.pending || disabled} className="btn btn-primary">{s.pending ? "..." : "Yadda saxla"}</button>
+            {s.editing && <Button type="button" onClick={s.cancel} variant="soft">Ləğv et</Button>}
+            <Button type="submit" disabled={s.pending || disabled}>{s.pending ? "..." : "Yadda saxla"}</Button>
           </div>
         </form>
       )}

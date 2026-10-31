@@ -9,6 +9,7 @@ import { sendToolRequests } from "@/services/myTools/sendToolRequests";
 import { toast } from "@/lib/toast";
 import { MiniSeg } from "@/views/Depot/components/MiniSeg";
 import type { AskModalProps } from "@/types/myTools";
+import { Button } from "@/shared/components/Button";
 
 // Alət istə (bir dəfəyə bir neçə; 0086): siyahıdan işarələ, hər birinin miqdarını yaz. Depoda olmayanı da istəmək olar
 // (depo məsulu görür ki, verə bilmir). Hamısı eyni batch ilə yazılır: depoda bir qrup kimi görünür.
@@ -87,10 +88,10 @@ export function AskModal({ stock, pendingIds, initialKind, onClose }: AskModalPr
       </ul>
       <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Nə üçün (istəyə görə)" aria-label="Nə üçün" className="field mt-3 max-sm:!h-8 max-sm:!text-xs" />
       <div className="mt-4 flex gap-2 max-sm:mt-3">
-        <button type="button" disabled={pending || !valid} onClick={submit} className="btn btn-primary min-w-0 flex-1 max-sm:!h-8 max-sm:!px-2 max-sm:!text-xs">
+        <Button type="button" disabled={pending || !valid} onClick={submit} className="min-w-0 flex-1 max-sm:!h-8 max-sm:!px-2 max-sm:!text-xs">
           <Send size={15} /> {pending ? "Göndərilir..." : chosen.length ? `İstə (${chosen.length})` : "Yuxarıdan seç"}
-        </button>
-        <button type="button" onClick={onClose} className="btn btn-cancel max-sm:!h-8 max-sm:!px-3 max-sm:!text-xs">Ləğv et</button>
+        </Button>
+        <Button type="button" onClick={onClose} variant="cancel" className="max-sm:!h-8 max-sm:!px-3 max-sm:!text-xs">Ləğv et</Button>
       </div>
     </Modal>
   );
