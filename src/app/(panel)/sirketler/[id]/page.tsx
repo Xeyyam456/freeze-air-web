@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Page } from "@/components/Page";
-import { ClientDetail } from "@/components/clients/ClientDetail";
+import { ClientDetail } from "@/views/Clients/components/ClientDetail";
 
 export default function CompanyPage({ params }: PageProps<"/sirketler/[id]">) {
   return (

@@ -1,4 +1,4 @@
-import { monthStartBaku } from "@/components/clients/stats";
+import { monthStartBaku } from "@/shared/utils/monthStartBaku";
 import { fetchAll } from "@/lib/fetchAll";
 import { createClient } from "@/lib/supabase/server";
 import { todayBaku } from "@/shared/utils/todayBaku";

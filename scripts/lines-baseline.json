@@ -5,9 +5,6 @@
   "app/(site)/page.tsx": 295,
   "app/(site)/ustalarimiz/page.tsx": 133,
   "app/login/page.tsx": 112,
-  "components/clients/ClientDetail.tsx": 109,
-  "components/clients/ClientList.tsx": 147,
-  "components/clients/UnitList.tsx": 101,
   "components/DatePicker.tsx": 194,
   "components/landing/AirflowCanvas.tsx": 126,
   "components/landing/ContactMap.tsx": 106,
@@ -15,7 +12,6 @@
   "components/landing/SiteFooter.tsx": 145,
   "components/landing/TrustSections.tsx": 129,
   "components/panel/CommandMenu.tsx": 151,
-  "components/PlaceLocationButton.tsx": 174,
   "components/ToolPicker.tsx": 158,
   "lib/site-settings.ts": 136,
   "lib/site-texts.ts": 187

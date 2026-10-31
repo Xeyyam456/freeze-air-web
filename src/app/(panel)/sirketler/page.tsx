@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Page } from "@/components/Page";
-import { ClientList } from "@/components/clients/ClientList";
+import { ClientList } from "@/views/Clients/components/ClientList";
 
 export default function CompaniesPage() {
   return (

@@ -1,39 +1,14 @@
-import { MapPin, Phone, StickyNote, User } from "lucide-react";
-import type { Tables } from "@/types/database";
+import { StickyNote } from "lucide-react";
 import { asKind, KIND } from "@/lib/kinds";
 import { PlaceHistoryButton } from "@/components/work/PlaceHistory";
-import { coordPercent, shortDateAz } from "./stats";
-
-export type ClientStats = { units: number; coords: number; monthWorks: number; lastWork: string | null };
-
-// Tünd kartdakı rəqəm
-function HeroStat({ label, value, tone = "" }: { label: string; value: string | number; tone?: string }) {
-  return (
-    <div>
-      <dt className="text-xs text-white/55 max-sm:text-[11px]">{label}</dt>
-      <dd className={`text-2xl font-extrabold tabular-nums leading-tight max-sm:text-xl ${tone}`}>{value}</dd>
-    </div>
-  );
-}
-
-// Əlaqə: əlaqəli şəxs, telefon, (sabit məkanda) ünvan. Masaüstündə başlığın altında bir sətirdə, telefonda ayrı-ayrı yumşaq çiplərdə
-function Contact({ company, fixedPlace, mobile }: { company: Tables<"companies">; fixedPlace: boolean; mobile: boolean }) {
-  const chip = mobile ? "flex min-w-0 items-center gap-2 rounded-lg bg-white/[0.07] px-2.5 py-1.5 text-[13px]" : "flex min-w-0 items-center gap-1.5";
-  return (
-    <div className={mobile ? "flex basis-full flex-wrap gap-1.5 sm:hidden" : "mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-white/75 max-sm:hidden"}>
-      <span className={chip}><User size={14} className="shrink-0 text-white/50" /><span className="truncate">{company.contact_person ?? "Əlaqəli şəxs yoxdur"}</span></span>
-      {company.phone
-        ? <a href={`tel:${company.phone}`} aria-label={`Zəng et: ${company.phone}`} className={`${chip} font-semibold text-frost hover:underline ${mobile ? "flex-1 justify-center" : ""}`}><Phone size={14} className="shrink-0" />{mobile ? "Əlaqə" : company.phone}</a>
-        : <span className={chip}><Phone size={14} className="shrink-0 text-white/50" />Telefon yoxdur</span>}
-      {fixedPlace && (
-        <span className={`${chip} ${mobile ? "basis-full" : ""}`}><MapPin size={14} className="shrink-0 text-white/50" /><span className={mobile ? "" : "truncate"}>{company.address ?? "Ünvan yazılmayıb"}</span></span>
-      )}
-    </div>
-  );
-}
+import type { ClientHeroProps } from "@/types/clients";
+import { coordPercent } from "../../utils/coordPercent";
+import { shortDateAz } from "../../utils/shortDateAz";
+import { HeroContact } from "./HeroContact";
+import { HeroStat } from "./HeroStat";
 
 // Səhifənin başı: şirkətin/marketin vizit kartı (yalnız baxış) + rəqəmlər + bütün obyektin iş tarixçəsi
-export function ClientHero({ company, stats }: { company: Tables<"companies">; stats: ClientStats }) {
+export function ClientHero({ company, stats }: ClientHeroProps) {
   const kind = asKind(company.kind);
   const k = KIND[kind];
   const fixedPlace = kind === "company" && stats.units === 0;
@@ -47,9 +22,9 @@ export function ClientHero({ company, stats }: { company: Tables<"companies">; s
           </span>
           <div className="min-w-0 max-sm:flex-1 max-sm:self-center">
             <h2 className="line-clamp-2 text-2xl font-extrabold leading-tight max-sm:text-lg">{company.name}</h2>
-            <Contact company={company} fixedPlace={fixedPlace} mobile={false} />
+            <HeroContact company={company} fixedPlace={fixedPlace} mobile={false} />
           </div>
-          <Contact company={company} fixedPlace={fixedPlace} mobile />
+          <HeroContact company={company} fixedPlace={fixedPlace} mobile />
         </div>
 
         <dl className="flex flex-wrap gap-x-9 gap-y-3 max-sm:grid max-sm:basis-full max-sm:grid-cols-2 max-sm:gap-2 max-sm:[&>div]:rounded-xl max-sm:[&>div]:bg-white/[0.07] max-sm:[&>div]:px-3 max-sm:[&>div]:py-1.5">

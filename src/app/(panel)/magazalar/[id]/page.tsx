@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Page } from "@/components/Page";
-import { ClientDetail } from "@/components/clients/ClientDetail";
+import { ClientDetail } from "@/views/Clients/components/ClientDetail";
 
 export default function MarketPage({ params }: PageProps<"/magazalar/[id]">) {
   return (

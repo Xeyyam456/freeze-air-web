@@ -2,7 +2,7 @@ import { History, MapPin, Phone } from "lucide-react";
 import type { Tables } from "@/types/database";
 import { MapButton } from "./MapButton";
 import { NavButton } from "./NavButton";
-import { PlaceLocationButton } from "./PlaceLocationButton";
+import { PlaceLocationButton } from "@/shared/components/PlaceLocationButton";
 
 type Props = {
   store: Tables<"stores">;
