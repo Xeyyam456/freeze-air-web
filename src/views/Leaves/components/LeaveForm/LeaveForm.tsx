@@ -1,7 +1,7 @@
 "use client";
 
 import { Send } from "lucide-react";
-import { DatePicker } from "@/components/DatePicker";
+import { DatePicker } from "@/shared/components/DatePicker";
 import type { LeaveFormProps } from "@/types/leaves";
 import { useLeaveForm } from "../../hooks/useLeaveForm";
 

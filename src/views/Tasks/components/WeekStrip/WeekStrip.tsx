@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { formatDateAz } from "@/components/DatePicker";
+import { formatDateAz } from "@/shared/utils/formatDateAz";
 import type { WeekStripProps } from "@/types/myTasks";
 import { shift, WEEKDAYS, weekRange } from "../../utils/days";
 

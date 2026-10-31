@@ -1,5 +1,5 @@
 import { ListChecks } from "lucide-react";
-import { formatDateAz } from "@/components/DatePicker";
+import { formatDateAz } from "@/shared/utils/formatDateAz";
 import type { EmptyDayProps } from "@/types/myTasks";
 
 export function EmptyDay({ day, today }: EmptyDayProps) {

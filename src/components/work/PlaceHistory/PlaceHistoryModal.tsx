@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { History, Search, X } from "lucide-react";
-import { formatDateAz } from "@/components/DatePicker";
+import { formatDateAz } from "@/shared/utils/formatDateAz";
 import { useData } from "@/lib/useData";
 import { fetchPlaceHistory, HISTORY_LIMIT } from "@/services/myWork/placeHistory";
 import { Modal } from "@/shared/components/Modal";

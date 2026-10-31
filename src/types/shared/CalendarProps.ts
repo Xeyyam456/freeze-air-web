@@ -1,0 +1,10 @@
+import type { CalendarView } from "./CalendarView";
+
+export type CalendarProps = {
+  view: CalendarView;
+  value: string;
+  max?: string;
+  required?: boolean;
+  onShift: (delta: number) => void;
+  onPick: (v: string) => void;
+};

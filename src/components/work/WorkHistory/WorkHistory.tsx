@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ClipboardList } from "lucide-react";
-import { DatePicker } from "@/components/DatePicker";
+import { DatePicker } from "@/shared/components/DatePicker";
 import { useData } from "@/lib/useData";
 import { fetchDayLogs } from "@/services/myWork/workHistory";
 import { dayIso } from "../time";
