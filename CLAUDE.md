@@ -93,7 +93,7 @@ Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
   - `getTexts()`: `use cache`;
   - `lines()`: siyahı mətni, hər sətir bir bənd;
   - `pageTitle()`.
-- Yeni mətn əlavə etmək: `TEXT_DEFAULTS`-a açar + admin reposunda `components/site/textFields.ts`-ə sahə + bazaya sətir (miqrasiya). Server komponent `const t = await getTexts()`, client komponentə `t` prop kimi ötürülür (`ContactForm`, `SiteNav`).
+- Yeni mətn əlavə etmək: `TEXT_DEFAULTS`-a açar + admin reposunda `pages/Site/constants/textGroups/`-ə sahə + bazaya sətir (miqrasiya). Server komponent `const t = await getTexts()`, client komponentə `t` prop kimi ötürülür (`ContactForm`, `SiteNav`).
 - `components/landing/content.ts`-də yalnız ünvanlar, ikonlar və mətn açarları var (`sitePages(t)`, `STEPS`, `DELIVERABLES`, `CATEGORIES`).
 - `lib/site-settings.ts`:
   - `getContact()`: telefon, ünvan, saatlar, e-poçt;
@@ -273,9 +273,9 @@ Storage-də `remove` faylı həmişə dərhal silmir; köhnə şəkillər bucket
 ## Admin reposu ilə sinxron saxlanmalı olanlar
 Repolar ayrıdır, kod paylaşılmır; bunlar əl ilə eyni saxlanmalıdır:
 - Baza tipləri: `src/types/database/` — hər ikisinə `scripts/split-db-types.mjs` yazır (kökdə).
-- `src/lib/site-texts.ts` (`TEXT_DEFAULTS`) ↔ admin `src/components/site/textFields.ts`.
-- `src/lib/site-content.ts` `ILLUSTRATED_KEYS` ↔ admin `src/components/site/EquipmentEditor.tsx`.
-- Haqqımızda kart rəngləri (`app/(site)/page.tsx` `CARD_COLORS`) ↔ admin `components/site/HomeTab.tsx` `CARD_COLORS` və bazadakı check (`night|cold|ice|white`).
+- `src/lib/site-texts.ts` (`TEXT_DEFAULTS`) ↔ admin `src/pages/Site/constants/textGroups/`.
+- `src/lib/site-content.ts` `ILLUSTRATED_KEYS` ↔ admin `src/pages/Site/constants/siteConstants.ts`.
+- Haqqımızda kart rəngləri (`app/(site)/page.tsx` `CARD_COLORS`) ↔ admin `pages/Site/constants/homeConstants.ts` `CARD_COLORS` və bazadakı check (`night|cold|ice|white`).
 - Dizayn: `src/app/globals.css` ↔ admin `src/index.css` (tokenlər eynidir). Kopya komponentlər: Modal, ConfirmModal, ConfirmButton, forms, Toaster + `lib/toast.ts`, DatePicker, StoreCard, MapButton, SidePanel, Page, LogoutButton, `work/WorkLogForm`, `work/PlacePicker`, `lib/{experience,kinds,navigation,form-state}.ts`. Fərq: burada `"use client"` və `router.refresh()`, admin-də `revalidate()`.
 - İş qeydi pəncərəsi: `components/work/WorkLogModal/` ↔ admin `components/work/WorkLogModal/` (burada `"use client"`, `useData` əvəzinə `useEffect`, vaxt Bakı saatı ilə).
 - Depo, Yanacaq, `shared/` və bəzi `lib/` faylları admin-dən bir dəfə kopyalanıb, **indi ayrıdır, sinxron skript yoxdur (silindi 2026-10-30)**; hər repo öz kodunu dəyişir. Web-ə məxsus: `views/Depot/index.tsx`, "Alətlərim" `views/MyTools/` + `services/myTools/` + `types/myTools/`. `components/{ToolPicker,QuantityInput}.tsx` ↔ admin (əl ilə); `nice-scroll` sinfi ↔ admin `index.css`.
