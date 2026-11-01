@@ -3,7 +3,7 @@ import { Send, Undo2 } from "lucide-react";
 import { DHead } from "@/views/Depot/components/DHead";
 import { Modal } from "@/shared/components/Modal";
 import { revalidate } from "@/lib/revalidate";
-import { createClient } from "@/lib/supabase/client";
+import { createReturnRequest } from "@/services/myTools/actions";
 import { toast } from "@/lib/toast";
 import type { Draft } from "@/types/myTools/Draft";
 import { emptyDraft, calc } from "../../utils/draft";
@@ -26,7 +26,7 @@ export function ReturnModal({ holds, employeeId, onClose }: ReturnModalProps) {
     let failed = 0;
     for (const { h, c } of checks) {
       const material = h.tools!.kind === "material";
-      const { error } = await createClient().rpc("depot_return_create", {
+      const { error } = await createReturnRequest({
         p_assignment_id: h.id, p_quantity: material ? undefined : c.quantity, p_used: material ? c.used : undefined,
         p_returned: material ? c.returned : undefined, p_note: note.trim() || undefined,
       });

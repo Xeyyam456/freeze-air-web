@@ -2,7 +2,7 @@ import s from "./LandingHeader.module.css";
 import Link from "next/link";
 import { Suspense } from "react";
 import { LayoutGrid, LogIn, Phone, Snowflake } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { hasSession } from "@/services/auth/hasSession.server";
 import { getContact, getLogo, telHref } from "@/lib/site-settings";
 import { getServices } from "@/lib/site-content";
 import { getTexts } from "@/lib/site-texts";
@@ -17,11 +17,10 @@ const accountClass =
 // Qonaq "Daxil ol", giriş etmiş usta isə "Panelə keç" görür (ikon düymə, ad title-da).
 // Mobildə (< 640) header-ə sığmır: ☰ panelində ikon + mətnli sətir kimi göstərilir (row).
 async function AccountButton({ t, row = false }: { t: Texts; row?: boolean }) {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getClaims();
+  const signedIn = await hasSession();
 
   if (row) {
-    const [href, label, Icon] = data?.claims ? ["/panel", t["header.panel"], LayoutGrid] : ["/login", t["header.login"], LogIn];
+    const [href, label, Icon] = signedIn ? ["/panel", t["header.panel"], LayoutGrid] : ["/login", t["header.login"], LogIn];
     return (
       <Link href={href} className="flex h-11 items-center gap-3 rounded-2xl px-4 font-semibold text-night/70 transition-colors hover:bg-glacier hover:text-night">
         <Icon size={18} /> {label}
@@ -29,7 +28,7 @@ async function AccountButton({ t, row = false }: { t: Texts; row?: boolean }) {
     );
   }
 
-  return data?.claims ? (
+  return signedIn ? (
     <Link href="/panel" className={accountClass} title={t["header.panel"]} aria-label={t["header.panel"]}><LayoutGrid size={18} /></Link>
   ) : (
     <Link href="/login" className={accountClass} title={t["header.login"]} aria-label={t["header.login"]}><LogIn size={18} /></Link>

@@ -1,6 +1,6 @@
 import { Package, Undo2, Wrench, X } from "lucide-react";
 import { ConfirmButton } from "@/components/ConfirmButton";
-import { createClient } from "@/lib/supabase/client";
+import { cancelDepotRequest } from "@/services/myTools/actions";
 import { rpc } from "@/services/myTools/rpc";
 import { Button } from "@/shared/components/Button";
 import type { Tone } from "@/types/depot";
@@ -32,7 +32,7 @@ export function HoldingRow({ h, v }: HoldingRowProps) {
       <span className="ml-auto flex shrink-0 items-center gap-2">
         <StatusDot tone={st.tone} label={st.label} />
         {ret ? (
-          <ConfirmButton onConfirm={async () => { await rpc(() => createClient().rpc("depot_request_cancel", { p_id: ret.id }), "Sorğu ləğv edildi"); }} success={false}
+          <ConfirmButton onConfirm={async () => { await rpc(() => cancelDepotRequest(ret.id), "Sorğu ləğv edildi"); }} success={false}
             variant="cancel" size="sm" className="!h-8" title="Sorğunu geri götür" question="Qaytarma sorğusu ləğv olunacaq." confirmLabel="Bəli">
             <X size={14} /> Geri götür
           </ConfirmButton>

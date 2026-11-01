@@ -18,3 +18,4 @@ export type { ReturnModalProps } from "./ReturnModalProps";
 export type { SegProps } from "./SegProps";
 export type { StatusDotProps } from "./StatusDotProps";
 export type { WhoHasCardProps } from "./WhoHasCardProps";
+export type { ReturnArgs } from "./ReturnArgs";

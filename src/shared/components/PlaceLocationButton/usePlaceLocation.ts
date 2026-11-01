@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { parseCoordinates } from "@/lib/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { setPlaceLocation } from "@/services/places/setPlaceLocation";
 import { toast } from "@/lib/toast";
 import type { Place, PlaceFix, PlaceLocationState } from "@/types/clients";
 import { MAX_ACC } from "./constants";
@@ -48,9 +48,9 @@ export function usePlaceLocation(place: Place): PlaceLocationState {
     const args = kind === "addr"
       ? { p_kind: place.kind, p_id: place.id, p_address: address.trim() }
       : { p_kind: place.kind, p_id: place.id, p_lat: fix!.lat, p_lng: fix!.lng, ...(fix!.manual ? {} : { p_accuracy: fix!.acc }) };
-    const { error } = await createClient().rpc("place_set_location", args);
+    const error = await setPlaceLocation(args);
     setBusy(null);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(error);
     toast.success(kind === "addr" ? "Ünvan yadda saxlandı" : "Koordinat yadda saxlandı", `${place.code ? `${place.code} · ` : ""}${place.name}`);
     setConfirm(false);
     if (kind === "coord") { setFix(null); setManual(""); }

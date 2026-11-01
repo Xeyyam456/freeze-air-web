@@ -4,24 +4,13 @@ import { SearchField } from "@/shared/components/SearchField";
 import { IconTile } from "@/shared/components/IconTile";
 import { useMemo, useState } from "react";
 import { Box, Search, TriangleAlert, Wrench } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { fetchCodes } from "@/services/errorCodes/fetchCodes";
 import { useData } from "@/lib/useData";
-import type { ErrorModel } from "@/types/errorCodes";
-import type { ErrorCode } from "@/types/errorCodes";
 import { Select } from "@/shared/components/Select";
 import { Card } from "@/shared/components/Card";
 import { norm } from "@/shared/utils/norm";
 
 // Xəta kodları (yalnız baxış; admin paneldən idarə olunur): modeli dropdown-dan seç, kodları gör; kod/açıqlama yazıb da axtarmaq olar
-// Keşdə: kodlar nadir dəyişir, səhifəyə qayıdanda dərhal görünür
-async function fetchCodes(): Promise<{ models: ErrorModel[]; codes: ErrorCode[] }> {
-  const supabase = createClient();
-  const [models, codes] = await Promise.all([
-    supabase.from("ac_models").select("id, name").order("name").then((r) => r.data ?? []),
-    supabase.from("ac_error_codes").select("id, model_id, code, title, solution").order("code").then((r) => r.data ?? []),
-  ]);
-  return { models: models.sort((a, b) => a.name.localeCompare(b.name, "az")), codes };
-}
 
 export function ErrorCodeView() {
   const data = useData("error-codes", fetchCodes);

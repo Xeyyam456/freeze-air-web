@@ -1,6 +1,6 @@
 import { Check, CircleAlert, Package, Wrench } from "lucide-react";
 import { ConfirmButton } from "@/components/ConfirmButton";
-import { createClient } from "@/lib/supabase/client";
+import { confirmAssignment } from "@/services/myTools/actions";
 import { rpc } from "@/services/myTools/rpc";
 import { Button } from "@/shared/components/Button";
 import type { ConfirmSectionProps } from "@/types/myTools";
@@ -24,10 +24,10 @@ export function ConfirmSection({ items }: ConfirmSectionProps) {
                 <b className="line-clamp-2 text-sm font-semibold">{t.name} <span className="font-bold text-primary">{showQty(h.quantity, t.kind === "material" ? t.unit : "ədəd", t)}</span></b>
                 <span className="muted block text-xs">{dateAz(h.taken_at)} · {timeAz(h.taken_at)}{h.disputed_at ? " · «Almadım» dedin, depo yoxlayır" : ""}</span>
               </span>
-              <Button size="sm" onClick={() => rpc(() => createClient().rpc("assignment_confirm", { p_id: h.id, p_received: true }), "Təsdiqləndi: aldın")}
+              <Button size="sm" onClick={() => rpc(() => confirmAssignment(h.id, true), "Təsdiqləndi: aldın")}
                 className="!h-9 max-sm:!h-8"><Check size={15} /> Aldım</Button>
               {!h.disputed_at && (
-                <ConfirmButton onConfirm={async () => { await rpc(() => createClient().rpc("assignment_confirm", { p_id: h.id, p_received: false }), "Depo məsuluna bildirildi"); }}
+                <ConfirmButton onConfirm={async () => { await rpc(() => confirmAssignment(h.id, false), "Depo məsuluna bildirildi"); }}
                   success={false} variant="cancel" size="sm" className="!h-9 max-sm:!h-8" title="Almadım" question="Depo məsulu yoxlayacaq. Sonra yenə «Aldım» basa bilərsən." confirmLabel="Bəli, almamışam">
                   Almadım
                 </ConfirmButton>

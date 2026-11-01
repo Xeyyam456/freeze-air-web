@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { ConfirmButton } from "@/components/ConfirmButton";
-import { createClient } from "@/lib/supabase/client";
+import { cancelDepotRequest } from "@/services/myTools/actions";
 import { rpc } from "@/services/myTools/rpc";
 import { REQUEST_TYPES } from "@/views/Depot/constants/requests";
 import { dateAz, timeAz } from "@/views/Depot/utils/dates";
@@ -35,7 +35,7 @@ export function RequestsSection({ requests }: RequestsSectionProps) {
                 </span>
                 <span className="max-sm:order-2 max-sm:ml-auto"><StatusDot tone={s.tone} label={s.label} /></span>
                 {r.status === "pending" && r.type === "request" && (
-                  <ConfirmButton onConfirm={async () => { await rpc(() => createClient().rpc("depot_request_cancel", { p_id: r.id }), "İstək ləğv edildi"); }}
+                  <ConfirmButton onConfirm={async () => { await rpc(() => cancelDepotRequest(r.id), "İstək ləğv edildi"); }}
                     success={false} icon className="!h-8 !w-8 max-sm:order-2 max-sm:!h-6 max-sm:!w-6" title="İstəyi geri götür" question="İstək ləğv olunacaq." confirmLabel="Bəli">
                     <X size={14} />
                   </ConfirmButton>

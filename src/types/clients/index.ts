@@ -30,3 +30,4 @@ export type { UnitListProps } from "./UnitListProps";
 export type { UnitSearchProps } from "./UnitSearchProps";
 export type { WorkDay } from "./WorkDay";
 export type { WorkStub } from "./WorkStub";
+export type { PlaceLocationArgs } from "./PlaceLocationArgs";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { fetchMyEmployee } from "@/services/profile/fetchMyEmployee";
 import { toast } from "@/lib/toast";
 import { LeaveModal } from "@/views/Leaves/components/LeaveModal";
 import { WorkLogForm } from "@/components/work/WorkLogForm";
@@ -22,11 +22,7 @@ export function QuickActions({ showDepot, showFuel }: { showDepot: boolean; show
     // Əməkdaş kartı ilk lazım olanda bir dəfə oxunur
     async function loadMe() {
       if (meRef.current) return meRef.current;
-      const supabase = createClient();
-      const { data: id } = await supabase.rpc("my_employee_id");
-      if (!id) return null;
-      const { data: emp } = await supabase.from("employees").select("full_name").eq("id", id).maybeSingle();
-      meRef.current = { id, name: emp?.full_name ?? "" };
+      meRef.current = await fetchMyEmployee();
       return meRef.current;
     }
     const open = (kind: "work" | "leave") => async () => {
