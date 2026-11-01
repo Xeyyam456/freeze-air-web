@@ -1,14 +1,10 @@
+import type { EquipmentVisualProps } from "@/types/site";
 import { Snowflake } from "lucide-react";
 import { isIllustrated } from "@/lib/illustrated";
 import { AC_ILLUSTRATION } from "../AcIllustrations";
-import type { Equipment } from "@/types/site";
 
 // Avadanlığın vizualı: admin şəkil yükləyibsə şəkil, yoxdursa hazır illüstrasiya, o da yoxdursa ikon
-export function EquipmentVisual({ item, className = "", artClassName = "w-full max-w-[220px]" }: {
-  item: Pick<Equipment, "key" | "title" | "image_url">;
-  className?: string;
-  artClassName?: string;
-}) {
+export function EquipmentVisual({ item, className = "", artClassName = "w-full max-w-[220px]" }: EquipmentVisualProps) {
   if (item.image_url) {
     return (
       // object-contain: şəkil heç vaxt kəsilmir, nisbəti fərqlidirsə kənarlarda fon görünür

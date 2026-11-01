@@ -1,3 +1,4 @@
+import type { AccountButtonProps } from "@/types/site";
 import s from "./LandingHeader.module.css";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -9,14 +10,13 @@ import { getTexts } from "@/lib/site-texts";
 import { sitePages } from "../content";
 import { SiteMenu } from "../SiteMenu";
 import { SiteNav } from "../SiteNav";
-import type { Texts } from "@/types/site";
 
 const accountClass =
   "grid h-11 w-11 place-items-center rounded-full text-night/60 ring-1 ring-night/10 transition-colors hover:bg-night hover:text-white hover:ring-night";
 
 // Qonaq "Daxil ol", giriş etmiş usta isə "Panelə keç" görür (ikon düymə, ad title-da).
 // Mobildə (< 640) header-ə sığmır: ☰ panelində ikon + mətnli sətir kimi göstərilir (row).
-async function AccountButton({ t, row = false }: { t: Texts; row?: boolean }) {
+async function AccountButton({ t, row = false }: AccountButtonProps) {
   const signedIn = await hasSession();
 
   if (row) {

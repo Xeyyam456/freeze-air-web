@@ -1,6 +1,7 @@
+import type { HeroTitleProps } from "@/types/site";
 import s from "./HeroTitle.module.css";
 // Hero başlığı: sözlər bir-bir bulanıqdan aydına keçərək görünür (yalnız CSS, `.word-in`)
-export function HeroTitle({ text, className = "" }: { text: string; className?: string }) {
+export function HeroTitle({ text, className = "" }: HeroTitleProps) {
   const words = text.split(/\s+/).filter(Boolean);
   return (
     <h1 className={className} aria-label={text}>

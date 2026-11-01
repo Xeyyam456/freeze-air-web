@@ -1,10 +1,11 @@
 "use client";
 
+import type { ContactFormProps } from "@/types/site";
 import { useActionState, useRef, useTransition } from "react";
 import { Mail, MessageSquare, Phone, Send, User } from "lucide-react";
 import { sendContactRequest } from "@/app/(site)/elaqe/actions";
 import { toast } from "@/lib/toast";
-import type { ContactFormState, Texts } from "@/types/site";
+import type { ContactFormState } from "@/types/site";
 
 // Sahə qutusu (ikon + input): fokus qutunun özünə düşür (focus-within)
 const field =
@@ -14,7 +15,7 @@ const input = "h-14 w-full bg-transparent text-night outline-none placeholder:te
 
 // "Bizə yazın": ad, telefon, e-poçt (istəyə bağlı), mesaj → admin panelində "Müraciətlər". Mətnlər bazadan (t).
 // Nəticə tostla bildirilir; uğurda forma təmizlənir, xətada yazılanlar qalır.
-export function ContactForm({ t }: { t: Texts }) {
+export function ContactForm({ t }: ContactFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const [, startTransition] = useTransition();
   const [, action, pending] = useActionState(async (prev: ContactFormState, formData: FormData) => {

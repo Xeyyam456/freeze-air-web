@@ -1,5 +1,6 @@
 "use client";
 
+import type { CountUpProps } from "@/types/site";
 import s from "./CountUp.module.css";
 import { useEffect, useRef, useState } from "react";
 
@@ -7,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 // Server tam dəyəri göndərir (JS-siz də düzgündür); sayğac görünəndə bir dəfə işləyir. Rəqəm yoxdursa olduğu kimi göstərilir.
 const PARTS = /^(\D*?)(\d[\d.,\s]*)(.*)$/;
 
-export function CountUp({ value, className = "" }: { value: string; className?: string }) {
+export function CountUp({ value, className = "" }: CountUpProps) {
   const m = PARTS.exec(value.trim());
   const target = m ? Number(m[2].replace(/[^\d]/g, "")) : NaN;
   const [shown, setShown] = useState(Number.isFinite(target) ? target : 0);

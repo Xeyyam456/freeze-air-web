@@ -1,3 +1,4 @@
+import type { ContactCardsProps } from "@/types/site";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
@@ -8,7 +9,6 @@ import { Reveal } from "@/components/landing/Reveal";
 import { WhatsAppIcon } from "@/components/landing/WhatsAppIcon";
 import { getContact, telHref, whatsappHref } from "@/lib/site-settings";
 import { getTexts, pageTitle } from "@/lib/site-texts";
-import type { Texts } from "@/types/site";
 
 export async function generateMetadata(): Promise<Metadata> {
   return { title: await pageTitle("contact.title") };
@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 // Əlaqə: solda tünd aurora panel (telefon + düymələr, altında ünvan / iş saatı / e-poçt sətirləri),
 // sağda "Bizə yazın" forması, aşağıda tam enli xəritə. Məlumatlar bazadan (admin → Sayt → Əlaqə).
-async function ContactCards({ t }: { t: Texts }) {
+async function ContactCards({ t }: ContactCardsProps) {
   const c = await getContact();
   const tel = telHref(c.phone);
   const wa = whatsappHref(c.phone);

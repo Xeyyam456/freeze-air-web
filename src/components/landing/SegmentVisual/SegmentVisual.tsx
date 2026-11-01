@@ -1,16 +1,12 @@
+import type { SegmentVisualProps } from "@/types/site";
 import { AC_ILLUSTRATION } from "../AcIllustrations";
 import { isIllustrated } from "@/lib/site-content";
-import type { Segment } from "@/types/site";
 
 // Şəkil kəsiləndə hansı hissəsi görünsün (admin seçir)
 const POSITION: Record<string, string> = { top: "object-top", center: "object-center", bottom: "object-bottom" };
 
 // Obyekt növünün vizualı: admin şəkil yükləyibsə şəkil, yoxdursa ilk avadanlığın illüstrasiyası
-export function SegmentVisual({ segment, className = "", artClassName = "w-full max-w-[220px]" }: {
-  segment: Segment;
-  className?: string;
-  artClassName?: string;
-}) {
+export function SegmentVisual({ segment, className = "", artClassName = "w-full max-w-[220px]" }: SegmentVisualProps) {
   if (segment.image_url) {
     return (
       // eslint-disable-next-line @next/next/no-img-element -- storage şəkli

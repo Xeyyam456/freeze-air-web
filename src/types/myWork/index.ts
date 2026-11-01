@@ -46,3 +46,6 @@ export type { WorkLogFields } from "./WorkLogFields";
 export type { WorkLogFormProps } from "./WorkLogFormProps";
 export type { WorkLogModalProps } from "./WorkLogModalProps";
 export type { WorkTabProps } from "./WorkTabProps";
+export type { FileBadgesProps } from "./FileBadgesProps";
+export type { VideoPickerProps } from "./VideoPickerProps";
+export type { VideoSummaryProps } from "./VideoSummaryProps";

@@ -1,5 +1,6 @@
 "use client";
 
+import type { QuickActionsProps } from "@/types/panel";
 import { useEffect, useRef, useState } from "react";
 import { fetchMyEmployee } from "@/services/profile/fetchMyEmployee";
 import { toast } from "@/lib/toast";
@@ -12,7 +13,7 @@ import { WORK_SAVED } from "@/components/work/MyDay/utils/events";
 
 // Panelin hər səhifəsindən əlçatan pəncərələr: "İş əlavə et", "İcazə istə" və Ctrl+K axtarışı.
 // Üst zolaq, Ctrl+K və "Mənim bugünüm" bunları PANEL_EVENTS hadisələri ilə açır.
-export function QuickActions({ showDepot, showFuel }: { showDepot: boolean; showFuel: boolean }) {
+export function QuickActions({ showDepot, showFuel }: QuickActionsProps) {
   const [dialog, setDialog] = useState<"work" | "leave" | null>(null);
   const [me, setMe] = useState<PanelMe | null>(null);
   const [search, setSearch] = useState(false);

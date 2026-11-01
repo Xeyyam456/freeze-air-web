@@ -1,5 +1,6 @@
 "use client";
 
+import type { QueryProviderProps } from "@/types/panel";
 import { useEffect } from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/queryClient";
@@ -15,7 +16,7 @@ const ON = {
   [TASKS_CHANGED]: ["my-day-stats", "work-history", "tasks-view", "tasks-week", "month-stats", "work-tab", "place-history"],
 };
 
-export function QueryProvider({ children }: { children: React.ReactNode }) {
+export function QueryProvider({ children }: QueryProviderProps) {
   useEffect(() => {
     const off = Object.entries(ON).map(([event, keys]) => {
       const fn = () => revalidate(...keys);

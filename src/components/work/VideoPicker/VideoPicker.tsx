@@ -1,19 +1,14 @@
 "use client";
 
+import type { VideoPickerProps, VideoSummaryProps } from "@/types/myWork";
 import { useState } from "react";
 import { Video } from "lucide-react";
 import { toast } from "@/lib/toast";
 import { compressVideo, formatBytes, formatSeconds, VideoError } from "@/lib/video";
-import type { CompressedVideo } from "@/types/shared";
 
 // İş videosu (0089): seçilən kimi telefonda 720p-yə sıxılır (lib/video.ts), müddət limiti yoxdur.
 // İş formasında (WorkLogForm) və tapşırığın təmir qeydində (TaskNoteModal). Sıxılma gedərkən onBusy(true): forma göndərilməsin.
-export function VideoPicker({ value, onChange, onBusy, className = "" }: {
-  value: CompressedVideo | null;
-  onChange: (v: CompressedVideo | null) => void;
-  onBusy: (busy: boolean) => void;
-  className?: string;
-}) {
+export function VideoPicker({ value, onChange, onBusy, className = "" }: VideoPickerProps) {
   const [progress, setProgress] = useState<number | null>(null);
 
   async function pick(file: File | null) {
@@ -52,7 +47,7 @@ export function VideoPicker({ value, onChange, onBusy, className = "" }: {
 }
 
 // Sıxılmış videonun xülasəsi: "125 MB → 27 MB (720×1280)" + Sil
-export function VideoSummary({ value, onRemove }: { value: CompressedVideo | null; onRemove: () => void }) {
+export function VideoSummary({ value, onRemove }: VideoSummaryProps) {
   if (!value) return null;
   return (
     <p className="-mt-2 flex items-center justify-between gap-2 rounded-lg bg-primary-soft px-3 py-1.5 text-xs font-semibold text-primary">

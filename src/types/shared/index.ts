@@ -39,3 +39,6 @@ export type { IconButtonProps } from "./IconButtonProps";
 export type { LabelProps } from "./LabelProps";
 export type { FieldButtonProps } from "./FieldButtonProps";
 export type { CardTitleProps } from "./CardProps";
+export type { NavButtonProps } from "./NavButtonProps";
+export type { WithSidePanelProps } from "./WithSidePanelProps";
+export type { UnitSelectProps } from "./UnitSelectProps";

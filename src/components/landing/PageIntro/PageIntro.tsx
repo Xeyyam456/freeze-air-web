@@ -1,3 +1,4 @@
+import type { PageIntroProps } from "@/types/site";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { getTexts } from "@/lib/site-texts";
@@ -5,11 +6,7 @@ import { HeroTitle } from "../HeroTitle";
 
 // Alt səhifələrin başlıq banneri: tünd aurora fon (ana səhifənin tünd bölmələri ilə eyni dil),
 // yol (Əsas / [valideyn] / Səhifə), sözbəsöz açılan böyük başlıq, bir cümləlik izah
-export async function PageIntro({ title, lead, parent }: {
-  title: string;
-  lead: string;
-  parent?: { href: string; label: string };
-}) {
+export async function PageIntro({ title, lead, parent }: PageIntroProps) {
   const t = await getTexts();
   return (
     <section className="aurora relative mb-14 overflow-hidden bg-night text-white">

@@ -1,5 +1,6 @@
 "use client";
 
+import type { SidebarViewProps, SidebarProps } from "@/types/panel";
 import s from "./Sidebar.module.css";
 import { LogoMark } from "@/shared/components/LogoMark";
 import { useEffect, useState } from "react";
@@ -9,13 +10,12 @@ import { ChevronsLeft, Snowflake, X } from "lucide-react";
 import { useMyOpenTasks } from "@/lib/tasks-live";
 import { LogoutButton } from "@/components/LogoutButton";
 import { ProfileButton } from "@/views/Profile/components/ProfileButton";
-import type { Me } from "@/types/profile";
 import { isActive, navGroups, PANEL_EVENTS } from "../nav";
 import { toggleMini } from "./toggleMini";
 
 // Sol menyu: loqo, qruplu bəndlər (tapşırıq nişanı ilə), altda profil və çıxış.
 // ≥ 1024: sabit, yığıla bilir (yalnız ikonlar); < 1024: üst zolaqdakı ☰ ilə açılan çəkmə panel (səhifə dəyişəndə özü bağlanır).
-function SidebarView({ showDepot, showFuel = false, me, pathname }: { showDepot: boolean; showFuel?: boolean; me: Me | null; pathname: string | null }) {
+function SidebarView({ showDepot, showFuel = false, me, pathname }: SidebarViewProps) {
   const openTasks = useMyOpenTasks();
   const [openAt, setOpenAt] = useState<string | null>(null); // mobil panel hansı səhifədə açılıb
   const open = openAt !== null && openAt === pathname;
@@ -84,6 +84,6 @@ export function SidebarFallback() {
   return <SidebarView showDepot={false} me={null} pathname={null} />;
 }
 
-export function Sidebar({ showDepot, showFuel, me }: { showDepot: boolean; showFuel: boolean; me: Me | null }) {
+export function Sidebar({ showDepot, showFuel, me }: SidebarProps) {
   return <SidebarView showDepot={showDepot} showFuel={showFuel} me={me} pathname={usePathname()} />;
 }

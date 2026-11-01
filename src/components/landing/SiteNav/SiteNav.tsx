@@ -1,18 +1,14 @@
 "use client";
 
+import type { SiteNavProps } from "@/types/site";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Wrench } from "lucide-react";
-import type { NavService } from "@/types/site";
 
 // Açıq saytın menyusu (header-in ortasında həb düymələr): hər bənd ayrıca səhifədir, aktiv səhifə ağ həblə seçilir.
 // Sonda "Xidmət növləri" düyməsi: klikləyəndə xidmətlərin siyahısı açılır (masaüstündə; mobildə siyahı /xidmetler səhifəsindədir).
-export function SiteNav({ pages, services = [], className = "" }: {
-  pages: { href: string; label: string }[];
-  services?: NavService[];
-  className?: string;
-}) {
+export function SiteNav({ pages, services = [], className = "" }: SiteNavProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement>(null);

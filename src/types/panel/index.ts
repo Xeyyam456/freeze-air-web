@@ -7,3 +7,7 @@ export type { MenuHandlers } from "./MenuHandlers";
 export type { NavItem } from "./NavItem";
 export type { PaletteItem } from "./PaletteItem";
 export type { PanelMe } from "./PanelMe";
+export type { QueryProviderProps } from "./QueryProviderProps";
+export type { QuickActionsProps } from "./QuickActionsProps";
+export type { SidebarViewProps } from "./SidebarViewProps";
+export type { SidebarProps } from "./SidebarProps";

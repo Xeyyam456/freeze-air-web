@@ -1,14 +1,10 @@
+import type { WithSidePanelProps } from "@/types/shared";
 import s from "./SidePanel.module.css";
 // Səhifə məzmunu + sağda sabit panel.
 // İki konteyner simmetrikdir: ikisi də header-dən eyni boşluqla başlayır və ekranın altından eyni boşluqla bitir.
 // Səhifə sürüşmür; sol konteyner öz içində sürüşür (< 1024: çərçivə yoxdur, səhifə özü sürüşür). Panel yoxdursa, konteyner bütün eni tutur.
 // fill: məzmun (məs. xəritə) konteyneri tam doldurur — sürüşmə və aşağıdakı solğunlaşma olmur.
-export function WithSidePanel({ panel, fill = false, stack = false, children }: {
-  panel?: React.ReactNode;
-  fill?: boolean;
-  stack?: boolean; // üst hissə (axtarış, tablar) yerində qalır, məzmun öz bloku içində sürüşür: uşaq `flex h-full flex-col` olmalıdır
-  children: React.ReactNode;
-}) {
+export function WithSidePanel({ panel, fill = false, stack = false, children }: WithSidePanelProps) {
   return (
     <>
       {/* Xarici qutu: çərçivə və ölçü. Sağda panelin eni + boşluq; hündürlük: ekran − header − yuxarı/aşağı boşluqlar */}

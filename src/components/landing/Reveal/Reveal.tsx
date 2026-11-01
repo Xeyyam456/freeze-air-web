@@ -1,10 +1,11 @@
 "use client";
 
+import type { RevealProps } from "@/types/site";
 import { useEffect, useRef, useState } from "react";
 
 // Bölmə görünəndə yumşaq açılır (aşağıdan yuxarı + solğunluqdan). CSS: globals.css `.js .reveal`.
 // JS işləməsə hamısı görünür; hərəkət azaldılıbsa (prefers-reduced-motion) dərhal görünür.
-export function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+export function Reveal({ children, className = "", delay = 0 }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [shown, setShown] = useState(false);
 

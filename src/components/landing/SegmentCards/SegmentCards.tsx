@@ -1,3 +1,4 @@
+import type { SegmentCardsProps } from "@/types/site";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { getSegments } from "@/lib/site-content";
@@ -10,7 +11,7 @@ import { Spotlight } from "../Spotlight";
 // iki sətrə düşəndə qonşuların da başlıq sahəsi böyüyür, izahlar və "Ətraflı" bir xətdə qalır.
 const subgrid = "row-span-4 grid grid-rows-subgrid gap-y-0";
 
-export async function SegmentCards({ compact = false }: { compact?: boolean }) {
+export async function SegmentCards({ compact = false }: SegmentCardsProps) {
   const [segments, t] = await Promise.all([getSegments(), getTexts()]);
 
   return (

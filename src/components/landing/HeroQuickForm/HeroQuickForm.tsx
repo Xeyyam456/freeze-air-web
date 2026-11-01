@@ -1,16 +1,17 @@
 "use client";
 
+import type { HeroQuickFormProps } from "@/types/site";
 import { useActionState, useRef, useTransition } from "react";
 import { PhoneCall } from "lucide-react";
 import { sendContactRequest } from "@/app/(site)/elaqe/actions";
 import { toast } from "@/lib/toast";
-import type { ContactFormState, Texts } from "@/types/site";
+import type { ContactFormState } from "@/types/site";
 
 const input =
   "h-12 w-full rounded-2xl border border-transparent bg-white px-4 text-night outline-none transition-colors placeholder:text-night/40 focus:border-cold";
 
 // Hero-dakı sürətli müraciət: yalnız ad və telefon; "Bizə yazın" ilə eyni server action (müraciət admin panelinə düşür, spam limiti bazadadır).
-export function HeroQuickForm({ t }: { t: Texts }) {
+export function HeroQuickForm({ t }: HeroQuickFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const [, startTransition] = useTransition();
   const [, action, pending] = useActionState(async (prev: ContactFormState, formData: FormData) => {

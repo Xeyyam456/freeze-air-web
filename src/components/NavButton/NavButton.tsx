@@ -1,16 +1,16 @@
 "use client";
 
+import type { NavButtonProps } from "@/types/shared";
 import { IconButton } from "@/shared/components/IconButton";
 import { useState } from "react";
 import { Navigation, Navigation2, X } from "lucide-react";
 import { directionsUrl, wazeUrl } from "@/lib/navigation";
 import { Modal } from "@/shared/components/Modal";
-import type { NavButtonPlace } from "@/types/shared";
 import { Button } from "@/shared/components/Button";
 
 // "Naviqator" (yalnız telefonda, < 640): filialın/mağazanın ünvanına getmək üçün Waze və ya Google Maps seçimi.
 // Seçim pəncərədə iki iri düymə; hər biri telefonda öz tətbiqini açır (yoxdursa brauzerdə).
-export function NavButton({ place }: { place: NavButtonPlace }) {
+export function NavButton({ place }: NavButtonProps) {
   const [open, setOpen] = useState(false);
   const hasLocation = (place.lat != null && place.lng != null) || !!place.address;
 

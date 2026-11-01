@@ -1,5 +1,6 @@
 "use client";
 
+import type { SiteMenuProps } from "@/types/site";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -8,12 +9,7 @@ import { Menu, Phone, X } from "lucide-react";
 // Kiçik ekranların menyusu (< 1024px, header-də SiteNav-ın yerinə): ☰ düyməsi klikdə header-in altında panel açır.
 // Panel: səhifələr (planşetdə 2 sütun), mobildə hesab, altında telefon. "Xidmət növləri" yalnız ≥ 1024 header-dədir
 // (istifadəçi qərarı). Kənara klik, Escape və səhifə dəyişməsi paneli bağlayır.
-export function SiteMenu({ pages, phone, tel, account }: {
-  pages: { href: string; label: string }[];
-  phone: string;
-  tel?: string;
-  account?: React.ReactNode; // mobildə header-dəki hesab düyməsinin yerinə (səhifələrin altında)
-}) {
+export function SiteMenu({ pages, phone, tel, account }: SiteMenuProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement>(null);
