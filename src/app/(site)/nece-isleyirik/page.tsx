@@ -1,3 +1,4 @@
+import s from "./timeline.module.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -24,13 +25,13 @@ export default async function HowWeWorkPage() {
           Kartlar eyni hündürlükdədir (< 1024 `auto-rows-fr`, ≥ 1024 bir sıra). Bəyənilmədi: zigzag, nömrə üçün ayrıca kart / iri nömrə.
           Xəttin ucları düyünlərin mərkəzindədir: sıralar bərabər olduğu üçün mərkəz = (100% − 2 ara) / 6 (3 addım üçün). */}
       <section className="site-wrap">
-        <ol className="timeline relative grid auto-rows-fr gap-4 lg:grid-cols-3 lg:gap-6">
+        <ol className={`${s.timeline} relative grid auto-rows-fr gap-4 lg:grid-cols-3 lg:gap-6`}>
           <span className="pointer-events-none absolute bottom-[calc((100%-2rem)/6)] left-9 top-[calc((100%-2rem)/6)] w-[3px] -translate-x-1/2 rounded-full bg-cold/15 max-sm:left-6 lg:bottom-auto lg:left-[calc((100%-3rem)/6)] lg:right-[calc((100%-3rem)/6)] lg:top-9 lg:h-[3px] lg:w-auto lg:translate-x-0 lg:-translate-y-1/2" aria-hidden="true">
-            <span className="timeline-fill block h-full rounded-full bg-gradient-to-b from-cold to-[#4fd1ff] lg:bg-gradient-to-r" />
+            <span className={`${s.fill} block h-full rounded-full bg-gradient-to-b from-cold to-[#4fd1ff] lg:bg-gradient-to-r`} />
           </span>
           {STEPS.map(({ icon: Icon, title, text }, i) => (
             <li key={title} className="relative grid grid-cols-[72px_1fr] gap-6 max-sm:grid-cols-[48px_1fr] max-sm:gap-4 md:gap-8 lg:flex lg:flex-col lg:gap-6">
-              <span className="tl-node relative z-10 grid h-[72px] w-[72px] place-items-center self-center rounded-full bg-white font-display text-xl font-bold text-cold ring-8 ring-glacier max-sm:h-12 max-sm:w-12 max-sm:text-base max-sm:ring-[6px] lg:mx-auto lg:shrink-0">
+              <span className={`${s.node} relative z-10 grid h-[72px] w-[72px] place-items-center self-center rounded-full bg-white font-display text-xl font-bold text-cold ring-8 ring-glacier max-sm:h-12 max-sm:w-12 max-sm:text-base max-sm:ring-[6px] lg:mx-auto lg:shrink-0`}>
                 0{i + 1}
               </span>
               <Reveal delay={80} className="lg:flex-1">

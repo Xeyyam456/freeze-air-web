@@ -1,3 +1,4 @@
+import s from "../styles/EquipmentStage.module.css";
 import { MapPin } from "lucide-react";
 import { EquipmentVisual } from "@/components/landing/EquipmentVisual";
 import type { EquipmentStageProps } from "@/types/site";
@@ -13,10 +14,10 @@ export function EquipmentStage({ item: e, index: i, total, on }: EquipmentStageP
       id={`eq-panel-${e.id}`}
       role="tabpanel"
       aria-labelledby={`eq-tab-${e.id}`}
-      className={`eq-stage eq-card aurora relative overflow-hidden rounded-[32px] bg-night p-3 text-white ${on ? "" : "sm:hidden"}`}
+      className={`${s.stage} ${s.card} aurora relative overflow-hidden rounded-[32px] bg-night p-3 text-white ${on ? "" : "sm:hidden"}`}
     >
       {/* Şəkil səhnəsi: çərçivə şəklin öz nisbətindədir (h-auto), şəkil kəsilmir və künclərdə boşluq qalmır */}
-      <div className="eq-image relative overflow-hidden rounded-[24px]">
+      <div className={`${s.image} relative overflow-hidden rounded-[24px]`}>
         {e.image_url
           // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
           ? <img src={e.image_url} alt={e.title} className="block h-auto w-full" />
@@ -34,7 +35,7 @@ export function EquipmentStage({ item: e, index: i, total, on }: EquipmentStageP
         </div>
       </div>
       {/* Məlumat: şəklin altında tünd zolaqda (açıq şəkil üstündə ağ yazı oxunmurdu) */}
-      <div className="eq-info flex flex-wrap items-end justify-between gap-x-10 gap-y-4 px-5 pb-4 pt-6 max-sm:px-3 max-sm:pt-5">
+      <div className={`${s.info} flex flex-wrap items-end justify-between gap-x-10 gap-y-4 px-5 pb-4 pt-6 max-sm:px-3 max-sm:pt-5`}>
         <div className="max-w-2xl">
           <h2 className="font-display text-2xl font-bold sm:text-3xl">{e.title}</h2>
           {e.text && <p className="mt-2 text-white/70">{e.text}</p>}

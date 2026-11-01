@@ -1,0 +1,26 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  /* Kursoru izləyən işıq (components/landing/Spotlight.tsx) */
+  .spot {
+    position: relative;
+    isolation: isolate;
+  }
+  .spot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 300ms ease;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(79, 209, 255, 0.16), transparent 45%);
+  }
+  .spot:hover::after {
+    opacity: 1;
+  }
+  .spot:hover :global(.bento-card) {
+    border-color: rgba(79, 209, 255, 0.35);
+  }
+}

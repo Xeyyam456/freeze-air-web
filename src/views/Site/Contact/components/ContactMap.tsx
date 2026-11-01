@@ -1,5 +1,6 @@
 "use client";
 
+import s from "./ContactMap.module.css";
 import { MapPin } from "lucide-react";
 import type { ContactMapProps } from "@/types/site";
 import { useContactMap } from "../hooks/useContactMap";
@@ -17,7 +18,7 @@ export function ContactMap({ address, title, texts }: ContactMapProps) {
 
       {!origin && !moved && (
         <span className="pointer-events-none absolute left-1/2 top-1/2 grid h-12 w-12 -translate-x-1/2 -translate-y-1/2 place-items-center" aria-hidden="true">
-          <span className="map-pulse absolute inset-0 rounded-full bg-cold/40" />
+          <span className={`${s.pulse} absolute inset-0 rounded-full bg-cold/40`} />
           <span className="relative grid h-12 w-12 place-items-center rounded-full bg-cold text-white shadow-[0_10px_24px_rgba(0,163,217,0.5)] ring-4 ring-white">
             <MapPin size={22} />
           </span>

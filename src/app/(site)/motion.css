@@ -3,16 +3,6 @@
    Scroll-driven animasiyalar (animation-timeline) dəstəklənməyən brauzerdə sadəcə statik görünür. */
 
 /* Hero başlığı: sözlər bir-bir bulanıqdan aydına keçir (components/landing/HeroTitle.tsx) */
-@keyframes word-in {
-  from { opacity: 0; filter: blur(12px); transform: translateY(0.35em); }
-  to { opacity: 1; filter: blur(0); transform: none; }
-}
-.word-in {
-  display: inline-block;
-  white-space: pre;
-  animation: word-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  animation-delay: var(--d, 0ms);
-}
 
 @supports (animation-timeline: scroll()) {
   /* Hero şəkli: aşağı sürüşdükcə yavaşca yaxınlaşır və tündləşir (parallax) */
@@ -27,41 +17,6 @@
   }
 
   /* Header: sürüşəndə daha şəffaf şüşə olur və altında yumşaq kölgə yaranır */
-  @keyframes header-glass {
-    to { background-color: rgba(255, 255, 255, 0.72); box-shadow: 0 12px 32px rgba(6, 25, 43, 0.1); }
-  }
-  .site-header {
-    animation: header-glass linear both;
-    animation-timeline: scroll(root);
-    animation-range: 0 240px;
-  }
-
-  /* "Necə işləyirik": xətt bölmə ekrana girdikcə dolur, addım nöqtələri növbə ilə işıqlanır */
-  @keyframes steps-line {
-    from { transform: scaleX(0); }
-    to { transform: scaleX(1); }
-  }
-  .steps {
-    view-timeline: --steps block;
-  }
-  .steps-line {
-    transform-origin: left;
-    animation: steps-line linear both;
-    animation-timeline: --steps;
-    animation-range: entry 10% entry 100%;
-  }
-  @keyframes step-dot {
-    from { background-color: #fff; color: var(--color-cold); box-shadow: 0 0 0 rgba(0, 163, 217, 0); }
-    to { background-color: var(--color-cold); color: #fff; box-shadow: 0 12px 30px rgba(0, 163, 217, 0.45); }
-  }
-  .step-dot {
-    animation: step-dot linear both;
-    animation-timeline: --steps;
-  }
-  /* li:nth-child(1) — mütləq mövqeli xətt <span>-dır, addımlar 2-dən başlayır */
-  .steps li:nth-child(2) .step-dot { animation-range: entry 10% entry 40%; }
-  .steps li:nth-child(3) .step-dot { animation-range: entry 40% entry 70%; }
-  .steps li:nth-child(4) .step-dot { animation-range: entry 70% entry 100%; }
 }
 /* Rəqəmlər: sayğacla birlikdə dolan qısa xətt */
 @keyframes stat-bar {
@@ -79,35 +34,12 @@
   animation-delay: var(--d, 0ms);
 }
 
-/* Kursoru izləyən işıq (components/landing/Spotlight.tsx) */
-.spotlight {
-  position: relative;
-  isolation: isolate;
-}
-.spotlight::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 300ms ease;
-  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(79, 209, 255, 0.16), transparent 45%);
-}
-.spotlight:hover::after {
-  opacity: 1;
-}
-
 /* Bento kartı tünd fonda: şüşə səth + incə haşiyə */
 .bento-card {
   background: linear-gradient(160deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(6px);
   transition: border-color 300ms ease;
-}
-.spotlight:hover .bento-card {
-  border-color: rgba(79, 209, 255, 0.35);
 }
 
 /* Tünd bölmələr: yavaş hərəkət edən aurora ləkələri + incə səs-küy teksturası.
@@ -178,60 +110,22 @@
   animation: float-soft 6s ease-in-out infinite;
 }
 
-/* FAQ: cavab yumşaq hündürlüklə açılır (Chrome 131+; qalanında adi açılır) */
-.faq-item {
-  interpolate-size: allow-keywords;
-}
-.faq-item::details-content {
-  height: 0;
-  overflow: hidden;
-  transition: height 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), content-visibility 0.35s allow-discrete;
-}
-.faq-item[open]::details-content {
-  height: auto;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .word-in, .stat-bar, .float-soft, .aurora::before, .glow-border::after,
-  .hero-parallax, .site-header, .steps-line, .step-dot {
+  .stat-bar, .float-soft, .aurora::before, .glow-border::after,
+  .hero-parallax {
     animation: none !important;
   }
-  .steps-line, .stat-bar { transform: none; }
+  .stat-bar { transform: none; }
   .js .reveal.reveal-wipe > * { clip-path: none; transition: none; }
-  .faq-item::details-content { transition: none; }
 }
 
 /* Avadanlıq vitrini (components/landing/EquipmentShowcase.tsx): seçim dəyişəndə şəkil yumşaq yaxınlaşaraq,
    məlumat paneli aşağıdan qalxaraq görünür (hidden → görünən olanda animasiya yenidən başlayır) */
-@keyframes eq-image {
-  from { opacity: 0; transform: scale(1.06); filter: blur(6px); }
-  to { opacity: 1; transform: none; filter: none; }
-}
-@keyframes eq-info {
-  from { opacity: 0; transform: translateY(18px); }
-  to { opacity: 1; transform: none; }
-}
-.eq-stage .eq-image {
-  animation: eq-image 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-}
-.eq-stage .eq-info {
-  animation: eq-info 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.12s both;
-}
 @media (prefers-reduced-motion: reduce) {
-  .eq-stage .eq-image, .eq-stage .eq-info { animation: none; }
 }
 /* Mobildə avadanlıq kartları alt-altadır: hər kart ekrana girdikcə aşağıdan qalxır və aydınlaşır */
 @supports (animation-timeline: view()) {
   @media (width < 640px) and (prefers-reduced-motion: no-preference) {
-    @keyframes eq-card {
-      from { opacity: 0.25; transform: translateY(48px) scale(0.96); }
-      to { opacity: 1; transform: none; }
-    }
-    .eq-card {
-      animation: eq-card linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 70%;
-    }
   }
 }
 
@@ -239,53 +133,13 @@
 /* "Necə işləyirik" zaman xətti (nece-isleyirik/page.tsx): ortadakı xətt bölmə ekrandan keçdikcə yuxarıdan aşağı dolur,
    hər düyün ekranın ortasına çatanda ağdan mavyə keçir. Dəstək yoxdursa xətt dolu, düyünlər ağ qalır. */
 @supports (animation-timeline: view()) {
-  @keyframes timeline-fill {
-    from { transform: scaleY(0); }
-    to { transform: scaleY(1); }
-  }
-  .timeline {
-    view-timeline: --timeline block;
-  }
-  .timeline-fill {
-    transform-origin: top;
-    animation: timeline-fill linear both;
-    animation-timeline: --timeline;
-    animation-range: entry 30% cover 65%;
-  }
-  @keyframes tl-node {
-    from { background-color: #fff; color: var(--color-cold); box-shadow: none; }
-    to { background-color: var(--color-cold); color: #fff; box-shadow: 0 12px 30px rgba(0, 163, 217, 0.45); }
-  }
-  .tl-node {
-    animation: tl-node linear both;
-    animation-timeline: view();
-    animation-range: entry 80% cover 45%;
-  }
   /* ≥ 1024 xətt üfüqidir: soldan sağa dolur */
-  @keyframes timeline-fill-x {
-    from { transform: scaleX(0); }
-    to { transform: scaleX(1); }
-  }
   @media (min-width: 1024px) {
-    .timeline-fill {
-      transform-origin: left;
-      animation-name: timeline-fill-x;
-      animation-range: entry 40% cover 50%;
-    }
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .timeline-fill, .tl-node { animation: none !important; }
 }
 
 /* Əlaqə xəritəsi: ünvan nişanının ətrafında döyünən halqa (elaqe/page.tsx) */
-@keyframes map-pulse {
-  0% { transform: scale(1); opacity: 0.7; }
-  100% { transform: scale(2.6); opacity: 0; }
-}
-.map-pulse {
-  animation: map-pulse 1.8s cubic-bezier(0.2, 0.7, 0.2, 1) infinite;
-}
 @media (prefers-reduced-motion: reduce) {
-  .map-pulse { animation: none; opacity: 0.35; }
 }

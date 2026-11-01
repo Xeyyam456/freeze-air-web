@@ -1,0 +1,35 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  @keyframes eq-image {
+    from { opacity: 0; transform: scale(1.06); filter: blur(6px); }
+    to { opacity: 1; transform: none; filter: none; }
+  }
+  @keyframes eq-info {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: none; }
+  }
+  .stage .image {
+    animation: eq-image 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .stage .info {
+    animation: eq-info 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.12s both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .stage .image,
+    .stage .info { animation: none; }
+  }
+  @supports (animation-timeline: view()) {
+    @media (width < 640px) and (prefers-reduced-motion: no-preference) {
+      @keyframes eq-card {
+        from { opacity: 0.25; transform: translateY(48px) scale(0.96); }
+        to { opacity: 1; transform: none; }
+      }
+      .card {
+        animation: eq-card linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 70%;
+      }
+    }
+  }
+}

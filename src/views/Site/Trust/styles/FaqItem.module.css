@@ -1,0 +1,19 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  /* FAQ: cavab yumşaq hündürlüklə açılır (Chrome 131+; qalanında adi açılır) */
+  .item {
+    interpolate-size: allow-keywords;
+  }
+  .item::details-content {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), content-visibility 0.35s allow-discrete;
+  }
+  .item[open]::details-content {
+    height: auto;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .item::details-content { transition: none; }
+  }
+}

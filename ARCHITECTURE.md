@@ -54,11 +54,13 @@ Server komponenti (sayt, `use cache`) və klient komponenti qarışmır: `"use c
 - `src/shared/**` və `src/types/shared/**` hər repoda öz kopyasıdır. Sinxron skript YOXDUR: bir repoda dəyişiklik digərinə avtomatik getmir, lazımdırsa əl ilə köçürülür.
 - Skript hook/portal/hadisə işlədən `.tsx`-ə `"use client"` əlavə edir; qalanı (Button, Input) server komponentində də işləyir.
 
-## Keçid dövrü (CSS)
-- `Button`, `Input`, `Textarea`, `FormField`, `Modal` hələlik qlobal class-ları (`.btn`, `.field`, `.label`, `.modal`) işlədir. Xam `<button className="btn ...">` yazma — `<Button variant="primary" size="sm">` işlət.
-- `.module.css`-ə köçəndə qaydaları `@layer components { ... }` içində yaz: qatsız CSS Tailwind utility-lərini (`className="w-full"`) üstələyir.
+## Stil (CSS Modules)
+- **Yeri**: komponent qovluğunda yalnız `X.tsx` + `index.ts` varsa CSS onun yanında (`Page/Page.module.css`); alt qovluqlar (`components/`, `hooks/`) varsa `styles/` qovluğunda (`views/Site/Trust/styles/HowSteps.module.css`). Ortaq komponentlərin CSS-i `shared/styles/`.
+- **Hər modulun ilk sətri** `@layer theme, base, components, utilities;`, sonra `@layer components { ... }`: modul Tailwind-dən əvvəl yüklənəndə `components` qatı `base`-dən (preflight) əvvələ düşməsin; qatsız CSS Tailwind utility-lərini (`className="w-full"`) üstələyər.
+- **`next.config.ts`**: `turbopack.rules["*.css"]` Tailwind yükləyicisini `*.module.css` üçün söndürür (`condition: { not: { path: "*.module.css" } }`). Bunsuz modullar qlobal CSS kimi emal olunur və `s.root` `undefined` olur.
+- **Qlobal marker class-lar** (modulların `:global(...)` ilə oxuduğu): `side-panel` (Card/Field/Button yan paneldə dəyişir), `nav-label`, `nice-scroll`, `link`, `muted`. Landing animasiya utilitləri (`site-wrap`, `hero-in`, `reveal`, `aurora`, `glow-border`, `stat-bar`, `bento-card`, `float-soft`, `hero-parallax`) bir çox faylda işləndiyi üçün `app/(site)/motion.css` və `globals.css`-də qlobal qalır.
+- Animasiya adı (`@keyframes`) modulda lokaldır: keyframe-i həmin faylda yaz.
 
-## Ortaq UI komponentləri (2026-10-31)
-- Xam `<button className="btn ...">`, `<input|textarea|select className="field">`, `<div className="card">` yazma: `Button` (`variant`: primary, secondary, soft, danger, cancel, glass, plain; `size="sm"`), `Input`, `Textarea`, `Select`, `Card` (`as="section"`), `FormField` işlət (`@/shared/components/...`). Rəngi yerli class-lar verirsə `variant="plain"`.
-- Düymə/sahə üçün ortaq komponent yoxdursa əvvəl `shared/components`-ə əlavə et, sonra işlət.
-- Feature qovluğunun kökündə yalnız `index.tsx`: `components/<Hissə>/`, `hooks/`, `utils/` alt qovluqları.
+## Ortaq UI komponentləri
+- Xam `className="btn|icon-btn|card|field|label ..."` yazma. Komponentlər: `<Button as="a" variant size>`, `<IconButton danger>`, `<Card as="li" link>`, `<CardTitle>`, `<Input|Textarea|Select|FieldButton>`, `<Label>`, `<FormField label>`, `<IconTile>`, `<CodeBadge>`, `<SearchField>`, `<CarPlate>`, `<LogoMark>` (hamısı `@/shared/components/...`, polimorf: `as`). `ConfirmButton`: `variant size` və ya `icon danger`.
+- Komponent yoxdursa əvvəl `shared/components`-ə əlavə et. Feature qovluğunun kökündə yalnız `index.tsx`: `components/<Hissə>/`, `hooks/`, `utils/`.

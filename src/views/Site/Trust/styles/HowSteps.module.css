@@ -1,0 +1,40 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  @supports (animation-timeline: scroll()) {
+    @keyframes steps-line {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
+    }
+    .line {
+      transform-origin: left;
+      animation: steps-line linear both;
+      animation-timeline: --steps;
+      animation-range: entry 10% entry 100%;
+    }
+    @keyframes step-dot {
+      from { background-color: #fff; color: var(--color-cold); box-shadow: 0 0 0 rgba(0, 163, 217, 0); }
+      to { background-color: var(--color-cold); color: #fff; box-shadow: 0 12px 30px rgba(0, 163, 217, 0.45); }
+    }
+    .dot {
+      animation: step-dot linear both;
+      animation-timeline: --steps;
+    }
+    /* li:nth-child(1) — mütləq mövqeli xətt <span>-dır, addımlar 2-dən başlayır */
+    .steps li:nth-child(2) .dot { animation-range: entry 10% entry 40%; }
+    .steps li:nth-child(3) .dot { animation-range: entry 40% entry 70%; }
+    .steps li:nth-child(4) .dot { animation-range: entry 70% entry 100%; }
+  }
+
+  @supports (animation-timeline: scroll()) {
+
+    /* "Necə işləyirik": xətt bölmə ekrana girdikcə dolur, addım nöqtələri növbə ilə işıqlanır */
+    .steps {
+      view-timeline: --steps block;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .line, .dot { animation: none !important; }
+    .line { transform: none; }
+  }
+}

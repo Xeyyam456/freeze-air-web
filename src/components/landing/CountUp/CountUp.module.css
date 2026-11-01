@@ -1,0 +1,15 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  /* Rəqəm sayğacı (components/landing/CountUp.tsx): görünənə qədər gizli, 3 saniyə sonra məcburən görünür */
+  :global(.js) .count:not(:global(.ready)) {
+    visibility: hidden;
+    animation: count-failsafe 0s 3s forwards;
+  }
+  @keyframes count-failsafe {
+    to { visibility: visible; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .count:not(:global(.ready)) { visibility: visible; animation: none; }
+  }
+}

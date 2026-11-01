@@ -1,3 +1,4 @@
+import s from "./LandingHeader.module.css";
 import Link from "next/link";
 import { Suspense } from "react";
 import { LayoutGrid, LogIn, Phone, Snowflake } from "lucide-react";
@@ -43,7 +44,7 @@ export async function LandingHeader() {
   const navPages = sitePages(t);
   const navServices = services.map((s) => ({ slug: s.slug, title: s.title }));
   return (
-    <header className="site-header sticky top-0 z-30 border-b border-night/[0.06] bg-white/85 backdrop-blur-xl backdrop-saturate-150">
+    <header className={`${s.header} sticky top-0 z-30 border-b border-night/[0.06] bg-white/85 backdrop-blur-xl backdrop-saturate-150`}>
       <div className="site-wrap flex h-[76px] items-center gap-3 sm:gap-6 lg:gap-4 2xl:gap-6">
         <Link href="/" className="flex shrink-0 items-center gap-3">
           {logo

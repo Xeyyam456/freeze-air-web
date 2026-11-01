@@ -247,17 +247,7 @@
   to { opacity: 1; transform: none; }
 }
 
-/* Rəqəm sayğacı (components/landing/CountUp.tsx): görünənə qədər gizli, 3 saniyə sonra məcburən görünür */
-.js .count-up:not(.ready) {
-  visibility: hidden;
-  animation: count-failsafe 0s 3s forwards;
-}
-@keyframes count-failsafe {
-  to { visibility: visible; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .hero-in { animation: none; }
   .js .reveal { opacity: 1; transform: none; transition: none; animation: none; }
-  .js .count-up:not(.ready) { visibility: visible; animation: none; }
 }

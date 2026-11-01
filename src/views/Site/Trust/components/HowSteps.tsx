@@ -1,3 +1,4 @@
+import s from "../styles/HowSteps.module.css";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { STEPS } from "@/components/landing/content";
@@ -19,9 +20,9 @@ export function HowSteps({ t }: TextsProps) {
         </Reveal>
         {/* Addımları birləşdirən xətt səhifə sürüşdükcə dolur, addımlar növbə ilə işıqlanır (CSS scroll-driven: .steps-line, .step-dot) */}
         {/* Alt-alta düzüləndə (< 768) boşluq ikon dairəsinin yarısından böyükdür: dairə yuxarıdakı karta toxunmur */}
-        <ol className="steps relative mt-14 grid gap-12 md:grid-cols-3 md:gap-6">
+        <ol className={`${s.steps} relative mt-14 grid gap-12 md:grid-cols-3 md:gap-6`}>
           <span className="pointer-events-none absolute left-[16.6%] right-[16.6%] top-9 hidden h-[3px] rounded-full bg-cold/15 md:block" aria-hidden="true">
-            <span className="steps-line block h-full rounded-full bg-gradient-to-r from-cold to-[#4fd1ff]" />
+            <span className={`${s.line} block h-full rounded-full bg-gradient-to-r from-cold to-[#4fd1ff]`} />
           </span>
           {STEPS.map((step, i) => <HowStepCard key={step.title} step={step} index={i} t={t} />)}
         </ol>

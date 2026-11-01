@@ -1,5 +1,6 @@
 "use client";
 
+import s from "./CountUp.module.css";
 import { useEffect, useRef, useState } from "react";
 
 // "200+", "5 il", "24/7": başdakı rəqəm 0-dan sayılaraq artır, qalan hissə (+, il...) olduğu kimi qalır.
@@ -41,7 +42,7 @@ export function CountUp({ value, className = "" }: { value: string; className?: 
 
   if (!m || !Number.isFinite(target)) return <span className={className}>{value}</span>;
   return (
-    <span ref={ref} className={`count-up ${ready ? "ready" : ""} ${className}`} aria-label={value}>
+    <span ref={ref} className={`${s.count} ${ready ? "ready" : ""} ${className}`} aria-label={value}>
       <span aria-hidden="true">{m[1]}{shown}{m[3]}</span>
     </span>
   );

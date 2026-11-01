@@ -1,0 +1,17 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  @supports (animation-timeline: scroll()) {
+    @keyframes header-glass {
+      to { background-color: rgba(255, 255, 255, 0.72); box-shadow: 0 12px 32px rgba(6, 25, 43, 0.1); }
+    }
+    .header {
+      animation: header-glass linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 240px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .header { animation: none !important; }
+  }
+}

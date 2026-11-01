@@ -1,10 +1,12 @@
 "use client";
 
+import s from "./Spotlight.module.css";
+
 // Kartın üzərində kursoru izləyən yumşaq işıq: mövqe CSS dəyişənləri ilə ötürülür (`.spotlight`, globals.css)
 export function Spotlight({ className = "", children }: { className?: string; children: React.ReactNode }) {
   return (
     <div
-      className={`spotlight ${className}`}
+      className={`${s.spot} ${className}`}
       onPointerMove={(e) => {
         const r = e.currentTarget.getBoundingClientRect();
         e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
