@@ -1,3 +1,4 @@
+import s from "./SidePanel.module.css";
 // Səhifə məzmunu + sağda sabit panel.
 // İki konteyner simmetrikdir: ikisi də header-dən eyni boşluqla başlayır və ekranın altından eyni boşluqla bitir.
 // Səhifə sürüşmür; sol konteyner öz içində sürüşür (< 1024: çərçivə yoxdur, səhifə özü sürüşür). Panel yoxdursa, konteyner bütün eni tutur.
@@ -23,7 +24,7 @@ export function WithSidePanel({ panel, fill = false, stack = false, children }: 
           </div>
         )}
       </div>
-      {panel && <aside className="side-panel">{panel}</aside>}
+      {panel && <aside className={`${s.panel} side-panel`}>{panel}</aside>}
     </>
   );
 }

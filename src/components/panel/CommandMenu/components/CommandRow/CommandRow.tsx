@@ -1,3 +1,4 @@
+import s from "../../styles/CommandRow.module.css";
 import { CornerDownLeft } from "lucide-react";
 import type { CommandRowProps } from "@/types/panel";
 
@@ -6,10 +7,10 @@ export function CommandRow({ item, index, current, head, onHover }: CommandRowPr
   const Icon = item.icon;
   return (
     <div>
-      {head && <p className="cmdk-group">{head}</p>}
-      <button type="button" role="option" data-index={index} className="cmdk-item" aria-selected={current}
+      {head && <p className={s.group}>{head}</p>}
+      <button type="button" role="option" data-index={index} className={s.item} aria-selected={current}
         onMouseMove={() => !current && onHover(index)} onClick={item.run}>
-        <span className="cmdk-icon"><Icon size={17} /></span>
+        <span className={s.icon}><Icon size={17} /></span>
         <span className="min-w-0 flex-1">
           <span className="block truncate font-semibold">{item.label}</span>
           {item.hint && <span className="block truncate text-xs text-muted">{item.hint}</span>}

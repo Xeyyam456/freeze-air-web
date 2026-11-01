@@ -1,0 +1,19 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  .icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    color: var(--color-ink);
+  }
+  .glow {
+    background: linear-gradient(135deg, #1f6feb, #1a8fe0);
+    box-shadow: 0 8px 20px -8px rgba(31, 111, 235, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+}

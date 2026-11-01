@@ -1,0 +1,54 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  /* Üst zolaq: ağ şüşə, sürüşəndə məzmun altından keçir */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: var(--topbar-h);
+    background: rgba(244, 246, 250, 0.82);
+    backdrop-filter: saturate(1.4) blur(14px);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  /* Geri düyməsi başlığın solunda */
+  .back {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    color: var(--color-ink);
+    flex-shrink: 0;
+  }
+  .back:hover {
+    border-color: #c9dafb;
+    color: var(--color-primary);
+  }
+
+  /* Məzmun header zolağından aşağıda başlayır */
+  .main {
+    position: relative;
+    padding-top: var(--gap);
+    padding-bottom: var(--gap);
+  }
+
+  .title h1 {
+    font-size: 21px;
+    font-weight: 800;
+    color: var(--color-ink);
+  }
+  .title p {
+    margin-top: 1px;
+    font-size: 13px;
+    color: var(--color-muted);
+  }
+  @media (max-height: 820px), (width < 1024px) {
+    .title h1 {
+      font-size: 18px;
+    }
+  }
+}

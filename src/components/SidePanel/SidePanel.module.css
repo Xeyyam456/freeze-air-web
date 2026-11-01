@@ -1,0 +1,50 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  /* Konteynerin içində, sağda sabit dayanır: sürüşmədə yeri dəyişmir. */
+  .panel {
+    position: fixed;
+    top: calc(var(--header-h) + var(--gap));
+    right: var(--gutter);  /* app-shell-in sağ boşluğu ilə eyni xətt */
+    bottom: var(--gap);
+    z-index: 40;
+    width: var(--panel-w);
+    overflow-y: auto;
+    /* Forma açılıb məzmun uzananda da sürüşmə işləyir, amma scrollbar görünmür (istifadəçi qərarı: gizli) */
+    scrollbar-width: none;
+    background:
+    radial-gradient(420px 180px at 100% 0%, rgba(34, 195, 230, 0.10), transparent 70%),
+    var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 18px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 12px 32px rgba(16, 24, 40, 0.08);
+  }
+  /* Sürüşəndə məzmun kənara yapışıb kəskin kəsilməsin: yuxarıda və aşağıda yumşaq solğunlaşma, aşağıda əlavə boşluq.
+  Maska yox, sticky pseudo-elementlər (maska panelin öz çərçivəsini də solğunlaşdırardı). */
+  .panel {
+    padding-bottom: 20px;
+  }
+  .panel::before,
+  .panel::after {
+    content: "";
+    display: block;
+    position: sticky;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .panel::before {
+    top: 0;
+    height: 22px;
+    margin-bottom: -22px;
+    background: linear-gradient(to bottom, var(--color-surface), rgba(255, 255, 255, 0));
+  }
+  .panel::after {
+    bottom: 0;
+    height: 34px;
+    margin-top: -34px;
+    background: linear-gradient(to top, var(--color-surface), rgba(255, 255, 255, 0));
+  }
+  .panel::-webkit-scrollbar {
+    display: none;
+  }
+}

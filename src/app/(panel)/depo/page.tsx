@@ -19,7 +19,7 @@ async function Gate() {
 
 export default function Page() {
   return (
-    <Suspense fallback={<div className="app-shell app-main"><Card className="muted">Yüklənir...</Card></div>}>
+    <Suspense fallback={<div className="relative px-[var(--gutter)] py-[var(--gap)]"><Card className="muted">Yüklənir...</Card></div>}>
       <Gate />
     </Suspense>
   );

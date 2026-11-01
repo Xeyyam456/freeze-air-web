@@ -1,5 +1,6 @@
 "use client";
 
+import s from "./ProfileButton.module.css";
 import { useState } from "react";
 import { initials } from "@/lib/experience";
 import type { ProfileButtonProps } from "@/types/profile";
@@ -15,8 +16,8 @@ export function ProfileButton({ me }: ProfileButtonProps) {
         className="flex min-w-0 flex-1 items-center gap-3 rounded-xl p-1.5 text-left hover:bg-white/10">
         {me.photoUrl
           // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
-          ? <img src={me.photoUrl} alt="" className="avatar !h-9 !w-9 shrink-0 object-cover" />
-          : <span className="avatar !h-9 !w-9 shrink-0">{initials(me.name)}</span>}
+          ? <img src={me.photoUrl} alt="" className={`${s.avatar} !h-9 !w-9 shrink-0 object-cover`} />
+          : <span className={`${s.avatar} !h-9 !w-9 shrink-0`}>{initials(me.name)}</span>}
         <span className="nav-label min-w-0 leading-tight">
           <span className="block truncate text-sm font-semibold text-white">{me.name}</span>
           <span className="block truncate text-[11px] text-white/55">{me.role}</span>

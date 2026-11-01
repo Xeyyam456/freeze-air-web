@@ -38,7 +38,7 @@ export default function PanelLayout({ children }: LayoutProps<"/">) {
       <Suspense fallback={<SidebarFallback />}>
         <PanelChrome />
       </Suspense>
-      <div className="panel-body">{children}</div>
+      <div className="pl-[var(--nav-w)] transition-[padding-left] duration-[220ms]">{children}</div>
     </QueryProvider>
   );
 }

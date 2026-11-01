@@ -1,5 +1,6 @@
 "use client";
 
+import s from "./Sidebar.module.css";
 import { LogoMark } from "@/shared/components/LogoMark";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -10,19 +11,7 @@ import { LogoutButton } from "@/components/LogoutButton";
 import { ProfileButton } from "@/views/Profile/components/ProfileButton";
 import type { Me } from "@/types/profile";
 import { isActive, navGroups, PANEL_EVENTS } from "../nav";
-
-export const NAV_STORAGE_KEY = "panel-nav";
-
-// Menyunu yığ/aç: vəziyyət <html data-nav="mini">-dədir (ilk boyamadan əvvəl root layout-dakı skript qoyur), localStorage-da saxlanır
-function toggleMini() {
-  const html = document.documentElement;
-  const mini = html.dataset.nav !== "mini";
-  if (mini) html.dataset.nav = "mini";
-  else delete html.dataset.nav;
-  try {
-    localStorage.setItem(NAV_STORAGE_KEY, mini ? "mini" : "full");
-  } catch {}
-}
+import { toggleMini } from "./toggleMini";
 
 // Sol menyu: loqo, qruplu bəndlər (tapşırıq nişanı ilə), altda profil və çıxış.
 // ≥ 1024: sabit, yığıla bilir (yalnız ikonlar); < 1024: üst zolaqdakı ☰ ilə açılan çəkmə panel (səhifə dəyişəndə özü bağlanır).
@@ -38,13 +27,13 @@ function SidebarView({ showDepot, showFuel = false, me, pathname }: { showDepot:
 
   return (
     <>
-      {open && <div className="panel-nav-scrim" onClick={() => setOpenAt(null)} aria-hidden />}
-      <aside className={`panel-nav ${open ? "is-open" : ""}`} aria-label="Panel menyusu">
+      {open && <div className={s.scrim} onClick={() => setOpenAt(null)} aria-hidden />}
+      <aside className={`${s.nav} ${open ? "is-open" : ""}`} aria-label="Panel menyusu">
         {/* ≥ 1024: menyunu yığ / aç — sağ kənarda yumru düymə (əvvəl ayaqda ayrıca sətir idi, alçaq ekranda bəndləri sıxışdırırdı) */}
-        <button type="button" onClick={toggleMini} className="nav-edge-toggle max-lg:!hidden" title="Menyunu yığ / aç" aria-label="Menyunu yığ / aç">
+        <button type="button" onClick={toggleMini} className={`${s.edge} max-lg:!hidden`} title="Menyunu yığ / aç" aria-label="Menyunu yığ / aç">
           <ChevronsLeft size={14} strokeWidth={2.6} />
         </button>
-        <div className="panel-nav-head">
+        <div className={s.head}>
           <Link href="/panel" className="flex min-w-0 items-center gap-3" title="Freeze Air Service — Panel">
             <LogoMark><Snowflake size={22} strokeWidth={2.4} /></LogoMark>
             <span className="nav-label min-w-0 leading-tight">
@@ -52,22 +41,22 @@ function SidebarView({ showDepot, showFuel = false, me, pathname }: { showDepot:
               <span className="block text-xs text-white/55">Usta paneli</span>
             </span>
           </Link>
-          <button type="button" onClick={() => setOpenAt(null)} className="nav-icon-btn ml-auto lg:hidden" aria-label="Menyunu bağla">
+          <button type="button" onClick={() => setOpenAt(null)} className={`${s.iconBtn} ml-auto lg:hidden`} aria-label="Menyunu bağla">
             <X size={18} />
           </button>
         </div>
 
-        <nav className="panel-nav-scroll">
+        <nav className={s.scroll}>
           {navGroups(showDepot, showFuel).map((g) => (
-            <div key={g.title} className="nav-group">
-              <p className="nav-group-title"><span className="nav-label">{g.title}</span></p>
+            <div key={g.title} className={s.group}>
+              <p className={s.groupTitle}><span className="nav-label">{g.title}</span></p>
               {g.items.map(({ href, label, icon: Icon, tasks }) => (
-                <Link key={href} href={href} className="nav-item" title={label}
+                <Link key={href} href={href} className={s.item} title={label}
                   aria-current={isActive(href, pathname) ? "page" : undefined}>
                   <Icon size={19} strokeWidth={2.1} className="shrink-0" />
                   <span className="nav-label truncate">{label}</span>
                   {tasks && openTasks > 0 && (
-                    <span className="nav-badge" title="Bu gün görülməmiş tapşırığın">{openTasks}</span>
+                    <span className={s.badge} title="Bu gün görülməmiş tapşırığın">{openTasks}</span>
                   )}
                 </Link>
               ))}
@@ -75,14 +64,14 @@ function SidebarView({ showDepot, showFuel = false, me, pathname }: { showDepot:
           ))}
         </nav>
 
-        <div className="panel-nav-foot">
+        <div className={s.foot}>
           {me ? (
-            <div className="nav-profile">
+            <div className={s.profile}>
               <ProfileButton me={me} />
               <LogoutButton />
             </div>
           ) : (
-            <div className="nav-profile h-[52px]" />
+            <div className={`${s.profile} h-[52px]`} />
           )}
         </div>
       </aside>
