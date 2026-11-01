@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
   turbopack: {
     rules: {
       "*.css": {
+        // CSS Modules (*.module.css) Tailwind yükləyicisindən keçmir: Next özü yerli class adlarını yaradır
+        condition: { not: { path: "*.module.css" } },
         loaders: ["@tailwindcss/turbopack"],
         as: "*.css",
       },

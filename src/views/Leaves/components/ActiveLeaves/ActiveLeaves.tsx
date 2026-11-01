@@ -1,5 +1,6 @@
 "use client";
 
+import { Card } from "@/shared/components/Card";
 import { CalendarClock } from "lucide-react";
 import type { ActiveLeavesProps } from "@/types/leaves";
 import { LeaveCard } from "../LeaveCard";
@@ -10,7 +11,7 @@ export function ActiveLeaves({ items, today, onGiveUp, onCancel }: ActiveLeavesP
     <section>
       <h2 className="mb-3 flex items-center gap-2 text-base font-bold"><CalendarClock size={18} className="text-primary" /> Aktiv və gözləyən</h2>
       {items.length === 0 ? (
-        <p className="card muted py-8 text-center text-sm">İndi aktiv və ya gözləyən icazən yoxdur.</p>
+        <Card as="p" className="muted py-8 text-center text-sm">İndi aktiv və ya gözləyən icazən yoxdur.</Card>
       ) : (
         <ul className="space-y-2.5">
           {items.map((l) => (

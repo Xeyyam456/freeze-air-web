@@ -1,5 +1,6 @@
 "use client";
 
+import { Card } from "@/shared/components/Card";
 import type { EmployeeCardProps } from "@/types/attendance";
 import { PersonPhoto } from "../PersonPhoto";
 import { TodaySessions } from "../TodaySessions";
@@ -14,8 +15,8 @@ export function EmployeeCard({ employee: e, summary: a, isMe, cell, onOpen }: Em
   ];
 
   return (
-    <div role="button" tabIndex={0} onClick={() => onOpen(e)} onKeyDown={(ev) => ev.key === "Enter" && onOpen(e)}
-      className={`card grow basis-[320px] cursor-pointer !p-4 max-sm:!p-2.5 transition-colors hover:bg-primary-soft/30 ${isMe ? "ring-2 ring-primary/30" : ""}`}>
+    <Card role="button" tabIndex={0} onClick={() => onOpen(e)} onKeyDown={(ev) => ev.key === "Enter" && onOpen(e)}
+      className={`grow basis-[320px] cursor-pointer !p-4 max-sm:!p-2.5 transition-colors hover:bg-primary-soft/30 ${isMe ? "ring-2 ring-primary/30" : ""}`}>
       <div className="flex items-center gap-3 max-sm:gap-2">
         <PersonPhoto employee={e} className="h-10 w-10 max-sm:h-8 max-sm:w-8 max-sm:text-[10px]" />
         <span className="min-w-0 flex-1">
@@ -40,6 +41,6 @@ export function EmployeeCard({ employee: e, summary: a, isMe, cell, onOpen }: Em
           {a && <TodaySessions summary={a} />}
         </div>
       )}
-    </div>
+    </Card>
   );
 }

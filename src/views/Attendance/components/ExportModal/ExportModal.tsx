@@ -1,5 +1,7 @@
 "use client";
 
+import { IconButton } from "@/shared/components/IconButton";
+import { Label } from "@/shared/components/Label";
 import { useState } from "react";
 import { FileSpreadsheet, X } from "lucide-react";
 import { toast } from "@/lib/toast";
@@ -38,10 +40,10 @@ export function ExportModal({ month, emps, onClose }: ExportModalProps) {
           <h2 id="att-export-title" className="flex items-center gap-2 text-lg font-bold"><FileSpreadsheet size={18} className="text-ok" /> Davamiyyəti Excel-ə çıxar</h2>
           <p className="muted text-sm">{MONTHS_AZ[m - 1]} {y}</p>
         </div>
-        <button type="button" onClick={onClose} className="icon-btn" aria-label="Bağla"><X size={18} /></button>
+        <IconButton onClick={onClose}  aria-label="Bağla"><X size={18} /></IconButton>
       </div>
       <label className="block">
-        <span className="label">Kimin davamiyyəti</span>
+        <Label>Kimin davamiyyəti</Label>
         <Select value={who} onChange={(e) => setWho(e.target.value)} className="cursor-pointer">
           <option value="all">Bütün ustalar (tam siyahı)</option>
           {emps.map((e) => <option key={e.id} value={e.id}>{e.full_name}</option>)}

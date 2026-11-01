@@ -1,5 +1,6 @@
 "use client";
 
+import { Label } from "@/shared/components/Label";
 import { useData } from "@/lib/useData";
 import { fetchRecentLeaves } from "@/services/leaves/fetchRecentLeaves";
 import { todayBaku } from "@/shared/utils/todayBaku";
@@ -16,7 +17,7 @@ export function RecentRequests({ employeeId }: RecentRequestsProps) {
 
   return (
     <div className="mt-5">
-      <span className="label">Son sorğularım</span>
+      <Label>Son sorğularım</Label>
       {mine === null ? (
         <p className="muted text-sm">Yüklənir...</p>
       ) : mine.length === 0 ? (

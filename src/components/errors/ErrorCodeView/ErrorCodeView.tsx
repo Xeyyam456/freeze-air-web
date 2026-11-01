@@ -1,5 +1,7 @@
 "use client";
 
+import { SearchField } from "@/shared/components/SearchField";
+import { IconTile } from "@/shared/components/IconTile";
 import { useMemo, useState } from "react";
 import { Box, Search, TriangleAlert, Wrench } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -49,17 +51,17 @@ export function ErrorCodeView() {
             {(data?.models ?? []).map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
           </Select>
         </label>
-        <div className="search min-w-0 flex-1 sm:min-w-64">
+        <SearchField className="min-w-0 flex-1 sm:min-w-64">
           <Search size={20} />
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Xəta kodu və ya açıqlama yaz (məs. U4)..." aria-label="Xəta kodu axtarışı" />
-        </div>
+        </SearchField>
       </div>
 
       {data === null ? (
         <Card className="muted py-10 text-center text-sm">Yüklənir...</Card>
       ) : data.codes.length === 0 ? (
         <Card className="py-14 text-center">
-          <span className="icon-tile mx-auto"><TriangleAlert size={20} /></span>
+          <IconTile className="mx-auto"><TriangleAlert size={20} /></IconTile>
           <p className="mt-3 font-semibold">Hələ xəta kodu əlavə olunmayıb</p>
           <p className="muted text-sm">Xəta kodlarını admin əlavə edir.</p>
         </Card>
@@ -68,7 +70,7 @@ export function ErrorCodeView() {
       ) : (
         <ul className="grid gap-4 lg:grid-cols-2">
           {filtered.map((c) => (
-            <li key={c.id} className="card space-y-3">
+            <Card key={c.id} as="li" className="space-y-3">
               <div className="flex items-start gap-3">
                 <span className="rounded-xl bg-danger-soft px-3 py-2 text-lg font-extrabold text-danger">{c.code}</span>
                 <div className="min-w-0 flex-1">
@@ -82,7 +84,7 @@ export function ErrorCodeView() {
                   <p className="whitespace-pre-line text-sm leading-relaxed">{c.solution}</p>
                 </div>
               )}
-            </li>
+            </Card>
           ))}
         </ul>
       )}

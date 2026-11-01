@@ -1,3 +1,5 @@
+import { IconTile } from "@/shared/components/IconTile";
+import { IconButton } from "@/shared/components/IconButton";
 import { UserRound, X } from "lucide-react";
 import { Modal } from "@/shared/components/Modal";
 import type { ProfileModalProps } from "@/types/profile";
@@ -8,13 +10,13 @@ export function ProfileModal({ me, onClose }: ProfileModalProps) {
     <Modal onClose={onClose} labelledBy="profile-title" className="!max-w-md">
       <div className="mb-5 flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
-          <span className="icon-tile !h-11 !w-11 shrink-0"><UserRound size={20} /></span>
+          <IconTile className="!h-11 !w-11 shrink-0"><UserRound size={20} /></IconTile>
           <div className="min-w-0">
             <h2 id="profile-title" className="text-lg font-bold">Profil</h2>
             <p className="muted truncate text-sm max-[400px]:text-[11px]" title={me.email}>{me.email}</p>
           </div>
         </div>
-        <button type="button" onClick={onClose} className="icon-btn" aria-label="Bağla"><X size={18} /></button>
+        <IconButton onClick={onClose}  aria-label="Bağla"><X size={18} /></IconButton>
       </div>
 
       {me.employeeId

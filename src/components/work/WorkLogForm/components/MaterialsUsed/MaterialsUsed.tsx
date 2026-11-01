@@ -1,3 +1,5 @@
+import { Label } from "@/shared/components/Label";
+import { Input } from "@/shared/components/Input";
 import { Package } from "lucide-react";
 import type { MaterialsUsedProps } from "@/types/myWork";
 import { fmtNum, toNum } from "../../utils/draft";
@@ -7,7 +9,7 @@ export function MaterialsUsed({ held, used, onUse }: MaterialsUsedProps) {
   if (held.length === 0) return null;
   return (
     <div>
-      <span className="label">İşlədilən material <span className="muted font-normal">(istəyə görə)</span></span>
+      <Label>İşlədilən material <span className="muted font-normal">(istəyə görə)</span></Label>
       <ul className="divide-y divide-line rounded-xl border border-line">
         {held.map((m) => {
           const over = toNum(used[m.toolId]) > m.quantity;
@@ -18,9 +20,9 @@ export function MaterialsUsed({ held, used, onUse }: MaterialsUsedProps) {
                 <span className="line-clamp-2 text-sm font-semibold">{m.name}</span>
                 <span className={`block whitespace-nowrap text-[11px] ${over ? "font-semibold text-danger" : "muted"}`}>Məndə: {fmtNum(m.quantity)} {m.unit}</span>
               </span>
-              <input inputMode="decimal" autoComplete="off" value={used[m.toolId] ?? ""} placeholder="0"
+              <Input inputMode="decimal" autoComplete="off" value={used[m.toolId] ?? ""} placeholder="0"
                 onChange={(e) => onUse(m.toolId, e.target.value)}
-                className={`field !h-9 !w-20 text-center max-sm:!w-16 max-sm:!px-1 ${over ? "!border-danger" : ""}`} aria-label={`${m.name}: işlədilən miqdar`} />
+                className={`!h-9 !w-20 text-center max-sm:!w-16 max-sm:!px-1 ${over ? "!border-danger" : ""}`} aria-label={`${m.name}: işlədilən miqdar`} />
               <span className="muted w-10 text-xs max-sm:w-auto">{m.unit}</span>
             </li>
           );

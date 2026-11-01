@@ -1,5 +1,6 @@
 "use client";
 
+import { IconButton } from "@/shared/components/IconButton";
 import { Check, FileText, Pencil, ShieldAlert, Undo2, X } from "lucide-react";
 import { ConfirmButton } from "@/components/ConfirmButton";
 import { Button } from "@/shared/components/Button";
@@ -18,7 +19,7 @@ export function RequestRow(props: RequestRowProps) {
   const d = useRequestDecision(props);
   const { t, u, can, editing, pending } = d;
   const cancelButton = (
-    <ConfirmButton onConfirm={d.cancel} success={false} className="icon-btn !h-8 !w-8" title="Sənədi ləğv et" question="Sənəd ləğv olunacaq." confirmLabel="Bəli, ləğv et">
+    <ConfirmButton onConfirm={d.cancel} success={false} icon className="!h-8 !w-8" title="Sənədi ləğv et" question="Sənəd ləğv olunacaq." confirmLabel="Bəli, ləğv et">
       <Undo2 size={14} />
     </ConfirmButton>
   );
@@ -41,7 +42,7 @@ export function RequestRow(props: RequestRowProps) {
           </span>
         )}
         {r.photo_path && (
-          <button type="button" onClick={d.openFile} className="icon-btn !h-8 !w-8" title="Fayla bax" aria-label="Fayla bax"><FileText size={14} /></button>
+          <IconButton onClick={d.openFile} className="!h-8 !w-8" title="Fayla bax" aria-label="Fayla bax"><FileText size={14} /></IconButton>
         )}
         {d.blocked ? (
           <>
@@ -53,10 +54,10 @@ export function RequestRow(props: RequestRowProps) {
             <Button size="sm" disabled={pending || (can === false && !editing)} onClick={() => d.decide(true)} className="!h-8 !px-3"
               title={can === false && !editing ? "Depoda çatmır: ✎ ilə az ver və ya rədd et" : "Qəbul et"}><Check size={14} /> Qəbul</Button>
             {d.editable && (
-              <button type="button" onClick={() => d.setEditing((v) => !v)} aria-pressed={editing} title="Miqdarı düzəlt" aria-label="Miqdarı düzəlt"
-                className={`icon-btn !h-8 !w-8 ${editing ? "!bg-primary-soft !text-primary" : ""}`}><Pencil size={14} /></button>
+              <IconButton onClick={() => d.setEditing((v) => !v)} aria-pressed={editing} title="Miqdarı düzəlt" aria-label="Miqdarı düzəlt"
+                className={`!h-8 !w-8 ${editing ? "!bg-primary-soft !text-primary" : ""}`}><Pencil size={14} /></IconButton>
             )}
-            <button type="button" onClick={() => d.setRejecting((v) => !v)} className="icon-btn icon-btn-danger !h-8 !w-8" title="Rədd et" aria-label="Rədd et"><X size={15} /></button>
+            <IconButton onClick={() => d.setRejecting((v) => !v)} danger className="!h-8 !w-8" title="Rədd et" aria-label="Rədd et"><X size={15} /></IconButton>
             {d.mine && r.type !== "return" && r.type !== "request" && cancelButton}
           </>
         )}

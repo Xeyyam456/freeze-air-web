@@ -1,5 +1,7 @@
 "use client";
 
+import { CodeBadge } from "@/shared/components/CodeBadge";
+import { IconButton } from "@/shared/components/IconButton";
 import { useState } from "react";
 import { ExternalLink, Map as MapIcon, MapPin, X } from "lucide-react";
 import { mapEmbedUrl, mapSearchUrl } from "@/lib/navigation";
@@ -23,7 +25,7 @@ export function MapButton({ place }: MapButtonProps) {
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 px-6 py-4 max-sm:items-start max-sm:px-4">
             <div className="min-w-0 flex-1">
               <h2 id="map-title" className="flex items-center gap-2 text-lg font-bold">
-                {place.code && <span className="code-badge shrink-0 whitespace-nowrap">{place.code}</span>}
+                {place.code && <CodeBadge className="shrink-0 whitespace-nowrap">{place.code}</CodeBadge>}
                 <span className="line-clamp-2">{place.name}</span>
               </h2>
               <p className="muted mt-0.5 flex items-start gap-1.5 text-sm">
@@ -32,12 +34,12 @@ export function MapButton({ place }: MapButtonProps) {
             </div>
             <div className="flex shrink-0 items-center gap-2 max-sm:contents">
               {/* Mobildə: bağla düyməsi başlığın yanında, "Google Maps-də aç" altda tam endə */}
-              <a href={mapSearchUrl(place)} target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-sm max-sm:order-last max-sm:basis-full">
+              <Button href={mapSearchUrl(place)} target="_blank" rel="noopener noreferrer" as="a" variant="secondary" size="sm" className="max-sm:order-last max-sm:basis-full">
                 <ExternalLink size={14} /> Google Maps-də aç
-              </a>
-              <button type="button" onClick={() => setOpen(false)} className="icon-btn" aria-label="Bağla">
+              </Button>
+              <IconButton onClick={() => setOpen(false)}  aria-label="Bağla">
                 <X size={18} />
-              </button>
+              </IconButton>
             </div>
           </div>
           <iframe

@@ -15,7 +15,7 @@ export function DailySection({ rows, payments, total, paid, period, range, today
         <span className="text-sm font-semibold text-muted">· {PERIOD_LABEL[period].toLowerCase()}: {range.label}</span>
       </h2>
       {rows.length === 0 ? (
-        <p className="card muted py-8 text-center text-sm">Bu dövrdə yürüş yazılmayıb.</p>
+        <Card as="p" className="muted py-8 text-center text-sm">Bu dövrdə yürüş yazılmayıb.</Card>
       ) : (
         <Card className="overflow-hidden !p-0">
           <div className="flex items-center justify-between border-b border-line bg-[#f8fafc] px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted max-sm:px-3">

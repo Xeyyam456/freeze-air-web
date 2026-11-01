@@ -1,3 +1,4 @@
+import { Label } from "@/shared/components/Label";
 import { FileText, Play } from "lucide-react";
 import type { LogFilesProps } from "@/types/myWork";
 
@@ -9,7 +10,7 @@ export function LogFiles({ log, onView }: LogFilesProps) {
   if (!act && photos.length === 0 && videos.length === 0) return null;
   return (
     <div>
-      <span className="label">{videos.length ? "Akt, şəkillər və video" : "Akt və şəkillər"}</span>
+      <Label>{videos.length ? "Akt, şəkillər və video" : "Akt və şəkillər"}</Label>
       <div className="flex flex-wrap gap-2">
         {act?.url && (
           <button type="button" onClick={() => onView({ url: act.url!, title: "Akt", pdf: /\.pdf($|\?)/i.test(act.path) })}

@@ -1,3 +1,5 @@
+import { Card } from "@/shared/components/Card";
+import { Button } from "@/shared/components/Button";
 import { Briefcase, Phone } from "lucide-react";
 import { experience } from "@/lib/experience";
 import { Avatar } from "@/shared/components/Avatar";
@@ -10,8 +12,8 @@ export function PersonCard({ person, subtitle, badge, highlight = false, status,
   const tone = status ? STATUS_TONE[status.kind] : null;
 
   return (
-    <div
-      className={`card card-link flex min-w-0 cursor-pointer flex-col overflow-hidden !p-0 ${highlight ? "!border-primary ring-2 ring-primary-soft" : ""}`}
+    <Card
+      link className={`flex min-w-0 cursor-pointer flex-col overflow-hidden !p-0 ${highlight ? "!border-primary ring-2 ring-primary-soft" : ""}`}
       role="button"
       tabIndex={0}
       aria-label={`${person.full_name}: məlumatlara bax`}
@@ -49,14 +51,14 @@ export function PersonCard({ person, subtitle, badge, highlight = false, status,
             <span className={`truncate ${exp ? "" : "muted"}`}>{exp ?? "Təcrübə yazılmayıb"}</span>
           </span>
           {person.phone ? (
-            <a href={`tel:${person.phone}`} onClick={(e) => e.stopPropagation()} className="btn btn-soft btn-sm shrink-0" title={person.phone}>
+            <Button href={`tel:${person.phone}`} onClick={(e) => e.stopPropagation()} as="a" variant="soft" size="sm" className="shrink-0" title={person.phone}>
               <Phone size={14} /> Zəng et
-            </a>
+            </Button>
           ) : (
             <span className="muted flex shrink-0 items-center gap-1.5"><Phone size={13} /> Telefon yoxdur</span>
           )}
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

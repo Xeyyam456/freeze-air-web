@@ -1,3 +1,4 @@
+import { CardTitle } from "@/shared/components/Card";
 import { MapPin, Trophy } from "lucide-react";
 import type { TopPlacesProps } from "@/types/myWork";
 import { Card } from "@/shared/components/Card";
@@ -7,7 +8,7 @@ export function TopPlaces({ top }: TopPlacesProps) {
   const maxPlace = top[0]?.n ?? 1;
   return (
     <Card as="section" className="!border-transparent !bg-[#0c1b36] text-white">
-      <h3 className="card-title mb-4 flex items-center gap-2 !text-white"><Trophy size={18} className="text-frost" /> Ən çox işlənən yerlər</h3>
+      <CardTitle as="h3" className="mb-4 flex items-center gap-2 !text-white"><Trophy size={18} className="text-frost" /> Ən çox işlənən yerlər</CardTitle>
       {top.length === 0 ? (
         <p className="py-8 text-center text-sm text-white/60">Bu ayda iş qeydi yoxdur.</p>
       ) : (

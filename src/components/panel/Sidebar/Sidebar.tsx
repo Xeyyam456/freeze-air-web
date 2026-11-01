@@ -1,5 +1,6 @@
 "use client";
 
+import { LogoMark } from "@/shared/components/LogoMark";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -29,7 +30,6 @@ function SidebarView({ showDepot, showFuel = false, me, pathname }: { showDepot:
   const openTasks = useMyOpenTasks();
   const [openAt, setOpenAt] = useState<string | null>(null); // mobil panel hansı səhifədə açılıb
   const open = openAt !== null && openAt === pathname;
-
   useEffect(() => {
     const onMenu = () => setOpenAt(window.location.pathname);
     window.addEventListener(PANEL_EVENTS.menu, onMenu);
@@ -46,7 +46,7 @@ function SidebarView({ showDepot, showFuel = false, me, pathname }: { showDepot:
         </button>
         <div className="panel-nav-head">
           <Link href="/panel" className="flex min-w-0 items-center gap-3" title="Freeze Air Service — Panel">
-            <span className="logo-mark"><Snowflake size={22} strokeWidth={2.4} /></span>
+            <LogoMark><Snowflake size={22} strokeWidth={2.4} /></LogoMark>
             <span className="nav-label min-w-0 leading-tight">
               <span className="block truncate text-[15px] font-extrabold">Freeze Air</span>
               <span className="block text-xs text-white/55">Usta paneli</span>

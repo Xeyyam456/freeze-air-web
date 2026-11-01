@@ -1,5 +1,6 @@
 "use client";
 
+import { Card } from "@/shared/components/Card";
 import { History } from "lucide-react";
 import { MONTHS_AZ } from "@/shared/utils/monthsAz";
 import type { LeaveHistoryProps } from "@/types/leaves";
@@ -17,7 +18,7 @@ export function LeaveHistory({ filter, counts, total, byMonth, today, onFilter }
         {CHIPS.map(([value, label]) => <FilterChip key={value} active={filter === value} label={label} count={counts[value]} onClick={() => onFilter(value)} />)}
       </div>
       {byMonth.length === 0 ? (
-        <p className="card muted py-8 text-center text-sm">{total ? "Bu süzgəcə uyğun sorğu yoxdur." : "Hələ keçmiş icazən yoxdur."}</p>
+        <Card as="p" className="muted py-8 text-center text-sm">{total ? "Bu süzgəcə uyğun sorğu yoxdur." : "Hələ keçmiş icazən yoxdur."}</Card>
       ) : (
         <div className="space-y-5">
           {byMonth.map(([k, list]) => (

@@ -1,5 +1,7 @@
 "use client";
 
+import { IconButton } from "@/shared/components/IconButton";
+import { Label } from "@/shared/components/Label";
 import { X } from "lucide-react";
 import { DatePicker } from "@/shared/components/DatePicker";
 import { Buttons } from "@/components/forms";
@@ -31,7 +33,7 @@ export function WorkLogForm(props: WorkLogFormProps) {
           <h2 id="work-form-title" className="text-lg font-bold">{existing ? "İşi redaktə et" : "Yeni iş"}</h2>
           <p className="muted text-sm">{employeeName}</p>
         </div>
-        <button type="button" onClick={onClose} className="icon-btn" aria-label="Bağla"><X size={18} /></button>
+        <IconButton onClick={onClose}  aria-label="Bağla"><X size={18} /></IconButton>
       </div>
 
       <form ref={formRef} onSubmit={onSubmit} onChange={() => saveDraft()} className="space-y-4">
@@ -41,7 +43,7 @@ export function WorkLogForm(props: WorkLogFormProps) {
         </FormField>
 
         <div>
-          <span className="label">Yer</span>
+          <Label>Yer</Label>
           <PlacePicker places={places} value={place} onChange={(p) => { setPlace(p); saveDraft({ place: p }); }} />
         </div>
 

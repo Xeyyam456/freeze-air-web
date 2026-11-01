@@ -1,3 +1,5 @@
+import s from "@/shared/styles/Avatar.module.css";
+import { IconButton } from "@/shared/components/IconButton";
 import { ImagePlus, Trash2 } from "lucide-react";
 import { initials } from "@/lib/experience";
 import type { ProfileButtonProps } from "@/types/profile";
@@ -12,8 +14,8 @@ export function ProfilePhotoRow({ me }: ProfileButtonProps) {
     <div className="flex flex-wrap items-center gap-4 rounded-xl border border-line p-3 max-sm:gap-3">
       {photoUrl
         // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
-        ? <img src={photoUrl} alt={me.name} className={`emp-avatar !h-16 !w-16 object-cover ${pending ? "opacity-50" : ""}`} />
-        : <span className={`emp-avatar !h-16 !w-16 !text-lg ${pending ? "opacity-50" : ""}`}>{initials(me.name)}</span>}
+        ? <img src={photoUrl} alt={me.name} className={`${s.avatar} !h-16 !w-16 object-cover ${pending ? "opacity-50" : ""}`} />
+        : <span className={`${s.avatar} !h-16 !w-16 !text-lg ${pending ? "opacity-50" : ""}`}>{initials(me.name)}</span>}
       <div className="min-w-0 flex-[1_1_140px]">
         <p className="text-sm font-semibold">{me.name}</p>
         <p className="muted text-xs">Şəkil: JPG, PNG və ya WebP. Kvadrat kəsilir.</p>
@@ -24,9 +26,9 @@ export function ProfilePhotoRow({ me }: ProfileButtonProps) {
         <ImagePlus size={14} /> {pending ? "..." : photoUrl ? "Dəyiş" : "Yüklə"}
       </Button>
       {photoUrl && (
-        <button type="button" onClick={onRemove} disabled={pending} className="icon-btn icon-btn-danger" title="Şəkli sil" aria-label="Şəkli sil">
+        <IconButton onClick={onRemove} disabled={pending} danger title="Şəkli sil" aria-label="Şəkli sil">
           <Trash2 size={16} />
-        </button>
+        </IconButton>
       )}
     </div>
   );

@@ -28,7 +28,7 @@ export function ConfirmSection({ items }: ConfirmSectionProps) {
                 className="!h-9 max-sm:!h-8"><Check size={15} /> Aldım</Button>
               {!h.disputed_at && (
                 <ConfirmButton onConfirm={async () => { await rpc(() => createClient().rpc("assignment_confirm", { p_id: h.id, p_received: false }), "Depo məsuluna bildirildi"); }}
-                  success={false} className="btn btn-cancel btn-sm !h-9 max-sm:!h-8" title="Almadım" question="Depo məsulu yoxlayacaq. Sonra yenə «Aldım» basa bilərsən." confirmLabel="Bəli, almamışam">
+                  success={false} variant="cancel" size="sm" className="!h-9 max-sm:!h-8" title="Almadım" question="Depo məsulu yoxlayacaq. Sonra yenə «Aldım» basa bilərsən." confirmLabel="Bəli, almamışam">
                   Almadım
                 </ConfirmButton>
               )}

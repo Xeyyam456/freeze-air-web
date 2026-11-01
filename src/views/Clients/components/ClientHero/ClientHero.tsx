@@ -36,7 +36,7 @@ export function ClientHero({ company, stats }: ClientHeroProps) {
 
         {/* Bütün obyektin (özü + filialları/mağazaları) iş tarixçəsi */}
         <PlaceHistoryButton target={{ title: company.name, companyId: company.id }}
-          className="btn shrink-0 !bg-white/10 !text-white ring-1 ring-white/15 hover:!bg-white/20 max-sm:w-full max-sm:!h-9 sm:max-lg:ml-auto" />
+          variant="plain" size="md" className="shrink-0 !bg-white/10 !text-white ring-1 ring-white/15 hover:!bg-white/20 max-sm:w-full max-sm:!h-9 sm:max-lg:ml-auto" />
       </div>
       {company.notes && (
         <p className="mt-4 flex items-start gap-2 border-t border-white/10 pt-3 text-sm text-white/70">

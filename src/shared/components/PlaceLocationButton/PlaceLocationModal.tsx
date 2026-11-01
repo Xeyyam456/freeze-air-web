@@ -1,3 +1,4 @@
+import { IconButton } from "@/shared/components/IconButton";
 import { X } from "lucide-react";
 import { Modal } from "@/shared/components/Modal";
 import type { PlaceLocationModalProps } from "@/types/clients";
@@ -12,7 +13,7 @@ export function PlaceLocationModal({ place, loc, onClose }: PlaceLocationModalPr
           <h2 id="loc-title" className="text-lg font-bold">Konumu düzəlt</h2>
           <p className="muted truncate text-sm">{place.code ? `${place.code} · ` : ""}{place.name}</p>
         </div>
-        <button type="button" onClick={onClose} className="icon-btn" aria-label="Bağla"><X size={18} /></button>
+        <IconButton onClick={onClose}  aria-label="Bağla"><X size={18} /></IconButton>
       </div>
       <AddressSection place={place} loc={loc} />
       <CoordinateSection place={place} loc={loc} />

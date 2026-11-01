@@ -1,3 +1,5 @@
+import { Label } from "@/shared/components/Label";
+import { Input } from "@/shared/components/Input";
 import { Check, LocateFixed } from "lucide-react";
 import type { PlaceSectionProps } from "@/types/clients";
 import { FixPreview } from "./FixPreview";
@@ -8,7 +10,7 @@ export function CoordinateSection({ place, loc }: PlaceSectionProps) {
   const { fix } = loc;
   return (
     <section className="mt-5 border-t border-line pt-4">
-      <span className="label">Koordinat</span>
+      <Label>Koordinat</Label>
       <p className="muted text-sm">
         {loc.hasCoords ? <>Hazırda: <b className="tabular-nums text-ink">{place.lat!.toFixed(5)}, {place.lng!.toFixed(5)}</b></> : "Koordinat yazılmayıb: xəritə ünvanla axtarır."}
       </p>
@@ -19,9 +21,9 @@ export function CoordinateSection({ place, loc }: PlaceSectionProps) {
       </Button>
 
       <div className="mt-3">
-        <span className="label">Və ya koordinatı əl ilə yaz</span>
-        <input value={loc.manual} onChange={(e) => loc.onManual(e.target.value)} inputMode="decimal" autoComplete="off" spellCheck={false}
-          placeholder="40.40930, 49.86710" className={`field tabular-nums ${loc.manualBad ? "!border-danger" : ""}`} />
+        <Label>Və ya koordinatı əl ilə yaz</Label>
+        <Input value={loc.manual} onChange={(e) => loc.onManual(e.target.value)} inputMode="decimal" autoComplete="off" spellCheck={false}
+          placeholder="40.40930, 49.86710" className={`tabular-nums ${loc.manualBad ? "!border-danger" : ""}`} />
         <p className={`mt-1 text-xs ${loc.manualBad ? "font-semibold text-danger" : "muted"}`}>
           {loc.manualBad ? "Format səhvdir: «enlik, uzunluq» kimi yaz (məs. 40.40930, 49.86710)." : "Google Maps-də yerə uzun bas və ya sağ klik et, koordinatı kopyalayıb bura yapışdır."}
         </p>

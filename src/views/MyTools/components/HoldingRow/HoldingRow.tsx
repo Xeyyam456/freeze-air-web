@@ -33,7 +33,7 @@ export function HoldingRow({ h, v }: HoldingRowProps) {
         <StatusDot tone={st.tone} label={st.label} />
         {ret ? (
           <ConfirmButton onConfirm={async () => { await rpc(() => createClient().rpc("depot_request_cancel", { p_id: ret.id }), "Sorğu ləğv edildi"); }} success={false}
-            className="btn btn-cancel btn-sm !h-8" title="Sorğunu geri götür" question="Qaytarma sorğusu ləğv olunacaq." confirmLabel="Bəli">
+            variant="cancel" size="sm" className="!h-8" title="Sorğunu geri götür" question="Qaytarma sorğusu ləğv olunacaq." confirmLabel="Bəli">
             <X size={14} /> Geri götür
           </ConfirmButton>
         ) : v.returnable(h) && (

@@ -1,3 +1,4 @@
+import { Input } from "@/shared/components/Input";
 import { Package, Wrench } from "lucide-react";
 import { useLoggedUse } from "@/views/Depot/hooks/useLoggedUse";
 import { SOFT } from "@/views/Depot/constants/tones";
@@ -22,8 +23,8 @@ export function ReturnLine({ h, d, onChange, employeeId }: ReturnLineProps) {
         </span>
         {!material && (
           <span className="flex items-center gap-1.5">
-            <input value={d.qty} onChange={(e) => onChange({ ...d, qty: e.target.value })} inputMode="numeric" aria-label={`${t.name}: say`}
-              className={`field !h-9 !w-16 !px-2 text-center !text-sm max-sm:!h-7 max-sm:!w-11 max-sm:!px-1 max-sm:!text-xs ${c.over ? "!border-danger" : ""}`} />
+            <Input value={d.qty} onChange={(e) => onChange({ ...d, qty: e.target.value })} inputMode="numeric" aria-label={`${t.name}: say`}
+              className={`!h-9 !w-16 !px-2 text-center !text-sm max-sm:!h-7 max-sm:!w-11 max-sm:!px-1 max-sm:!text-xs ${c.over ? "!border-danger" : ""}`} />
             <span className="muted text-xs max-sm:w-8 max-sm:text-[10px]">ədəd</span>
           </span>
         )}
@@ -33,8 +34,8 @@ export function ReturnLine({ h, d, onChange, employeeId }: ReturnLineProps) {
           {/* İki qrup, hər biri bölünmür: dar ekranda alt-alta düşür */}
           <span className="flex flex-wrap items-center gap-2">
             <span className="w-16 text-xs font-semibold max-sm:w-[4.5rem] max-sm:text-[11px]">Qaytarıram</span>
-            <input value={d.ret} onChange={(e) => onChange({ ...d, ret: e.target.value })} inputMode="decimal" placeholder="0" aria-label={`${t.name}: qaytarıram`}
-              className={`field !h-8 !w-16 !px-2 !text-[13px] max-sm:!h-7 max-sm:!w-12 max-sm:!text-xs ${c.over ? "!border-danger" : ""}`} />
+            <Input value={d.ret} onChange={(e) => onChange({ ...d, ret: e.target.value })} inputMode="decimal" placeholder="0" aria-label={`${t.name}: qaytarıram`}
+              className={`!h-8 !w-16 !px-2 !text-[13px] max-sm:!h-7 max-sm:!w-12 max-sm:!text-xs ${c.over ? "!border-danger" : ""}`} />
             {isPacked(t) ? <MiniSeg value={d.byPack} onChange={(v) => onChange({ ...d, byPack: v })} items={[[false, t.unit], [true, t.pack_name]]} label="Vahid" />
               : <span className="muted text-xs">{t.unit}</span>}
           </span>

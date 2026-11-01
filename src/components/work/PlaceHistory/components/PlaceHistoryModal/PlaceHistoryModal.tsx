@@ -1,5 +1,8 @@
 "use client";
 
+import { IconButton } from "@/shared/components/IconButton";
+import { SearchField } from "@/shared/components/SearchField";
+import { IconTile } from "@/shared/components/IconTile";
 import { useMemo, useState } from "react";
 import { History, Search, X } from "lucide-react";
 import { formatDateAz } from "@/shared/utils/formatDateAz";
@@ -42,14 +45,14 @@ export function PlaceHistoryModal({ target, onClose }: PlaceHistoryModalProps) {
             </h2>
             <p className="muted truncate text-sm">{target.title}{rows && rows.length > 0 && ` · ${rows.length} iş`}</p>
           </div>
-          <button type="button" onClick={onClose} className="icon-btn" aria-label="Bağla"><X size={18} /></button>
+          <IconButton onClick={onClose}  aria-label="Bağla"><X size={18} /></IconButton>
         </div>
 
         {rows && rows.length > 0 && (
-          <div className="search mb-3 shrink-0">
+          <SearchField className="mb-3 shrink-0">
             <Search size={20} />
             <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Usta, görülən iş və ya filial ilə axtar..." aria-label="Tarixçədə axtar" />
-          </div>
+          </SearchField>
         )}
 
         {rows === null ? (
@@ -57,7 +60,7 @@ export function PlaceHistoryModal({ target, onClose }: PlaceHistoryModalProps) {
         ) : rows.length === 0 ? (
           <div className="grid min-h-[240px] place-items-center rounded-xl border border-dashed border-line text-center">
             <div>
-              <span className="icon-tile mx-auto"><History size={20} /></span>
+              <IconTile className="mx-auto"><History size={20} /></IconTile>
               <p className="mt-3 font-semibold">Burada hələ iş görülməyib</p>
               <p className="muted text-sm">İş qeydi yazılan kimi burada görünəcək.</p>
             </div>

@@ -1,5 +1,7 @@
 "use client";
 
+import { LogoMark } from "@/shared/components/LogoMark";
+import { Label } from "@/shared/components/Label";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Mail, Snowflake } from "lucide-react";
 import { ActionForm } from "@/components/forms";
@@ -19,7 +21,7 @@ export function LoginCard() {
       </Link>
 
       <div className="mb-8 flex items-center gap-3 lg:hidden">
-        <span className="logo-mark"><Snowflake size={22} strokeWidth={2.4} /></span>
+        <LogoMark><Snowflake size={22} strokeWidth={2.4} /></LogoMark>
         <span className="text-lg font-extrabold">Freeze Air Service</span>
       </div>
 
@@ -31,7 +33,7 @@ export function LoginCard() {
           </div>
 
           <label className="block">
-            <span className="label">E-poçt</span>
+            <Label>E-poçt</Label>
             <span className="relative block">
               <Mail size={17} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
               <Input name="email" type="email" required autoComplete="email" placeholder="ad@example.com" className="!h-12 !pl-11" />

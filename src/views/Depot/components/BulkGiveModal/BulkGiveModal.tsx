@@ -1,5 +1,7 @@
 "use client";
 
+import { SearchField } from "@/shared/components/SearchField";
+import { Input } from "@/shared/components/Input";
 import { useMemo, useState } from "react";
 import { Search, Send } from "lucide-react";
 import { giveTools } from "@/services/depot/assignments";
@@ -47,11 +49,11 @@ export function BulkGiveModal({ emp, kind, tools, onClose }: BulkGiveModalProps)
     <Modal onClose={onClose} labelledBy="bulk-give-title" className="!max-w-lg">
       <DHead id="bulk-give-title" icon={Send} tone="blue" title={`${emp.full_name}: ${TEXT[kind].word} ver`} sub="İşarələ, sayını yaz, birdən ver" onClose={onClose} />
 
-      <div className="search">
+      <SearchField>
         <Search size={16} className="!left-4" />
         <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={TEXT[kind].search.split(" və ")[0] + " axtar..."} aria-label="Axtarış" autoFocus
           className="!h-10 !pl-10 !text-sm" />
-      </div>
+      </SearchField>
 
       {available.length === 0 ? (
         <p className="muted py-6 text-center text-sm">Depoda verilə bilən boş {TEXT[kind].word} yoxdur.</p>
@@ -70,9 +72,9 @@ export function BulkGiveModal({ emp, kind, tools, onClose }: BulkGiveModalProps)
                 </label>
                 {on && (
                   <span className="flex shrink-0 items-center gap-1.5">
-                    <input inputMode="decimal" autoComplete="off" value={qty[t.id]} aria-label={`${t.name} sayı`}
+                    <Input inputMode="decimal" autoComplete="off" value={qty[t.id]} aria-label={`${t.name} sayı`}
                       onChange={(e) => setQty((q) => ({ ...q, [t.id]: e.target.value }))}
-                      className={`field !h-8 !w-20 !px-2 !text-[13px] ${okQty(t) ? "" : "!border-danger"}`} />
+                      className={`!h-8 !w-20 !px-2 !text-[13px] ${okQty(t) ? "" : "!border-danger"}`} />
                     <span className="muted text-xs">{t.kind === "material" ? t.unit : "ədəd"}</span>
                   </span>
                 )}

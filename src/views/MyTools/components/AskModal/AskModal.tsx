@@ -73,8 +73,8 @@ export function AskModal({ stock, pendingIds, initialKind, onClose }: AskModalPr
               {on && (
                 <span className="flex shrink-0 flex-col items-end gap-1">
                   <span className="flex items-center gap-1.5">
-                    <input value={qty[t.id]} onChange={(e) => setQty((q) => ({ ...q, [t.id]: e.target.value }))} inputMode="decimal" aria-label={`${t.name}: miqdar`}
-                      className={`field !h-9 !w-16 !px-2 text-center !text-sm max-sm:!h-7 max-sm:!w-11 max-sm:!px-1 max-sm:!text-xs ${okQty(t) ? "" : "!border-danger"}`} />
+                    <Input value={qty[t.id]} onChange={(e) => setQty((q) => ({ ...q, [t.id]: e.target.value }))} inputMode="decimal" aria-label={`${t.name}: miqdar`}
+                      className={`!h-9 !w-16 !px-2 text-center !text-sm max-sm:!h-7 max-sm:!w-11 max-sm:!px-1 max-sm:!text-xs ${okQty(t) ? "" : "!border-danger"}`} />
                     {isPacked(t)
                       ? <MiniSeg value={inPack(t)} onChange={(v) => setByPack((m) => ({ ...m, [t.id]: v }))} items={[[true, t.pack_name], [false, t.unit]]} label="Vahid" />
                       : <span className="muted w-10 text-xs max-sm:w-8 max-sm:text-[10px]">{unitLabel(t)}</span>}

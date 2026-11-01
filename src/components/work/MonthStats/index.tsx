@@ -1,5 +1,6 @@
 "use client";
 
+import { CardTitle } from "@/shared/components/Card";
 import { useState } from "react";
 import { CalendarDays } from "lucide-react";
 import { exportMonthXlsx } from "@/lib/export-month";
@@ -71,7 +72,7 @@ export function MonthStats() {
         {data && (
           <div className="grid gap-5 lg:grid-cols-[1.1fr_1fr]">
             <Card as="section">
-              <h3 className="card-title mb-4 flex items-center gap-2"><CalendarDays size={18} className="text-primary" /> Ayın kalendarı</h3>
+              <CardTitle as="h3" className="mb-4 flex items-center gap-2"><CalendarDays size={18} className="text-primary" /> Ayın kalendarı</CardTitle>
               <Heatmap y={ym.y} m={ym.m} counts={stats.counts} todayDay={isCurrent ? today.d : null} />
             </Card>
             <TopPlaces top={stats.top} />

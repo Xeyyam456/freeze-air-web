@@ -1,5 +1,6 @@
 "use client";
 
+import { IconTile } from "@/shared/components/IconTile";
 import { UserCog } from "lucide-react";
 import type { ManagerListProps } from "@/types/management";
 import { rank, sortManagers } from "../../utils/rank";
@@ -12,7 +13,7 @@ export function ManagerList({ managers }: ManagerListProps) {
   if (managers.length === 0) {
     return (
       <Card className="py-12 text-center">
-        <span className="icon-tile mx-auto"><UserCog size={20} /></span>
+        <IconTile className="mx-auto"><UserCog size={20} /></IconTile>
         <p className="mt-3 font-semibold">Hələ rəhbər əlavə olunmayıb</p>
       </Card>
     );

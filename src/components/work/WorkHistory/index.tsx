@@ -1,5 +1,6 @@
 "use client";
 
+import { CardTitle } from "@/shared/components/Card";
 import { useState } from "react";
 import { ClipboardList } from "lucide-react";
 import { DatePicker } from "@/shared/components/DatePicker";
@@ -33,10 +34,10 @@ export function WorkHistory() {
       {/* Sətrə klik → işin ətraflı pəncərəsi (admin paneldəki kimi) */}
       {openLog && <WorkLogModal key={openLog} logId={openLog} onClose={() => setOpenLog(null)} />}
       <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="card-title flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2">
           <ClipboardList size={18} className="text-primary" /> Görülən işlər
           {logs && <span className="rounded-full bg-primary-soft px-2 py-0.5 text-xs font-bold text-primary">{logs.length}</span>}
-        </h2>
+        </CardTitle>
         <div className="flex items-center gap-1.5 max-sm:w-full max-[400px]:flex-wrap">
           <button type="button" onClick={() => changeDay(today)} className={chip(day === today)}>Bu gün</button>
           <button type="button" onClick={() => changeDay(yesterday)} className={chip(day === yesterday)}>Dünən</button>

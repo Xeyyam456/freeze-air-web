@@ -1,3 +1,4 @@
+import { IconButton } from "@/shared/components/IconButton";
 import { Clock, Home, MapPin, Pencil, Trash2 } from "lucide-react";
 import { ConfirmButton } from "@/components/ConfirmButton";
 import type { LogCardProps } from "@/types/myWork";
@@ -19,13 +20,13 @@ export function LogCard({ log, canDelete, canEdit, onEdit, onDelete, onOpenGroup
         {canDelete && (
           <div className="flex shrink-0 items-center gap-0.5">
           {canEdit && (
-            <button type="button" onClick={onEdit} className="icon-btn !h-7 !w-7" title="Redaktə et" aria-label="İşi redaktə et">
+            <IconButton onClick={onEdit} className="!h-7 !w-7" title="Redaktə et" aria-label="İşi redaktə et">
               <Pencil size={14} />
-            </button>
+            </IconButton>
           )}
           <ConfirmButton
             onConfirm={onDelete}
-            className="icon-btn icon-btn-danger !h-7 !w-7 shrink-0"
+            icon danger className="!h-7 !w-7 shrink-0"
             title="İşi sil"
             question="İş qeydi, aktı və şəkilləri silinəcək. Bu əməliyyatı geri qaytarmaq olmur."
           >

@@ -1,5 +1,6 @@
 "use client";
 
+import { IconButton } from "@/shared/components/IconButton";
 import { useState } from "react";
 import { Navigation, Navigation2, X } from "lucide-react";
 import { directionsUrl, wazeUrl } from "@/lib/navigation";
@@ -27,7 +28,7 @@ export function NavButton({ place }: { place: NavButtonPlace }) {
               <h2 id="nav-title" className="text-lg font-bold">Naviqator seç</h2>
               <p className="muted line-clamp-2 text-sm">{place.name}{place.address ? ` · ${place.address}` : ""}</p>
             </div>
-            <button type="button" onClick={() => setOpen(false)} className="icon-btn" aria-label="Bağla"><X size={18} /></button>
+            <IconButton onClick={() => setOpen(false)}  aria-label="Bağla"><X size={18} /></IconButton>
           </div>
           <div className="grid gap-2.5">
             <a href={wazeUrl(place)} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}

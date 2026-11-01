@@ -1,5 +1,6 @@
 "use client";
 
+import { IconTile } from "@/shared/components/IconTile";
 import { Users } from "lucide-react";
 import type { EmployeeListProps } from "@/types/employees";
 import { useEmployeeFilter } from "../../hooks/useEmployeeFilter";
@@ -14,7 +15,7 @@ export function EmployeeList({ employees, todayWork, monthWork, status, myEmploy
   if (employees.length === 0) {
     return (
       <Card className="py-12 text-center">
-        <span className="icon-tile mx-auto"><Users size={20} /></span>
+        <IconTile className="mx-auto"><Users size={20} /></IconTile>
         <p className="mt-3 font-semibold">Hələ usta yoxdur</p>
       </Card>
     );

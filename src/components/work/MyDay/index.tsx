@@ -1,5 +1,8 @@
 "use client";
 
+import { Button } from "@/shared/components/Button";
+import { IconTile } from "@/shared/components/IconTile";
+import { IconButton } from "@/shared/components/IconButton";
 import { useState } from "react";
 import { CalendarCheck, CalendarOff, CalendarRange } from "lucide-react";
 import { AttendanceCalendar } from "@/views/Attendance/components/AttendanceCalendar";
@@ -20,9 +23,9 @@ export function MyDay() {
   const p = mine?.today?.presence;
 
   const leaveBtn = (cls: string) => (
-    <button type="button" disabled={!me} onClick={() => setLeaving(true)} className={`btn btn-soft btn-sm !h-9 ${cls}`} title="İcazə sorğusu: admin təsdiqləyir">
+    <Button disabled={!me} onClick={() => setLeaving(true)} variant="soft" size="sm" className={`!h-9 ${cls}`} title="İcazə sorğusu: admin təsdiqləyir">
       <CalendarOff size={15} /> İcazə istə{mine?.pendingLeave ? ` (${mine.pendingLeave})` : ""}
-    </button>
+    </Button>
   );
 
   return (
@@ -30,7 +33,7 @@ export function MyDay() {
       {leaving && me && <LeaveModal employeeId={me.id} onClose={() => setLeaving(false)} />}
       {calendar && me && <AttendanceCalendar employeeId={me.id} name={me.name} onClose={() => setCalendar(false)} />}
       <div className="flex flex-wrap items-center gap-3">
-        <span className="icon-tile shrink-0"><CalendarCheck size={20} /></span>
+        <IconTile className="shrink-0"><CalendarCheck size={20} /></IconTile>
         <p className="muted text-xs font-semibold uppercase tracking-wide max-sm:flex-1 sm:max-lg:hidden">Mənim bugünüm</p>
         {/* Planşetdə başlıq yazısı gizlidir ki, hamısı bir sətrə sığsın. < 640: vəziyyət və düymələr ayrıca sətirdə: nişan üstdə tam endə, düymələr altda yarı-yarı
             (nişandan sonra tək düymə qalırsa o da tam endə); uzun düymə mətni sətrə keçə bilir */}
@@ -39,9 +42,9 @@ export function MyDay() {
           {leaveBtn("sm:hidden")}
         </div>
         <div className="ml-auto flex shrink-0 items-center gap-2">
-          <button type="button" disabled={!me} onClick={() => setCalendar(true)} className="icon-btn !h-9 !w-9" title="Davamiyyət təqvimim" aria-label="Davamiyyət təqvimim">
+          <IconButton disabled={!me} onClick={() => setCalendar(true)} className="!h-9 !w-9" title="Davamiyyət təqvimim" aria-label="Davamiyyət təqvimim">
             <CalendarRange size={16} />
-          </button>
+          </IconButton>
           {leaveBtn("max-sm:hidden")}
         </div>
       </div>

@@ -1,3 +1,4 @@
+import { CarPlate } from "@/shared/components/CarPlate";
 import { FileSpreadsheet, Fuel } from "lucide-react";
 import { exportFuel } from "../../utils/excel/exportFuel";
 import type { CarInfoProps } from "@/types/myFuel";
@@ -10,7 +11,7 @@ export function CarInfo({ car, employeeId, anchor, price, fuelName }: CarInfoPro
     <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 max-lg:w-full lg:flex-nowrap">
       <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/10 text-frost max-sm:h-10 max-sm:w-10 max-sm:rounded-xl"><Fuel size={22} /></span>
       <div className="min-w-0 max-lg:flex-1">
-        <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-bold">{car.car_plate ? <span className="plate shrink-0">{car.car_plate}</span> : "Maşın"} <span>{car.car_model}</span></p>
+        <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-bold">{car.car_plate ? <CarPlate className="shrink-0">{car.car_plate}</CarPlate> : "Maşın"} <span>{car.car_model}</span></p>
         <p className="text-xs text-white/60 max-sm:hidden">{details}</p>
       </div>
       {/* Ustanın öz yanacaq hesabı: seçilmiş ayın Excel faylı (xülasə, gündəlik, ödənişlər, aylar) */}

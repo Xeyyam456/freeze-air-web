@@ -1,3 +1,4 @@
+import { Card } from "@/shared/components/Card";
 import { Building2, MapPin, PenLine, Store, Users } from "lucide-react";
 import { FileBadges } from "@/components/work/FileBadges";
 import type { MyTaskCardProps } from "@/types/myTasks";
@@ -12,7 +13,7 @@ export function MyTaskCard({ t, data, past, fileLog, onToggle, onNote, onViewLog
   const cancelled = !!t.cancelled_at; // admin geri alıb: tarixçə kimi qalır, işarələnmir
   const files = fileTotal(t);
   return (
-    <li className={`card relative min-w-0 grow basis-[440px] !p-3.5 transition-colors ${
+    <Card as="li" className={`relative min-w-0 grow basis-[440px] !p-3.5 transition-colors ${
       cancelled ? "opacity-60" : t.done ? "!border-[#bfe8cf] !bg-[#f3fbf6]" : "hover:!border-[#c9dafb]"}`}>
       <div className="flex items-center gap-2.5 pr-16">
         <TaskCheck t={t} past={past} onToggle={onToggle} />
@@ -42,6 +43,6 @@ export function MyTaskCard({ t, data, past, fileLog, onToggle, onNote, onViewLog
           )}
         </div>
       </div>
-    </li>
+    </Card>
   );
 }

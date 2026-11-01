@@ -1,5 +1,6 @@
 "use client";
 
+import { Card } from "@/shared/components/Card";
 import { Trash2 } from "lucide-react";
 import { leaveRange } from "@/shared/utils/attendance/leaveRange";
 import { leaveWorkdays } from "@/shared/utils/attendance/leaveWorkdays";
@@ -14,7 +15,7 @@ export function LeaveCard({ leave: l, today, onGiveUp, onCancel }: LeaveCardProp
   const ongoing = l.status === "approved" && l.date_from <= today && today <= l.date_to;
 
   return (
-    <li className="card flex min-w-0 items-stretch gap-4 overflow-hidden !p-0">
+    <Card as="li" className="flex min-w-0 items-stretch gap-4 overflow-hidden !p-0">
       <span className={`w-1.5 shrink-0 ${st.bar}`} />
       <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-2 py-3 pr-4 max-sm:items-start">
         <div className="min-w-0 flex-[1_1_220px] max-sm:flex-1">
@@ -38,6 +39,6 @@ export function LeaveCard({ leave: l, today, onGiveUp, onCancel }: LeaveCardProp
           </Button>
         )}
       </div>
-    </li>
+    </Card>
   );
 }

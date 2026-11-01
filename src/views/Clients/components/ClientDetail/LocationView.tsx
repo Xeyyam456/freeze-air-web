@@ -1,3 +1,4 @@
+import { IconTile } from "@/shared/components/IconTile";
 import { MapPin, Navigation2 } from "lucide-react";
 import { mapEmbedUrl, wazeUrl } from "@/lib/navigation";
 import { PlaceLocationButton } from "@/shared/components/PlaceLocationButton";
@@ -11,7 +12,7 @@ export function LocationView({ company }: LocationViewProps) {
   if (!hasLocation) {
     return (
       <Card className="flex flex-col items-center justify-center py-16 text-center">
-        <span className="icon-tile"><MapPin size={20} /></span>
+        <IconTile><MapPin size={20} /></IconTile>
         <p className="mt-3 font-semibold">Ünvan yazılmayıb</p>
         <p className="muted text-sm">Bu şirkətin ünvanı hələ daxil edilməyib.</p>
       </Card>
@@ -30,7 +31,7 @@ export function LocationView({ company }: LocationViewProps) {
       {/* Ünvan/koordinat səhvdirsə usta düzəldir (0087) */}
       <div className="absolute right-4 top-4 max-sm:right-3 max-sm:top-3">
         <PlaceLocationButton place={{ kind: "company", id: company.id, name: company.name, address: company.address, lat: company.lat, lng: company.lng }}
-          className="btn btn-sm bg-white text-ink shadow-[0_6px_18px_rgba(6,25,43,0.25)] hover:bg-bg" />
+          variant="plain" className="bg-white text-ink shadow-[0_6px_18px_rgba(6,25,43,0.25)] hover:bg-bg" />
       </div>
       {/* Yalnız telefonda (< 640): Waze ilə ünvana naviqasiya */}
       <a href={wazeUrl(company)} target="_blank" rel="noopener noreferrer"

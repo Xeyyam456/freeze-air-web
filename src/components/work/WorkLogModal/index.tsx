@@ -1,5 +1,6 @@
 "use client";
 
+import { IconButton } from "@/shared/components/IconButton";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { fetchLogDetail } from "@/services/myWork/fetchLogDetail";
@@ -32,7 +33,7 @@ export function WorkLogModal({ logId, onClose }: WorkLogModalProps) {
     <Modal onClose={onClose} labelledBy="work-log-title" className="!max-w-2xl">
       <div className="mb-5 flex items-start justify-between gap-3">
         <h2 id="work-log-title" className="text-lg font-bold">İş qeydi</h2>
-        <button type="button" onClick={onClose} className="icon-btn" aria-label="Bağla"><X size={18} /></button>
+        <IconButton onClick={onClose}  aria-label="Bağla"><X size={18} /></IconButton>
       </div>
 
       {log === null ? (

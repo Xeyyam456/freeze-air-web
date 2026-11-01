@@ -1,3 +1,4 @@
+import { IconButton } from "@/shared/components/IconButton";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { formatDateAz } from "@/shared/utils/formatDateAz";
 import type { WeekStripProps } from "@/types/myTasks";
@@ -13,9 +14,9 @@ export function WeekStrip({ day, today, from, rows, me, onDay }: WeekStripProps)
   return (
     <Card as="section" className="!p-3">
       <div className="mb-2 flex items-center gap-2 px-1 max-sm:flex-nowrap">
-        <button type="button" onClick={() => onDay(shift(day, -7))} className="icon-btn" aria-label="Əvvəlki həftə"><ChevronLeft size={18} /></button>
+        <IconButton onClick={() => onDay(shift(day, -7))}  aria-label="Əvvəlki həftə"><ChevronLeft size={18} /></IconButton>
         <p className="whitespace-nowrap text-sm font-bold">{weekRange(from)}</p>
-        <button type="button" onClick={() => onDay(shift(day, 7))} className="icon-btn" aria-label="Sonrakı həftə"><ChevronRight size={18} /></button>
+        <IconButton onClick={() => onDay(shift(day, 7))}  aria-label="Sonrakı həftə"><ChevronRight size={18} /></IconButton>
         <p className="muted ml-2 truncate text-sm max-sm:hidden">{day === today ? "Bu gün" : formatDateAz(day)}</p>
         {day !== today && <Button type="button" onClick={() => onDay(today)} variant="soft" size="sm" className="ml-auto shrink-0 whitespace-nowrap max-sm:!h-7 max-sm:!px-2.5"><span className="max-sm:hidden">Bu günə qayıt</span><span className="sm:hidden">Bu gün</span></Button>}
       </div>

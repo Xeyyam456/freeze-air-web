@@ -1,5 +1,6 @@
 "use client";
 
+import { IconButton } from "@/shared/components/IconButton";
 import { useState } from "react";
 import { Trash2, Wrench } from "lucide-react";
 import { WriteoffModal } from "../WriteoffModal";
@@ -59,9 +60,9 @@ export function HolderRow({ holding, canManage, tool, toolName, pendingReturn }:
           </ActionForm>
         )}
         {canManage && tool && (
-          <button type="button" onClick={() => setWriteoff(true)} className="icon-btn icon-btn-danger !h-8 !w-8" title="Silinmə aktı (itib, xarab)" aria-label="Silinmə aktı">
+          <IconButton onClick={() => setWriteoff(true)} danger className="!h-8 !w-8" title="Silinmə aktı (itib, xarab)" aria-label="Silinmə aktı">
             <Trash2 size={14} />
-          </button>
+          </IconButton>
         )}
       </div>
       {canManage && material && asking && <SettleForm r={r} />}

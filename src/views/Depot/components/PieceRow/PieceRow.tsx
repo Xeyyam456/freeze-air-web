@@ -1,5 +1,6 @@
 "use client";
 
+import { IconButton } from "@/shared/components/IconButton";
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import { WriteoffModal } from "../WriteoffModal";
@@ -31,9 +32,9 @@ export function PieceRow({ piece, tool, employees, canManage, writeoffPending }:
         <>
           <Button type="button" onClick={() => setGiving(true)} variant="secondary" size="sm" className="!h-8">Ver</Button>
           {!writeoffPending && (
-            <button type="button" onClick={() => setWriteoff(true)} className="icon-btn icon-btn-danger" title="Silinmə aktı (sərf olunub)" aria-label="Silinmə aktı">
+            <IconButton onClick={() => setWriteoff(true)} danger title="Silinmə aktı (sərf olunub)" aria-label="Silinmə aktı">
               <Trash2 size={15} />
-            </button>
+            </IconButton>
           )}
         </>
       )}

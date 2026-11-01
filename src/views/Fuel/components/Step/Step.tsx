@@ -1,3 +1,5 @@
+import { Card } from "@/shared/components/Card";
+import { Label } from "@/shared/components/Label";
 import { Camera, Check, Moon, Pencil, Sun } from "lucide-react";
 import type { StepProps } from "@/types/myFuel";
 import { useStep } from "../../hooks/useStep";
@@ -14,7 +16,7 @@ export function Step(props: StepProps) {
   const title = kind === "start" ? "Səhər: işə başlayanda" : "Axşam: işi bitirəndə";
 
   return (
-    <section className={`card flex min-w-0 grow basis-[340px] flex-col gap-3 !p-4 max-sm:basis-full max-sm:gap-2 max-sm:!p-3 ${disabled ? "opacity-60" : ""}`}>
+    <Card as="section" className={`flex min-w-0 grow basis-[340px] flex-col gap-3 !p-4 max-sm:basis-full max-sm:gap-2 max-sm:!p-3 ${disabled ? "opacity-60" : ""}`}>
       <header className="flex items-center gap-2.5 max-sm:gap-2">
         <span className={`grid h-9 w-9 max-sm:h-7 max-sm:w-7 shrink-0 place-items-center rounded-xl ${s.done ? "bg-ok-soft text-ok" : "bg-primary-soft text-primary"}`}>
           {s.done ? <Check size={18} strokeWidth={3} /> : <Icon size={18} />}
@@ -46,7 +48,7 @@ export function Step(props: StepProps) {
               onChange={(e) => s.pick(e.target.files?.[0] ?? null)} />
           </label>
           <label className="min-w-[140px] flex-1">
-            <span className="label">Spidometr (km)</span>
+            <Label>Spidometr (km)</Label>
             <Input value={s.km} onChange={(e) => s.setKm(e.target.value)} inputMode="numeric" disabled={disabled}
               placeholder={min !== undefined ? `≥ ${min}` : "məs. 52 000"} className="tabular-nums" />
           </label>
@@ -56,6 +58,6 @@ export function Step(props: StepProps) {
           </div>
         </form>
       )}
-    </section>
+    </Card>
   );
 }

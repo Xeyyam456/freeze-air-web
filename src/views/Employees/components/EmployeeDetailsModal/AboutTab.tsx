@@ -1,3 +1,4 @@
+import { CarPlate } from "@/shared/components/CarPlate";
 import { Briefcase, CalendarDays, Car, Phone } from "lucide-react";
 import { experience } from "@/lib/experience";
 import { InfoCell } from "@/shared/components/InfoCell";
@@ -18,7 +19,7 @@ export function AboutTab({ employee }: EmployeeProps) {
       {/* Maşın (0076): admin paneldə yazılır */}
       <InfoCell icon={Car} label="Maşın">
         {employee.has_car
-          ? <p className="font-semibold"><span className="plate">{employee.car_plate ?? "Nömrə yazılmayıb"}</span>{employee.car_model && <span className="muted ml-1.5 text-xs font-medium">{employee.car_model}</span>}</p>
+          ? <p className="font-semibold"><CarPlate>{employee.car_plate ?? "Nömrə yazılmayıb"}</CarPlate>{employee.car_model && <span className="muted ml-1.5 text-xs font-medium">{employee.car_model}</span>}</p>
           : <p className="muted font-semibold">Yoxdur</p>}
       </InfoCell>
     </div>

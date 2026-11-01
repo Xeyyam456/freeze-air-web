@@ -1,5 +1,7 @@
 "use client";
 
+import { Label } from "@/shared/components/Label";
+import { Input } from "@/shared/components/Input";
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import { createWriteoff } from "@/services/depot/documents";
@@ -50,7 +52,7 @@ export function WriteoffModal({ tool, source, onClose }: WriteoffModalProps) {
       ) : (
         <ActionForm action={submit} className="space-y-4">
           <div>
-            <span className="label">Səbəb</span>
+            <Label>Səbəb</Label>
             <div className="flex flex-wrap gap-1.5">
               {(Object.keys(REASONS) as WriteoffReason[]).map((r) => (
                 <button key={r} type="button" aria-pressed={reason === r} onClick={() => setReason(r)}
@@ -61,10 +63,10 @@ export function WriteoffModal({ tool, source, onClose }: WriteoffModalProps) {
             </div>
           </div>
           <div>
-            <span className="label">Miqdar</span>
+            <Label>Miqdar</Label>
             <div className="flex items-center gap-2">
-              <input value={qtyText} onChange={(e) => setQtyText(e.target.value)} inputMode="decimal" aria-invalid={over} aria-label="Miqdar" autoComplete="off"
-                className={`field !w-32 ${over ? "!border-danger" : ""}`} required />
+              <Input value={qtyText} onChange={(e) => setQtyText(e.target.value)} inputMode="decimal" aria-invalid={over} aria-label="Miqdar" autoComplete="off"
+                className={`!w-32 ${over ? "!border-danger" : ""}`} required />
               <span className="muted text-sm">{unit} · ən çox {fmt(limit)}</span>
             </div>
           </div>

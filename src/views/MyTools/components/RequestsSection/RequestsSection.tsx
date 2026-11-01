@@ -36,7 +36,7 @@ export function RequestsSection({ requests }: RequestsSectionProps) {
                 <span className="max-sm:order-2 max-sm:ml-auto"><StatusDot tone={s.tone} label={s.label} /></span>
                 {r.status === "pending" && r.type === "request" && (
                   <ConfirmButton onConfirm={async () => { await rpc(() => createClient().rpc("depot_request_cancel", { p_id: r.id }), "İstək ləğv edildi"); }}
-                    success={false} className="icon-btn !h-8 !w-8 max-sm:order-2 max-sm:!h-6 max-sm:!w-6" title="İstəyi geri götür" question="İstək ləğv olunacaq." confirmLabel="Bəli">
+                    success={false} icon className="!h-8 !w-8 max-sm:order-2 max-sm:!h-6 max-sm:!w-6" title="İstəyi geri götür" question="İstək ləğv olunacaq." confirmLabel="Bəli">
                     <X size={14} />
                   </ConfirmButton>
                 )}

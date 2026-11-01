@@ -1,3 +1,4 @@
+import { Label } from "@/shared/components/Label";
 import { FileText, Video, X } from "lucide-react";
 import type { ExistingFilesProps } from "@/types/myTasks";
 
@@ -7,7 +8,7 @@ export function ExistingFiles({ saved, removed, onToggle }: ExistingFilesProps) 
   if (saved.length === 0) return null;
   return (
     <div>
-      <span className="label">Mövcud fayllar</span>
+      <Label>Mövcud fayllar</Label>
       <div className="flex flex-wrap gap-2">
         {saved.map((f) => {
           const gone = removed.has(f.id);

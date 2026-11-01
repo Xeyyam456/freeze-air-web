@@ -1,5 +1,6 @@
 "use client";
 
+import { IconButton } from "@/shared/components/IconButton";
 import { Trash2 } from "lucide-react";
 import { leaveRange } from "@/shared/utils/attendance/leaveRange";
 import { leaveWorkdays } from "@/shared/utils/attendance/leaveWorkdays";
@@ -25,9 +26,9 @@ export function RecentRow({ leave: l, today, onGiveUp, onCancel }: RecentRowProp
         </Button>
       )}
       {l.status === "pending" && (
-        <button type="button" onClick={() => onCancel(l.id)} className="icon-btn icon-btn-danger !h-7 !w-7" title="Sorğunu geri götür" aria-label="Sorğunu geri götür">
+        <IconButton onClick={() => onCancel(l.id)} danger className="!h-7 !w-7" title="Sorğunu geri götür" aria-label="Sorğunu geri götür">
           <Trash2 size={14} />
-        </button>
+        </IconButton>
       )}
     </li>
   );

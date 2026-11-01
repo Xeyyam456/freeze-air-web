@@ -1,5 +1,6 @@
 "use client";
 
+import { Label } from "@/shared/components/Label";
 import { fmt, isPacked, parseQty, round2, unitOf } from "../../utils/quantity";
 import type { AmountInputProps } from "@/types/depot";
 import { Seg } from "../Seg";
@@ -11,7 +12,7 @@ export function AmountInput({ tool, text, onText, byPack, onByPack, label = "Miq
   const n = parseQty(text);
   return (
     <div>
-      <span className="label">{label}</span>
+      <Label>{label}</Label>
       <div className="flex items-center gap-2">
         <Input value={text} onChange={(e) => onText(e.target.value)} inputMode="decimal" required autoComplete="off" aria-label={label} className="!w-32" />
         {packed ? (
