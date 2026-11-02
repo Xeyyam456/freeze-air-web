@@ -42,6 +42,7 @@ Kondisioner servis şirkəti **Freeze Air Service** üçün sistem: ustalar, mü
 ## Komandalar
 Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
 - `npm run dev` (port 3000, fonda), `npx tsc --noEmit`, `npx eslint src`. **Dev işləyərkən `next build` işlətmə.**
+- **Bundle limiti** (2026-11-02): `npm run build` sonunda `postbuild` → `scripts/check-bundle.mjs` (`/` ≤ 215 KB, `/panel` ≤ 340 KB JS gzip, prerender HTML-dən). Keçilsə build uğursuz olur, Vercel deploy etmir; limiti qaldırmazdan əvvəl ağır client importu axtar.
 - "Turbopack is not supported … native bindings" + "An Application Control policy has blocked this file" = Windows Smart App Control imzasız `next-swc.win32-x64-msvc.node`-u bloklayır (2026-10-20 olub, istifadəçi söndürdü). Müvəqqəti yol `npx next dev --webpack`; həll Windows Security → App & browser control → Smart App Control → Off (istifadəçi özü edir).
 - Turbopack bəzən `globals.css` dəyişikliyini götürmür → port 3000-dəki node prosesini PowerShell ilə öldür (`Get-NetTCPConnection -LocalPort 3000 -State Listen | % { Stop-Process -Id $_.OwningProcess -Force }`), sonra `rm -rf .next && npm run dev`.
 - Səhifə hər ~1 saniyədə özü yenidən yüklənir (log-da hər sorğudan sonra "✓ Compiled in Nms", konsolda dövri "[Fast Refresh] rebuilding"; mənbə faylı dəyişmir) = köhnə `.next` keşi (2026-10-21 olub). Eyni həll: prosesi öldür, `rm -rf .next && npm run dev`.

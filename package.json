@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "check:lines": "node scripts/check-lines.mjs"
+    "check:lines": "node scripts/check-lines.mjs",
+    "postbuild": "node scripts/check-bundle.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
