@@ -1,9 +1,18 @@
+import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import { fetchPanelChrome } from "@/services/panel/fetchPanelChrome.server";
 import { QueryProvider } from "@/components/panel/QueryProvider";
 import { QuickActions } from "@/components/panel/QuickActions";
 import { Sidebar, SidebarFallback } from "@/components/panel/Sidebar";
 import { TasksListener } from "@/views/Tasks/live/TasksListener";
+
+// PWA: telefonda ana ekrana əlavə olunan usta paneli (manifest və ikonlar: app/panel.webmanifest, app/app-icon)
+export const metadata: Metadata = {
+  manifest: "/panel.webmanifest",
+  appleWebApp: { capable: true, title: "Freeze Air", statusBarStyle: "default" },
+  icons: { apple: "/app-icon/180" },
+};
+export const viewport: Viewport = { themeColor: "#06192b" };
 
 // Sol menyu + qlobal pəncərələr: Depo bəndi yalnız depo məsulu (və müdir) üçün; altda profil (ad, rol, şəkil)
 async function PanelChrome() {

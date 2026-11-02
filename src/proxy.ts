@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 // Sessiyanı yeniləyir. Landing (/) hamıya açıqdır; panel səhifələri yalnız girişlə.
 // Daxil olmayan panelə girmək istəsə /login-ə, daxil olan /login-ə girsə /panel-ə yönləndirilir.
-const PUBLIC_PATHS = ["/", "/login", "/api/revalidate", "/robots.txt", "/sitemap.xml", "/avadanliq", "/xidmetler", "/nece-isleyirik", "/ustalarimiz", "/elaqe"];
+const PUBLIC_PATHS = ["/", "/login", "/api/revalidate", "/robots.txt", "/sitemap.xml", "/avadanliq", "/xidmetler", "/nece-isleyirik", "/ustalarimiz", "/elaqe", "/panel.webmanifest"];
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -32,7 +32,7 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isLoginPage = pathname.startsWith("/login");
 
-  const isPublic = PUBLIC_PATHS.includes(pathname) || pathname.startsWith("/xidmetler/") || pathname.startsWith("/xidmet/");
+  const isPublic = PUBLIC_PATHS.includes(pathname) || pathname.startsWith("/xidmetler/") || pathname.startsWith("/xidmet/") || pathname.startsWith("/app-icon/");
   if (!isLoggedIn && !isPublic) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
