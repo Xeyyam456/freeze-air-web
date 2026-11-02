@@ -1,13 +1,11 @@
 "use server";
 
-import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database";
+import { insertContactRequest } from "@/services/site/insertContactRequest.server";
 import type { ContactFormState } from "@/types/site";
 
 const field = (fd: FormData, key: string) => String(fd.get(key) ?? "").trim();
 
 // Saytdakı "Bizə yazın" forması: müraciət bazaya yazılır, admin panelində "Müraciətlər" səhifəsində görünür.
-// Qonaq üçün cookie-siz klient; baza yalnız əlavə etməyə icazə verir (oxumaq yalnız admin).
 export async function sendContactRequest(_prev: ContactFormState, formData: FormData): Promise<ContactFormState> {
   // Gizli tələ sahəsi: insan görmür və doldurmur, botlar doldurur
   if (field(formData, "website")) return { ok: true };
@@ -22,14 +20,7 @@ export async function sendContactRequest(_prev: ContactFormState, formData: Form
   if (email && (email.length > 120 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) return { error: "E-poçt düzgün deyil." };
   if (message.length > 1000) return { error: "Mesaj 1000 simvoldan uzun olmamalıdır." };
 
-  const supabase = createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-    { auth: { persistSession: false } },
-  );
-  const { error } = await supabase.from("contact_requests").insert({
-    name, phone, email: email || null, message: message || null,
-  });
+  const error = await insertContactRequest({ name, phone, email: email || null, message: message || null });
 
   // Bazadakı sürət limiti (contact_requests_throttle): eyni telefondan saatda 3, ümumi 10 dəqiqədə 20
   if (error?.message.includes("too_many_requests")) return { error: "Çox sayda müraciət göndərilib. Bir az sonra yenidən yoxlayın və ya zəng edin." };
