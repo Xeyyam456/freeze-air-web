@@ -1,15 +1,14 @@
 import { IconButton } from "@/shared/components/IconButton";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DatePicker } from "@/shared/components/DatePicker";
 import type { DayNavProps } from "@/types/myWork";
 import { dayIso } from "../../hooks/useWorkTab";
-import { Button } from "@/shared/components/Button";
 
 const chip = (active: boolean) =>
   `h-9 rounded-lg px-3 text-[13px] font-semibold transition-colors ${active ? "bg-primary text-white" : "bg-bg text-ink hover:bg-primary-soft"}`;
 
-// Gün seçimi: Bu gün, Dünən, ‹ təqvim ›; usta özünə baxırsa "Yeni iş"
-export function DayNav({ day, today, yesterday, canAdd, onDay, onAdd }: DayNavProps) {
+// Gün seçimi: Bu gün, Dünən, ‹ təqvim › ("Yeni iş" düyməsi 2026-11-02 silindi: iş tapşırıq "görüldü" ilə yazılır)
+export function DayNav({ day, today, yesterday, onDay }: DayNavProps) {
   return (
     <div className="flex shrink-0 items-center gap-2">
       <button type="button" onClick={() => onDay(today)} className={chip(day === today)}>Bu gün</button>
@@ -26,11 +25,6 @@ export function DayNav({ day, today, yesterday, canAdd, onDay, onAdd }: DayNavPr
           <ChevronRight size={18} />
         </IconButton>
       </div>
-      {canAdd && (
-        <Button type="button" onClick={onAdd} size="sm" className="!h-9">
-          <Plus size={14} /> Yeni iş
-        </Button>
-      )}
     </div>
   );
 }

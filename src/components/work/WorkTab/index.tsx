@@ -11,10 +11,9 @@ import { placeLabel } from "./utils/placeLabel";
 import { useWorkTab } from "./hooks/useWorkTab";
 import { VideoModal } from "./components/VideoModal";
 
-// Ustanın kartında "İşlər" tabı: günə görə işlər; hər kəs baxır, əlavə etmək, dəyişmək və silmək yalnız ustanın özünə aiddir
+// Ustanın kartında "İşlər" tabı: günə görə işlər; hər kəs baxır, dəyişmək və silmək yalnız ustanın özünə aiddir (yeni iş tapşırıq "görüldü" ilə yaranır)
 export function WorkTab({ employeeId, employeeName }: WorkTabProps) {
   const t = useWorkTab(employeeId);
-  const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState<EmployeeLog | null>(null);
   const [playing, setPlaying] = useState<string | null>(null); // açılmış videonun linki (pəncərədə oynayır)
   const [openLog, setOpenLog] = useState<number | null>(null); // qrupun faylları: iş pəncərəsi
@@ -23,7 +22,6 @@ export function WorkTab({ employeeId, employeeName }: WorkTabProps) {
     <div className="flex h-full flex-col gap-2">
       {openLog && <WorkLogModal key={openLog} logId={openLog} onClose={() => setOpenLog(null)} />}
       {playing && <VideoModal url={playing} onClose={() => setPlaying(null)} />}
-      {adding && <WorkLogForm employeeId={employeeId} employeeName={employeeName} onClose={() => setAdding(false)} onSaved={t.load} />}
       {editing && (
         <WorkLogForm
           employeeId={employeeId}
@@ -43,7 +41,7 @@ export function WorkTab({ employeeId, employeeName }: WorkTabProps) {
         />
       )}
 
-      <DayNav day={t.day} today={t.today} yesterday={t.yesterday} canAdd={t.canAdd} onDay={t.changeDay} onAdd={() => setAdding(true)} />
+      <DayNav day={t.day} today={t.today} yesterday={t.yesterday} onDay={t.changeDay} />
 
       <div className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {t.logs === null ? (

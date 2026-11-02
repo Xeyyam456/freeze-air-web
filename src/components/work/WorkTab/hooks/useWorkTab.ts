@@ -40,5 +40,5 @@ export function useWorkTab(employeeId: number) {
   }
 
   // Hər kəs baxır; iş əlavə etmək, dəyişmək və silmək yalnız ustanın özünə aiddir
-  return { day, logs, today, yesterday: dayIso(-1), load, changeDay, remove, canAdd: myEmployeeId === employeeId, isMine: (log: EmployeeLog) => myEmployeeId === log.employee_id };
+  return { day, logs, today, yesterday: dayIso(-1), load, changeDay, remove, isMine: (log: EmployeeLog) => myEmployeeId === log.employee_id };
 }

@@ -1,10 +1,10 @@
 import s from "./Page.module.css";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
-import { MenuButton, TopbarTools } from "../panel/TopbarTools";
+import { MenuButton } from "../panel/TopbarTools";
 import type { PageProps } from "@/types/shared";
 
-// Səhifə şablonu: yuxarıda yapışan nazik zolaq (başlıq + səhifənin düymələri + axtarış və "İş əlavə et"), altında məzmun.
+// Səhifə şablonu: yuxarıda yapışan nazik zolaq (başlıq + səhifənin düymələri), altında məzmun.
 // Sol menyu panel layout-undadır (components/panel/Sidebar.tsx).
 export function Page({ title, subtitle, back, actions, children }: PageProps) {
   return (
@@ -22,7 +22,6 @@ export function Page({ title, subtitle, back, actions, children }: PageProps) {
             {subtitle && <p className="truncate max-sm:hidden">{subtitle}</p>}
           </div>
           {actions}
-          <TopbarTools />
         </div>
       </header>
       <main className={`${s.main} px-[var(--gutter)]`}>{children}</main>
