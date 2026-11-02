@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { PageIntro } from "@/components/landing/PageIntro";
 import { Reveal } from "@/components/landing/Reveal";
-import { getTexts } from "@/lib/site-texts";
+import { getTexts } from "@/services/site/fetchSiteTexts.server";
 import { SegmentTiles } from "./components/SegmentTiles";
 import { ServiceList } from "./components/ServiceList";
 import { ServicesCta } from "./components/ServicesCta";

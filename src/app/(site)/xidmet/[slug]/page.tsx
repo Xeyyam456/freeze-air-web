@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { getServices } from "@/lib/site-content";
-import { getTexts } from "@/lib/site-texts";
+import { getServices } from "@/services/site/fetchSiteContent.server";
+import { getTexts } from "@/services/site/fetchSiteTexts.server";
 import { ServiceView } from "@/views/Site/Service/ServiceView";
 
 // Hər xidmətin məlumat səhifəsi (məzmun bazadan: admin panelində "Sayt" → Xidmətlər → redaktə)

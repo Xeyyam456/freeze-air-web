@@ -5,7 +5,7 @@ import { SegmentCards, SegmentCardsSkeleton } from "@/components/landing/Segment
 import { FaqSection } from "../Trust/components/FaqSection";
 import { HowSteps } from "../Trust/components/HowSteps";
 import { StatsStrip } from "../Trust/components/StatsStrip";
-import { getTexts } from "@/lib/site-texts";
+import { getTexts } from "@/services/site/fetchSiteTexts.server";
 import { About } from "./components/About";
 import { CategoriesSection } from "./components/CategoriesSection";
 import { HeroSection } from "./components/HeroSection";

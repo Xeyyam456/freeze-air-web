@@ -1,7 +1,7 @@
 import type { PageIntroProps } from "@/types/site";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { getTexts } from "@/lib/site-texts";
+import { getTexts } from "@/services/site/fetchSiteTexts.server";
 import { HeroTitle } from "../HeroTitle";
 
 // Alt səhifələrin başlıq banneri: tünd aurora fon (ana səhifənin tünd bölmələri ilə eyni dil),

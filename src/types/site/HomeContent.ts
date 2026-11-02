@@ -1,4 +1,4 @@
-// Ana səhifənin idarə olunan hissələri (lib/site-settings.ts → getHomeContent)
+// Ana səhifənin idarə olunan hissələri (services/site/fetchSiteSettings.server.ts → getHomeContent)
 export type HomeContent = {
   heroImage: string | null;
   heroFormEnabled: boolean;

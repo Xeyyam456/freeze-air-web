@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { getSegments } from "@/lib/site-content";
-import { getTexts } from "@/lib/site-texts";
+import { getSegments } from "@/services/site/fetchSiteContent.server";
+import { getTexts } from "@/services/site/fetchSiteTexts.server";
 import { SegmentView } from "@/views/Site/Segment/SegmentView";
 
 // Obyekt növünə görə ayrıca xidmət səhifəsi (məzmun bazadan, admin panelində "Sayt" → Obyektlər)

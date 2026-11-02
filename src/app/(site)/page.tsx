@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTexts } from "@/lib/site-texts";
+import { getTexts } from "@/services/site/fetchSiteTexts.server";
 import { HomeView } from "@/views/Site/Home/HomeView";
 
 export async function generateMetadata(): Promise<Metadata> {

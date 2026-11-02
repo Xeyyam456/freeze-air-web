@@ -1,4 +1,4 @@
-import { getHomeContent } from "@/lib/site-settings";
+import { getHomeContent } from "@/services/site/fetchSiteSettings.server";
 import type { TextsProps } from "@/types/site";
 import { AboutImages } from "./AboutImages";
 import { AboutText } from "./AboutText";

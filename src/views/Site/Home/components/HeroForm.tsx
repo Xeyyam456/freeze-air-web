@@ -1,6 +1,7 @@
 import { Phone } from "lucide-react";
 import { HeroQuickForm } from "@/components/landing/HeroQuickForm";
-import { getContact, getHomeContent, telHref } from "@/lib/site-settings";
+import { getContact, getHomeContent } from "@/services/site/fetchSiteSettings.server";
+import { telHref } from "@/shared/utils/phone";
 import type { TextsProps } from "@/types/site";
 
 // Hero-dakı form altındakı yazı: qısa izah + telefon (bazadan)

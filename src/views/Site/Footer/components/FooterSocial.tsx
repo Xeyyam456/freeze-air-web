@@ -1,6 +1,7 @@
 import { FacebookIcon, InstagramIcon } from "@/components/landing/SocialIcons";
 import { WhatsAppIcon } from "@/components/landing/WhatsAppIcon";
-import { getContact, whatsappHref } from "@/lib/site-settings";
+import { getContact } from "@/services/site/fetchSiteSettings.server";
+import { whatsappHref } from "@/shared/utils/phone";
 import type { FooterSocialProps } from "@/types/site";
 
 // Sosial düymələr: yalnız doldurulanlar görünür (WhatsApp telefon mobil formatdadırsa)

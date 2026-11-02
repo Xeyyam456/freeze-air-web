@@ -1,5 +1,5 @@
 import { CountUp } from "@/components/landing/CountUp";
-import { getStats } from "@/lib/site-trust";
+import { getStats } from "@/services/site/fetchSiteTrust.server";
 
 // Rəqəmlər zolağı: hero-nun üstünə yarı çıxan ağ kart. Ən azı 2 aktiv rəqəm olanda göstərilir.
 export async function StatsStrip() {

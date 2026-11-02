@@ -1,5 +1,5 @@
-import { getContact } from "@/lib/site-settings";
-import { getTexts } from "@/lib/site-texts";
+import { getContact } from "@/services/site/fetchSiteSettings.server";
+import { getTexts } from "@/services/site/fetchSiteTexts.server";
 import { SITE_URL } from "@/lib/site-url";
 
 // Google üçün "yerli biznes" strukturlu məlumatı (telefon, ünvan, e-poçt admin paneldəki əlaqə məlumatından gəlir; iş saatları sərbəst mətndir, schema formatında deyil, ona görə göndərilmir).

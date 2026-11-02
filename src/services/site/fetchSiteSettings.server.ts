@@ -5,11 +5,6 @@ import { formatPhone } from "@/shared/utils/phone";
 import type { HomeContent } from "@/types/site";
 import type { Contact } from "@/types/site";
 
-// Telefon köməkçiləri shared/utils/phone.ts-dədir; köhnə import yolu işləsin deyə burdan da ixrac olunur
-export { formatPhone, telHref, whatsappHref } from "@/shared/utils/phone";
-
-export type { HomeContent } from "@/types/site";
-
 // Admin hələ doldurmayıbsa göstərilən yer tutucular
 const FALLBACK: Contact = {
   phone: "+994 XX XXX XX XX",
@@ -48,7 +43,6 @@ export async function getLogo(): Promise<string | null> {
   const { data } = await publicSiteClient().from("site_settings").select("logo_url").eq("id", 1).maybeSingle();
   return data?.logo_url || null;
 }
-
 
 // Admin sahəni boş qoyubsa göstərilən mətnlər
 const ABOUT_FALLBACK = {

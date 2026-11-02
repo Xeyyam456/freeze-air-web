@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getSegments, getServices } from "@/lib/site-content";
+import { getSegments, getServices } from "@/services/site/fetchSiteContent.server";
 import { SITE_URL } from "@/lib/site-url";
 
 // Açıq səhifələr; xidmət və obyekt növü səhifələri bazadan (admin paneldə əlavə olunan dərhal sitemap-a düşür)

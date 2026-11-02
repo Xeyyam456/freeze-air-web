@@ -3,7 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Reveal } from "@/components/landing/Reveal";
 import { SegmentVisual } from "@/components/landing/SegmentVisual";
 import { Spotlight } from "@/components/landing/Spotlight";
-import { getSegments } from "@/lib/site-content";
+import { getSegments } from "@/services/site/fetchSiteContent.server";
 
 // Obyekt növləri: hündür şəkilli kartlar, ad və qısa izah şəklin üstündə (tünd keçid üzərində).
 // Şəklin hansı hissəsinin görünəcəyini admin seçir (image_position).

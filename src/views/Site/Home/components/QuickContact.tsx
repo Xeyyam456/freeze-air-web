@@ -1,5 +1,6 @@
 import { Clock, MapPin, Phone } from "lucide-react";
-import { getContact, telHref } from "@/lib/site-settings";
+import { getContact } from "@/services/site/fetchSiteSettings.server";
+import { telHref } from "@/shared/utils/phone";
 import type { TextsProps } from "@/types/site";
 import { ContactCard } from "./ContactCard";
 

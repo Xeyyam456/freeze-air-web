@@ -1,8 +1,8 @@
 import type { SegmentCardsProps } from "@/types/site";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { getSegments } from "@/lib/site-content";
-import { getTexts } from "@/lib/site-texts";
+import { getSegments } from "@/services/site/fetchSiteContent.server";
+import { getTexts } from "@/services/site/fetchSiteTexts.server";
 import { SegmentVisual } from "../SegmentVisual";
 import { Spotlight } from "../Spotlight";
 

@@ -1,5 +1,6 @@
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
-import { getContact, telHref } from "@/lib/site-settings";
+import { getContact } from "@/services/site/fetchSiteSettings.server";
+import { telHref } from "@/shared/utils/phone";
 import { CONTACT_LINK } from "../constants/footerStyles";
 
 // Əlaqə sətirləri: telefon, ünvan (xəritədə açılır), saat, e-poçt

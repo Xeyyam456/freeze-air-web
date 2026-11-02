@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { PageIntro } from "@/components/landing/PageIntro";
-import { getTexts } from "@/lib/site-texts";
+import { getTexts } from "@/services/site/fetchSiteTexts.server";
 import { TeamSection } from "./components/TeamSection";
 
 export async function TeamView() {

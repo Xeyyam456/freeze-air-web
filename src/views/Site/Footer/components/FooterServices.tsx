@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getServices } from "@/lib/site-content";
+import { getServices } from "@/services/site/fetchSiteContent.server";
 
 // Footer-dəki xidmət keçidləri (bazadan, bütün aktiv xidmətlər)
 export async function FooterServices() {

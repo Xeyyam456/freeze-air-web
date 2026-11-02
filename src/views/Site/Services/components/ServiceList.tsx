@@ -3,8 +3,8 @@ import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/landing/Reveal";
 import { Spotlight } from "@/components/landing/Spotlight";
 import { serviceIcon } from "@/components/landing/icons";
-import { getServices } from "@/lib/site-content";
-import { getTexts } from "@/lib/site-texts";
+import { getServices } from "@/services/site/fetchSiteContent.server";
+import { getTexts } from "@/services/site/fetchSiteTexts.server";
 
 // "Bütün xidmətlər": üç sütunlu kart şəbəkəsi. Kartda xidmətin şəkli (eyni 16:10 çərçivədə, simmetriya üçün), şəklin küncünə
 // oturan ikon, ad, izah və "Ətraflı" həbi. Hover: kart qalxır, şəkil azca yaxınlaşır, kursor işığı (Spotlight).

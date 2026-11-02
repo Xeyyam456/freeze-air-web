@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import { PageIntro } from "@/components/landing/PageIntro";
-import { getEquipment, getSegments, segmentEquipment } from "@/lib/site-content";
-import { getTexts } from "@/lib/site-texts";
+import { segmentEquipment } from "@/lib/site-content";
+import { getEquipment, getSegments } from "@/services/site/fetchSiteContent.server";
+import { getTexts } from "@/services/site/fetchSiteTexts.server";
 import type { SegmentViewProps } from "@/types/site";
 import { EquipmentCards } from "./components/EquipmentCards";
 import { IssuesWork } from "./components/IssuesWork";

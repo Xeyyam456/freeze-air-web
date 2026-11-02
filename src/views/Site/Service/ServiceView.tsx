@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import { PageIntro } from "@/components/landing/PageIntro";
-import { getServices } from "@/lib/site-content";
-import { getContact, telHref, whatsappHref } from "@/lib/site-settings";
-import { getTexts } from "@/lib/site-texts";
+import { getServices } from "@/services/site/fetchSiteContent.server";
+import { getContact } from "@/services/site/fetchSiteSettings.server";
+import { telHref, whatsappHref } from "@/shared/utils/phone";
+import { getTexts } from "@/services/site/fetchSiteTexts.server";
 import type { ServiceViewProps } from "@/types/site";
 import { OtherServices } from "./components/OtherServices";
 import { ServiceAside } from "./components/ServiceAside";

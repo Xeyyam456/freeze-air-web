@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { EquipmentShowcase } from "@/views/Site/Equipment/components/EquipmentShowcase";
 import { PageIntro } from "@/components/landing/PageIntro";
-import { getEquipment } from "@/lib/site-content";
-import { getTexts, pageTitle } from "@/lib/site-texts";
+import { getEquipment } from "@/services/site/fetchSiteContent.server";
+import { pageTitle } from "@/lib/site-texts";
+import { getTexts } from "@/services/site/fetchSiteTexts.server";
 
 export async function generateMetadata(): Promise<Metadata> {
   return { title: await pageTitle("equipment.title") };

@@ -6,7 +6,8 @@ import { DELIVERABLES, STEPS } from "@/components/landing/content";
 import { PageIntro } from "@/components/landing/PageIntro";
 import { Reveal } from "@/components/landing/Reveal";
 import { Spotlight } from "@/components/landing/Spotlight";
-import { getTexts, pageTitle } from "@/lib/site-texts";
+import { pageTitle } from "@/lib/site-texts";
+import { getTexts } from "@/services/site/fetchSiteTexts.server";
 
 export async function generateMetadata(): Promise<Metadata> {
   return { title: await pageTitle("how.title") };

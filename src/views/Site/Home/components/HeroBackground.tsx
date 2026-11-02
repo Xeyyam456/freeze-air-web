@@ -1,5 +1,5 @@
 import { AirflowCanvas } from "./AirflowCanvas";
-import { getHomeContent } from "@/lib/site-settings";
+import { getHomeContent } from "@/services/site/fetchSiteSettings.server";
 
 // Hero arka planı: şəkil bazadan (admin → Sayt → Ana səhifə); yoxdursa bölmənin gradient fonu qalır.
 // Soldan sağa tünd overlay mətnin oxunmasını təmin edir, şəklin sağ tərəfi açıq qalır.
