@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { CircleCheck } from "lucide-react";
 import { ServiceIcon } from "@/components/landing/icons";
 import { Reveal } from "@/components/landing/Reveal";
@@ -11,8 +12,7 @@ export function ServiceBody({ service, t }: ServiceBlockProps) {
     <div className="grid gap-4">
       {service.image_url && (
         <Reveal className="reveal-wipe"><div className="overflow-hidden rounded-[32px] bg-white">
-          {/* eslint-disable-next-line @next/next/no-img-element -- storage şəkli */}
-          <img src={service.image_url} alt={service.title} className="block h-auto w-full" />
+          <Image width={1600} height={1000} sizes="(min-width: 1024px) 60vw, 100vw" src={service.image_url} alt={service.title} className="block h-auto w-full" />
         </div></Reveal>
       )}
 

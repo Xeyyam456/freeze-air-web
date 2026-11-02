@@ -12,7 +12,7 @@ const unbounded = Unbounded({
 });
 
 // Açıq sayt (qonaqlar): landing, avadanlıq, xidmətlər, necə işləyirik, əlaqə.
-// Header, səhifə və footer bazadan (5 san. keşlə) oxuyur: keş "qısa ömürlü" sayıldığı üçün hər biri öz <Suspense>
+// Header, səhifə və footer bazadan (keşlə, SITE_CACHE) oxuyur; hər biri öz <Suspense>
 // sərhədindədir (yoxsa Next 16 dev-də qırmızı "uncached data outside Suspense" xətası verir, build də uğursuz ola bilər).
 // Fallback-lar header/footer ilə eyni hündürlükdədir: keş isti olanda görünmür, soyuq olanda səhifə tullanmır.
 export default function SiteLayout({ children }: LayoutProps<"/">) {

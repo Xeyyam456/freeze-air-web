@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { SegmentVisualProps } from "@/types/site";
 import { AC_ILLUSTRATION } from "../AcIllustrations";
 import { isIllustrated } from "@/lib/site-content";
@@ -9,8 +10,7 @@ const POSITION: Record<string, string> = { top: "object-top", center: "object-ce
 export function SegmentVisual({ segment, className = "", artClassName = "w-full max-w-[220px]" }: SegmentVisualProps) {
   if (segment.image_url) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
-      <img src={segment.image_url} alt={segment.title} className={`h-full w-full object-cover ${POSITION[segment.image_position] ?? "object-center"} ${className}`} />
+      <Image width={1600} height={1000} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" src={segment.image_url} alt={segment.title} className={`h-full w-full object-cover ${POSITION[segment.image_position] ?? "object-center"} ${className}`} />
     );
   }
   // İlk illüstrasiyalı avadanlıq; heç biri yoxdursa split

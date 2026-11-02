@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CircleCheck } from "lucide-react";
 import { Reveal } from "@/components/landing/Reveal";
@@ -11,8 +12,7 @@ export function SegmentHero({ segment, equipment, t }: SegmentBlockProps) {
     <section className="site-wrap mb-14 grid items-stretch gap-4 lg:grid-cols-[1.5fr_1fr]">
       <Reveal className="reveal-wipe">
         <div className="overflow-hidden rounded-[32px] bg-white lg:h-full">
-          {/* eslint-disable-next-line @next/next/no-img-element -- storage şəkli */}
-          <img src={segment.image_url} alt={segment.title} className="block h-auto w-full lg:h-full lg:object-cover" />
+          <Image width={1600} height={1000} sizes="(min-width: 1024px) 50vw, 100vw" preload fetchPriority="high" src={segment.image_url} alt={segment.title} className="block h-auto w-full lg:h-full lg:object-cover" />
         </div>
       </Reveal>
       {/* ≥ 1024: şəklin yanında sütun (həblər + düymə aşağıda). < 1024 hər şey alt-alta, düymə tam endə.

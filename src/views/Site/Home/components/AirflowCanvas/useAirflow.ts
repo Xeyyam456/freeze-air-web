@@ -46,15 +46,30 @@ export function useAirflow(ref: RefObject<HTMLCanvasElement | null>) {
       cancelAnimationFrame(raf);
     };
 
-    const io = new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop()));
+    // Animasiya səhifə yüklənib brauzer boşalandan sonra başlayır: ilk açılışda hero şəklinin (LCP) çəkilməsi ilə yarışmasın
+    let ready = false;
+    let disposed = false;
+    let visible = false;
+    const io = new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      if (!ready) return;
+      if (visible) start();
+      else stop();
+    });
+    const go = () => { if (disposed) return; ready = true; if (visible) start(); };
+    const begin = () => ("requestIdleCallback" in window ? requestIdleCallback(go, { timeout: 2000 }) : setTimeout(go, 300));
+    if (document.readyState === "complete") begin();
+    else window.addEventListener("load", begin, { once: true });
     io.observe(canvas);
-    const onVis = () => (document.hidden ? stop() : start());
+    const onVis = () => (document.hidden ? stop() : ready && visible && start());
     document.addEventListener("visibilitychange", onVis);
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
     return () => {
       stop();
+      disposed = true;
+      window.removeEventListener("load", begin);
       io.disconnect();
       ro.disconnect();
       document.removeEventListener("visibilitychange", onVis);

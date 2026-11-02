@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { ClipboardCheck } from "lucide-react";
 import { OutdoorUnit, SplitUnit } from "@/components/landing/AcIllustrations";
 import { Reveal } from "@/components/landing/Reveal";
@@ -11,14 +12,12 @@ export function AboutImages({ about: a }: AboutImagesProps) {
     <div className="grid grid-cols-2 gap-3 sm:gap-4">
       <Reveal className="reveal-wipe col-span-2">
         {a.mainImage
-          // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
-          ? <img src={a.mainImage} alt="" className="block h-auto w-full rounded-[28px]" />
+          ? <Image width={1600} height={1000} sizes="(min-width: 1024px) 40vw, 100vw" src={a.mainImage} alt="" className="block h-auto w-full rounded-[28px]" />
           : <div className="grid place-items-center rounded-[28px] bg-white p-8"><OutdoorUnit className="w-full max-w-[320px]" /></div>}
       </Reveal>
       <Reveal className="reveal-wipe self-center" delay={180}>
         {a.sideImage
-          // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
-          ? <img src={a.sideImage} alt="" className="block h-auto w-full rounded-[28px]" />
+          ? <Image width={1600} height={1000} sizes="(min-width: 1024px) 40vw, 100vw" src={a.sideImage} alt="" className="block h-auto w-full rounded-[28px]" />
           : <div className="grid place-items-center rounded-[28px] bg-ice p-6"><SplitUnit className="w-full" /></div>}
       </Reveal>
       {/* Mobildə kart yarım endədir: kənar boşluq və başlıq kiçilir */}

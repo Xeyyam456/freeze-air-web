@@ -1,3 +1,4 @@
+import Image from "next/image";
 import s from "../styles/EquipmentStage.module.css";
 import { MapPin } from "lucide-react";
 import { EquipmentVisual } from "@/components/landing/EquipmentVisual";
@@ -19,8 +20,7 @@ export function EquipmentStage({ item: e, index: i, total, on }: EquipmentStageP
       {/* Şəkil səhnəsi: çərçivə şəklin öz nisbətindədir (h-auto), şəkil kəsilmir və künclərdə boşluq qalmır */}
       <div className={`${s.image} relative overflow-hidden rounded-[24px]`}>
         {e.image_url
-          // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
-          ? <img src={e.image_url} alt={e.title} className="block h-auto w-full" />
+          ? <Image width={1600} height={1000} sizes="(min-width: 1024px) 60vw, 100vw" src={e.image_url} alt={e.title} className="block h-auto w-full" />
           : <div className="aspect-video"><EquipmentVisual item={e} artClassName="w-full max-w-[320px]" /></div>}
         {/* Mobildə şəklin üstündə iki şüşə həb qarşı-qarşıya: solda sıra "01 / 05", sağda yer */}
         <div className="absolute inset-x-3 top-3 flex items-center justify-between gap-2 sm:hidden max-[359px]:inset-x-2 max-[359px]:gap-1">
