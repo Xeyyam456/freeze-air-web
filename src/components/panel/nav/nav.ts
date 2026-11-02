@@ -1,4 +1,4 @@
-import { BarChart3, Building2, CalendarCheck, CalendarOff, Fuel, LayoutGrid, ListChecks, Package, Store, TriangleAlert, UserCog, Users, Warehouse } from "lucide-react";
+import { BarChart3, Building2, CalendarCheck, CalendarOff, Fuel, LayoutGrid, ListChecks, Megaphone, Package, Store, TriangleAlert, UserCog, Users, Warehouse } from "lucide-react";
 import type { NavItem } from "@/types/panel";
 
 // Usta panelinin menyusu: qruplar sol menyuda və Ctrl+K axtarışında eyni sırada.
@@ -28,6 +28,7 @@ export const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
     title: "Komanda",
     items: [
       { href: "/ustalar", label: "Ustalar", icon: Users, hint: "Ustalar və gördükləri işlər" },
+      { href: "/elanlar", label: "Elanlar", icon: Megaphone, hint: "Rəhbərliyin elanları" },
       { href: "/rehberlik", label: "Rəhbərlik", icon: UserCog, hint: "Müdir və rəhbərlər" },
       { href: "/depo", label: "Depo", icon: Warehouse, hint: "Alətlər və materiallar", depot: true },
     ],
