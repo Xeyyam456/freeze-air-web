@@ -1,9 +1,7 @@
 import { createClient } from "@/lib/supabase/client";
+import { compressImage } from "@/shared/utils/compressImage";
 import type { NewWorkFile, SavedFile } from "@/types/myTasks";
 
-function ext(file: File) {
-  return file.name.includes(".") ? file.name.split(".").pop()!.toLowerCase() : "bin";
-}
 
 // İş qeydinin mövcud faylları (şəkillər imzalı linklə, bucket gizlidir)
 export async function fetchLogFiles(logId: number): Promise<SavedFile[]> {
@@ -32,8 +30,10 @@ export async function uploadWorkFiles(logId: number, files: NewWorkFile[]) {
   const supabase = createClient();
   const failed: string[] = [];
   for (const { file, kind } of files) {
-    const path = `${logId}/${crypto.randomUUID()}.${ext(file)}`;
-    const { error: upError } = await supabase.storage.from("work").upload(path, file, { contentType: file.type });
+    // Şəkil WebP-yə sıxılır (akt oxunaqlı qalsın deyə daha böyük), video/PDF olduğu kimi
+    const { body, type, ext } = await compressImage(file, kind === "act" ? 2400 : 1600);
+    const path = `${logId}/${crypto.randomUUID()}.${ext}`;
+    const { error: upError } = await supabase.storage.from("work").upload(path, body, { contentType: type });
     if (upError) {
       failed.push(file.name);
       continue;
