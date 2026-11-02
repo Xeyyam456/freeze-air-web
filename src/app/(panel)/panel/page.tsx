@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { Page } from "@/components/Page";
+import { PushPrompt } from "@/components/panel/PushPrompt";
 import { MyDay } from "@/components/work/MyDay";
 import { WorkHistory } from "@/components/work/WorkHistory";
 import { Card } from "@/shared/components/Card";
@@ -11,6 +12,7 @@ export default function Home() {
     <Page title="Panel" subtitle="Mənim bugünüm və görülən işlər">
       <div className="flex flex-col gap-4 sm:gap-5 lg:h-[calc(100vh-var(--header-h)-2*var(--gap))]">
         {/* Üst sıra: mənim bugünüm (depo kartı 2026-10-24 çıxarıldı: "Kimdə nə var" Alətlərim-dədir) */}
+        <PushPrompt />
         <div className="shrink-0">
           {/* MyDay render zamanı tarixi oxuyur (davamiyyət): Next 16 bunu Suspense daxilində tələb edir */}
           <Suspense fallback={<Card className="h-[118px]" />}>
