@@ -1,14 +1,8 @@
 import { formatDateAz } from "@/shared/utils/formatDateAz";
-import type { Announcement } from "@/types/announcements";
+import type { Announcement, AnnouncementDayGroup } from "@/types/announcements";
 
-// Elanlar günlərə görə: "Bu gün", "Dünən", "27 oktyabr" (bu il) / "27 oktyabr 2025"; sətirdə yalnız saat (Bakı vaxtı)
+// Elanlar günlərə görə: "Bu gün", "Dünən", "27 oktyabr" (bu il) / "27 oktyabr 2025" (Bakı vaxtı)
 const day = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Baku" });
-const time = new Intl.DateTimeFormat("az", { timeZone: "Asia/Baku", hour: "2-digit", minute: "2-digit", hour12: false });
-
-export const timeText = (iso: string) => time.format(new Date(iso));
-
-// Son 24 saat: "Yeni" nişanı
-export const isFresh = (iso: string, now = Date.now()) => now - Date.parse(iso) < 86_400_000;
 
 function dayLabel(d: string, today: string) {
   const diff = Math.round((Date.parse(today) - Date.parse(d)) / 86_400_000);
@@ -18,9 +12,9 @@ function dayLabel(d: string, today: string) {
   return d.slice(0, 4) === today.slice(0, 4) ? full.replace(/ \d{4}$/, "") : full;
 }
 
-export function groupByDay(items: Announcement[], now = new Date()) {
+export function groupByDay(items: Announcement[], now = new Date()): AnnouncementDayGroup[] {
   const today = day.format(now);
-  const groups: { label: string; items: Announcement[] }[] = [];
+  const groups: AnnouncementDayGroup[] = [];
   for (const a of items) {
     const label = dayLabel(day.format(new Date(a.created_at)), today);
     const last = groups.at(-1);

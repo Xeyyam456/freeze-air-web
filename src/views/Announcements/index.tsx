@@ -4,8 +4,8 @@ import { useEffect } from "react";
 import { revalidate } from "@/lib/revalidate";
 import { useData } from "@/lib/useData";
 import { fetchAnnouncements, fetchAnnouncerState, watchAnnouncements } from "@/services/announcements/announcements";
-import { AnnouncementForm } from "../AnnouncementForm";
-import { AnnouncementList } from "../AnnouncementList";
+import { AnnouncementForm } from "./components/AnnouncementForm";
+import { AnnouncementList } from "./components/AnnouncementList";
 
 // Elanlar: hamı oxuyur (yeni elan canlı gəlir); rəhbərlik kartı olan burada da göndərə bilər (admin-də də var)
 export function AnnouncementsView() {

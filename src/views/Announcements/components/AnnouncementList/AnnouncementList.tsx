@@ -3,7 +3,7 @@
 import { Megaphone } from "lucide-react";
 import { Card } from "@/shared/components/Card";
 import type { AnnouncementListProps } from "@/types/announcements";
-import { groupByDay } from "../../utils/whenText";
+import { groupByDay } from "../../utils/groupByDay";
 import { AnnouncementRow } from "../AnnouncementRow";
 
 // Rəhbərliyin elanları günlərə görə (yenidən köhnəyə): gün başlığı, altında elanlar; son 24 saat "Yeni"

@@ -5,7 +5,8 @@ import { ConfirmButton } from "@/components/ConfirmButton";
 import { revalidate } from "@/lib/revalidate";
 import { deleteAnnouncement } from "@/services/announcements/announcements";
 import type { AnnouncementRowProps } from "@/types/announcements";
-import { isFresh, timeText } from "../../utils/whenText";
+import { isFresh } from "../../utils/isFresh";
+import { timeText } from "../../utils/timeText";
 
 const NEW = "inline-block rounded-full bg-primary-soft px-2 py-px text-[11px] font-bold text-primary";
 

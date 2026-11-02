@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import type { AppIconRouteContext } from "@/types/panel";
 
 // Usta paneli PWA ikonu (ana ekran, Android, iOS): menyudakı loqo — göy gradient üzərində qar dənəsi (lucide Snowflake).
 // Build-də statik PNG kimi yaradılır. "maskable" üçün qar dənəsi kənarlardan ~20% içəridədir (təhlükəsiz zona).
@@ -13,7 +14,7 @@ export function generateStaticParams() {
   return SIZES.map((size) => ({ size }));
 }
 
-export async function GET(_req: Request, { params }: { params: Promise<{ size: string }> }) {
+export async function GET(_req: Request, { params }: AppIconRouteContext) {
   const { size: raw } = await params;
   const size = SIZES.includes(raw) ? Number(raw) : 192;
   const glyph = Math.round(size * 0.5);
