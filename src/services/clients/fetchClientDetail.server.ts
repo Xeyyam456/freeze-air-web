@@ -1,5 +1,5 @@
 import { fetchAll } from "@/lib/fetchAll";
-import { fetchGroupMap } from "@/lib/jobs";
+import { fetchGroupMap } from "@/services/jobs/fetchGroupMap";
 import { createClient } from "@/lib/supabase/server";
 import { monthStartBaku } from "@/shared/utils/monthStartBaku";
 import type { ClientDetailRaw } from "@/types/clients";

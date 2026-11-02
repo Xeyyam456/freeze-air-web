@@ -1,20 +1,4 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
-import { fetchAll } from "@/lib/fetchAll";
-import type { FileCount } from "@/types/workLogs";
 import type { LogPerson } from "@/types/workLogs";
-
-// Qrup tapşırığı (0071) hər üzvə ayrıca iş qeydi yaradır, amma bu BİR işdir: ümumi (şirkət, komanda) saylarda bir dəfə sayılır.
-// Ustanın öz sayı dəyişmir (hər üzv öz işini görür). İş qeydi → qrup (tapşırığın `group_id`-si).
-export async function fetchGroupMap(supabase: SupabaseClient, from: string, to?: string): Promise<Map<number, string>> {
-  // 1000-lik hissələrlə (fetchAll): Supabase bir sorğuda 1000-dən çox qaytarmır
-  const data = await fetchAll((a, b) => {
-    let q = supabase.from("tasks").select("work_log_id, group_id")
-      .not("group_id", "is", null).not("work_log_id", "is", null).gte("task_date", from);
-    if (to) q = q.lte("task_date", to);
-    return q.order("id").range(a, b);
-  });
-  return new Map(data.map((t: { work_log_id: number | null; group_id: string | null }) => [t.work_log_id as number, t.group_id as string]));
-}
 
 // Eyni qrupun işləri bir açardır
 export const jobKey = (id: number, groups: Map<number, string>) => groups.get(id) ?? `l${id}`;
@@ -22,15 +6,6 @@ export const jobKey = (id: number, groups: Map<number, string>) => groups.get(id
 // Qrup işi bir say olmaqla iş sayı
 export const countJobs = (logs: { id: number }[], groups: Map<number, string>) =>
   new Set(logs.map((l) => jobKey(l.id, groups))).size;
-
-// İş qeydlərinin faylları (akt, şəkil, video) siyahıda nişan üçün. Qrup işində fayl istənilən üzvün qeydinə yüklənə bilər:
-// qrupun bütün qeydlərinin faylları toplanır və hər üzvün qeydinə eyni say verilir (işi açmadan görünsün).
-// Bir sorğu: baza funksiyası work_file_counts (0094); admin `lib/jobs.ts` ilə eyni.
-export async function fetchFileCounts(supabase: SupabaseClient, logIds: number[]): Promise<Map<number, FileCount>> {
-  if (!logIds.length) return new Map();
-  const { data } = await supabase.rpc("work_file_counts", { p_log_ids: logIds });
-  return new Map((data ?? []).map((r: { work_log_id: number } & FileCount) => [r.work_log_id, { act: r.act, photo: r.photo, video: r.video }]));
-}
 
 // Ümumi siyahılarda qrup işi BİR sətirdir: üzvlərin adları birləşir ("Xəyyam + Fərhad"), şəkil birincinindir (admin `lib/jobs.ts` ilə eyni).
 export function mergeGroupLogs<T extends { id: number; employees: LogPerson }>(logs: T[], groups: Map<number, string>): T[] {

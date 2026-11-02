@@ -1,6 +1,6 @@
 "use client";
 
-import { createClient } from "@/lib/supabase/client";
+import { fetchMonthExport } from "@/services/myWork/fetchMonthExport";
 import { toast } from "@/lib/toast";
 
 const MONTHS = ["Yanvar", "Fevral", "Mart", "Aprel", "May", "İyun", "İyul", "Avqust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"];
@@ -12,17 +12,9 @@ const timeOf = (isoTime: string) =>
 
 // Ustanın seçilmiş ay üzrə öz işləri: rəngli, formatlı .xlsx (admin paneldəki "Görülən işlər" ixracı ilə eyni üslub)
 export async function exportMonthXlsx(employeeId: number, y: number, m: number) {
-  const supabase = createClient();
   const days = new Date(y, m + 1, 0).getDate();
-  const [{ data: logs, error }, { data: emp }] = await Promise.all([
-    supabase.from("work_logs")
-      .select("id, work_date, created_at, description, place_text, stores(name, code, companies(name)), companies(name)")
-      .eq("employee_id", employeeId).gte("work_date", iso(y, m, 1)).lte("work_date", iso(y, m, days))
-      .order("work_date").order("created_at"),
-    supabase.from("employees").select("full_name").eq("id", employeeId).maybeSingle(),
-  ]);
+  const { logs: rows, name, error } = await fetchMonthExport(employeeId, iso(y, m, 1), iso(y, m, days));
   if (error) return toast.error(error.message);
-  const rows = logs ?? [];
   if (rows.length === 0) return toast.error("Bu ayda iş qeydi yoxdur.");
 
   const place = (l: (typeof rows)[number]) =>
@@ -36,7 +28,6 @@ export async function exportMonthXlsx(employeeId: number, y: number, m: number) 
   const head = (value: string, align: "left" | "center" = "left") => ({ value, fontWeight: "bold" as const, textColor: "#ffffff", backgroundColor: BLUE, align, alignVertical: "center" as const, height: 24, ...border });
   const activeDays = new Set(rows.map((l) => l.work_date)).size;
   const places = new Set(rows.map(place)).size;
-  const name = emp?.full_name ?? "Usta";
 
   const data = [
     span(`Freeze Air Service — ${name}: ${MONTHS[m]} ${y} işləri`, { fontWeight: "bold", fontSize: 16, textColor: "#ffffff", backgroundColor: NAVY, alignVertical: "center", height: 34, indent: 1 }),

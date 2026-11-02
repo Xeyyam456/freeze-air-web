@@ -1,4 +1,6 @@
-import { fetchFileCounts, fetchGroupMap, mergeGroupLogs } from "@/lib/jobs";
+import { mergeGroupLogs } from "@/lib/jobs";
+import { fetchFileCounts } from "@/services/jobs/fetchFileCounts";
+import { fetchGroupMap } from "@/services/jobs/fetchGroupMap";
 import { createClient } from "@/lib/supabase/client";
 import type { DayLogRow } from "@/types/myWork";
 

@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { createClient } from "@/lib/supabase/server";
+import { fetchPanelChrome } from "@/services/panel/fetchPanelChrome.server";
 import { QueryProvider } from "@/components/panel/QueryProvider";
 import { QuickActions } from "@/components/panel/QuickActions";
 import { Sidebar, SidebarFallback } from "@/components/panel/Sidebar";
@@ -7,16 +7,7 @@ import { TasksListener } from "@/views/Tasks/live/TasksListener";
 
 // Sol menyu + qlobal pəncərələr: Depo bəndi yalnız depo məsulu (və müdir) üçün; altda profil (ad, rol, şəkil)
 async function PanelChrome() {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getClaims();
-  const uid = String(data?.claims.sub ?? "");
-  const email = String(data?.claims.email ?? "");
-  const [{ data: canManageTools }, { data: admin }, { data: employee }, { data: profile }] = await Promise.all([
-    supabase.rpc("can_manage_tools"),
-    supabase.rpc("is_admin"),
-    supabase.from("employees").select("id, full_name, position, photo_url, has_car").eq("user_id", uid).maybeSingle(),
-    supabase.from("profiles").select("full_name").eq("id", uid).maybeSingle(),
-  ]);
+  const { email, canManageTools, admin, employee, profile } = await fetchPanelChrome();
   const name = employee?.full_name ?? profile?.full_name ?? (admin ? "Admin" : email);
   const role = admin ? (employee?.position ?? "Administrator") : employee ? "Usta" : "İstifadəçi";
   const showDepot = canManageTools === true;
