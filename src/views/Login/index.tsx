@@ -3,7 +3,8 @@ import { LoginCard } from "./components/LoginCard";
 
 export function LoginView() {
   return (
-    <main className="grid min-h-screen bg-[#f4f7fc] lg:grid-cols-[1.1fr_1fr]">
+    // login-app: giriş səhifəsi tünd temada (globals.css)
+    <main className="login-app grid min-h-screen bg-bg lg:grid-cols-[1.1fr_1fr]">
       <LoginBrand />
       <LoginCard />
     </main>

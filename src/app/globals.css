@@ -72,8 +72,10 @@
   Tokenlər panelin layout-undakı .panel-app olanda body-də tünd dəyərlərlə yenidən təyin olunur: panelin hər yeri,
   body-yə açılan pəncərələr də (Modal, tarix seçici) tündləşir. Next 16 əvvəlki səhifəni DOM-da gizli saxlayır
   (display: none) — gizli .panel-app sayılmır, saytda fon açıq qalır. Palitra admin və Panel dashboard-u ilə eynidir.
+  Giriş səhifəsi (.login-app) də tünddür (2026-11-05): usta paneli ilə bir bütöv.
 */
-body:has(.panel-app:not([style*="display: none"])) {
+body:has(.panel-app:not([style*="display: none"])),
+body:has(.login-app:not([style*="display: none"])) {
   --color-bg: #0e1626;
   --color-surface: #151e31;
   --color-surface-2: #1c2740;
