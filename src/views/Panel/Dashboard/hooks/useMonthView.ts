@@ -6,6 +6,7 @@ import { exportMonthXlsx } from "@/lib/export-month";
 import { useMe } from "@/lib/me";
 import { useData } from "@/lib/useData";
 import { fetchMonthStats } from "@/services/myWork/monthStats";
+import { lastDays } from "../utils/lastDays";
 
 // Panel: seçilmiş ay (qrafik, kalendar, ən çox işlənən yerlər) + cari ay (göstərici kartları).
 // İki sorğu eyni açarla gedir: seçilmiş ay cari aydırsa keşdən bir dəfə yüklənir.
@@ -17,6 +18,9 @@ export function useMonthView() {
   const fetchFor = (y: number, m: number) => () => (me ? fetchMonthStats(me, y, m) : Promise.resolve(null));
   const data = useData("month-stats", fetchFor(ym.y, ym.m), [me, ym.y, ym.m]);
   const current = useData("month-stats", fetchFor(today.y, today.m), [me, today.y, today.m]);
+  // Keçən ay: "Bu gün" kartının son 7 günü ayın əvvəlində ona keçir (həm də keçən aya keçid dərhal açılır)
+  const pm = today.m === 0 ? { y: today.y - 1, m: 11 } : { y: today.y, m: today.m - 1 };
+  const prevMonth = useData("month-stats", fetchFor(pm.y, pm.m), [me, pm.y, pm.m]);
   const [cumulative, setCumulative] = useState(false);
   const [table, setTable] = useState(false);
   const [exporting, setExporting] = useState(false);
@@ -24,11 +28,13 @@ export function useMonthView() {
   const isCurrent = ym.y === today.y && ym.m === today.m;
   const stats = useMonthSummary(data, days);
   const currentStats = useMonthSummary(current, new Date(today.y, today.m + 1, 0).getDate());
+  const prevStats = useMonthSummary(prevMonth, new Date(pm.y, pm.m + 1, 0).getDate());
   const loaded = !!data && data.key === `${ym.y}-${ym.m}`;
 
   return {
     me, today, ym, days, isCurrent, data, stats, loaded,
     current: current ? currentStats : null, prevCount: current?.prevCount ?? null,
+    week: lastDays(currentStats.counts, prevStats.counts, today.y, today.m, today.d),
     cumulative, setCumulative, table, toggleTable: () => setTable((t) => !t), exporting,
     prev: () => setYm((v) => (v.m === 0 ? { y: v.y - 1, m: 11 } : { y: v.y, m: v.m - 1 })),
     next: () => setYm((v) => (v.m === 11 ? { y: v.y + 1, m: 0 } : { y: v.y, m: v.m + 1 })),

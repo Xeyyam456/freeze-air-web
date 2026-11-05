@@ -21,7 +21,7 @@ export function PanelDashboard() {
   const v = useMonthView();
   const stats = useDashStats(v.me);
   const card = v.me !== null;
-  const kpi = { stats, month: v.current, prev: v.prevCount, todayD: v.today.d, m: v.today.m };
+  const kpi = { stats, month: v.current, prev: v.prevCount, todayD: v.today.d, week: v.week };
 
   return (
     <div className={s.dash}>
