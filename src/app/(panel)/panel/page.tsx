@@ -1,31 +1,14 @@
 import { Suspense } from "react";
 import { Page } from "@/components/Page";
-import { PushPrompt } from "@/components/panel/PushPrompt";
-import { MyDay } from "@/components/work/MyDay";
-import { WorkHistory } from "@/components/work/WorkHistory";
-import { Card } from "@/shared/components/Card";
+import { PanelDashboard } from "@/views/Panel/Dashboard";
 
-const loading = <p className="muted text-sm">Yüklənir...</p>;
-
+// Usta paneli: Panel + Statistika bir səhifədə (2026-11-05). Tarix render zamanı oxunur (new Date): Suspense daxilində (Next 16)
 export default function Home() {
   return (
-    <Page title="Panel" subtitle="Mənim bugünüm və görülən işlər">
-      <div className="flex flex-col gap-4 sm:gap-5 lg:h-[calc(100vh-var(--header-h)-2*var(--gap))]">
-        {/* Üst sıra: mənim bugünüm (depo kartı 2026-10-24 çıxarıldı: "Kimdə nə var" Alətlərim-dədir) */}
-        <PushPrompt />
-        <div className="shrink-0">
-          {/* MyDay render zamanı tarixi oxuyur (davamiyyət): Next 16 bunu Suspense daxilində tələb edir */}
-          <Suspense fallback={<Card className="h-[118px]" />}>
-            <MyDay />
-          </Suspense>
-        </div>
-        {/* Görülən işlər (tarixçə) tam endə; tarix render zamanı oxunur (new Date): Suspense daxilində */}
-        <Card as="section" className="flex min-h-[420px] flex-1 flex-col lg:min-h-0">
-          <Suspense fallback={loading}>
-            <WorkHistory />
-          </Suspense>
-        </Card>
-      </div>
+    <Page title="Panel" subtitle="Mənim bugünüm, işlərim və aylıq statistikam">
+      <Suspense fallback={<div className="min-h-[60vh]" />}>
+        <PanelDashboard />
+      </Suspense>
     </Page>
   );
 }

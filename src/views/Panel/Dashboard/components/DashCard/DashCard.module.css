@@ -1,0 +1,99 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  .card {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 18px 20px;
+    border-radius: 16px;
+    background: var(--d-card);
+    box-shadow: inset 0 0 0 1px var(--d-line);
+    transition: box-shadow 240ms var(--ease-out);
+  }
+  .card:hover { box-shadow: inset 0 0 0 1px var(--d-line-strong), 0 12px 32px -18px rgba(0, 0, 0, 0.6); }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px 12px;
+    margin-bottom: 14px;
+  }
+  .head h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--d-text);
+  }
+  .head p {
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--d-muted);
+  }
+
+  /* Vurğu rəngləri: içindəkilər (ikon plitəsi, sütunlar, zolaq) --tone-u oxuyur */
+  .card[data-tone="blue"] { --tone: #3b8cf0; --shine-delay: 2s; }
+  .card[data-tone="green"] { --tone: #1fb57f; --shine-delay: 3.2s; }
+  .card[data-tone="orange"] { --tone: #ea8a3a; --shine-delay: 4.4s; }
+  .card[data-tone="violet"] { --tone: #9b7bf2; --shine-delay: 5.6s; }
+  .card[data-tone] {
+    background: linear-gradient(155deg, color-mix(in srgb, var(--tone) 13%, var(--d-card)) 0%, var(--d-card) 58%);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--tone) 20%, transparent),
+      0 24px 40px -34px color-mix(in srgb, var(--tone) 45%, transparent);
+  }
+  .card[data-tone]:hover {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--tone) 38%, transparent),
+      0 24px 48px -30px color-mix(in srgb, var(--tone) 60%, transparent);
+  }
+  /* Davamlı: kartın içində yavaş gəzən işıq ləkəsi (yalnız transform) */
+  .glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  .glow::before {
+    content: "";
+    position: absolute;
+    top: -55%;
+    left: -25%;
+    width: 75%;
+    aspect-ratio: 1;
+    background: radial-gradient(circle, color-mix(in srgb, var(--tone) 30%, transparent) 0%, transparent 65%);
+    animation: drift 16s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  /* Davamlı: üst kənar boyunca arabir keçən incə işıq xətti */
+  .card[data-tone]::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 16px;
+    right: 16px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--tone) 85%, white), transparent) no-repeat;
+    background-size: 40% 100%;
+    background-position: -100% 0;
+    animation: sheen 7s ease-in-out infinite var(--shine-delay);
+    pointer-events: none;
+  }
+  @keyframes drift {
+    to { transform: translate(55%, 35%) scale(1.25); }
+  }
+  @keyframes sheen {
+    0% { background-position: -100% 0; }
+    35%, 100% { background-position: 200% 0; }
+  }
+  @media (width < 640px) {
+    .card { padding: 14px; border-radius: 14px; }
+  }
+}

@@ -1,0 +1,166 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  /* Kartın başı: ikon plitəsi + nişan (StockPilot üslubu) */
+  .head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .tile {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    border-radius: 12px;
+    color: var(--tone);
+    background: color-mix(in srgb, var(--tone) 16%, transparent);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--tone) 32%, transparent),
+      0 6px 18px -8px color-mix(in srgb, var(--tone) 70%, transparent);
+  }
+  /* Davamlı: plitənin üstündən arabir çəp işıq keçir */
+  .tile::after {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.22) 50%, transparent 58%);
+    transform: translateX(-70%);
+    animation: tileShine 6s ease-in-out infinite var(--shine-delay, 2s);
+  }
+  @keyframes tileShine {
+    0% { transform: translateX(-70%); }
+    25%, 100% { transform: translateX(70%); }
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    height: 22px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    animation: badgeIn 420ms var(--ease-out) both 900ms;
+  }
+  .up { color: #2fd27a; background: rgba(18, 161, 80, 0.16); box-shadow: inset 0 0 0 1px rgba(18, 161, 80, 0.32); }
+  .down { color: #f07c80; background: rgba(229, 72, 77, 0.16); box-shadow: inset 0 0 0 1px rgba(229, 72, 77, 0.32); }
+  @keyframes badgeIn {
+    from { opacity: 0; transform: translateY(4px) scale(0.85); }
+  }
+
+  .value {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  .value b {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--d-text);
+    font-variant-numeric: tabular-nums;
+  }
+  .of {
+    padding-bottom: 3px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--d-muted);
+  }
+  .label {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--d-muted);
+  }
+
+  /* Kartın aşağı hissəsi dibə yapışır: yan-yana kartlarda eyni xətt */
+  .facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 14px;
+  }
+  .facts > span {
+    display: grid;
+    gap: 2px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: inset 0 0 0 1px var(--d-line);
+  }
+  .facts small { font-size: 11px; color: var(--d-muted); }
+  .facts b { font-size: 17px; font-weight: 800; color: var(--d-text); font-variant-numeric: tabular-nums; }
+  .facts i { font-size: 12px; font-style: normal; font-weight: 600; color: var(--d-muted); }
+
+  .progress {
+    display: grid;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 18px;
+  }
+  .progressText {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--d-text-2);
+  }
+  .progressText b { color: var(--d-text); }
+  .progress:hover .progressText span { color: var(--d-text); }
+  .track {
+    height: 6px;
+    overflow: hidden;
+    border-radius: 99px;
+    background: var(--d-card-2);
+  }
+  .track span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--tone) 55%, transparent), var(--tone));
+    transform-origin: left;
+    animation: fill 1100ms var(--ease-out) both 420ms;
+    transition: width 600ms var(--ease-out);
+  }
+  @keyframes fill {
+    from { transform: scaleX(0); }
+  }
+
+  .more {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: auto;
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--d-text-2);
+    background: color-mix(in srgb, var(--tone) 10%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone) 22%, transparent);
+    transition: color 160ms ease, box-shadow 160ms ease;
+  }
+  .more { margin-top: auto; }
+  .more:hover { color: var(--d-text); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone) 45%, transparent); }
+  .more svg { color: var(--tone); transition: transform 200ms var(--ease-out); }
+  .more:hover svg { transform: translateX(3px); }
+  /* Aşağı blokdan əvvəl boşluq (kartlar eyni hündürlükdədir, blok dibdədir) */
+  .label + .more,
+  .label + .progress,
+  .label + .facts { margin-top: auto; }
+  .label { margin-bottom: 14px; }
+
+  @media (width < 640px) {
+    .value b { font-size: 26px; }
+    .tile { width: 36px; height: 36px; border-radius: 10px; }
+    .head { margin-bottom: 10px; }
+  }
+}

@@ -1,0 +1,150 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  /* Panel səhifəsi tünd (admin Paneli ilə eyni palitra); digər səhifələr açıq qalır */
+  :global(body[data-dash]) { background: #0e1626; } /* hooks/useDarkBody */
+  /* Üst zolaq (Page) bu səhifədə tünd şüşə */
+  :global(header):has(+ main .dash) {
+    background: rgba(14, 22, 38, 0.82);
+    border-bottom-color: rgba(255, 255, 255, 0.07);
+  }
+  :global(header):has(+ main .dash) h1 { color: #f0efec; }
+  :global(header):has(+ main .dash) p { color: #7d879b; }
+  :global(header):has(+ main .dash) button {
+    color: #f0efec;
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .dash {
+    --d-page: #0e1626;
+    --d-card: #151e31;
+    --d-card-2: #1c2740;
+    --d-line: rgba(255, 255, 255, 0.07);
+    --d-line-strong: rgba(255, 255, 255, 0.12);
+    --d-text: #f0efec;
+    --d-text-2: #b4bccb;
+    --d-muted: #7d879b;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    /* Mövcud komponentlər (Mənim bugünüm, Görülən işlər, kalendar, düymələr) tokenlərlə rənglənir:
+       burada tünd dəyərlər verilir, onlar özləri tündləşir. Pəncərələr (Modal, tarix seçici) body-dədir, açıq qalır. */
+    --color-bg: #1c2740;
+    --color-surface: #151e31;
+    --color-ink: #f0efec;
+    --color-muted: #8d97ab;
+    --color-line: rgba(255, 255, 255, 0.08);
+    --color-primary: #3b8cf0;
+    --color-primary-dark: #a9c9ff;
+    --color-primary-soft: rgba(59, 140, 240, 0.16);
+    --color-ok: #22c06a;
+    --color-ok-soft: rgba(34, 192, 106, 0.16);
+    --color-danger-soft: rgba(229, 72, 77, 0.18);
+    --color-navy: #2b3d63;
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    gap: 20px;
+    color: var(--d-text);
+  }
+
+  /* Düzülüş: göstəricilər 4 → 2 → 1 sütun; qrafik + yerlər, işlər + kalendar geniş ekranda yan-yana */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .month,
+  .bottom {
+    display: grid;
+    grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+    gap: 20px;
+  }
+  .bottom { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+  .history { min-height: 380px; }
+  @media (width >= 1024px) {
+    .history { height: 560px; }
+  }
+  @media (width < 1280px) {
+    .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (width < 1024px) {
+    .month,
+    .bottom { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (width < 640px) {
+    .dash, .kpis, .month, .bottom { gap: 12px; }
+  }
+  @media (width < 420px) {
+    .kpis { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  /* "Mənim bugünüm" və bildiriş kartı tünd kart kimi */
+  .notice:empty { display: none; }
+  .today > *,
+  .notice > * {
+    border-color: transparent !important;
+    background: var(--d-card) !important;
+    box-shadow: inset 0 0 0 1px var(--d-line);
+  }
+
+  /* Kartlar ardıcıl gəlir: solğun + bulanıq + bir az aşağıdan */
+  .dash > :not(.kpis, .month, .bottom),
+  .kpis > *,
+  .month > *,
+  .bottom > * {
+    animation: rise 640ms var(--ease-out) both;
+  }
+  .today { animation-delay: 0ms; }
+  .kpis > :nth-child(1) { animation-delay: 60ms; }
+  .kpis > :nth-child(2) { animation-delay: 120ms; }
+  .kpis > :nth-child(3) { animation-delay: 180ms; }
+  .kpis > :nth-child(4) { animation-delay: 240ms; }
+  .month > :nth-child(1) { animation-delay: 280ms; }
+  .month > :nth-child(2) { animation-delay: 340ms; }
+  .bottom > :nth-child(1) { animation-delay: 380ms; }
+  .bottom > :nth-child(2) { animation-delay: 440ms; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px) scale(0.985); filter: blur(6px); }
+    to { opacity: 1; transform: none; filter: none; }
+  }
+
+  /* Davamlı fon: arxada iki çox zəif işıq ləkəsi yavaş üzür (yalnız transform) */
+  .dash::before,
+  .dash::after {
+    content: "";
+    position: fixed;
+    z-index: -1;
+    width: 60vmax;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .dash::before {
+    top: -30vmax;
+    left: 10vw;
+    background: radial-gradient(circle, rgba(59, 140, 240, 0.09), transparent 62%);
+    animation: aurora 28s ease-in-out infinite alternate;
+  }
+  .dash::after {
+    right: -25vmax;
+    bottom: -35vmax;
+    background: radial-gradient(circle, rgba(31, 181, 127, 0.07), transparent 62%);
+    animation: aurora 34s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes aurora {
+    to { transform: translate(-12vw, 10vh) scale(1.2); }
+  }
+
+  /* Azaldılmış hərəkət: bütün animasiyalar (davamlılar da) söndürülür */
+  @media (prefers-reduced-motion: reduce) {
+    .dash::before,
+    .dash::after,
+    .dash *,
+    .dash *::before,
+    .dash *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}

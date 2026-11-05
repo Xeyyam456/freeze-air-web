@@ -1,4 +1,4 @@
-import { BarChart3, Building2, CalendarCheck, CalendarOff, Fuel, LayoutGrid, ListChecks, Megaphone, Package, Store, TriangleAlert, UserCog, Users, Warehouse } from "lucide-react";
+import { Building2, CalendarCheck, CalendarOff, Fuel, LayoutGrid, ListChecks, Megaphone, Package, Store, TriangleAlert, UserCog, Users, Warehouse } from "lucide-react";
 import type { NavItem } from "@/types/panel";
 
 // Usta panelinin menyusu: qruplar sol menyuda və Ctrl+K axtarışında eyni sırada.
@@ -7,13 +7,12 @@ export const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
   {
     title: "Gündəlik",
     items: [
-      { href: "/panel", label: "Panel", icon: LayoutGrid, hint: "Mənim bugünüm, görülən işlər" },
+      { href: "/panel", label: "Panel", icon: LayoutGrid, hint: "Mənim bugünüm, görülən işlər, aylıq statistika" },
       { href: "/tapshiriqlar", label: "Tapşırıqlar", icon: ListChecks, hint: "Günün tapşırıqları", tasks: true },
       { href: "/davamiyyet", label: "Davamiyyət", icon: CalendarCheck, hint: "İşə gəlmə, icazələr, təqvim" },
       { href: "/icazelerim", label: "İcazələrim", icon: CalendarOff, hint: "İcazə istə, sorğular və tarixçə" },
       { href: "/aletlerim", label: "Alətlərim", icon: Package, hint: "Üzərimdəkilər: Aldım, qaytar, alət istə" },
       { href: "/yanacaq", label: "Yanacaq", icon: Fuel, hint: "Gündəlik km və yanacaq pulu", fuel: true },
-      { href: "/statistika", label: "Statistika", icon: BarChart3, hint: "Ay ərzində gördüyün işlər" },
     ],
   },
   {

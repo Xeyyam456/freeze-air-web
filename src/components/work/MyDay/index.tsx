@@ -7,16 +7,16 @@ import { useState } from "react";
 import { CalendarCheck, CalendarOff, CalendarRange } from "lucide-react";
 import { AttendanceCalendar } from "@/views/Attendance/components/AttendanceCalendar";
 import { LeaveModal } from "@/views/Leaves/components/LeaveModal";
-import { MyDayStatsGrid } from "./components/MyDayStatsGrid";
 import { PresenceActions } from "./components/PresenceActions";
 import { SessionList } from "./components/SessionList";
 import { useMyDay } from "./hooks/useMyDay";
 import { Card } from "@/shared/components/Card";
 
-// Mənim bugünüm: davamiyyət ("İşə gəldim" / vəziyyət, "İcazə istə"), dörd göstərici (bu gün, bu ay, bugünkü tapşırıqlar, məndə olan alət/material) "İş əlavə et" üst zolaqdadır (hər səhifədə, components/panel/TopbarTools.tsx).
+// Mənim bugünüm: davamiyyət ("İşə gəldim" / vəziyyət, "İcazə istə", davamiyyət təqvimi). Göstəricilər (bu gün, bu ay, tapşırıq, məndə)
+// Panelin rəngli kartlarındadır (views/Panel/Dashboard). "İş əlavə et" üst zolaqdadır (hər səhifədə, components/panel/TopbarTools.tsx).
 // Əməkdaş kartı olmayan hesabda (məs. yalnız admin) görünmür. Tapşırıq dəyişəndə (Realtime) və iş yazılanda yenilənir.
 export function MyDay() {
-  const { me, stats, checking, mine, onCheckIn, onGiveUpLeave, onCheckOut } = useMyDay();
+  const { me, checking, mine, onCheckIn, onGiveUpLeave, onCheckOut } = useMyDay();
   const [leaving, setLeaving] = useState(false); // "İcazə istə" pəncərəsi
   const [calendar, setCalendar] = useState(false); // davamiyyət təqvimi
   if (me === null) return null;
@@ -50,7 +50,6 @@ export function MyDay() {
       </div>
       {/* Bugünkü seanslar: hər biri ayrıca sətir, nömrə ilə (yalnız yenidən işə çıxanda) */}
       {p && p.sessions.length > 1 && <SessionList sessions={p.sessions} />}
-      <MyDayStatsGrid s={stats} />
     </Card>
   );
 }
