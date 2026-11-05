@@ -60,9 +60,9 @@ export function HeroChart({ y, m, series, todayDay, cumulative }: HeroChartProps
                     <span className="pointer-events-none absolute left-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_2px_12px_rgba(10,26,51,0.45)] ring-4 ring-white/30"
                       style={{ top: `${yOf(values[i])}%` }} />
                     <div role="tooltip" style={{ bottom: `calc(${(values[i] / top) * 100}% + 20px)` }}
-                      className={`pointer-events-none absolute z-10 whitespace-nowrap rounded-xl bg-white px-3 py-2 text-xs text-[#0e1726] shadow-[0_12px_32px_rgba(10,26,51,0.3)] ${align}`}>
-                      <p className="text-sm font-bold">{series[i]} iş{cumulative && <span className="font-medium text-[#667085]"> · yığım {values[i]}</span>}</p>
-                      <p className="text-[#667085]">{day} {MONTHS[m].toLowerCase()}, {wd}</p>
+                      className={`pointer-events-none absolute z-10 whitespace-nowrap rounded-xl bg-white px-3 py-2 text-xs ${s.tip} shadow-[0_12px_32px_rgba(10,26,51,0.3)] ${align}`}>
+                      <p className="text-sm font-bold">{series[i]} iş{cumulative && <span className={`font-medium ${s.tipMuted}`}> · yığım {values[i]}</span>}</p>
+                      <p className={s.tipMuted}>{day} {MONTHS[m].toLowerCase()}, {wd}</p>
                     </div>
                   </>
                 )}

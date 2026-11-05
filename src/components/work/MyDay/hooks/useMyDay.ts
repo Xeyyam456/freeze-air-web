@@ -5,11 +5,9 @@ import { timeBaku } from "@/shared/utils/timeBaku";
 import { useMe } from "@/lib/me";
 import { revalidate } from "@/lib/revalidate";
 import { toast } from "@/lib/toast";
-import type { MonthAttendance } from "@/types/attendance";
+import type { AttendanceCall, OptimisticDay, TodayAttendance } from "@/types/myWork";
 import { cancelTodayLeave, checkIn, checkOut } from "@/services/myWork/myDay";
 import { checkedIn, checkedOut } from "../utils/optimisticDay";
-
-type Day = MonthAttendance["today"];
 
 // Mənim bugünüm: kim, bu günün davamiyyəti (Realtime), işə gəlmə / bitirmə / icazədən imtina.
 // Optimistik: düymə basılan an vəziyyət dəyişir ("İşdəsən · 09:41-dən"); bazanın cavabından sonra keş dərhal yenilənir
@@ -20,12 +18,12 @@ export function useMyDay() {
   const attendance = useMonthAttendance(); // bu günün vəziyyəti Realtime ilə
   const real = me && attendance ? attendance.byEmployee.get(me.id) ?? attendance.empty : null;
   // base: optimistik vəziyyət hansı real vəziyyətin üstündə qurulub; real dəyişəndə (təzə məlumat) optimistik düşür
-  const [opt, setOpt] = useState<{ base: Day | undefined; day: Day | undefined } | null>(null);
+  const [opt, setOpt] = useState<OptimisticDay | null>(null);
   // Yazma bitənə qədər (checking) başqa ustanın canlı hadisəsi köhnə məlumat gətirsə də optimistik vəziyyət qalır
   const today = opt && (checking || opt.base === real?.today) ? opt.day : real?.today;
   const mine = real ? { ...real, today: today ?? real.today } : null;
 
-  async function run(next: Day | undefined, call: () => Promise<{ time: string | null; error: string | null }>, done: string) {
+  async function run(next: TodayAttendance | undefined, call: AttendanceCall, done: string) {
     setOpt({ base: real?.today, day: next });
     setChecking(true);
     const { time, error } = await call();

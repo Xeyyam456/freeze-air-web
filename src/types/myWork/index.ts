@@ -45,3 +45,6 @@ export type { WorkTabProps } from "./WorkTabProps";
 export type { FileBadgesProps } from "./FileBadgesProps";
 export type { VideoPickerProps } from "./VideoPickerProps";
 export type { VideoSummaryProps } from "./VideoSummaryProps";
+export type { TodayAttendance } from "./TodayAttendance";
+export type { OptimisticDay } from "./OptimisticDay";
+export type { AttendanceCall } from "./AttendanceCall";

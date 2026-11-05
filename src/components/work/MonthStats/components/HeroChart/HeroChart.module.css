@@ -24,3 +24,9 @@
     .reveal, .area, .peak { animation: none; }
   }
 }
+
+@layer components {
+  /* İpucu ağ fonda: yazı rəngi sabit (Panel tokenləri tündləşdirir, --color-ink açıq olur) */
+  .tip { color: #0e1726; }
+  .tipMuted { color: #667085; }
+}
