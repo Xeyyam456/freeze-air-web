@@ -29,11 +29,11 @@ export function PaymentsCard({ payments, onConfirm }: PaymentsCardProps) {
         </div>
         <div className="flex flex-wrap justify-end gap-1.5 text-xs font-semibold max-sm:text-[11px]">
           <span className="whitespace-nowrap rounded-full bg-bg px-2.5 py-1 text-muted">{payments.length} ödəniş</span>
-          {waiting.length > 0 && <span className="whitespace-nowrap rounded-full bg-[#fff6e5] px-2.5 py-1 text-amber-700">{waiting.length} gözləyir · {azn(total(waiting))}</span>}
+          {waiting.length > 0 && <span className="whitespace-nowrap rounded-full bg-amber-500/15 px-2.5 py-1 text-amber-300">{waiting.length} gözləyir · {azn(total(waiting))}</span>}
         </div>
       </div>
       {waiting.length > 0 && (
-        <ul className="divide-y divide-line border-b border-line bg-[#fffdf7]">
+        <ul className="divide-y divide-line border-b border-line bg-amber-500/10">
           {waiting.map((p) => <PaymentRow key={p.id} p={p} onConfirm={(r) => onConfirm(p, r)} />)}
         </ul>
       )}
@@ -55,7 +55,7 @@ export function PaymentsCard({ payments, onConfirm }: PaymentsCardProps) {
       )}
       {(hidden > 0 || open) && received.length > 0 && (
         <button type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open}
-          className="flex w-full items-center justify-center gap-1.5 border-t border-line bg-[#f8fafc] py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary-soft/40">
+          className="flex w-full items-center justify-center gap-1.5 border-t border-line bg-surface-2 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary-soft/40">
           {open ? "Yığ" : `Hamısına bax (${received.length})`}
           <ChevronDown size={16} className={`transition-transform ${open ? "rotate-180" : ""}`} />
         </button>

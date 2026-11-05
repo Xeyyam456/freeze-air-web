@@ -12,7 +12,7 @@
     transition: border-color 150ms ease, box-shadow 150ms ease;
   }
   .card:hover {
-    border-color: #c9dafb;
+    border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
     box-shadow: 0 8px 24px rgba(31, 111, 235, 0.1);
   }
   /* Kod nişanı: tünd göy, işıq effektli — kart siyahısında gözün ilk tutduğu yer (OBA-001 bir sətirdə) */

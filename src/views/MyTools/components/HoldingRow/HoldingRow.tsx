@@ -19,7 +19,7 @@ export function HoldingRow({ h, v }: HoldingRowProps) {
   const st: { tone: Tone; label: string } = !h.received_at ? (h.disputed_at ? { tone: "red", label: "«Almadım» dedin" } : { tone: "amber", label: "Təsdiqlə ↑" })
     : ret ? { tone: "violet", label: "Qaytarma gözləyir" } : { tone: "green", label: "Məndədir" };
   return (
-    <li className={`flex flex-wrap items-center gap-x-3 gap-y-1.5 px-4 py-3 max-sm:py-2 transition-colors sm:px-5 ${v.selected.has(h.id) ? "bg-primary-soft/40" : "hover:bg-[#f7f9fd]"}`}>
+    <li className={`flex flex-wrap items-center gap-x-3 gap-y-1.5 px-4 py-3 max-sm:py-2 transition-colors sm:px-5 ${v.selected.has(h.id) ? "bg-primary-soft/40" : "hover:bg-surface-2"}`}>
       <input type="checkbox" checked={v.selected.has(h.id)} disabled={!v.returnable(h)} onChange={() => v.toggle(h.id)} aria-label={`${t.name}: seç`}
         className="h-4 w-4 shrink-0 accent-[var(--color-primary)] disabled:opacity-30" />
       <span className={`grid h-9 w-9 max-sm:h-8 max-sm:w-8 shrink-0 place-items-center rounded-lg ${material ? SOFT.teal : SOFT.blue}`}>{material ? <Package size={16} /> : <Wrench size={16} />}</span>

@@ -9,6 +9,6 @@ export function TaskStateChip({ t, past }: TaskStateChipProps) {
     </span>
   );
   if (t.done) return <span className="rounded-full bg-ok-soft px-2.5 py-1 text-xs font-bold text-ok">Görüldü</span>;
-  if (past) return <span className="rounded-full bg-[#fdecec] px-2.5 py-1 text-xs font-bold text-[#c2410c]">Görülmədi</span>;
-  return <span className="rounded-full bg-[#fff6e5] px-2.5 py-1 text-xs font-bold text-amber-700">Gözləyir</span>;
+  if (past) return <span className="rounded-full bg-red-500/12 px-2.5 py-1 text-xs font-bold text-orange-300">Görülmədi</span>;
+  return <span className="rounded-full bg-amber-500/15 px-2.5 py-1 text-xs font-bold text-amber-300">Gözləyir</span>;
 }

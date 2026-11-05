@@ -30,7 +30,7 @@ export function SettleForm({ r }: SettleFormProps) {
       </div>
       {/* Usta iş qeydlərində nə qədər işlətdiyini yazıb: müqayisə üçün */}
       {logged !== null && logged > 0 && (
-        <p className={`mt-2 text-xs font-semibold ${round2(logged) === usedBase ? "text-ok" : "text-[#b45309]"}`}>İş qeydlərində: {fmt(logged)} {unit}</p>
+        <p className={`mt-2 text-xs font-semibold ${round2(logged) === usedBase ? "text-ok" : "text-amber-300"}`}>İş qeydlərində: {fmt(logged)} {unit}</p>
       )}
       <div className="mt-3 flex items-center gap-2">
         <p className={`min-w-0 flex-1 text-xs ${invalid ? "font-semibold text-danger" : "muted"}`}>{hint}</p>

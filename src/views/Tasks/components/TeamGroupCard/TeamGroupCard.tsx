@@ -19,7 +19,7 @@ export function TeamGroupCard({ g, employees, logOf, onViewLog }: TeamGroupCardP
           <span className="block truncate text-sm font-bold">{members.map((e) => e.full_name).join(" + ") || "Qrup"}</span>
           <span className="muted block text-xs">Qrup · {members.length} nəfər</span>
         </span>
-        <span className="rounded-full bg-violet-50 px-2 py-0.5 text-[11px] font-bold text-violet-700">Qrup</span>
+        <span className="rounded-full bg-violet-500/15 px-2 py-0.5 text-[11px] font-bold text-violet-300">Qrup</span>
         {done && <span className="rounded-full bg-ok-soft px-2 py-0.5 text-[11px] font-bold text-ok">Hazır</span>}
       </header>
       <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-bg">

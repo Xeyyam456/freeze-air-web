@@ -51,6 +51,9 @@ Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
 - Brauzer testi: Claude in Chrome, ayrı açıq saxlanan tabda (`localhost:3000/panel`); usta hesabı (Əlizadə Xəyyam) brauzerdə artıq daxil olub. Parol yazma. Dev serveri Claude özü fonda işlədir (yuxarıda "Layihə strukturu, git və iş qaydaları").
 - **Next dev göstəricisi "1 Issue"** = real xəta: konsola bax (`read_console_messages`). Client komponentdə render zamanı `new Date()` oxumaq Cache Components-də xətadır → komponenti `<Suspense>` daxilində işlət (`/panel`-də `WorkHistory`) və ya tarixi effektdə oxu.
 
+## Tema
+- **Usta paneli yalnız tünd temadadır (istifadəçi, 2026-11-05: "light mod istəmirəm"); açıq sayt (landing, `/login`) açıqdır.** Tünd tokenlər `globals.css`-də `body:has(.panel-app:not([style*="display: none"]))` üzərində yenidən təyin olunur (`.panel-app` — `(panel)/layout.tsx`-in məzmun div-i; gizli saxlanan səhifə sayılmır); pəncərələr (portal) də tündləşir. Panel kodunda açıq rəng yazma: `bg-surface` / `bg-surface-2` / `bg-{rəng}-500/15`, `text-{rəng}-300/400`. Saytla ortaq stillərdə (`shared/styles`) sabit hex yox, `color-mix(... var(--color-*) ...)` yaz ki, hər iki temada işləsin. `bg-white` yalnız rəngli/tünd fon üzərindəki düymədə və xəritə üstündəki düymədə qalır.
+
 ## Stack və Next 16 xüsusiyyətləri
 - Next.js 16.4.1 (App Router, Turbopack, **Cache Components**), React 19, Tailwind v4, TypeScript, `@supabase/ssr`, lucide-react. Kod yazmazdan əvvəl `node_modules/next/dist/docs/`-a bax (AGENTS.md).
 - Middleware yerinə `src/proxy.ts`: auth yönləndirmə; `PUBLIC_PATHS` + `/xidmetler/` və `/xidmet/` prefiksləri açıqdır, qalanı girişlə.

@@ -65,7 +65,7 @@ export function AskModal({ stock, pendingIds, initialKind, onClose }: AskModalPr
                 <input type="checkbox" checked={on} disabled={asked} onChange={() => toggle(t)} className="h-4 w-4 shrink-0 accent-[var(--color-primary)]" />
                 <span className="min-w-0 flex-1">
                   <b className="block truncate text-sm max-sm:text-xs font-semibold">{t.name}</b>
-                  <span className={`block text-xs max-sm:text-[10px] ${asked ? "text-muted" : t.available > 0 ? "text-[#15803d]" : "text-[#b45309]"}`}>
+                  <span className={`block text-xs max-sm:text-[10px] ${asked ? "text-muted" : t.available > 0 ? "text-emerald-400" : "text-amber-300"}`}>
                     {asked ? "artıq istəmisən: gözləyir" : t.available > 0 ? `depoda ${withUnit(t.available, t)}` : "depoda yoxdur (yenə istəmək olar)"}
                   </span>
                 </span>

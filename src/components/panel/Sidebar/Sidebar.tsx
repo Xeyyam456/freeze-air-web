@@ -37,7 +37,7 @@ function SidebarView({ showDepot, showFuel = false, me, pathname }: SidebarViewP
           <Link href="/panel" className="flex min-w-0 items-center gap-3" title="Freeze Air Service — Panel">
             <LogoMark><Snowflake size={22} strokeWidth={2.4} /></LogoMark>
             <span className="nav-label min-w-0 leading-tight">
-              <span className="block truncate text-[15px] font-extrabold">Freeze Air</span>
+              <span className="block truncate text-[15px] font-extrabold">Freeze Air Service</span>
               <span className="block text-xs text-white/55">Usta paneli</span>
             </span>
           </Link>

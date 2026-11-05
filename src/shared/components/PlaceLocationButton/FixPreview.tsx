@@ -19,7 +19,7 @@ export function FixPreview({ fix, goodFix, dist }: FixPreviewProps) {
           </p>
         )}
         {dist !== null && (
-          <p className={`text-xs ${dist > 1000 ? "font-semibold text-amber-700" : "muted"}`}>
+          <p className={`text-xs ${dist > 1000 ? "font-semibold text-amber-300" : "muted"}`}>
             Köhnə koordinatdan {fmtDist(dist)} uzaqdır{dist > 1000 ? ": əmin ol ki, düz mağazanın qarşısındasan" : ""}.
           </p>
         )}

@@ -16,6 +16,7 @@
   --color-ok: #12a150;
   --color-ok-soft: #e7f6ee;
   --color-navy: #0a1a33;
+  --color-surface-2: #f8f9fc;
 
   /* Landing (açıq sayt) palitrası: gecə, buzlaq, buz, soyuq, isti */
   --color-night: #06192b;
@@ -64,6 +65,29 @@
     --gutter: 16px;
     --gap: 16px;
   }
+}
+
+/*
+  Usta paneli yalnız tünd temadadır (istifadəçi, 2026-11-05: "light mod istəmirəm"); açıq sayt (landing) açıq qalır.
+  Tokenlər panelin layout-undakı .panel-app olanda body-də tünd dəyərlərlə yenidən təyin olunur: panelin hər yeri,
+  body-yə açılan pəncərələr də (Modal, tarix seçici) tündləşir. Next 16 əvvəlki səhifəni DOM-da gizli saxlayır
+  (display: none) — gizli .panel-app sayılmır, saytda fon açıq qalır. Palitra admin və Panel dashboard-u ilə eynidir.
+*/
+body:has(.panel-app:not([style*="display: none"])) {
+  --color-bg: #0e1626;
+  --color-surface: #151e31;
+  --color-surface-2: #1c2740;
+  --color-ink: #f0efec;
+  --color-muted: #8d97ab;
+  --color-line: #26324a;
+  --color-primary: #3b8cf0;
+  --color-primary-dark: #2f74c9;
+  --color-primary-soft: rgba(59, 140, 240, 0.16);
+  --color-danger-soft: rgba(229, 72, 77, 0.16);
+  --color-ok: #22c06a;
+  --color-ok-soft: rgba(34, 192, 106, 0.16);
+  --color-navy: #2b3d63;
+  color-scheme: dark;
 }
 
 @layer base {

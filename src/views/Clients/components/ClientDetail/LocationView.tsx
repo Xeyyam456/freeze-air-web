@@ -31,7 +31,7 @@ export function LocationView({ company }: LocationViewProps) {
       {/* Ünvan/koordinat səhvdirsə usta düzəldir (0087) */}
       <div className="absolute right-4 top-4 max-sm:right-3 max-sm:top-3">
         <PlaceLocationButton place={{ kind: "company", id: company.id, name: company.name, address: company.address, lat: company.lat, lng: company.lng }}
-          variant="plain" className="bg-white text-ink shadow-[0_6px_18px_rgba(6,25,43,0.25)] hover:bg-bg" />
+          variant="plain" className="bg-white text-[#0e1726] shadow-[0_6px_18px_rgba(6,25,43,0.25)] hover:bg-[#f4f6fa]" />
       </div>
       {/* Yalnız telefonda (< 640): Waze ilə ünvana naviqasiya */}
       <a href={wazeUrl(company)} target="_blank" rel="noopener noreferrer"

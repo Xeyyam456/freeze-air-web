@@ -11,7 +11,7 @@ export function TaskCheck({ t, past, onToggle }: TaskCheckProps) {
         cancelled ? "border-line bg-bg text-muted"
           : t.done ? "border-ok bg-ok text-white shadow-[0_4px_10px_-4px_rgba(18,161,80,0.8)]"
           : past ? "border-line bg-bg text-transparent"
-          : "border-[#c9dafb] text-transparent hover:border-ok hover:bg-ok-soft hover:text-ok"}`}>
+          : "border-primary/40 text-transparent hover:border-ok hover:bg-ok-soft hover:text-ok"}`}>
       {cancelled ? <Undo2 size={12} strokeWidth={2.6} /> : <Check size={13} strokeWidth={3} />}
     </button>
   );

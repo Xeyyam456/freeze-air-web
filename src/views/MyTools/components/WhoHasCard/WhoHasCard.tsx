@@ -37,13 +37,13 @@ export function WhoHasCard({ all, me }: WhoHasCardProps) {
             return (
               <li key={p.id}>
                 <button type="button" onClick={() => setOpen(p)}
-                  className={`group flex w-full items-center gap-3 rounded-2xl px-2.5 py-2 text-left transition-colors hover:bg-[#f6f3ff] ${p.id === me ? "bg-primary-soft/40" : ""}`}>
+                  className={`group flex w-full items-center gap-3 rounded-2xl px-2.5 py-2 text-left transition-colors hover:bg-violet-500/10 ${p.id === me ? "bg-primary-soft/40" : ""}`}>
                   <Avatar employee={{ full_name: p.name, photo_url: p.photo }} className="!h-9 !w-9 !text-[11px]" />
                   <span className="min-w-0 flex-1">
-                    <b className="block truncate text-[13.5px] font-semibold group-hover:text-[#6d28d9]">{p.name}{p.id === me && <span className="ml-1.5 rounded-full bg-primary px-1.5 py-px text-[10px] font-bold text-white">Sən</span>}</b>
+                    <b className="block truncate text-[13.5px] font-semibold group-hover:text-violet-300">{p.name}{p.id === me && <span className="ml-1.5 rounded-full bg-primary px-1.5 py-px text-[10px] font-bold text-white">Sən</span>}</b>
                     <span className="muted block truncate text-xs">{c.tools ? `${c.tools} alət` : ""}{c.tools && c.mats ? " · " : ""}{c.mats ? `${c.mats} material` : ""}</span>
                   </span>
-                  <ChevronRight size={16} className="shrink-0 text-muted transition group-hover:translate-x-0.5 group-hover:text-[#6d28d9]" />
+                  <ChevronRight size={16} className="shrink-0 text-muted transition group-hover:translate-x-0.5 group-hover:text-violet-300" />
                 </button>
               </li>
             );

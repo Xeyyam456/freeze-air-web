@@ -53,7 +53,7 @@
     gap: 16px;
     padding: 10px 16px;
     border-top: 1px solid var(--color-line);
-    background: #fafbfd;
+    background: var(--color-surface-2);
     font-size: 12px;
     color: var(--color-muted);
   }

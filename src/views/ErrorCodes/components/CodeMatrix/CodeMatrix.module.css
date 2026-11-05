@@ -47,11 +47,11 @@
     color: var(--color-muted);
     background: transparent;
     box-shadow: none;
-    border: 1px dashed #c9d1dd;
+    border: 1px dashed color-mix(in srgb, var(--color-ink) 15%, transparent);
   }
   /* Bu modeldə olmayan kod: yalnız kiçik nöqtə */
   .void {
-    background: radial-gradient(circle, #d6dce6 1.5px, transparent 2px);
+    background: radial-gradient(circle, color-mix(in srgb, var(--color-ink) 14%, transparent) 1.5px, transparent 2px);
   }
   .match {
     color: var(--color-night);

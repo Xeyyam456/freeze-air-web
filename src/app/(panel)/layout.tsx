@@ -38,7 +38,8 @@ export default function PanelLayout({ children }: LayoutProps<"/">) {
       <Suspense fallback={<SidebarFallback />}>
         <PanelChrome />
       </Suspense>
-      <div className="pl-[var(--nav-w)] transition-[padding-left] duration-[220ms]">{children}</div>
+      {/* panel-app: usta paneli tünd temada (globals.css) */}
+      <div className="panel-app pl-[var(--nav-w)] transition-[padding-left] duration-[220ms]">{children}</div>
     </QueryProvider>
   );
 }

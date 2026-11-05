@@ -22,7 +22,7 @@ export function LeaveCard({ leave: l, today, onGiveUp, onCancel }: LeaveCardProp
           <p className="flex flex-wrap items-center gap-x-2 text-[15px]">
             <span className="font-bold">{leaveRange(l)}</span>
             <span className="muted whitespace-nowrap text-sm"><span className="max-sm:hidden">· </span>{leaveWorkdays(l)} iş günü</span>
-            {ongoing && <span className="rounded-full bg-[#fff6e5] px-2 py-0.5 text-[11px] font-semibold text-amber-700">İndi icazədəsən</span>}
+            {ongoing && <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[11px] font-semibold text-amber-300">İndi icazədəsən</span>}
           </p>
           <p className="muted line-clamp-2 text-sm">{l.reason || "Səbəb yazılmayıb"}</p>
           <p className="muted text-[11px] max-[360px]:text-[10px] max-sm:[&>span]:block max-sm:[&>span]:whitespace-nowrap">

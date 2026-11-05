@@ -44,7 +44,7 @@ export function PresenceActions({ day, checking, onCheckIn, onCheckOut, onGiveUp
   );
   if (day.status === "leave") return (
     <>
-      {pill("bg-violet-50 text-violet-700", "Bu gün icazəlisən")}
+      {pill("bg-violet-500/15 text-violet-300", "Bu gün icazəlisən")}
       <Button type="button" onClick={onGiveUpLeave} disabled={checking} variant="soft" size="sm" className="!h-9" title="İcazə ləğv olunur, işə gəlmə yazılır">
         <LogIn size={15} /> {checking ? "..." : "İcazəyə ehtiyac qalmadı, işdəyəm"}
       </Button>
@@ -55,7 +55,7 @@ export function PresenceActions({ day, checking, onCheckIn, onCheckOut, onGiveUp
   // Bazar iş günü deyil, amma usta çağırılıbsa işə çıxdığını qeyd edə bilər (əlavə gün)
   return (
     <>
-      {pill("bg-slate-200 text-slate-600", "Bazar: iş günü deyil")}
+      {pill("bg-slate-500/20 text-slate-300", "Bazar: iş günü deyil")}
       <Button type="button" onClick={onCheckIn} disabled={checking} variant="soft" size="sm" className="!h-9" title="Bazar günü işə çağırılmısansa">
         <LogIn size={15} /> {checking ? "..." : "Bazar günü işdəyəm"}
       </Button>

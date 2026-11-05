@@ -30,7 +30,7 @@ export function WeekStrip({ day, today, from, rows, me, onDay }: WeekStripProps)
             <button key={d} type="button" onClick={() => onDay(d)} aria-pressed={selected}
               className={`relative flex flex-col items-center rounded-xl py-2 transition-colors max-sm:py-1.5 ${
                 selected ? "bg-gradient-to-br from-[#0f2a55] to-primary text-white shadow-[0_10px_24px_-12px_rgba(31,111,235,0.9)]"
-                  : d === today ? "bg-primary-soft text-primary hover:bg-[#dbe8fd]" : "hover:bg-bg"}`}>
+                  : d === today ? "bg-primary-soft text-primary hover:bg-primary/15" : "hover:bg-bg"}`}>
               <span className={`text-[11px] font-semibold ${selected ? "text-white/70" : "text-muted"}`}>{WEEKDAYS[i]}</span>
               <span className="text-lg font-extrabold tabular-nums leading-tight">{Number(d.slice(8))}</span>
               <span className={`mt-0.5 h-5 min-w-5 rounded-full ${weekHas ? "" : "hidden"} px-1.5 text-[11px] font-bold leading-5 tabular-nums ${

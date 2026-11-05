@@ -11,10 +11,10 @@ import { showQty } from "@/views/Depot/utils/quantity";
 // "Sənə verildi: təsdiqlə": əlinə çatıbsa «Aldım», çatmayıbsa «Almadım» (depo məsulu yoxlayır)
 export function ConfirmSection({ items }: ConfirmSectionProps) {
   return (
-    <section className="rounded-3xl border border-[#fde3b4] bg-[#fffaf0] p-5 max-sm:p-3">
-      <h2 className="flex items-center gap-2 text-[15px] font-bold"><CircleAlert size={17} className="text-[#b45309]" /> Sənə verildi: təsdiqlə</h2>
+    <section className="rounded-3xl border border-amber-500/40 bg-amber-500/10 p-5 max-sm:p-3">
+      <h2 className="flex items-center gap-2 text-[15px] font-bold"><CircleAlert size={17} className="text-amber-300" /> Sənə verildi: təsdiqlə</h2>
       <p className="muted mb-3 text-xs">Əlinə çatıbsa «Aldım» bas. Çatmayıbsa «Almadım»: depo məsulu yoxlayacaq.</p>
-      <ul className="divide-y divide-[#fde3b4] rounded-2xl border border-[#fde3b4] bg-surface px-3">
+      <ul className="divide-y divide-[#fde3b4] rounded-2xl border border-amber-500/40 bg-surface px-3">
         {items.map((h) => {
           const t = h.tools!;
           return (

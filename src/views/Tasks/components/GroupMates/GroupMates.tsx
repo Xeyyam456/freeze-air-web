@@ -9,7 +9,7 @@ export function GroupMates({ t, data }: GroupMatesProps) {
   return (
     <div className="mt-2 flex flex-wrap gap-1.5" title="Biri «görüldü» basanda hamı üçün görülür">
       {others.map((e) => (
-        <span key={e.id} className="inline-flex min-w-0 grow basis-[140px] items-center gap-2 rounded-lg bg-violet-50/70 px-2 py-1 text-xs">
+        <span key={e.id} className="inline-flex min-w-0 grow basis-[140px] items-center gap-2 rounded-lg bg-violet-500/10 px-2 py-1 text-xs">
           <Avatar employee={e} className="!h-5 !w-5 !text-[8px] !shadow-none" />
           <b className="truncate text-ink">{e.full_name}</b>
         </span>

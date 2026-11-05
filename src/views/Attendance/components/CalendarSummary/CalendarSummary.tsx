@@ -5,7 +5,7 @@ export function CalendarSummary({ summary: s }: CalendarSummaryProps) {
   const items = [
     { label: "İş günü", value: s.workdays, cls: "text-ink" },
     { label: "İşdə", value: s.present, cls: "text-ok" },
-    { label: "İcazəli", value: s.leave, cls: "text-violet-600" },
+    { label: "İcazəli", value: s.leave, cls: "text-violet-300" },
     { label: "Gəlmədi", value: s.absent, cls: s.absent ? "text-danger" : "text-ink" },
   ];
 
@@ -21,9 +21,9 @@ export function CalendarSummary({ summary: s }: CalendarSummaryProps) {
       </div>
       {s.extra > 0 ? (
         <div className="mt-2 grid grid-cols-2 gap-1.5">
-          <div className="flex items-center justify-between gap-1.5 rounded-lg bg-slate-100 px-3 py-2 max-[360px]:px-2">
-            <span className="whitespace-nowrap text-xs font-semibold leading-tight text-slate-600 max-[360px]:text-[11px]">Bazar günü işdə</span>
-            <span className="text-base font-bold tabular-nums text-slate-700">{s.extra}</span>
+          <div className="flex items-center justify-between gap-1.5 rounded-lg bg-slate-500/15 px-3 py-2 max-[360px]:px-2">
+            <span className="whitespace-nowrap text-xs font-semibold leading-tight text-slate-300 max-[360px]:text-[11px]">Bazar günü işdə</span>
+            <span className="text-base font-bold tabular-nums text-slate-300">{s.extra}</span>
           </div>
           <div className="flex items-center justify-between gap-1.5 rounded-lg bg-ok-soft px-3 py-2 max-[360px]:px-2">
             <span className="whitespace-nowrap text-xs font-semibold leading-tight text-ok max-[360px]:text-[11px]">Cəmi işdə</span>
@@ -31,7 +31,7 @@ export function CalendarSummary({ summary: s }: CalendarSummaryProps) {
           </div>
         </div>
       ) : (
-        <p className="mt-2 whitespace-nowrap rounded-lg bg-slate-100 px-3 py-2 text-center text-xs font-semibold text-slate-600">Bazar günü işdə olmayıb</p>
+        <p className="mt-2 whitespace-nowrap rounded-lg bg-slate-500/15 px-3 py-2 text-center text-xs font-semibold text-slate-300">Bazar günü işdə olmayıb</p>
       )}
     </>
   );

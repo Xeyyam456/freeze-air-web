@@ -36,7 +36,7 @@ export function HoldingsSection({ v }: HoldingsSectionProps) {
       ) : (
         // Sətirlər (cədvəl deyil): dar yerdə (mobil, "Kimdə nə var"ın yanında) vəziyyət və düymə ikinci sətrə keçir, yana daşmır
         <div className="border-t border-line">
-          <label className="flex items-center gap-3 border-b border-line bg-[#f8fafc] px-4 py-2.5 max-sm:py-1.5 text-xs font-semibold text-muted sm:px-5">
+          <label className="flex items-center gap-3 border-b border-line bg-surface-2 px-4 py-2.5 max-sm:py-1.5 text-xs font-semibold text-muted sm:px-5">
             <input type="checkbox" checked={allOn} disabled={!selectable.length} aria-label="Hamısını seç"
               onChange={() => v.setSelected((s) => { const n = new Set(s); for (const h of selectable) { if (allOn) n.delete(h.id); else n.add(h.id); } return n; })}
               className="h-4 w-4 accent-[var(--color-primary)]" />

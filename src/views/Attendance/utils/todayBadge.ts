@@ -10,8 +10,8 @@ export function todayBadge(a: MonthAttendance): TodayBadge {
     case "present": return p?.out
       ? { text: `İşi bitirib · ${multi ? `${p.sessions.length} seans` : presenceText(p)}`, cls: "bg-bg text-ink" }
       : { text: `İşdədir · ${p ? (multi ? `${timeBaku(p.sessions[p.sessions.length - 1].in)}-dən` : presenceText(p)) : ""}`, cls: "bg-ok-soft text-ok" };
-    case "leave": return { text: "İcazəlidir", cls: "bg-violet-50 text-violet-700" };
-    case "off": return { text: "Bazar: istirahət", cls: "bg-slate-200 text-slate-600" };
+    case "leave": return { text: "İcazəlidir", cls: "bg-violet-500/15 text-violet-300" };
+    case "off": return { text: "Bazar: istirahət", cls: "bg-slate-500/20 text-slate-300" };
     case "absent": return { text: "İşdə olmayıb", cls: "bg-danger text-white" };
     default: return { text: "Hələ gəlməyib", cls: "bg-bg text-muted" };
   }

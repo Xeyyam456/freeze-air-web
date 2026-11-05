@@ -15,7 +15,7 @@ export function StoreCard({ store, companyName, action, onHistory }: StoreCardPr
       <div className="flex items-center justify-between gap-3">
         <span className={s.code}>{store.code}</span>
         {action ?? (
-          <span className={`flex items-center gap-1.5 text-xs font-semibold ${hasCoords ? "text-ok" : "text-amber-600"}`}
+          <span className={`flex items-center gap-1.5 text-xs font-semibold ${hasCoords ? "text-ok" : "text-amber-400"}`}
             title={hasCoords ? "Koordinat var: xəritədə dəqiq yer" : "Koordinat yoxdur: xəritə ünvanla axtarır"}>
             <span className={`h-2 w-2 rounded-full ${hasCoords ? "bg-ok" : "bg-amber-500"}`} />
             {hasCoords ? "Koordinat var" : "Koordinat yoxdur"}

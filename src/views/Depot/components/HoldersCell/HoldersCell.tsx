@@ -44,10 +44,10 @@ export function HoldersCell({ holders, tool }: HoldersCellProps) {
             const r = rectOf(e.currentTarget);
             setPos({ top: r.bottom + 6, left: Math.min(r.left, viewport().w - 320) });
           }}
-          className="inline-flex h-7 items-center gap-1.5 rounded-lg bg-primary-soft px-2.5 text-[13px] font-semibold text-primary transition-colors hover:bg-[#dbe8ff]">
+          className="inline-flex h-7 items-center gap-1.5 rounded-lg bg-primary-soft px-2.5 text-[13px] font-semibold text-primary transition-colors hover:bg-primary/15">
           {holders.length} usta <ChevronDown size={13} className={pos ? "rotate-180" : ""} />
         </button>
-        {unconfirmed && <Clock size={14} className="shrink-0 text-[#b45309]" aria-label="Təsdiq gözləyən var" />}
+        {unconfirmed && <Clock size={14} className="shrink-0 text-amber-300" aria-label="Təsdiq gözləyən var" />}
         {oldest && <HeldBadge takenAt={oldest.taken_at} />}
       </span>
       {pos && createPortal(

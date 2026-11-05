@@ -25,15 +25,15 @@ export function MaterialRow({ t, losses, canManage, onOpen, onGive }: MaterialRo
   const pct = (v: number) => `${total ? (v / total) * 100 : 0}%`;
   return (
     <tr tabIndex={0} onClick={onOpen} onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && e.target === e.currentTarget && onOpen()}
-      className="group cursor-pointer border-t border-line transition-colors hover:bg-[#f5fbfa] focus-visible:outline-2 focus-visible:outline-primary">
+      className="group cursor-pointer border-t border-line transition-colors hover:bg-teal-500/8 focus-visible:outline-2 focus-visible:outline-primary">
       <td className="py-3 pl-5 pr-3">
         <span className="flex items-center gap-3">
           <IconTile icon={Package} tone="teal" size={36} />
           <span className="min-w-0">
-            <span className="block truncate text-[14.5px] font-semibold group-hover:text-[#0f766e]">{t.name}</span>
+            <span className="block truncate text-[14.5px] font-semibold group-hover:text-teal-300">{t.name}</span>
             <span className="mt-0.5 flex flex-wrap items-center gap-1.5">
-              <span className="rounded-md bg-[#e7f8f5] px-1.5 py-px text-[11px] font-semibold text-[#0f766e]">{measure}</span>
-              {losses.length > 0 && <span className="truncate text-xs font-medium text-[#dc2626]">{lossText(losses, t.unit)}</span>}
+              <span className="rounded-md bg-teal-500/12 px-1.5 py-px text-[11px] font-semibold text-teal-300">{measure}</span>
+              {losses.length > 0 && <span className="truncate text-xs font-medium text-red-400">{lossText(losses, t.unit)}</span>}
             </span>
           </span>
         </span>

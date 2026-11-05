@@ -14,7 +14,7 @@ export function MyTaskCard({ t, data, past, fileLog, onToggle, onNote, onViewLog
   const files = fileTotal(t);
   return (
     <Card as="li" className={`relative min-w-0 grow basis-[440px] !p-3.5 transition-colors ${
-      cancelled ? "opacity-60" : t.done ? "!border-[#bfe8cf] !bg-[#f3fbf6]" : "hover:!border-[#c9dafb]"}`}>
+      cancelled ? "opacity-60" : t.done ? "!border-[#bfe8cf] !bg-emerald-500/12" : "hover:!border-primary/40"}`}>
       <div className="flex items-center gap-2.5 pr-16">
         <TaskCheck t={t} past={past} onToggle={onToggle} />
         <p className={`flex min-w-0 items-center gap-1.5 text-sm font-bold ${cancelled ? "text-muted line-through" : t.done ? "text-ok" : "text-primary"}`}>
@@ -22,10 +22,10 @@ export function MyTaskCard({ t, data, past, fileLog, onToggle, onNote, onViewLog
         </p>
       </div>
       <div className="mt-2">
-        {t.group_id && <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-violet-50 px-2 py-0.5 text-[11px] font-bold text-violet-700"><Users size={11} /> Qrup</span>}
+        {t.group_id && <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-violet-500/15 px-2 py-0.5 text-[11px] font-bold text-violet-300"><Users size={11} /> Qrup</span>}
         <p className={cancelled ? "text-muted line-through" : "text-ink"}>{t.reason}</p>
         {t.group_id && <GroupMates t={t} data={data} />}
-        {t.note && <p className="mt-1.5 rounded-lg bg-[#fff7ed] px-2.5 py-1.5 text-xs text-[#b45309]"><b>Təmir:</b> {t.note}</p>}
+        {t.note && <p className="mt-1.5 rounded-lg bg-amber-500/10 px-2.5 py-1.5 text-xs text-amber-300"><b>Təmir:</b> {t.note}</p>}
         <div className="mt-2.5 flex flex-wrap items-center gap-2 max-sm:mt-2">
           <TaskStateChip t={t} past={past} />
           {/* Fayllar (akt, şəkil, video): klik → iş pəncərəsi, orada hər biri pəncərədə açılır */}
