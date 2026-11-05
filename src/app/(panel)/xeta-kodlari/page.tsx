@@ -1,12 +1,12 @@
 import { Page } from "@/components/Page";
 import { WithSidePanel } from "@/components/SidePanel";
-import { ErrorCodeView } from "@/components/errors/ErrorCodeView";
+import { ErrorCodesView } from "@/views/ErrorCodes";
 
 export default function ErrorCodesPage() {
   return (
-    <Page title="Xəta kodları" subtitle="Kondisioner modeli, xəta kodu, açıqlama və edilecək iş">
+    <Page title="Xəta kodları" subtitle="Pultdakı kodu yaz: izahı və edilecək iş">
       <WithSidePanel>
-        <ErrorCodeView />
+        <ErrorCodesView />
       </WithSidePanel>
     </Page>
   );
