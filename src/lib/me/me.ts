@@ -3,6 +3,6 @@ import { fetchMe } from "@/services/me/fetchMe";
 
 // undefined = yüklənir, null = əməkdaş kartı yoxdur (məs. yalnız admin hesabı)
 export function useMe(): { id: number; name: string } | null | undefined {
-  const d = useData("me", fetchMe);
+  const d = useData("me", () => fetchMe()); // birbaşa ötürülməz: TanStack kontekst obyektini klient parametrinə verərdi
   return d === null ? undefined : d.me;
 }

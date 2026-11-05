@@ -1,17 +1,12 @@
 import { todayBaku } from "@/shared/utils/todayBaku";
 import { createClient } from "@/lib/supabase/client";
 import type { MyDayStats } from "@/types/myWork";
-
-// Yerli tarix "YYYY-MM-DD"
-function todayIso() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
+import type { DbClient } from "@/types/shared";
 
 // Mənim bugünüm: bu gün və bu ay yazdığım işlər, bugünkü tapşırıqlarım, məndə olan alət və material
-export async function fetchMyDayStats(employeeId: number): Promise<MyDayStats> {
-  const supabase = createClient();
-  const today = todayIso();
+// Tarix Bakı vaxtı ilə (serverdə prefetch də düzgün gün götürsün; server UTC-dədir)
+export async function fetchMyDayStats(employeeId: number, supabase: DbClient = createClient()): Promise<MyDayStats> {
+  const today = todayBaku();
   const [day, month, tasks, held] = await Promise.all([
     supabase.from("work_logs").select("id", { count: "exact", head: true }).eq("employee_id", employeeId).eq("work_date", today),
     supabase.from("work_logs").select("id", { count: "exact", head: true }).eq("employee_id", employeeId).gte("work_date", `${today.slice(0, 8)}01`).lte("work_date", today),

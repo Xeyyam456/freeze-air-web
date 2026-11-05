@@ -1,13 +1,13 @@
 import { createClient } from "@/lib/supabase/client";
 import type { MonthLog, MonthStatsData } from "@/types/myWork";
+import type { DbClient } from "@/types/shared";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const iso = (y: number, m: number, d: number) => `${y}-${pad(m + 1)}-${pad(d)}`;
 
 // Seçilmiş ayın işləri + müqayisə üçün əvvəlki ayın sayı. Müqayisə həmişə əvvəlki ayın 1-dən sonuna qədər tam sayı ilədir
 // (istifadəçi qərarı: "keçən ayın eyni günündən yox, hər ayın 1-dən sonuna qədər").
-export async function fetchMonthStats(employeeId: number, y: number, m: number): Promise<MonthStatsData> {
-  const supabase = createClient();
+export async function fetchMonthStats(employeeId: number, y: number, m: number, supabase: DbClient = createClient()): Promise<MonthStatsData> {
   const days = new Date(y, m + 1, 0).getDate();
   const py = m === 0 ? y - 1 : y;
   const pm = m === 0 ? 11 : m - 1;

@@ -42,3 +42,4 @@ export type { CardTitleProps } from "./CardProps";
 export type { NavButtonProps } from "./NavButtonProps";
 export type { WithSidePanelProps } from "./WithSidePanelProps";
 export type { UnitSelectProps } from "./UnitSelectProps";
+export type { DbClient } from "./DbClient";
