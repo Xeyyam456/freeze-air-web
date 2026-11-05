@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { X } from "lucide-react";
 import { Modal } from "@/shared/components/Modal";
 import type { ErrorCode } from "@/types/errorCodes";
 import { CodeDetail } from "./components/CodeDetail";
@@ -9,6 +10,7 @@ import { CodeMatrix } from "./components/CodeMatrix";
 import { ModelTabs } from "./components/ModelTabs";
 import { PultScreen } from "./components/PultScreen";
 import { SegmentDisplay } from "./components/SegmentDisplay";
+import { useBackClose } from "./hooks/useBackClose";
 import { useErrorCodes } from "./hooks/useErrorCodes";
 import { useWide } from "./hooks/useWide";
 import s from "./styles/ErrorCodes.module.css";
@@ -19,6 +21,7 @@ export function ErrorCodesView() {
   const st = useErrorCodes();
   const wide = useWide();
   const [sheet, setSheet] = useState(false);
+  const closeSheet = useBackClose(sheet && !wide, useCallback(() => setSheet(false), []));
 
   if (!st) return <div className={s.loading} aria-busy="true" />;
   if (st.models.length === 0) return <p className={s.none}>Hələ xəta kodu əlavə olunmayıb. Kodları admin paneldən rəhbərlik əlavə edir.</p>;
@@ -60,7 +63,8 @@ export function ErrorCodesView() {
       </aside>
 
       {sheet && !wide && st.selected && (
-        <Modal onClose={() => setSheet(false)} labelledBy="code-sheet" className={s.sheet}>
+        <Modal onClose={closeSheet} labelledBy="code-sheet" className={s.sheet}>
+          <button type="button" className={s.sheetClose} onClick={closeSheet} aria-label="Bağla"><X size={18} /></button>
           <div id="code-sheet" className={s.sheetScreen}>
             <SegmentDisplay text={st.selected.code} />
           </div>
