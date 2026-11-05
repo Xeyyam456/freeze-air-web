@@ -1,52 +1,53 @@
 import { useState } from "react";
 import { useMonthAttendance } from "@/shared/hooks/useMonthAttendance";
+import { ATTENDANCE_KEYS } from "@/shared/utils/attendance/constants";
 import { timeBaku } from "@/shared/utils/timeBaku";
 import { useMe } from "@/lib/me";
+import { revalidate } from "@/lib/revalidate";
 import { toast } from "@/lib/toast";
-import { useData } from "@/lib/useData";
-import { cancelTodayLeave, checkIn, checkOut, fetchMyDayStats } from "@/services/myWork/myDay";
+import type { MonthAttendance } from "@/types/attendance";
+import { cancelTodayLeave, checkIn, checkOut } from "@/services/myWork/myDay";
+import { checkedIn, checkedOut } from "../utils/optimisticDay";
 
-// Mənim bugünüm: kim, göstəricilər (keşdə), bu günün davamiyyəti (Realtime), işə gəlmə / bitirmə / icazədən imtina
+type Day = MonthAttendance["today"];
+
+// Mənim bugünüm: kim, bu günün davamiyyəti (Realtime), işə gəlmə / bitirmə / icazədən imtina.
+// Optimistik: düymə basılan an vəziyyət dəyişir ("İşdəsən · 09:41-dən"); bazanın cavabından sonra keş dərhal yenilənir
+// (Realtime gözlənilmir), təzə məlumat gələndə optimistik vəziyyət öz-özünə düşür; xətada geri qayıdır.
 export function useMyDay() {
-  // undefined = yüklənir, null = əməkdaş kartı yoxdur
-  const me = useMe();
-  // Keşdə: iş yazılanda və tapşırıq dəyişəndə QueryProvider "my-day-stats"-ı yeniləyir
-  const stats = useData("my-day-stats", () => (me ? fetchMyDayStats(me.id) : Promise.resolve(null)), [me?.id]);
+  const me = useMe(); // undefined = yüklənir, null = əməkdaş kartı yoxdur
   const [checking, setChecking] = useState(false);
   const attendance = useMonthAttendance(); // bu günün vəziyyəti Realtime ilə
-  const mine = me && attendance ? attendance.byEmployee.get(me.id) ?? attendance.empty : null;
+  const real = me && attendance ? attendance.byEmployee.get(me.id) ?? attendance.empty : null;
+  // base: optimistik vəziyyət hansı real vəziyyətin üstündə qurulub; real dəyişəndə (təzə məlumat) optimistik düşür
+  const [opt, setOpt] = useState<{ base: Day | undefined; day: Day | undefined } | null>(null);
+  // Yazma bitənə qədər (checking) başqa ustanın canlı hadisəsi köhnə məlumat gətirsə də optimistik vəziyyət qalır
+  const today = opt && (checking || opt.base === real?.today) ? opt.day : real?.today;
+  const mine = real ? { ...real, today: today ?? real.today } : null;
 
-  async function onCheckIn() {
+  async function run(next: Day | undefined, call: () => Promise<{ time: string | null; error: string | null }>, done: string) {
+    setOpt({ base: real?.today, day: next });
     setChecking(true);
-    const { time, error } = await checkIn();
+    const { time, error } = await call();
     setChecking(false);
-    if (error) return toast.error(error);
-    toast.success("İşə gəldin", time ? `Başlama saatı: ${timeBaku(time)}` : undefined);
+    if (error) {
+      setOpt(null);
+      return toast.error(error);
+    }
+    revalidate(...ATTENDANCE_KEYS);
+    toast.success(done, time ? `Saat: ${timeBaku(time)}` : undefined);
   }
+
+  const now = () => new Date().toISOString();
+  const onCheckIn = () => run(checkedIn(real?.today, now()), checkIn, "İşə gəldin");
+  const onCheckOut = () => run(checkedOut(real?.today, now()), checkOut, "İş günü bitdi");
 
   // İcazəli gündə icazəyə ehtiyac qalmadı: bugünkü icazə ləğv olunur (leave_cancel) və işə gəlmə yazılır
-  async function onGiveUpLeave() {
-    if (!me) return;
-    setChecking(true);
+  const onGiveUpLeave = () => run(checkedIn(real?.today, now()), async () => {
+    if (!me) return { time: null, error: null };
     const cancelError = await cancelTodayLeave(me.id);
-    if (cancelError) {
-      setChecking(false);
-      return toast.error(cancelError);
-    }
-    const { time, error } = await checkIn();
-    setChecking(false);
-    if (error) return toast.error(error);
-    toast.success("İcazə ləğv edildi, işə gəldin", time ? `Başlama saatı: ${timeBaku(time)}` : undefined);
-  }
+    return cancelError ? { time: null, error: cancelError } : checkIn();
+  }, "İcazə ləğv edildi, işə gəldin");
 
-  // Axşam: "İşi bitirdim" (bitmə saatı yazılır, gündə bir dəfə)
-  async function onCheckOut() {
-    setChecking(true);
-    const { time, error } = await checkOut();
-    setChecking(false);
-    if (error) return toast.error(error);
-    toast.success("İş günü bitdi", time ? `Bitmə saatı: ${timeBaku(time)}` : undefined);
-  }
-
-  return { me, stats, checking, mine, onCheckIn, onGiveUpLeave, onCheckOut };
+  return { me, checking, mine, onCheckIn, onGiveUpLeave, onCheckOut };
 }
