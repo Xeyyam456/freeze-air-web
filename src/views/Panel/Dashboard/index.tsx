@@ -8,7 +8,6 @@ import { DashCard } from "./components/DashCard";
 import { KpiMonth, KpiTasks, KpiToday, KpiTools } from "./components/KpiCards";
 import { MonthCard } from "./components/MonthCard";
 import { PlacesCard } from "./components/PlacesCard";
-import { useDarkBody } from "./hooks/useDarkBody";
 import { useDashStats } from "./hooks/useDashStats";
 import { useMonthView } from "./hooks/useMonthView";
 import s from "./styles/Dashboard.module.css";
@@ -17,7 +16,6 @@ import s from "./styles/Dashboard.module.css";
 // yuxarıda "Mənim bugünüm" (davamiyyət), 4 rəngli göstərici, ayın qrafiki + ən çox işlənən yerlər, görülən işlər + ayın kalendarı.
 // Əməkdaş kartı olmayan hesabda (məs. yalnız admin) yalnız görülən işlər görünür.
 export function PanelDashboard() {
-  useDarkBody();
   const v = useMonthView();
   const stats = useDashStats(v.me);
   const card = v.me !== null;

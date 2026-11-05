@@ -2,7 +2,9 @@
 
 @layer components {
   /* Panel səhifəsi tünd (admin Paneli ilə eyni palitra); digər səhifələr açıq qalır */
-  :global(body[data-dash]) { background: #0e1626; } /* hooks/useDarkBody */
+  /* Panel açıq olanda fon tünd. Next 16 əvvəlki səhifəni DOM-da gizli saxlayır (main-ə display: none yazır),
+     ona görə yalnız görünən main-dəki .dash sayılır. CSS olduğu üçün serverdən gələn ilk görüntüdə dərhal işləyir. */
+  :global(body):has(main:not([style*="display: none"]) .dash) { background: #0e1626; }
   /* Üst zolaq (Page) bu səhifədə tünd şüşə */
   :global(header):has(+ main .dash) {
     background: rgba(14, 22, 38, 0.82);
@@ -92,17 +94,17 @@
   .kpis > *,
   .month > *,
   .bottom > * {
-    animation: rise 640ms var(--ease-out) both;
+    animation: rise 520ms var(--ease-out) both;
   }
   .today { animation-delay: 0ms; }
-  .kpis > :nth-child(1) { animation-delay: 60ms; }
-  .kpis > :nth-child(2) { animation-delay: 120ms; }
-  .kpis > :nth-child(3) { animation-delay: 180ms; }
-  .kpis > :nth-child(4) { animation-delay: 240ms; }
-  .month > :nth-child(1) { animation-delay: 280ms; }
-  .month > :nth-child(2) { animation-delay: 340ms; }
-  .bottom > :nth-child(1) { animation-delay: 380ms; }
-  .bottom > :nth-child(2) { animation-delay: 440ms; }
+  .kpis > :nth-child(1) { animation-delay: 40ms; }
+  .kpis > :nth-child(2) { animation-delay: 80ms; }
+  .kpis > :nth-child(3) { animation-delay: 120ms; }
+  .kpis > :nth-child(4) { animation-delay: 160ms; }
+  .month > :nth-child(1) { animation-delay: 180ms; }
+  .month > :nth-child(2) { animation-delay: 220ms; }
+  .bottom > :nth-child(1) { animation-delay: 240ms; }
+  .bottom > :nth-child(2) { animation-delay: 280ms; }
   @keyframes rise {
     from { opacity: 0; transform: translateY(14px) scale(0.985); filter: blur(6px); }
     to { opacity: 1; transform: none; filter: none; }
@@ -147,4 +149,8 @@
       transition: none !important;
     }
   }
+}
+
+@layer components {
+  .fallback { min-height: 60vh; }
 }
