@@ -7,16 +7,18 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronsLeft, Snowflake, X } from "lucide-react";
+import { useUnreadAnnouncements } from "@/lib/announcements-live";
 import { useMyOpenTasks } from "@/lib/tasks-live";
 import { LogoutButton } from "@/components/LogoutButton";
 import { ProfileButton } from "@/views/Profile/components/ProfileButton";
 import { isActive, navGroups, PANEL_EVENTS } from "../nav";
 import { toggleMini } from "./toggleMini";
 
-// Sol menyu: loqo, qruplu bəndlər (tapşırıq nişanı ilə), altda profil və çıxış.
+// Sol menyu: loqo, qruplu bəndlər (tapşırıq və oxunmamış elan nişanı ilə), altda profil və çıxış.
 // ≥ 1024: sabit, yığıla bilir (yalnız ikonlar); < 1024: üst zolaqdakı ☰ ilə açılan çəkmə panel (səhifə dəyişəndə özü bağlanır).
 function SidebarView({ showDepot, showFuel = false, me, pathname }: SidebarViewProps) {
   const openTasks = useMyOpenTasks();
+  const unread = useUnreadAnnouncements();
   const [openAt, setOpenAt] = useState<string | null>(null); // mobil panel hansı səhifədə açılıb
   const open = openAt !== null && openAt === pathname;
   useEffect(() => {
@@ -50,13 +52,16 @@ function SidebarView({ showDepot, showFuel = false, me, pathname }: SidebarViewP
           {navGroups(showDepot, showFuel).map((g) => (
             <div key={g.title} className={s.group}>
               <p className={s.groupTitle}><span className="nav-label">{g.title}</span></p>
-              {g.items.map(({ href, label, icon: Icon, tasks }) => (
+              {g.items.map(({ href, label, icon: Icon, tasks, announce }) => (
                 <Link key={href} href={href} className={s.item} title={label}
                   aria-current={isActive(href, pathname) ? "page" : undefined}>
                   <Icon size={19} strokeWidth={2.1} className="shrink-0" />
                   <span className="nav-label truncate">{label}</span>
                   {tasks && openTasks > 0 && (
                     <span className={s.badge} title="Bu gün görülməmiş tapşırığın">{openTasks}</span>
+                  )}
+                  {announce && unread > 0 && (
+                    <span className={s.badge} title="Oxunmamış elan">{unread}</span>
                   )}
                 </Link>
               ))}

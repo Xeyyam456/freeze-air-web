@@ -26,20 +26,14 @@ export async function deleteAnnouncement(id: number): Promise<void> {
   if (error) throw error;
 }
 
-// Yeni elan canlı gəlsin: açıq səhifədə siyahı yenilənir (sessiya ilə qoşulur, yoxsa RLS hadisə göndərmir)
-export function watchAnnouncements(onChange: () => void) {
-  const supabase = createClient();
-  let channel: ReturnType<typeof supabase.channel> | null = null;
-  let closed = false;
-  void supabase.auth.getSession().then(async ({ data: { session } }) => {
-    if (session) await supabase.realtime.setAuth(session.access_token);
-    if (closed) return;
-    channel = supabase.channel(`announcements-${Math.random().toString(36).slice(2)}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "announcements" }, onChange)
-      .subscribe();
-  });
-  return () => {
-    closed = true;
-    if (channel) void supabase.removeChannel(channel);
-  };
+
+// Oxunmamış elanlar (0105): son baxışdan sonra başqasının yazdığı — menyu nişanı
+export async function fetchUnreadAnnouncements(): Promise<number> {
+  const { data } = await createClient().rpc("unread_announcements");
+  return data ?? 0;
+}
+
+// Elanlar səhifəsi açılanda: hamısı oxundu (telefon və kompüter eyni sayı görür, bazadadır)
+export async function markAnnouncementsSeen(): Promise<void> {
+  await createClient().rpc("mark_announcements_seen");
 }

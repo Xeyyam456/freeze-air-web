@@ -1,12 +1,12 @@
 import { createClient } from "@/lib/supabase/client";
 import type { LiveCtx, LiveHandlers } from "@/types/myTasks";
 
-// Usta panelinin bir Realtime kanalı: tasks, leave_requests (UPDATE), tool_assignments, depot_requests.
+// Usta panelinin bir Realtime kanalı: tasks, leave_requests (UPDATE), tool_assignments, depot_requests, announcements.
 // Kanal sessiya yüklənəndən sonra açılır: yoxsa Realtime-a qonaq (anon) kimi qoşulur və RLS hadisələri göndərmir.
 // Qaytarılan funksiya kanalı bağlayır.
 export function subscribePanelLive(h: LiveHandlers) {
   const supabase = createClient();
-  const ctx: LiveCtx = { me: null, keeper: false };
+  const ctx: LiveCtx = { me: null, uid: null, keeper: false };
   let cancelled = false;
   let channel: ReturnType<typeof supabase.channel> | null = null;
 
@@ -16,6 +16,7 @@ export function subscribePanelLive(h: LiveHandlers) {
     .on("postgres_changes", { event: "UPDATE", schema: "public", table: "leave_requests" }, (p) => h.leaves(p, ctx))
     .on("postgres_changes", { event: "*", schema: "public", table: "tool_assignments" }, (p) => h.assignments(p, ctx))
     .on("postgres_changes", { event: "*", schema: "public", table: "depot_requests" }, (p) => h.depot(p, ctx))
+    .on("postgres_changes", { event: "*", schema: "public", table: "announcements" }, (p) => h.announcements(p, ctx))
     .subscribe();
 
   (async () => {
@@ -25,6 +26,7 @@ export function subscribePanelLive(h: LiveHandlers) {
     const [{ data }, { data: canManage }] = await Promise.all([supabase.rpc("my_employee_id"), supabase.rpc("can_manage_tools")]);
     if (cancelled) return;
     ctx.me = data ?? null;
+    ctx.uid = session.user.id;
     ctx.keeper = canManage === true; // depo məsulu / admin: yeni depo sənədində tost
     h.ready(ctx);
     channel = subscribe();

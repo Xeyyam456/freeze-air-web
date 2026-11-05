@@ -1,19 +1,19 @@
 "use client";
 
 import { useEffect } from "react";
-import { revalidate } from "@/lib/revalidate";
+import { markAnnouncementsRead } from "@/lib/announcements-live";
 import { useData } from "@/lib/useData";
-import { fetchAnnouncements, fetchAnnouncerState, watchAnnouncements } from "@/services/announcements/announcements";
+import { fetchAnnouncements, fetchAnnouncerState } from "@/services/announcements/announcements";
 import { ANNOUNCEMENTS_KEY, ANNOUNCER_KEY } from "./queries/keys";
 import { AnnouncementForm } from "./components/AnnouncementForm";
 import { AnnouncementList } from "./components/AnnouncementList";
 
-// Elanlar: hamı oxuyur (yeni elan canlı gəlir); rəhbərlik kartı olan burada da göndərə bilər (admin-də də var)
+// Elanlar: hamı oxuyur (yeni elan canlı gəlir: panel kanalı, views/Tasks/live/onAnnouncementChange); səhifə açılanda hamısı oxundu (menyu nişanı sıfırlanır); rəhbərlik kartı olan burada da göndərə bilər (admin-də də var)
 export function AnnouncementsView() {
   const items = useData(ANNOUNCEMENTS_KEY, () => fetchAnnouncements());
   const who = useData(ANNOUNCER_KEY, () => fetchAnnouncerState());
 
-  useEffect(() => watchAnnouncements(() => revalidate(ANNOUNCEMENTS_KEY)), []);
+  useEffect(() => void markAnnouncementsRead(), []);
 
   if (!who?.canSend) return <AnnouncementList items={items} me={who?.me ?? null} />;
   return (
