@@ -1,4 +1,4 @@
-import s from "./styles/Dashboard.module.css";
+import s from "../../styles/Dashboard.module.css";
 
 // Panel yüklənərkən yer tutucu: .dash sinfi ilə — fon və üst zolaq ilk görüntüdən tünd olur (açıq → tünd sıçrayışı yox)
 export function DashFallback() {
