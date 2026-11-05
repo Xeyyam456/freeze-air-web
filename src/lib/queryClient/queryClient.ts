@@ -1,4 +1,5 @@
 import { isServer, QueryClient } from "@tanstack/react-query";
+import { refetchOnMount } from "./serverFresh";
 
 // Məlumat keşi (TanStack Query): səhifələr arası keçiddə məlumat dərhal keşdən görünür, arxada yenilənir;
 // eyni açarlı sorğu bir dəfə gedir. Brauzerdə bir keş; serverdə (web, Next SSR) hər sorğuya ayrıca — istifadəçilər qarışmasın.
@@ -9,6 +10,7 @@ function make() {
       queries: {
         staleTime: 30_000, // 30 san. ərzində eyni məlumat təkrar sorğulanmır (dəyişiklik olanda revalidate() onsuz da təzələyir)
         gcTime: 10 * 60_000, // açılmayan səhifənin məlumatı 10 dəq. keşdə qalır
+        refetchOnMount, // serverdən təzə data gələn açarda brauzer təkrar yükləmir (serverFresh.ts)
         refetchOnWindowFocus: true, // başqa tabdan qayıdanda təzələnir
         retry: 1,
       },

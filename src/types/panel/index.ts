@@ -13,4 +13,5 @@ export type { SidebarViewProps } from "./SidebarViewProps";
 export type { SidebarProps } from "./SidebarProps";
 export type { AppIconRouteContext } from "./AppIconRouteContext";
 export type { PrefetchEntry } from "./PrefetchEntry";
+export type { PrefetchMarkProps } from "./PrefetchMarkProps";
 export type { PrefetchProps } from "./PrefetchProps";

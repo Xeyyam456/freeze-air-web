@@ -35,6 +35,7 @@ export async function enablePush(): Promise<"ok" | "denied" | "error"> {
     await navigator.serviceWorker.ready;
     const sub = (await reg.pushManager.getSubscription()) ?? (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: VAPID_PUBLIC }));
     await savePushSubscription(sub);
+    refreshed = Promise.resolve(true);
     return "ok";
   } catch {
     return "error";
@@ -42,18 +43,19 @@ export async function enablePush(): Promise<"ok" | "denied" | "error"> {
 }
 
 // Girişdən sonra abunəliyi təzələ (cihaz başqa hesabdan keçibsə, bildirişlər yeni hesaba getsin).
-// Eyni anda gələn ikinci çağırış (məs. dev-də StrictMode effekti iki dəfə) birincini gözləyir — təkrar sorğu getmir.
-let refreshing: Promise<boolean> | null = null;
+// Səhifə yüklənəndə BİR dəfə: Panelə hər qayıdanda bazaya yazı (push_subscribe) getməsin; təkrar çağırış nəticəni gözləyir.
+let refreshed: Promise<boolean> | null = null;
 export function refreshPush() {
-  refreshing ??= (async () => {
+  refreshed ??= (async () => {
     const sub = await currentSubscription();
     if (sub) await savePushSubscription(sub).catch(() => {});
     return !!sub;
-  })().finally(() => { refreshing = null; });
-  return refreshing;
+  })().catch(() => false);
+  return refreshed;
 }
 
 export async function disablePush() {
+  refreshed = null;
   const sub = await currentSubscription();
   if (!sub) return;
   await removePushSubscription(sub.endpoint);

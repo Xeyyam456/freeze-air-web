@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
     remotePatterns: ["site", "avatars"].map((b) => new URL(`${SUPABASE_URL}/storage/v1/object/public/${b}/**`)),
   },
   experimental: {
+    // Brauzer keşi: 30 san. ərzində eyni panel səhifəsinə qayıdanda server sorğusu (?_rsc) getmir, keşdən açılır.
+    // Next 16-da dinamik səhifələr üçün standart 0-dır (hər klik serverə gedir). Canlı dəyişikliklər Realtime + TanStack ilə
+    // gəlir (onun da keşi 30 san.); formdan sonra router.refresh() keşi təmizləyir.
+    staleTimes: { dynamic: 30 },
     // Dev-də "Instant" (keçid ani deyil) xəbərdarlıqları yalnız `instant` ixrac edən səhifələr üçün göstərilir.
     // Açıq sayt məzmunu 5 san. keşlə bazadan gəlir (admin dəyişikliyi tez görünsün), buna görə hər səhifə üçün
     // məcburi yoxlama qırmızı/narıncı nişan çıxarırdı (build-i bloklamır).
