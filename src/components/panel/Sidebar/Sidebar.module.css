@@ -1,20 +1,24 @@
 @layer theme, base, components, utilities;
 
 @layer components {
-  /* Sol menyu: tünd, üstdə yumşaq firuzəyi işıq; aktiv bənd göy→firuzəyi qradiyentdə */
+  /* Sol menyu (2026-11-05): admin sidebar-ı və Panel dashboard-u ilə eyni palitra — neytral tünd fon, mavi vurğu */
   .nav {
+    --sb-line: rgba(255, 255, 255, 0.06);
+    --sb-text: #f0efec;
+    --sb-text-2: #9aa3b5;
+    --sb-muted: #5f6a80;
+    --sb-accent: #3b8cf0;
     position: fixed;
     inset: 0 auto 0 0;
     z-index: 60;
     display: flex;
     flex-direction: column;
     width: var(--nav-w);
-    color: #fff;
+    color: var(--sb-text);
     background:
-    radial-gradient(420px 260px at 0% 0%, rgba(34, 195, 230, 0.16), transparent 65%),
-    radial-gradient(380px 300px at 100% 100%, rgba(31, 111, 235, 0.18), transparent 65%),
-    linear-gradient(180deg, #0a1a33 0%, #0c2246 55%, #0a1a33 100%);
-    border-right: 1px solid rgba(255, 255, 255, 0.06);
+      radial-gradient(260px 180px at 0% 0%, rgba(59, 140, 240, 0.07), transparent 70%),
+      #0b1220;
+    border-right: 1px solid var(--sb-line);
     transition: width 220ms ease, transform 240ms ease;
   }
   .head {
@@ -24,6 +28,8 @@
     height: var(--topbar-h);
     padding: 0 18px;
     flex-shrink: 0;
+    border-bottom: 1px solid var(--sb-line);
+    margin-bottom: 6px;
   }
   .scroll {
     flex: 1;
@@ -44,9 +50,9 @@
     padding: 0 12px 6px;
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.09em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.36);
+    color: var(--sb-muted);
   }
   .item {
     position: relative;
@@ -60,20 +66,47 @@
     font-size: 14px;
     font-weight: 600;
     white-space: nowrap;
-    color: rgba(255, 255, 255, 0.66);
-    transition: background-color 150ms ease, color 150ms ease;
+    color: var(--sb-text-2);
+    transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+  }
+  .item > svg {
+    color: #7d879b;
+    transition: color 180ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .item + .item {
     margin-top: 2px;
   }
   .item:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.07);
+    color: var(--sb-text);
+    background: rgba(255, 255, 255, 0.04);
   }
+  .item:hover > svg { color: #b4bccb; transform: translateX(1px); }
+  /* Aktiv bənd: yumşaq mavi fon + parıltı, ikon mavi, solda "nəfəs alan" zolaq (davamlı) */
   .item[aria-current="page"] {
-    color: #fff;
-    background: linear-gradient(90deg, #1f6feb, rgba(34, 195, 230, 0.75));
-    box-shadow: 0 10px 24px -10px rgba(31, 111, 235, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    color: var(--sb-text);
+    background: linear-gradient(90deg, rgba(59, 140, 240, 0.18), rgba(59, 140, 240, 0.04));
+    box-shadow:
+      inset 0 0 0 1px rgba(59, 140, 240, 0.24),
+      0 8px 24px -12px rgba(59, 140, 240, 0.55);
+  }
+  .item[aria-current="page"] > svg { color: var(--sb-accent); }
+  .item[aria-current="page"]::before {
+    content: "";
+    position: absolute;
+    left: -14px;
+    top: 9px;
+    bottom: 9px;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: var(--sb-accent);
+    box-shadow: 0 0 12px rgba(59, 140, 240, 0.8);
+    animation: barIn 320ms cubic-bezier(0.22, 1, 0.36, 1) both, breathe 3.2s ease-in-out infinite 400ms;
+  }
+  @keyframes barIn {
+    from { opacity: 0; transform: scaleY(0.2); }
+  }
+  @keyframes breathe {
+    50% { opacity: 0.55; box-shadow: 0 0 5px rgba(59, 140, 240, 0.5); }
   }
   .badge {
     display: grid;
@@ -92,9 +125,9 @@
   .foot {
     flex-shrink: 0;
     padding: 12px 14px 14px;
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    border-top: 1px solid var(--sb-line);
   }
-  /* Menyunu yığ / aç: sağ kənarın ortasında, üst zolağın hündürlüyündə yumru düymə */
+  /* Menyunu yığ / aç: sağ kənarın ortasında, üst zolağın hündürlüyündə yumru düymə (admin ilə eyni, tünd) */
   .edge {
     position: absolute;
     top: calc(var(--topbar-h) / 2 - 12px);
@@ -105,17 +138,17 @@
     width: 24px;
     height: 24px;
     border-radius: 999px;
-    color: #0a1a33;
-    background: #fff;
-    border: 1px solid var(--color-line);
-    box-shadow: 0 4px 12px rgba(10, 26, 51, 0.18);
-    transition: transform 220ms ease, background-color 150ms ease, color 150ms ease;
+    color: var(--sb-text-2);
+    background: #1c2740;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 4px 14px rgba(0, 0, 0, 0.45);
+    transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), background-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
   }
   .edge:hover {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
     color: #fff;
+    background: var(--sb-accent);
+    box-shadow: 0 0 0 4px rgba(59, 140, 240, 0.18), 0 4px 16px rgba(59, 140, 240, 0.5);
   }
+  .edge:focus-visible { outline: 2px solid var(--sb-accent); outline-offset: 2px; }
   :root[data-nav="mini"] .edge {
     transform: rotate(180deg);
   }
@@ -150,9 +183,11 @@
     margin-bottom: 6px;
     padding: 4px;
     border-radius: 14px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--sb-line);
+    transition: border-color 180ms ease;
   }
+  .profile:hover { border-color: rgba(255, 255, 255, 0.12); }
   .iconBtn {
     display: grid;
     place-items: center;
@@ -200,14 +235,22 @@
   }
   @media (width < 1024px) {
     .nav {
-      width: min(300px, 86vw);
+      /* Telefonda dar: ekranın çoxunu örtməsin (admin ilə eyni) */
+      width: min(264px, 82vw);
       transform: translateX(-100%);
       box-shadow: none;
     }
     .nav:global(.is-open) {
       transform: none;
-      box-shadow: 24px 0 60px rgba(6, 16, 33, 0.35);
+      box-shadow: 24px 0 60px rgba(0, 0, 0, 0.5);
     }
+  }
+  /* Yığılmış menyuda zolaq bəndin sol kənarına yapışır */
+  @media (min-width: 1024px) {
+    :root[data-nav="mini"] .item[aria-current="page"]::before { left: -14px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .item[aria-current="page"]::before { animation: none; }
   }
   .scrim {
     position: fixed;
