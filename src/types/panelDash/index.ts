@@ -8,4 +8,3 @@ export type { MonthCardProps } from "./MonthCardProps";
 export type { MonthView } from "./MonthView";
 export type { PlacesCardProps } from "./PlacesCardProps";
 export type { CalendarCardProps } from "./CalendarCardProps";
-export type { PanelPrefetchProps } from "./PanelPrefetchProps";

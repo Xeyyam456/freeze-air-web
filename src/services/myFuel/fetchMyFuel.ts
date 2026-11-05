@@ -1,10 +1,11 @@
 import { createClient } from "@/lib/supabase/client";
 import type { MyFuelData } from "@/types/myFuel";
+import type { DbClient } from "@/types/shared";
 
 // Dövrün yürüşləri, bu günün sətri (dövrdən asılı deyil) və hazırkı yanacaq qiymətləri
-// mFrom..mTo: seçilmiş dövrün ayı — balans aylıq hesablanır ("hər ayın öz hesabı")
-export async function fetchMyFuel(employeeId: number, from: string, to: string, today: string, mFrom: string, mTo: string): Promise<MyFuelData> {
-  const supabase = createClient();
+// mFrom..mTo: seçilmiş dövrün ayı — balans aylıq hesablanır ("hər ayın öz hesabı"). supabase: serverdə prefetch üçün
+export async function fetchMyFuel(employeeId: number, from: string, to: string, today: string, mFrom: string, mTo: string,
+  supabase: DbClient = createClient()): Promise<MyFuelData> {
   const [{ data }, { data: t }, { data: s }, { data: pays }, { data: allCost }, { data: allPaid }] = await Promise.all([
     supabase.from("mileage_logs").select("*").eq("employee_id", employeeId).gte("day", from).lte("day", to).order("day", { ascending: false }),
     supabase.from("mileage_logs").select("*").eq("employee_id", employeeId).eq("day", today).maybeSingle(),

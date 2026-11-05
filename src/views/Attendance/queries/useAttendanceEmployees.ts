@@ -3,4 +3,5 @@ import { fetchAttendanceEmployees } from "@/services/attendance/fetchAttendanceE
 
 export const ATTENDANCE_EMPLOYEES_KEY = "attendance-employees";
 
-export const useAttendanceEmployees = () => useData(ATTENDANCE_EMPLOYEES_KEY, fetchAttendanceEmployees);
+// Funksiyanı birbaşa ötürmə: TanStack kontekst obyektini klient parametrinə verərdi
+export const useAttendanceEmployees = () => useData(ATTENDANCE_EMPLOYEES_KEY, () => fetchAttendanceEmployees());

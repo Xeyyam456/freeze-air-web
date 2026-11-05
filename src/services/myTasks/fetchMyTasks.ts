@@ -1,9 +1,9 @@
 import { createClient } from "@/lib/supabase/client";
+import type { DbClient } from "@/types/shared";
 import type { FileCount } from "@/types/workLogs";
 
-// Günün bütün tapşırıqları və aktiv ustalar (rəhbərlik yox)
-export async function fetchMyTasks(day: string) {
-  const supabase = createClient();
+// Günün bütün tapşırıqları və aktiv ustalar (rəhbərlik yox). supabase: serverdə prefetch üçün (standart — brauzer)
+export async function fetchMyTasks(day: string, supabase: DbClient = createClient()) {
   const [tasks, employees] = await Promise.all([
     supabase.from("tasks")
       .select("id, employee_id, group_id, reason, done, note, work_log_id, place_text, cancelled_at, reassigned_to, stores(name, code, companies(name)), companies(name), work_logs(description, work_files(id, kind))")

@@ -1,9 +1,10 @@
 import { createClient } from "@/lib/supabase/client";
 import type { AttendanceRange, AttRow, Leave } from "@/types/attendance";
+import type { DbClient } from "@/types/shared";
 
 // Aralıq üçün gəlmələr, icazələr və "işdə olmayıb" qeydləri (employeeId verilsə yalnız o usta)
-export async function fetchRange(from: string, to: string, employeeId?: number): Promise<AttendanceRange> {
-  const supabase = createClient();
+// supabase: serverdə prefetch üçün server klienti verilir (standart — brauzer klienti)
+export async function fetchRange(from: string, to: string, employeeId?: number, supabase: DbClient = createClient()): Promise<AttendanceRange> {
   let att = supabase.from("attendance").select("employee_id, day, checked_in_at, checked_out_at").gte("day", from).lte("day", to);
   let lv = supabase.from("leave_requests").select("id, employee_id, date_from, date_to, reason, status, created_at").lte("date_from", to).gte("date_to", from);
   let ab = supabase.from("attendance_absences").select("employee_id, day").gte("day", from).lte("day", to);

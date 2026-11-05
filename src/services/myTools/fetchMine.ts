@@ -2,9 +2,10 @@ import type { DepotRequest, Tool } from "@/types/depot";
 import { createClient } from "@/lib/supabase/client";
 import type { Mine } from "@/types/myTools/Mine";
 import type { Held } from "@/types/myTools/Held";
+import type { DbClient } from "@/types/shared";
 
-export async function fetchMine(employeeId: number) {
-  const supabase = createClient();
+// Alətlərim: üzərimdəkilər, sorğularım, anbar, kimdə nə var. supabase: serverdə prefetch üçün (standart — brauzer)
+export async function fetchMine(employeeId: number, supabase: DbClient = createClient()) {
   const [{ data: holds }, { data: requests }, { data: stock }, { data: all }] = await Promise.all([
     supabase.from("tool_assignments").select("id, tool_id, quantity, taken_at, received_at, disputed_at, tools(name, kind, unit, pack_name, pack_size)")
       .eq("employee_id", employeeId).is("returned_at", null).order("taken_at"),

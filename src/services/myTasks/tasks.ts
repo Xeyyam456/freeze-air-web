@@ -1,9 +1,11 @@
 import { createClient } from "@/lib/supabase/client";
 import type { WeekRow } from "@/types/myTasks";
+import type { DbClient } from "@/types/shared";
 
 // Həftə zolağı üçün: hər gün neçə tapşırıq (geri alınanlar sayılmır) və onlardan neçəsi mənimdir
-export async function fetchWeek(from: string, to: string): Promise<WeekRow[]> {
-  const { data } = await createClient().from("tasks").select("task_date, employee_id, group_id")
+// supabase: serverdə prefetch üçün (standart — brauzer)
+export async function fetchWeek(from: string, to: string, supabase: DbClient = createClient()): Promise<WeekRow[]> {
+  const { data } = await supabase.from("tasks").select("task_date, employee_id, group_id")
     .gte("task_date", from).lte("task_date", to).is("cancelled_at", null);
   return data ?? [];
 }
