@@ -1,17 +1,17 @@
 import { createClient } from "@/lib/supabase/client";
+import type { DbClient } from "@/types/shared";
 import type { Announcement, AnnouncerState } from "@/types/announcements";
 
 // Elanlar (0098): hamı oxuyur; göndərmək rəhbərlikdir (admin və ya rəhbərlik kartı) — bazada RLS yoxlayır
-export async function fetchAnnouncements(): Promise<Announcement[]> {
-  const { data, error } = await createClient().from("announcements")
+export async function fetchAnnouncements(supabase: DbClient = createClient()): Promise<Announcement[]> {
+  const { data, error } = await supabase.from("announcements")
     .select("id, title, body, created_by, created_by_name, created_at").order("created_at", { ascending: false }).limit(100);
   if (error) throw error;
   return data ?? [];
 }
 
 // Göndərən kimdir və rəhbərlikdirmi (form yalnız onlara görünür)
-export async function fetchAnnouncerState(): Promise<AnnouncerState> {
-  const supabase = createClient();
+export async function fetchAnnouncerState(supabase: DbClient = createClient()): Promise<AnnouncerState> {
   const [{ data: { user } }, { data: canSend }] = await Promise.all([supabase.auth.getUser(), supabase.rpc("is_management")]);
   return { me: user?.id ?? null, canSend: canSend === true };
 }

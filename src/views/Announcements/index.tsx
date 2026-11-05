@@ -4,15 +4,16 @@ import { useEffect } from "react";
 import { revalidate } from "@/lib/revalidate";
 import { useData } from "@/lib/useData";
 import { fetchAnnouncements, fetchAnnouncerState, watchAnnouncements } from "@/services/announcements/announcements";
+import { ANNOUNCEMENTS_KEY, ANNOUNCER_KEY } from "./queries/keys";
 import { AnnouncementForm } from "./components/AnnouncementForm";
 import { AnnouncementList } from "./components/AnnouncementList";
 
 // Elanlar: hamı oxuyur (yeni elan canlı gəlir); rəhbərlik kartı olan burada da göndərə bilər (admin-də də var)
 export function AnnouncementsView() {
-  const items = useData("announcements", fetchAnnouncements);
-  const who = useData("announcer", fetchAnnouncerState);
+  const items = useData(ANNOUNCEMENTS_KEY, () => fetchAnnouncements());
+  const who = useData(ANNOUNCER_KEY, () => fetchAnnouncerState());
 
-  useEffect(() => watchAnnouncements(() => revalidate("announcements")), []);
+  useEffect(() => watchAnnouncements(() => revalidate(ANNOUNCEMENTS_KEY)), []);
 
   if (!who?.canSend) return <AnnouncementList items={items} me={who?.me ?? null} />;
   return (

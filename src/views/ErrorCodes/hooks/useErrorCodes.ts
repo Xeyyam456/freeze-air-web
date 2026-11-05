@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useData } from "@/lib/useData";
 import { fetchCodes } from "@/services/errorCodes/fetchCodes";
 import type { ErrorCode, ErrorCodesState } from "@/types/errorCodes";
+import { ERROR_CODES_KEY } from "../queries/keys";
 import { compareCodes } from "../utils/compareCodes";
 import { isCodeQuery } from "../utils/isCodeQuery";
 import { matchCodes } from "../utils/matchCodes";
@@ -9,7 +10,7 @@ import { matchCodes } from "../utils/matchCodes";
 // Xəta kodları ekranının vəziyyəti: model, axtarış (pult ekranı), seçilmiş kod və qonşuları.
 // 2 simvollu kod yazılanda həmin kod özü seçilir; sözlə axtarışda xəritədə uyğunlar işıqlanır.
 export function useErrorCodes(): ErrorCodesState | null {
-  const data = useData("error-codes", fetchCodes);
+  const data = useData(ERROR_CODES_KEY, () => fetchCodes());
   const [picked, setModelId] = useState<number | null>(null);
   const [query, setQuery] = useState("");
   const [pickedId, setPickedId] = useState<number | null>(null);
