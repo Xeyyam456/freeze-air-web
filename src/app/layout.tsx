@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/Toaster";
-import { SITE_URL } from "@/lib/site-url";
+import { SITE_URL } from "@/lib/env";
 
 // latin-ext: Azərbaycan hərfləri (ə, ğ, ş, ı) üçün
 const jakarta = Plus_Jakarta_Sans({

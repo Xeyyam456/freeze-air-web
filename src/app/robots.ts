@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { SITE_URL } from "@/lib/site-url";
+import { SITE_URL } from "@/lib/env";
 
 // Axtarış sistemləri yalnız açıq saytı indeksləyir; usta paneli və giriş bağlıdır
 export default function robots(): MetadataRoute.Robots {

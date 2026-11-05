@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Briefcase } from "lucide-react";
 import { Spotlight } from "@/components/landing/Spotlight";
 import { initials } from "@/lib/experience";
+import { SUPABASE_URL } from "@/lib/env";
 import type { MasterCardProps } from "@/types/site";
 import { typeKey } from "../constants/workerTypes";
 
@@ -14,7 +15,7 @@ export function MasterCard({ e, max, t }: MasterCardProps) {
       <article className="group flex h-full items-center gap-6 rounded-[28px] bg-white p-4 pr-7 ring-1 ring-night/5 transition-[box-shadow,transform] duration-300 hover:-translate-y-1 hover:shadow-[0_24px_50px_rgba(6,25,43,0.12)] max-sm:gap-4 max-sm:pr-5 md:max-lg:gap-5">
         <span className="relative h-32 w-32 shrink-0 overflow-hidden rounded-[22px] bg-gradient-to-br from-ice to-glacier max-sm:h-20 max-sm:w-20 max-sm:rounded-[18px] md:max-lg:h-24 md:max-lg:w-24">
           {e.photo_url ? (
-            <Image width={1600} height={1000} sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" src={e.photo_url} alt={e.full_name} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <Image width={256} height={256} sizes="128px" unoptimized={!e.photo_url.startsWith(SUPABASE_URL)} src={e.photo_url} alt={e.full_name} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
           ) : (
             <span className="grid h-full w-full place-items-center bg-gradient-to-br from-cold to-night font-display text-3xl font-bold text-white">
               {initials(e.full_name)}

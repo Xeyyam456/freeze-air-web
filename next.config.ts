@@ -1,13 +1,14 @@
 import type { NextConfig } from "next";
+import { SUPABASE_URL } from "./src/lib/env";
 
 const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
-  // Sayt şəkilləri Supabase storage-dədir: next/image ölçüləyib WebP/AVIF verir
+  // Sayt və usta (avatar) şəkilləri Supabase storage-dədir: next/image ölçüləyib WebP/AVIF verir. Ünvan env-dən (lib/env).
   images: {
     formats: ["image/avif", "image/webp"],
-    remotePatterns: [new URL("https://roodclienblwrrlswmty.supabase.co/storage/v1/object/public/site/**")],
+    remotePatterns: ["site", "avatars"].map((b) => new URL(`${SUPABASE_URL}/storage/v1/object/public/${b}/**`)),
   },
   experimental: {
     // Dev-də "Instant" (keçid ani deyil) xəbərdarlıqları yalnız `instant` ixrac edən səhifələr üçün göstərilir.

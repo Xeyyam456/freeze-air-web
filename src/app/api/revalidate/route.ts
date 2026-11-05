@@ -2,11 +2,12 @@ import { revalidateTag } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
 import { SITE_TAG } from "@/lib/site-cache";
+import { SUPABASE_URL, SUPABASE_KEY, ADMIN_ORIGIN } from "@/lib/env";
 
 // Admin paneli saytın məzmununu dəyişəndən sonra bunu çağırır: açıq saytın keşi dərhal təmizlənir.
 // Yoxlama: admin sessiyasının JWT-si (Authorization: Bearer) göndərilir, baza `is_admin()` ilə təsdiqləyir.
 // Paylaşılan gizli açar yoxdur. CORS yalnız ADMIN_ORIGIN üçün (standart: yerli admin paneli).
-const ALLOWED_ORIGIN = process.env.ADMIN_ORIGIN ?? "http://localhost:5173";
+const ALLOWED_ORIGIN = ADMIN_ORIGIN;
 
 const cors = {
   "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
@@ -24,8 +25,8 @@ export async function POST(request: Request) {
   if (!token) return Response.json({ ok: false }, { status: 401, headers: cors });
 
   const supabase = createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    SUPABASE_URL,
+    SUPABASE_KEY,
     { auth: { persistSession: false }, global: { headers: { Authorization: `Bearer ${token}` } } },
   );
   const { data: isAdmin } = await supabase.rpc("is_admin");

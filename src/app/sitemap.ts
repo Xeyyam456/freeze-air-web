@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getSegments, getServices } from "@/services/site/fetchSiteContent.server";
-import { SITE_URL } from "@/lib/site-url";
+import { SITE_URL } from "@/lib/env";
 
 // Açıq səhifələr; xidmət və obyekt növü səhifələri bazadan (admin paneldə əlavə olunan dərhal sitemap-a düşür)
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

@@ -63,7 +63,7 @@ Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
 - Mutasiyadan sonra client komponentdə `router.refresh()`.
 - React 19 `<form action>` göndərəndən sonra formanı sıfırlayır, xətada da. Ona görə `ActionForm` / `onSubmit` + `startTransition(() => action(fd))` işlənir.
 - Lint qaydaları: `react-hooks/refs` (renderdə ref oxuma yox), `set-state-in-effect`; açıq saytın storage şəkilləri `next/image` ilə (`next.config.ts` `images.remotePatterns`: Supabase `site` bucket; hero `preload fetchPriority="high"`, hər yerdə `sizes`); usta paneli/loqo şəkilləri `<img>` + `eslint-disable-next-line @next/next/no-img-element`.
-- `.env.local` (git-ignored, **oxuma**): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Gizli açar bu layihədə işlənmir; `SUPABASE_SECRET_KEY` sətri varsa silinməlidir.
+- `.env.local` (git-ignored, **oxuma**): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Gizli açar bu layihədə işlənmir; `SUPABASE_SECRET_KEY` sətri varsa silinməlidir. Kodda env yalnız `lib/env`-də oxunur (`SUPABASE_URL`, `SUPABASE_KEY`, `SITE_URL`, `ADMIN_ORIGIN`); başqa yerdə `process.env` yazma.
 
 ## Admin reposu ilə sinxron saxlanmalı olanlar
 Repolar ayrıdır, kod paylaşılmır; bunlar əl ilə eyni saxlanmalıdır:

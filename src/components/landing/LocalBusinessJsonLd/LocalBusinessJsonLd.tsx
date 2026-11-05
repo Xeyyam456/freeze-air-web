@@ -1,6 +1,6 @@
 import { getContact } from "@/services/site/fetchSiteSettings.server";
 import { getTexts } from "@/services/site/fetchSiteTexts.server";
-import { SITE_URL } from "@/lib/site-url";
+import { SITE_URL } from "@/lib/env";
 
 // Google üçün "yerli biznes" strukturlu məlumatı (telefon, ünvan, e-poçt admin paneldəki əlaqə məlumatından gəlir; iş saatları sərbəst mətndir, schema formatında deyil, ona görə göndərilmir).
 // Doldurulmamış yer tutucular (XX) göndərilmir.

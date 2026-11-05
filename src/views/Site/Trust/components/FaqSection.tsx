@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/landing/Reveal";
 import { getFaq } from "@/services/site/fetchSiteTrust.server";
-import { SITE_URL } from "@/lib/site-url";
+import { SITE_URL } from "@/lib/env";
 import type { TextsProps } from "@/types/site";
 import { FaqItem } from "./FaqItem";
 

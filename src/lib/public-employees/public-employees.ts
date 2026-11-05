@@ -1,7 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { SITE_CACHE, SITE_TAG } from "@/lib/site-cache";
-import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database";
+import { publicSiteClient } from "@/lib/site-client";
 import { experience } from "@/lib/experience";
 import type { PublicEmployee } from "@/types/site";
 import type { PublicManager } from "@/types/site";
@@ -23,12 +22,7 @@ export async function getPublicEmployees(): Promise<PublicEmployee[]> {
   cacheLife(SITE_CACHE);
   cacheTag(SITE_TAG);
 
-  const supabase = createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-    { auth: { persistSession: false } },
-  );
-  const { data } = await supabase.rpc("public_employees");
+  const { data } = await publicSiteClient().rpc("public_employees");
 
   return (data ?? []).map((e) => ({
     id: e.id,
@@ -47,11 +41,6 @@ export async function getPublicManagement(): Promise<PublicManager[]> {
   cacheLife(SITE_CACHE);
   cacheTag(SITE_TAG);
 
-  const supabase = createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-    { auth: { persistSession: false } },
-  );
-  const { data } = await supabase.rpc("public_management");
+  const { data } = await publicSiteClient().rpc("public_management");
   return data ?? [];
 }
