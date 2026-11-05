@@ -22,7 +22,7 @@ export function PaymentsCard({ payments, onConfirm }: PaymentsCardProps) {
 
   return (
     <Card className="overflow-hidden !p-0">
-      <div className="flex items-center justify-between gap-3 border-b border-line bg-[linear-gradient(135deg,#ecfbf1,#ffffff)] px-4 py-3 max-sm:px-3 max-sm:py-2">
+      <div className="flex items-center justify-between gap-3 border-b border-line bg-[linear-gradient(135deg,rgba(34,192,106,0.14),var(--color-surface))] px-4 py-3 max-sm:px-3 max-sm:py-2">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-wider text-muted">Cəmi aldığın</p>
           <p className="text-2xl font-extrabold tabular-nums leading-tight text-ok max-sm:text-xl">{azn(total(received))}</p>
