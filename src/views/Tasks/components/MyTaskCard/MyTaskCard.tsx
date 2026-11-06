@@ -38,7 +38,7 @@ export function MyTaskCard({ t, data, past, fileLog, onToggle, onNote, onViewLog
           {/* Görülmüş tapşırıqda: təmir barədə yaz, akt/şəkil əlavə et */}
           {t.done && !cancelled && !past && (
             <Button type="button" onClick={onNote} variant="plain" size="sm" className="ml-auto !h-8 bg-ok-soft text-ok hover:bg-ok hover:text-white">
-              <PenLine size={14} /> {t.note || files ? "Təmir qeydi" : "Təmir barədə yaz"}
+              <PenLine size={14} /> {t.note || files ? "Qeydi dəyiş" : "Təmir qeydi"}
             </Button>
           )}
         </div>
