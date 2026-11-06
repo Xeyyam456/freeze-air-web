@@ -49,7 +49,8 @@
     color: var(--d-text);
   }
 
-  /* Düzülüş: göstəricilər 4 → 2 → 1 sütun; qrafik + yerlər, işlər + kalendar geniş ekranda yan-yana */
+  /* Düzülüş: göstəricilər 4 → 2 → 1 sütun; qrafik + yerlər, işlər + kalendar geniş ekranda yan-yana.
+     İki sıra EYNİ nisbətdədir (1.8 : 1): kalendar yerlər kartının altında dəqiq onunla bir xətdə başlayır (simmetriya) */
   .kpis {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -61,7 +62,6 @@
     grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
     gap: 20px;
   }
-  .bottom { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
   .history { min-height: 380px; }
   @media (width >= 1024px) {
     .history { height: 560px; }
