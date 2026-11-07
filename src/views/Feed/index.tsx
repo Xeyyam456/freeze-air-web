@@ -34,7 +34,7 @@ export function FeedView() {
   }, []);
 
   return (
-    <div className="mx-auto grid max-w-3xl gap-4">
+    <div className="grid gap-4">
       <FeedTabs group={group} onChange={setGroup} counts={{ work: work?.length ?? null, act: act?.length ?? null }} />
       <EmployeeSearch value={query} onChange={setQuery} placeholder="Yer, usta və ya tarix axtar..." label="Lent axtarışı" />
       {current === null ? <Card className="muted py-10 text-center text-sm">Yüklənir...</Card>
