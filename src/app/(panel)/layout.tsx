@@ -5,6 +5,7 @@ import { QueryProvider } from "@/components/panel/QueryProvider";
 import { QuickActions } from "@/components/panel/QuickActions";
 import { Sidebar, SidebarFallback } from "@/components/panel/Sidebar";
 import { TasksListener } from "@/views/Tasks/live/TasksListener";
+import { FeedListener } from "@/views/Feed/live/FeedListener";
 
 // PWA: telefonda ana ekrana əlavə olunan usta paneli (manifest və ikonlar: app/panel.webmanifest, app/app-icon)
 export const metadata: Metadata = {
@@ -35,11 +36,12 @@ export default function PanelLayout({ children }: LayoutProps<"/">) {
   return (
     <QueryProvider>
       <TasksListener />
+      <FeedListener />
       <Suspense fallback={<SidebarFallback />}>
         <PanelChrome />
       </Suspense>
       {/* panel-app: usta paneli tünd temada (globals.css) */}
-      <div className="panel-app pl-[var(--nav-w)] transition-[padding-left] duration-[220ms]">{children}</div>
+      <div className="panel-app pl-[var(--nav-w)] transition-[padding-left] duration-[420ms] ease-[cubic-bezier(0.32,0.72,0,1)]">{children}</div>
     </QueryProvider>
   );
 }

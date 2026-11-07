@@ -27,7 +27,7 @@ export const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
     title: "Komanda",
     items: [
       { href: "/ustalar", label: "Ustalar", icon: Users, hint: "Ustalar və gördükləri işlər" },
-      { href: "/qruplar", label: "Qruplar", icon: MessagesSquare, hint: "Görülən işlər və aktlar" },
+      { href: "/qruplar", label: "Qruplar", icon: MessagesSquare, hint: "Görülən işlər və aktlar", feed: true },
       { href: "/elanlar", label: "Elanlar", icon: Megaphone, hint: "Rəhbərliyin elanları", announce: true },
       { href: "/rehberlik", label: "Rəhbərlik", icon: UserCog, hint: "Müdir və rəhbərlər" },
       { href: "/depo", label: "Depo", icon: Warehouse, hint: "Alətlər və materiallar", depot: true },

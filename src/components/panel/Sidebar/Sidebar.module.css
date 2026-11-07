@@ -269,3 +269,57 @@
     }
   }
 }
+
+@layer components {
+  /* Premium yığ / aç: bir yumşaq əyri; ikon padding ilə hamar sürüşür (justify dəyişmədən) */
+  .nav { --ease: cubic-bezier(0.32, 0.72, 0, 1); }
+  @media (min-width: 1024px) {
+    .nav { transition: width 420ms var(--ease), transform 420ms var(--ease); }
+    .head { transition: padding 420ms var(--ease); }
+    .item { overflow: hidden; transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease, padding 420ms var(--ease), gap 420ms var(--ease); }
+    .groupTitle { overflow: hidden; transition: height 380ms var(--ease), margin 380ms var(--ease), padding 380ms var(--ease), border-color 380ms ease; }
+    :root[data-nav="mini"] .head { justify-content: flex-start; padding: 0 22px; }
+    :root[data-nav="mini"] .item { justify-content: flex-start; padding: 0 0 0 20px; gap: 0; }
+  }
+  @media (width < 1024px) {
+    .nav { transition: transform 420ms var(--ease), box-shadow 420ms ease; }
+    .scrim { animation: scrimIn 320ms ease-out; }
+    .nav:global(.is-open) .group { animation: groupIn 520ms var(--ease) both; }
+    .nav:global(.is-open) .group:nth-child(2) { animation-delay: 50ms; }
+    .nav:global(.is-open) .group:nth-child(3) { animation-delay: 100ms; }
+  }
+  @keyframes scrimIn { from { opacity: 0; } }
+  @keyframes groupIn { from { opacity: 0; transform: translateX(-14px); } }
+
+  /* Qruplar: yeni hadisə (rəqəmsiz) — qırmızı nöqtə nəbz edir */
+  .pulse {
+    position: relative;
+    flex: none;
+    width: 9px;
+    height: 9px;
+    margin: 0 4px 0 auto;
+    border-radius: 999px;
+    background: #ef4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
+    animation: pulseDot 1.6s ease-in-out infinite;
+  }
+  .pulse::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    animation: pulseRing 1.6s ease-out infinite;
+  }
+  @keyframes pulseDot { 50% { opacity: 0.45; } }
+  @keyframes pulseRing {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.65); }
+    80%, 100% { box-shadow: 0 0 0 9px rgba(239, 68, 68, 0); }
+  }
+  @media (min-width: 1024px) {
+    :root[data-nav="mini"] .pulse { position: absolute; top: 6px; right: 14px; margin: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pulse, .pulse::after, .scrim, .nav:global(.is-open) .group { animation: none; }
+    .nav, .item, .head, .groupTitle, .nav-label { transition-duration: 1ms !important; }
+  }
+}
