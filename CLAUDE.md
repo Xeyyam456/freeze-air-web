@@ -93,3 +93,7 @@ Repolar ayrıdır, kod paylaşılmır; bunlar əl ilə eyni saxlanmalıdır:
 - Supabase dashboard-da hesab və ya tənzimləmə dəyişikliyindən əvvəl icazə al.
 - Shell-də `node -e` daxilində `\n` və `\D` kimi escape-lər pozulur; uzun skripti scratchpad-də `.cjs`/`.mjs` faylına yaz. Git Bash-in `/tmp`-i Node üçün başqa yerdir: Node-a scratchpad-in Windows yolunu ver (`cygpath -m`).
 - Dəyişikliklərdən sonra Chrome-da yoxla, amma real məlumata yazan düymələri sınaqda basma (HMR/modal sıfırlanandan sonra koordinatla klik səhv yerə düşə bilər).
+
+## Qruplar (2026-11-07)
+- Usta paneli `/qruplar` (`views/Feed`, `services/feed`, `types/feed`): mobil "Qruplar" ilə eyni — tapşırıq qeydinə yüklənən `work_files`-dan avtomatik lent (iki tab: Görülən işlər / Aktlar), axtarış, 👍/👎 (`feed_likes`), şərhlər (`feed_comments`), "birlikdə" ustalar. Canlı: `services/feed/liveChannel` (work_files, feed_likes, feed_comments). Admin `pages/Feed` ilə eyni kod (kopya, sinxron skript yox). Bildirişlər (push) bazadadır: 0109–0111; veb push getmir (kind `feed`).
+- Baza tipləri: yalnız `feed_likes`/`feed_comments` faylları əlavə olunub (`split-db-types.mjs` tam yenidən yaratmadı: bazadakı real nullable sahələr mövcud Depo kodunu pozur).
