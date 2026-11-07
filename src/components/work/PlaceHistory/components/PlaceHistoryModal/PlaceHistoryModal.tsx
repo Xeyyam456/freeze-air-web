@@ -71,7 +71,7 @@ export function PlaceHistoryModal({ target, onClose }: PlaceHistoryModalProps) {
           <div className="nice-scroll -mr-2 min-h-0 flex-1 overflow-y-auto pr-2">
             {days.map(([day, items]) => (
               <section key={day}>
-                <h3 className="sticky top-0 z-10 bg-surface py-1.5 text-xs font-bold uppercase tracking-wide text-muted">{formatDateAz(day)} · {items.length} iş</h3>
+                <h3 className="sticky top-0 z-10 my-1 rounded-lg bg-surface px-2.5 py-1.5 text-xs font-bold uppercase tracking-wide text-muted">{formatDateAz(day)} · {items.length} iş</h3>
                 <ul className="divide-y divide-line">
                   {items.map((r) => <HistoryItem key={r.id} r={r} showStore={showStore} onOpen={setOpenLog} />)}
                 </ul>
