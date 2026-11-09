@@ -40,7 +40,7 @@ Kondisioner servis şirkəti **Freeze Air Service** üçün sistem: ustalar, mü
 - **Bazaya yazma (Claude Code icazələri)**: Supabase MCP `apply_migration` üçün icazə qaydası var (istifadəçi `/permissions` ilə əlavə edib; yoxdursa auto-rejim "Production Deploy" ilə bloklayır). Claude öz icazə fayllarını (`.claude/settings*.json`) dəyişə bilmir ("Self-Modification" bloku): qayda lazımdırsa istifadəçi `/permissions` ilə əlavə edir. Bloklanan miqrasiyanı dolayı yolla keçməyə çalışma: SQL-i istifadəçiyə ver, o, Supabase paneli → SQL Editor-də (`https://supabase.com/dashboard/project/roodclienblwrrlswmty/sql/new`) işlədir. Toplu silmə və `drop`-dan əvvəl hədəfə (sətir sayı, nələr silinir) bax və istifadəçinin sözünü yoxla.
 
 ## Komandalar
-Test yoxdur. Yoxlama = tip yoxlaması + lint + brauzerdə canlı test.
+Yoxlama = `npm test` (Vitest, saf util-lər: `src/**/__tests__/*.test.ts`) + tip yoxlaması + lint + brauzerdə canlı test.
 - `npm run dev` (port 3000, fonda), `npx tsc --noEmit`, `npx eslint src`. **Dev işləyərkən `next build` işlətmə.**
 - **Bundle limiti** (2026-11-02): `npm run build` sonunda `postbuild` → `scripts/check-bundle.mjs` (`/` ≤ 215 KB, `/panel` ≤ 340 KB JS gzip, prerender HTML-dən). Keçilsə build uğursuz olur, Vercel deploy etmir; limiti qaldırmazdan əvvəl ağır client importu axtar.
 - "Turbopack is not supported … native bindings" + "An Application Control policy has blocked this file" = Windows Smart App Control imzasız `next-swc.win32-x64-msvc.node`-u bloklayır (2026-10-20 olub, istifadəçi söndürdü). Müvəqqəti yol `npx next dev --webpack`; həll Windows Security → App & browser control → Smart App Control → Off (istifadəçi özü edir).
