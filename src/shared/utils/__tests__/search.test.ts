@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { directionsUrl, mapEmbedUrl, mapSearchUrl, parseCoordinates, wazeUrl } from "@/lib/navigation";
 import { norm } from "@/shared/utils/norm";
+import { nameKey } from "@/services/depot/toolForm";
 
 describe("norm — axtarış üçün sadələşdirmə", () => {
   it.each([
@@ -15,6 +16,17 @@ describe("norm — axtarış üçün sadələşdirmə", () => {
   it("böyük/kiçik hərf və yumşaltma birlikdə: eyni nəticə", () => {
     expect(norm("MƏMMƏDOV")).toBe(norm("məmmədov"));
     expect(norm("Qüdrət")).toBe("qudret");
+  });
+});
+
+describe("böyük İ və I (Azərbaycan qaydası) — əvvəl \"i\" + görünməz U+0307 verirdi", () => {
+  it.each([["İlqar", "ilqar"], ["İSMAYILLI", "ismayilli"], ["ŞİRVAN", "sirvan"], ["LG INVERTER", "lg inverter"]])("norm(%s) → %s", (s, want) => {
+    expect(norm(s)).toBe(want);
+  });
+  it("axtarış: kiçik hərflə yazanda tapılır", () => expect(norm("İsmayılov İlqar").includes(norm("ilqar"))).toBe(true));
+  it("nameKey: eyni alət adı təkrar sayılır", () => {
+    expect(nameKey("İnverter  Kondisioner")).toBe(nameKey("inverter kondisioner"));
+    expect(nameKey("MIS BORU")).toBe(nameKey("Mis boru"));
   });
 });
 

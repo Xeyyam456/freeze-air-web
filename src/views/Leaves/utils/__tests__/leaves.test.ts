@@ -42,6 +42,12 @@ describe("leaveStats — xülasə", () => {
     expect(leaveStats([leave(1, "2026-10-29", "2026-11-03", "approved")], TODAY).month).toBe(2); // 2, 3 noy (1 noyabr bazardır)
   });
 
+  it("ayın sonundan o tərəfə keçən icazə növbəti ayın günlərini saymır (30 və 28 günlük ay)", () => {
+    expect(leaveStats([leave(1, "2026-11-28", "2026-12-05", "approved")], TODAY).month).toBe(2); // 28 şənbə, 30 bazar ertəsi
+    expect(leaveStats([leave(1, "2026-02-26", "2026-03-04", "approved")], "2026-02-10").month).toBe(3); // 26, 27, 28
+    expect(leaveStats([leave(1, "2026-12-30", "2027-01-04", "approved")], "2026-12-15").month).toBe(2); // 31 günlük ay
+  });
+
   it("ilin sərhədini keçən icazə: yalnız bu ilə düşən günlər", () => {
     expect(leaveStats([leave(1, "2025-12-29", "2026-01-03", "approved")], "2026-01-05").year).toBe(3);
   });
