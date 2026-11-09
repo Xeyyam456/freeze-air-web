@@ -41,6 +41,8 @@ Kondisioner servis şirkəti **Freeze Air Service** üçün sistem: ustalar, mü
 
 ## Komandalar
 Yoxlama = `npm test` (Vitest, saf util-lər: `src/**/__tests__/*.test.ts`) + tip yoxlaması + lint + brauzerdə canlı test.
+- **Testlər (2026-11-09)**: Vitest 5.0.5, `vitest.config` (`env: { TZ: "Asia/Baku" }`). Test faylı yoxladığı kodun yanındakı `__tests__/` qovluğunda. Hook-u React-sız yoxlamaq: `vi.mock("react", () => ({ useMemo: (f) => f() }))` + `await import(...)`. Vaxt: `vi.useFakeTimers()` + `vi.setSystemTime(...)`. Test səhv tapsa, düzəltmədən əvvəl istifadəçiyə göstər; səhv davranışı test gözləntisi kimi yazma. Commitdən əvvəl `npm test`.
+- **Azərbaycan mətnini kiçiltmək HƏMİŞƏ `toLocaleLowerCase("az")`** (`toLowerCase()` yox: "İ" → "i" + görünməz U+0307 olur, "ilqar" "İlqar"-ı tapmırdı; 2026-11-09 düzəldildi: `norm`, `slugify`, `nameKey`, Excel başlıqları).
 - `npm run dev` (port 3000, fonda), `npx tsc --noEmit`, `npx eslint src`. **Dev işləyərkən `next build` işlətmə.**
 - **Bundle limiti** (2026-11-02): `npm run build` sonunda `postbuild` → `scripts/check-bundle.mjs` (`/` ≤ 215 KB, `/panel` ≤ 340 KB JS gzip, prerender HTML-dən). Keçilsə build uğursuz olur, Vercel deploy etmir; limiti qaldırmazdan əvvəl ağır client importu axtar.
 - "Turbopack is not supported … native bindings" + "An Application Control policy has blocked this file" = Windows Smart App Control imzasız `next-swc.win32-x64-msvc.node`-u bloklayır (2026-10-20 olub, istifadəçi söndürdü). Müvəqqəti yol `npx next dev --webpack`; həll Windows Security → App & browser control → Smart App Control → Off (istifadəçi özü edir).
