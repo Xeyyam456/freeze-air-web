@@ -47,6 +47,9 @@ describe("calc — material qaytarma (kq / balon)", () => {
   it("səndə olandan çox ola bilməz (3 balon > 2)", () => {
     expect(calc(h, draft("3", true))).toMatchObject({ ok: false, over: true, hint: "Səndə olandan çox ola bilməz" });
   });
+  it.each(["-5", "-1", "abc"])("yanlış yazı (%s) qəbul olunmur", (ret) => {
+    expect(calc(h, draft(ret))).toMatchObject({ ok: false, over: true, used: 0, returned: 0, hint: "Düzgün miqdar yaz (0 və ya daha çox)" });
+  });
   it("qablı olmayan materialda byPack təsirsizdir", () => {
     const pipe = hold(10, { ...R410, unit: "metr", pack_name: null, pack_size: null });
     expect(calc(pipe, draft("4", true))).toMatchObject({ returned: 4, used: 6, hint: "işlətdim 6 metr · qaytarıram 4 metr" });

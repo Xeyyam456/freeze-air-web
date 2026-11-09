@@ -14,6 +14,10 @@ export function calc(h: Mine, d: Draft) {
     return { ok, over: q > h.quantity, quantity: q, used: 0, returned: 0, hint: ok ? `${q} ədəd qaytarılır` : `1 ilə ${h.quantity} arası yaz` };
   }
   const typed = parseQty(d.ret);
+  // Mənfi və ya rəqəm olmayan yazı qəbul olunmur (boş = 0, yəni hamısını işlətdim)
+  if (typed < 0 || (Number.isNaN(typed) && d.ret.trim() !== "")) {
+    return { ok: false, over: true, quantity: 0, used: 0, returned: 0, hint: "Düzgün miqdar yaz (0 və ya daha çox)" }; // over → UI-da qırmızı
+  }
   const ret = round2((Number.isNaN(typed) ? 0 : typed) * (isPacked(t) && d.byPack ? t.pack_size : 1));
   const rest = round2(h.quantity - ret);
   const used = d.restUsed ? Math.max(0, rest) : 0;
