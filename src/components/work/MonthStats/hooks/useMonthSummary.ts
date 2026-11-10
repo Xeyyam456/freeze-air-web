@@ -24,7 +24,7 @@ export function useMonthSummary(data: MonthStatsData | null, days: number): Mont
     }
     const total = counts.reduce((a, b) => a + b, 0);
     const active = counts.filter((c) => c > 0).length;
-    const top = [...places.values()].sort((a, b) => b.n - a.n || a.label.localeCompare(b.label, "az")).slice(0, 5);
+    const top = [...places.values()].sort((a, b) => b.n - a.n || (a.label < b.label ? -1 : a.label > b.label ? 1 : 0)).slice(0, 5); // localeCompare("az") Node və brauzerdə fərqli sıralayır → hydration xətası
     return { counts, total, active, placeCount: places.size, top };
   }, [data, days]);
 }
