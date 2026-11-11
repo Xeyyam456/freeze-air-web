@@ -10,7 +10,7 @@ const TINT = "pointer-events-none relative col-start-1 row-start-1 transition-op
 // Hero arka planı: şəkil bazadan (admin → Sayt → Ana səhifə); yoxdursa bölmənin gradient fonu qalır.
 // Soldan sağa tünd overlay mətnin oxunmasını təmin edir, şəklin sağ tərəfi açıq qalır.
 // Temperatur sürgüsü (HeroClimate) CSS dəyişənləri qoyur: --warm/--frost (ilıq ton, buzlu haşiyə),
-// --sun (25°+: günəş şüaları, damcılar yox), --cold (20°-: soyuq hava axını, damcılar yox).
+// --sun (25°+: günəş şüaları), --cold (20°-: soyuq hava axını); damcılar yalnız 22–24°-də.
 export async function HeroBackground() {
   const { heroImage: url } = await getHomeContent();
   if (!url) return null;
