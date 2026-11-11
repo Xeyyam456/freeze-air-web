@@ -47,7 +47,9 @@ export function HeaderIcicles() {
               <stop offset="1" stopColor="#7fb8dc" stopOpacity="0.5" />
             </radialGradient>
             <filter id="ice-blur"><feGaussianBlur stdDeviation="0.9" /></filter>
-            <pattern id="ice-tile" width={TILE} height={ICE_H} patternUnits="userSpaceOnUse">
+            {/* Naxış rəsm sahəsindən 12 px hündürdür: yoxsa miqyaslananda növbəti təkrarın yuxarı cərgəsi (ağ qapaqlar)
+                alt kənarda qırıq-qırıq xətt kimi görünür */}
+            <pattern id="ice-tile" width={TILE} height={ICE_H + 12} patternUnits="userSpaceOnUse">
               <g opacity="0.55" filter="url(#ice-blur)">{BACK.map((c) => <Stalk key={c.i} c={c} />)}</g>
               {FRONT.map((c) => <Stalk key={c.i} c={c} />)}
               <path d={frostPath()} fill="none" stroke="#fff" strokeOpacity="0.9" strokeWidth="0.8" strokeLinecap="round" />
