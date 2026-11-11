@@ -1,0 +1,1 @@
+export { HeroClimate } from "./HeroClimate";

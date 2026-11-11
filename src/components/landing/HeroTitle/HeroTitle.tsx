@@ -6,7 +6,7 @@ export function HeroTitle({ text, className = "" }: HeroTitleProps) {
   return (
     <h1 className={className} aria-label={text}>
       {words.map((w, i) => (
-        <span key={i} aria-hidden="true" className={s.word} style={{ "--d": `${120 + i * 90}ms` } as React.CSSProperties}>
+        <span key={i} aria-hidden="true" className={i === words.length - 1 ? `${s.word} ${s.shine}` : s.word} style={{ "--d": `${120 + i * 90}ms` } as React.CSSProperties}>
           {w}{i < words.length - 1 ? " " : ""}
         </span>
       ))}

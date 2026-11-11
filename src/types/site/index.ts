@@ -66,3 +66,5 @@ export type { SiteMenuProps } from "./SiteMenuProps";
 export type { SiteNavProps } from "./SiteNavProps";
 export type { SpotlightProps } from "./SpotlightProps";
 export type { WhatsAppIconProps } from "./WhatsAppIconProps";
+export type { HeroClimate } from "./HeroClimate";
+export type { HeroClimateProps } from "./HeroClimateProps";

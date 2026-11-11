@@ -1,0 +1,21 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  .pill { backdrop-filter: blur(10px); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.14); }
+  .flake { animation: spin 14s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .range {
+    width: 7.5rem;
+    height: 1.5rem;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+  .range::-webkit-slider-runnable-track { height: 4px; border-radius: 4px; background: linear-gradient(90deg, #bfeaff, #ffb454); }
+  .range::-moz-range-track { height: 4px; border-radius: 4px; background: linear-gradient(90deg, #bfeaff, #ffb454); }
+  .range::-webkit-slider-thumb { appearance: none; width: 18px; height: 18px; margin-top: -7px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 4px rgb(255 255 255 / 0.2), 0 2px 8px rgb(0 0 0 / 0.4); }
+  .range::-moz-range-thumb { width: 18px; height: 18px; border: 0; border-radius: 50%; background: #fff; box-shadow: 0 0 0 4px rgb(255 255 255 / 0.2), 0 2px 8px rgb(0 0 0 / 0.4); }
+  .range:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 4px; }
+  @media (min-width: 640px) { .range { width: 10rem; } }
+  @media (prefers-reduced-motion: reduce) { .flake { animation: none; } }
+}

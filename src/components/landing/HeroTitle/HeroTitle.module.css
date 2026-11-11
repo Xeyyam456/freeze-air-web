@@ -11,7 +11,21 @@
     animation: word-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
     animation-delay: var(--d, 0ms);
   }
+  /* Son söz: üzərindən soyuq işıq zolağı keçir (qırov parıltısı) */
+  @keyframes frost-shine {
+    0%, 55% { background-position: 120% 0; }
+    100% { background-position: -40% 0; }
+  }
+  .shine {
+    background: linear-gradient(100deg, #fff 38%, #aee3ff 50%, #fff 62%) 120% 0 / 260% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: word-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both, frost-shine 6s ease-in-out infinite;
+    animation-delay: var(--d, 0ms), 2s;
+  }
   @media (prefers-reduced-motion: reduce) {
     .word { animation: none !important; }
+    .shine { background: none; -webkit-text-fill-color: currentColor; }
   }
 }

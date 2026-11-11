@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { ArrowRight, Snowflake, Sun } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { HeroTitle } from "@/components/landing/HeroTitle";
 import type { TextsProps } from "@/types/site";
 import { HeroBackground } from "./HeroBackground";
+import { HeroClimate } from "./HeroClimate";
 import { HeroForm } from "./HeroForm";
 
 const LINK = "inline-flex items-center gap-1.5 text-white/85 underline-offset-4 transition-colors hover:text-white hover:underline";
@@ -19,10 +20,7 @@ export function HeroSection({ t }: TextsProps) {
       {/* < 1024: mətn aşağıda, şəklin yuxarısındakı kondisioner açıq qalır */}
       <div className="site-wrap relative col-start-1 row-start-1 w-full self-center pb-24 pt-16 max-lg:self-end">
         <div className="max-w-2xl">
-          <div className="hero-in flex flex-wrap gap-2 text-sm font-semibold">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-heat/20 px-3 py-1.5 text-[#ffd08a]"><Sun size={15} /> {t["home.hero.badge_out"]}</span>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-ice"><Snowflake size={15} /> {t["home.hero.badge_in"]}</span>
-          </div>
+          <HeroClimate out={t["home.hero.badge_out"]} inn={t["home.hero.badge_in"]} />
           <HeroTitle text={t["home.hero.title"]} className="mt-6 text-balance font-display text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-6xl" />
           <p className="hero-in mt-5 max-w-xl text-lg text-white/75" style={{ "--d": "420ms" } as React.CSSProperties}>
             {t["home.hero.lead"]}

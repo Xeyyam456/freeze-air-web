@@ -1,10 +1,13 @@
 import { useEffect, type RefObject } from "react";
 import type { AirSource } from "@/types/site";
 import { airSource } from "./airSource";
-import { createParticles, drawFrame } from "./particles";
+import { drawFrame } from "./drawFrame";
+import { createParticles } from "./particles";
+import { usePointer } from "./usePointer";
 
 // Hava axını animasiyası: ekrandan çıxanda və tab gizli olanda dayanır; hərəkət azaldılıbsa heç nə çəkilmir
 export function useAirflow(ref: RefObject<HTMLCanvasElement | null>) {
+  usePointer(ref);
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
