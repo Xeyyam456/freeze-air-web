@@ -1,7 +1,0 @@
-@layer components {
-  .chip { height: 36px; transition: background-color 0.4s, color 0.4s, transform 0.2s; }
-  .chip:hover { transform: translateY(-1px); }
-  .cold { background: rgba(0, 163, 217, 0.12); color: #0a7fae; }
-  .mild { background: rgba(6, 25, 43, 0.06); color: #06192b; }
-  .hot { background: rgba(255, 150, 40, 0.16); color: #b65a00; }
-}

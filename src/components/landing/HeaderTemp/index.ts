@@ -1,1 +1,0 @@
-export { HeaderTemp } from "./HeaderTemp";

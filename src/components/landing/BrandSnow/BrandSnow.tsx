@@ -21,6 +21,6 @@ const FLAKES = [
 // Ata element `relative inline-block` olmalıdır (qar dənələri mətnin alt kənarına bağlanır).
 export function BrandSnow() {
   return FLAKES.map((f, i) => (
-    <Snowflake key={i} aria-hidden="true" size={f.size} strokeWidth={2.4} className={s.flake} style={{ right: f.right, "--dx": f.dx, animationDuration: f.dur, animationDelay: f.delay } as React.CSSProperties} />
+    <Snowflake key={i} aria-hidden="true" size={f.size} strokeWidth={2.4} className={`${s.flake} ${i >= 6 ? s.extra : ""}`} style={{ right: f.right, "--dx": f.dx, animationDuration: f.dur, animationDelay: f.delay } as React.CSSProperties} />
   ));
 }

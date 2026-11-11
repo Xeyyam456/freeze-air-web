@@ -36,7 +36,7 @@ export function SiteNav({ pages, services = [], className = "" }: SiteNavProps) 
             href={p.href}
             aria-current={active ? "page" : undefined}
             className={`relative flex h-9 shrink-0 items-center rounded-full px-4 text-sm font-semibold transition-all lg:px-3 2xl:px-4 ${
-              active ? "bg-white text-night shadow-[0_2px_8px_rgba(6,25,43,0.1)]" : "text-night/60 hover:text-night"
+              active ? "bg-white text-night shadow-[0_2px_8px_rgba(6,25,43,0.1)] after:absolute after:bottom-[3px] after:left-1/2 after:h-0.5 after:w-4 after:-translate-x-1/2 after:rounded-full after:bg-cold" : "text-night/60 hover:text-night"
             }`}
           >
             {p.label}
