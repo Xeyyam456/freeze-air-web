@@ -1,6 +1,6 @@
 import s from "./HeroSun.module.css";
 
-// Günəş: pəncərədən düşən işıq şüaları, parıltı və yuxarı qalxan istilik dalğaları (yalnız CSS).
+// Günəş: pəncərədən düşən işıq şüaları və parıltı (yalnız CSS).
 // Görünürlüyü --sun (0–1) təyin edir: temperatur sürgüsü 25°-dən yuxarı olanda açılır.
 export function HeroSun() {
   return (
@@ -8,7 +8,6 @@ export function HeroSun() {
       <span className={s.glow} />
       <span className={`${s.rays} ${s.a}`} />
       <span className={`${s.rays} ${s.b}`} />
-      <span className={s.heat} />
     </div>
   );
 }

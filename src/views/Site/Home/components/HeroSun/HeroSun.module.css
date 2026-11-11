@@ -3,8 +3,6 @@
 @layer components {
   @keyframes pulse { from { opacity: 0.7; transform: scale(1); } to { opacity: 1; transform: scale(1.08); } }
   @keyframes sway { from { transform: rotate(-3deg); opacity: 0.65; } to { transform: rotate(3deg); opacity: 1; } }
-  @keyframes rise { to { background-position-y: -56px; } }
-  @keyframes wobble { from { transform: translateX(-8px) skewX(-1.2deg); } to { transform: translateX(8px) skewX(1.2deg); } }
 
   /* Günəşin parıltısı (sol yuxarı, pəncərə tərəfi) */
   .glow {
@@ -33,15 +31,7 @@
     animation-duration: 13s;
     animation-direction: alternate-reverse;
   }
-  /* İstilik dalğaları: aşağıdan yuxarı qalxan, yellənən nazik parlaq zolaqlar */
-  .heat {
-    position: absolute;
-    inset: 38% 0 0 0;
-    background: repeating-linear-gradient(180deg, transparent 0 22px, rgb(255 235 180 / 0.07) 26px 30px, transparent 34px 56px);
-    mask-image: linear-gradient(to top, #000, transparent 92%);
-    animation: rise 5s linear infinite, wobble 3.2s ease-in-out infinite alternate;
-  }
   @media (prefers-reduced-motion: reduce) {
-    .glow, .rays, .heat { animation: none; }
+    .glow, .rays { animation: none; }
   }
 }
