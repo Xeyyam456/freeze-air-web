@@ -11,6 +11,7 @@ import { getTexts } from "@/services/site/fetchSiteTexts.server";
 import { sitePages } from "../content";
 import { SiteMenu } from "../SiteMenu";
 import { SiteNav } from "../SiteNav";
+import { BrandDrip } from "../BrandDrip";
 
 const accountClass =
   "grid h-11 w-11 place-items-center rounded-full text-night/60 ring-1 ring-night/10 transition-colors hover:bg-night hover:text-white hover:ring-night";
@@ -56,7 +57,7 @@ export async function LandingHeader() {
               </span>
             )}
           <span className="leading-tight lg:max-xl:hidden">
-            <span className="block font-display text-[15px] font-bold text-night sm:text-[17px]">{t["brand.name"]}</span>
+            <span className="block font-display text-[15px] font-bold text-night sm:text-[17px]"><span className="relative inline-block">{t["brand.name"]}<BrandDrip /></span></span>
             <span className="block text-xs font-medium text-night/50 max-[1500px]:hidden">{t["brand.tagline"]}</span>
           </span>
         </Link>
