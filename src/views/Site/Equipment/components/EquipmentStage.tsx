@@ -3,6 +3,7 @@ import s from "../styles/EquipmentStage.module.css";
 import { MapPin } from "lucide-react";
 import { EquipmentVisual } from "@/components/landing/EquipmentVisual";
 import type { EquipmentStageProps } from "@/types/site";
+import { tone } from "@/components/landing/tones";
 
 // Mobil kartda şəklin üstündəki şüşə həb (sıra nömrəsi və yer)
 // (< 360px enində kənar boşluq kiçilir ki, "Yaşayış kompleksi, villa" kimi uzun yer kəsilməsin)
@@ -13,9 +14,10 @@ export function EquipmentStage({ item: e, index: i, total, on }: EquipmentStageP
   return (
     <article
       id={`eq-panel-${e.id}`}
+      style={tone(i)}
       role="tabpanel"
       aria-labelledby={`eq-tab-${e.id}`}
-      className={`${s.stage} ${s.card} aurora relative overflow-hidden rounded-[32px] bg-night p-3 text-white ${on ? "" : "sm:hidden"}`}
+      className={`${s.stage} ${s.card} aurora relative overflow-hidden rounded-[32px] bg-night bg-[radial-gradient(60%_45%_at_100%_100%,color-mix(in_srgb,var(--tone)_30%,transparent),transparent)] p-3 text-white ${on ? "" : "sm:hidden"}`}
     >
       {/* Şəkil səhnəsi: çərçivə şəklin öz nisbətindədir (h-auto), şəkil kəsilmir və künclərdə boşluq qalmır */}
       <div className={`${s.image} relative overflow-hidden rounded-[24px]`}>
@@ -29,7 +31,7 @@ export function EquipmentStage({ item: e, index: i, total, on }: EquipmentStageP
           </span>
           {e.place && (
             <span className={`${GLASS_PILL} inline-flex min-w-0 items-center gap-1.5`}>
-              <MapPin size={13} className="shrink-0 text-[#7fdcff]" /> <span className="truncate">{e.place}</span>
+              <MapPin size={13} className="shrink-0 text-(--tone)" /> <span className="truncate">{e.place}</span>
             </span>
           )}
         </div>
@@ -41,7 +43,7 @@ export function EquipmentStage({ item: e, index: i, total, on }: EquipmentStageP
           {e.text && <p className="mt-2 text-white/70">{e.text}</p>}
         </div>
         {e.place && (
-          <p className="inline-flex shrink-0 items-center gap-2 rounded-full bg-cold/15 px-4 py-2 text-sm font-semibold text-[#7fdcff] ring-1 ring-cold/30 max-sm:hidden">
+          <p className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[color-mix(in_srgb,var(--tone)_20%,transparent)] px-4 py-2 text-sm font-semibold text-white ring-1 ring-[color-mix(in_srgb,var(--tone)_55%,transparent)] max-sm:hidden">
             <MapPin size={15} /> {e.place}
           </p>
         )}
