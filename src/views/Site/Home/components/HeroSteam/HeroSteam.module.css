@@ -1,0 +1,35 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  @keyframes breathe { from { opacity: 0.7; } to { opacity: 1; } }
+  /* Zolaq yuxarıdan görünür, yavaşca aşağı süzülür və tədricən itir */
+  @keyframes run {
+    0% { transform: translateY(-30%); opacity: 0; }
+    20% { opacity: 1; }
+    75% { opacity: 0.8; }
+    100% { transform: translateY(22%); opacity: 0; }
+  }
+
+  /* Şüşədəki buxar: yuxarıda qalın, aşağıya doğru kosinus əyrisi ilə sıfıra qədər azalır (sərt kənar yoxdur) */
+  .haze {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgb(215 235 248 / 0.3) 0%, rgb(215 235 248 / 0.27) 10%, rgb(215 235 248 / 0.22) 20%, rgb(215 235 248 / 0.17) 30%, rgb(215 235 248 / 0.12) 40%, rgb(215 235 248 / 0.08) 50%, rgb(215 235 248 / 0.04) 60%, rgb(215 235 248 / 0.015) 70%, rgb(215 235 248 / 0) 80%);
+    animation: breathe 7s ease-in-out infinite alternate;
+    will-change: opacity;
+  }
+  /* Süzülən nəm zolaq: üstü və altı yumşaq, kənarları bulanıq */
+  .stream {
+    position: absolute;
+    top: 0;
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgb(225 240 250 / 0) 0%, rgb(225 240 250 / 0.3) 18%, rgb(225 240 250 / 0.22) 55%, rgb(225 240 250 / 0.08) 85%, rgb(225 240 250 / 0) 100%);
+    filter: blur(9px);
+    animation: run 12s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .haze, .stream { animation: none; }
+    .stream { opacity: 0.5; }
+  }
+}

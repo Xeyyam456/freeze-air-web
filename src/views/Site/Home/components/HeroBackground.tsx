@@ -4,6 +4,7 @@ import { DropsCanvas } from "./DropsCanvas";
 import { SnowCanvas } from "./SnowCanvas";
 import { HeroCold } from "./HeroCold";
 import { HeroSun } from "./HeroSun";
+import { HeroSteam } from "./HeroSteam";
 import { getHomeContent } from "@/services/site/fetchSiteSettings.server";
 
 const TINT = "pointer-events-none relative col-start-1 row-start-1 transition-opacity duration-700";
@@ -11,7 +12,7 @@ const TINT = "pointer-events-none relative col-start-1 row-start-1 transition-op
 // Hero arka planı: şəkil bazadan (admin → Sayt → Ana səhifə); yoxdursa bölmənin gradient fonu qalır.
 // Soldan sağa tünd overlay mətnin oxunmasını təmin edir, şəklin sağ tərəfi açıq qalır.
 // Temperatur sürgüsü (HeroClimate) CSS dəyişənləri qoyur: --warm/--frost (ilıq ton, buzlu haşiyə),
-// --sun (25°+: günəş şüaları), --cold (20°-: soyuq hava axını); damcılar yalnız 22–24°-də; 20°-dən aşağıda həm də qar yağır (SnowCanvas).
+// --sun (25°+: günəş şüaları), --cold (20°-: soyuq hava axını); qar (--cold, SnowCanvas); 16–18°-də şüşədə buxar və süzülən damcılar (--steam).
 export async function HeroBackground() {
   const { heroImage: url } = await getHomeContent();
   if (!url) return null;
@@ -24,6 +25,7 @@ export async function HeroBackground() {
       <div className={`${TINT} shadow-[inset_0_0_140px_rgba(170,225,255,0.45)]`} style={{ opacity: "var(--frost, 0)" }} aria-hidden="true" />
       <HeroSun />
       <HeroCold />
+      <HeroSteam />
       <AirflowCanvas />
       <DropsCanvas />
       <SnowCanvas />

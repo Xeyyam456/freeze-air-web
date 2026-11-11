@@ -1,6 +1,6 @@
 import type { SnowParticle } from "@/types/site";
 
-export const SNOW_MAX = 140;
+export const SNOW_MAX = 260;
 const PUSH = 110; // kursorun qar dənələrini itələmə radiusu (px)
 
 // Yeni qar dənəsi: dərinliyə görə ölçü, sürət və şəffaflıq (iri = yaxın = sürətli və parlaq).
