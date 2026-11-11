@@ -2,63 +2,65 @@ import type { Drop } from "@/types/site";
 
 export const MAX = 90;
 
-// Yeni damcı: ölçüsü əsasən kiçik, bəzən iri; bir hissəsi gec-tez süzülür
-export function spawnDrop(w: number, h: number, d?: Drop): Drop {
+// Hovuzda hər 4-cü damcı süzülən (iri), qalanı yerində duran xırda damcıdır: tipik tərləmiş şüşə
+export const isRunner = (i: number) => i % 4 === 0;
+
+export function spawnDrop(w: number, h: number, run: boolean, d?: Drop): Drop {
   const o = d ?? ({} as Drop);
+  o.run = run;
   o.x = Math.random() * w;
-  o.run = Math.random() < 0.88; // demək olar hamısı axır; qalanı bir yerdə durub qalır
-  o.y = o.y0 = Math.random() * h * (o.run ? 0.55 : 0.92);
-  o.r = 3 + Math.random() * 4 + (Math.random() < 0.2 ? 4 : 0);
+  o.y = Math.random() * h * (run ? 0.5 : 0.95);
+  o.px = o.x;
+  o.py = o.y;
+  o.r = run ? 5.5 + Math.random() * 3.5 + (Math.random() < 0.15 ? 3 : 0) : 2 + Math.random() ** 1.5 * 5.5;
   o.vy = 0;
-  o.wait = Math.random() * 180;
+  o.wait = Math.random() * 240;
   o.age = 0;
-  o.life = o.run ? 1e6 : 1500 + Math.random() * 2500; // axan damcı alt kənara çatanda yenilənir
+  o.life = run ? 1e6 : 1500 + Math.random() * 3000;
   o.a = 0;
+  o.stuck = 0;
+  o.sway = 0;
   return o;
 }
 
-// Bir addım: yavaş görünür, gözləyir, süzülür (ləngiyib-sürətlənərək, azalaraq), sonda itir
+// Bir addım. Süzülən damcı: sürətlənir, bəzən qəfil ilişir, bir az yana yırğalanır, suyunu izdə qoyub kiçilir.
+// Xırda damcı: yerində durur, bir müddətdən sonra quruyub itir.
 export function stepDrop(d: Drop, w: number, h: number) {
   d.age += 1;
-  const dying = d.age > d.life || d.r < 2;
-  d.a = Math.min(1, Math.max(0, d.a + (dying ? -0.02 : 0.02)));
-  if (dying && d.a === 0) { spawnDrop(w, h, d); return; }
+  const dying = d.age > d.life || d.r < 3.2;
+  d.a = Math.min(1, Math.max(0, d.a + (dying ? -0.025 : 0.02)));
+  if (dying && d.a === 0) {
+    spawnDrop(w, h, d.run, d);
+    if (d.run) d.y = d.py = Math.random() * h * 0.1;
+    return;
+  }
   if (!d.run || d.age < d.wait) return;
-  d.vy = Math.min(d.vy + (Math.random() < 0.06 ? 0.12 : 0.01), 0.9 + d.r * 0.18);
-  if (Math.random() < 0.02) d.vy *= 0.3; // damcı bir anlıq ilişir
+  if (d.stuck > 0) {
+    d.stuck -= 1;
+    d.vy *= 0.8;
+  } else {
+    d.vy = Math.min(d.vy + 0.02 + Math.random() * 0.05, 0.8 + d.r * 0.25);
+    if (Math.random() < 0.012) d.stuck = 20 + Math.random() * 140;
+  }
+  d.sway = (d.sway + (Math.random() - 0.5) * 0.06) * 0.97;
+  d.x += d.sway * d.vy * 0.5;
   d.y += d.vy;
-  d.r -= 0.0008;
-  if (d.y > h + 12) spawnDrop(w, h, d);
+  d.r -= 0.0006;
+  if (d.y > h + 12) d.r = 0;
 }
 
-// Damcı: yarımşəffaf cisim, solda-yuxarıda parıltı, aşağıda kölgə; süzülürsə arxasında nazik iz
-export function drawDrop(ctx: CanvasRenderingContext2D, d: Drop) {
-  const { x, y, r } = d;
-  ctx.globalAlpha = d.a;
-  if (d.vy > 0.05) {
-    ctx.strokeStyle = "rgba(200, 225, 245, 0.1)";
-    ctx.lineWidth = r * 0.55;
-    ctx.beginPath();
-    ctx.moveTo(x, d.y0);
-    ctx.lineTo(x, y);
-    ctx.stroke();
+// Süzülən damcı yolüstü xırda damcıları özünə qatır və böyüyür
+export function mergeDrops(ds: Drop[], n: number) {
+  for (let i = 0; i < n; i++) {
+    const a = ds[i];
+    if (!a.run || a.vy < 0.1) continue;
+    for (let j = 0; j < n; j++) {
+      const b = ds[j];
+      if (b.run || b.a < 0.5 || b.age > b.life) continue;
+      if (Math.abs(a.x - b.x) < a.r * 0.8 + b.r && Math.abs(a.y - b.y) < a.r + b.r) {
+        a.r = Math.min(12, Math.hypot(a.r, b.r * 0.7));
+        b.life = 0;
+      }
+    }
   }
-  const g = ctx.createRadialGradient(x - r * 0.3, y - r * 0.35, r * 0.1, x, y, r * 1.1);
-  g.addColorStop(0, "rgba(255, 255, 255, 0.24)");
-  g.addColorStop(1, "rgba(120, 170, 210, 0.1)");
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.ellipse(x, y, r * 0.9, r * 1.1, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.lineWidth = 0.9;
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.28)";
-  ctx.stroke();
-  ctx.strokeStyle = "rgba(0, 15, 35, 0.4)";
-  ctx.beginPath();
-  ctx.ellipse(x, y, r * 0.9, r * 1.1, 0, Math.PI * 0.15, Math.PI * 0.85);
-  ctx.stroke();
-  ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-  ctx.beginPath();
-  ctx.ellipse(x - r * 0.35, y - r * 0.4, r * 0.22, r * 0.14, -0.6, 0, Math.PI * 2);
-  ctx.fill();
 }
