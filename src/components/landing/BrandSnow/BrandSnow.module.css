@@ -1,0 +1,21 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  /* Qar dənəsi: mətnin yanından çıxır, yana yellənib fırlanaraq enir və əriyir */
+  @keyframes flake {
+    0% { opacity: 0; transform: translate(0, 0) rotate(0deg) scale(0.4); }
+    15% { opacity: 0.9; transform: translate(calc(var(--dx) * 0.2), 4px) rotate(40deg) scale(1); }
+    100% { opacity: 0; transform: translate(var(--dx), 34px) rotate(260deg) scale(0.7); }
+  }
+  .flake {
+    position: absolute;
+    top: 30%;
+    color: #4cc3ee;
+    opacity: 0;
+    pointer-events: none;
+    animation: flake 8s infinite ease-in-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flake { display: none; }
+  }
+}
