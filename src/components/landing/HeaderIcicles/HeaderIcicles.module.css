@@ -1,0 +1,51 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  /* --k: saçaq uzunluğunun miqyası: normalda 0.8×, soyuqda 1.2×-ə qədər uzanır, istidə 0.4×-ə qısalıb solur (--cold / --sun: 0–1) */
+  .ice {
+    --k: calc(0.8 + var(--cold, 0) * 0.4 - var(--sun, 0) * 0.4);
+    transform-origin: top;
+    transform: scaleY(var(--k));
+    opacity: calc(1 - var(--sun, 0) * 0.85);
+    filter: drop-shadow(0 3px 4px rgb(0 60 100 / 0.14));
+    transition: transform 0.8s ease, opacity 0.8s ease;
+  }
+
+  /* Damcı saçağın ucunda (uzunluğa görə yerləşir): yığılır, ağırlaşır, qopan kimi sərbəst düşür */
+  .fall {
+    --k: calc(0.8 + var(--cold, 0) * 0.4 - var(--sun, 0) * 0.4);
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: calc(100% + var(--len) * 1px * var(--k));
+    opacity: calc(1 - var(--sun, 0) * 0.85);
+    pointer-events: none;
+  }
+  /* Damcı: şəffaf su gövdəsi, solda-yuxarıda parıltı, aşağıda tünd haşiyə (işıq sınması) */
+  .bead {
+    position: absolute;
+    left: -3.5px;
+    top: 0;
+    width: 7px;
+    height: 10px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    background: radial-gradient(circle at 32% 26%, #fff 0 10%, rgb(210 236 250 / 0.55) 30%, rgb(150 205 236 / 0.4) 70%, rgb(90 160 205 / 0.55) 100%);
+    box-shadow: inset 1px 1px 2px rgb(255 255 255 / 0.75), inset -1px -2px 3px rgb(20 80 120 / 0.45), 0 0 0 0.5px rgb(255 255 255 / 0.55), 0 2px 4px rgb(0 60 100 / 0.25);
+    transform-origin: 50% 0;
+    opacity: 0;
+    animation: bead var(--t, 8s) infinite var(--d, 0s);
+  }
+  /* 0–60% ucda yavaş-yavaş yığılır və ağırlaşır; 60–64% uzanıb qopmağa hazırlaşır; 64–74% sərbəst düşür (cazibə: get-gedə
+     sürətlənir, uzanır); 74%-də düşüb itir; qalan vaxt yeni damcı yığılana qədər boşdur. İz qalmır. */
+  @keyframes bead {
+    0% { opacity: 0; transform: translateY(0) scale(0); }
+    8% { opacity: 1; transform: translateY(0) scale(0.3); }
+    60% { opacity: 1; transform: translateY(0) scale(1); animation-timing-function: ease-in; }
+    64% { opacity: 1; transform: translateY(2px) scale(0.85, 1.45); animation-timing-function: cubic-bezier(0.55, 0, 0.95, 0.55); }
+    73% { opacity: 1; transform: translateY(330px) scale(0.75, 1.7); }
+    74%, 100% { opacity: 0; transform: translateY(345px) scale(0.7, 1.8); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bead { animation: none; }
+  }
+}

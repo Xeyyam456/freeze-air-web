@@ -27,4 +27,14 @@ export function applyTemp(temp: number, host: HTMLElement | null) {
   host?.style.setProperty("--sun", String(sun));
   host?.style.setProperty("--cold", String(cold));
   host?.style.setProperty("--steam", String(climate.drops));
+  // Header-in buz saçaqları (HeaderIcicles) hero-dan kənardadır: --cold və --sun kökə də yazılır
+  const root = typeof document === "undefined" ? null : document.documentElement;
+  root?.style.setProperty("--cold", String(cold));
+  root?.style.setProperty("--sun", String(sun));
+}
+
+// Səhifədən çıxanda kökdəki dəyişənləri sıfırla (başqa səhifələrdə header normal qalsın)
+export function resetRootTemp() {
+  document.documentElement.style.removeProperty("--cold");
+  document.documentElement.style.removeProperty("--sun");
 }

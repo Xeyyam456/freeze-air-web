@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ChevronLeft, ChevronRight, Snowflake, Sun } from "lucide-react";
 import type { HeroClimateProps } from "@/types/site";
-import { applyTemp, BASE_TEMP, MAX_TEMP, MIN_TEMP } from "./climate";
+import { applyTemp, BASE_TEMP, MAX_TEMP, MIN_TEMP, resetRootTemp } from "./climate";
 import s from "./HeroClimate.module.css";
 
 // Çöl nişanı + içəri temperatur sürgüsü: sürüşdürəndə otağın işığı, hava axını və şüşə buxarı dəyişir.
@@ -17,6 +17,7 @@ export function HeroClimate({ out, inn, hint }: HeroClimateProps) {
     applyTemp(temp, host);
     return () => { if (temp === BASE_TEMP) applyTemp(BASE_TEMP, host); };
   }, [temp]);
+  useEffect(() => resetRootTemp, []);
   const label = inn.replace(/\d+/, String(temp));
   return (
     <div ref={ref} className="hero-in flex flex-wrap items-center gap-x-3 gap-y-2 text-sm font-semibold">
