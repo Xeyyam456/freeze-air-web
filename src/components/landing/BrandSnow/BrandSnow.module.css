@@ -1,42 +1,20 @@
 @layer theme, base, components, utilities;
 
 @layer components {
-  /* Dənə: mətnin yanından çıxır, yavaş-yavaş sürətlənərək enir və əriyir (opaklıq --k ilə temperaturdan asılıdır) */
+  /* Qar dənəsi: mətnin yanından çıxır, yana yellənib fırlanaraq enir və əriyir */
   @keyframes flake {
-    0% { opacity: 0; transform: translate(0, 0) scale(0.4); }
-    15% { opacity: calc(0.95 * var(--k, 1)); transform: translate(calc(var(--dx) * 0.2), 4px) scale(1); }
-    100% { opacity: 0; transform: translate(var(--dx), 38px) scale(0.75); }
-  }
-  /* Yana-yana yellənmə (hər dənədə fərqli tezlik) */
-  @keyframes sway {
-    0%, 100% { transform: translateX(-4px); }
-    50% { transform: translateX(4px); }
-  }
-  /* Üç ölçülü çevrilmə: dənə fırlanır və kənar üzə dönür; eyni zamanda parıltı nəbzi */
-  @keyframes tumble {
-    0% { transform: rotateZ(0deg) rotateY(0deg); }
-    50% { transform: rotateZ(140deg) rotateY(180deg); }
-    100% { transform: rotateZ(300deg) rotateY(360deg); }
-  }
-  @keyframes glint {
-    0%, 100% { filter: drop-shadow(0 0 0 rgba(120, 215, 255, 0)); }
-    50% { filter: drop-shadow(0 0 3px rgba(150, 228, 255, 0.95)); }
+    0% { opacity: 0; transform: translate(0, 0) rotate(0deg) scale(0.4); }
+    15% { opacity: calc(0.9 * var(--k, 1)); transform: translate(calc(var(--dx) * 0.2), 4px) rotate(40deg) scale(1); }
+    100% { opacity: 0; transform: translate(var(--dx), 34px) rotate(260deg) scale(0.7); }
   }
   .flake {
     position: absolute;
     top: 30%;
+    color: #4cc3ee;
     opacity: 0;
     pointer-events: none;
-    animation: flake 8s infinite ease-in;
+    animation: flake 8s infinite ease-in-out;
     --k: calc(1 - var(--melt, 0)); /* istidə (24–30°) qar dənələri azalıb itir */
-  }
-  .sway { display: block; width: 100%; height: 100%; animation: sway 3.4s infinite ease-in-out; }
-  .spin {
-    display: block;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-    animation: tumble 6s infinite linear, glint 1.8s infinite ease-in-out;
   }
   /* Əlavə dənələr yalnız soyuqda (--cold) görünür: sürgü aşağı çəkildikcə qar sıxlaşır */
   .extra { --k: calc(var(--cold, 0) * (1 - var(--melt, 0))); }
