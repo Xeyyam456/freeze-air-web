@@ -11,7 +11,6 @@ import { getTexts } from "@/services/site/fetchSiteTexts.server";
 import { sitePages } from "../content";
 import { SiteMenu } from "../SiteMenu";
 import { SiteNav } from "../SiteNav";
-import { HeaderIcicles } from "../HeaderIcicles";
 import { BrandSnow } from "../BrandSnow";
 import { SantaHat } from "../SantaHat";
 
@@ -89,7 +88,6 @@ export async function LandingHeader() {
           />
         </div>
       </div>
-      <HeaderIcicles />
     </header>
   );
 }
