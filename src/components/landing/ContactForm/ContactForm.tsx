@@ -6,11 +6,12 @@ import { Mail, MessageSquare, Phone, Send, User } from "lucide-react";
 import { sendContactRequest } from "@/app/(site)/elaqe/actions";
 import { toast } from "@/lib/toast";
 import type { ContactFormState } from "@/types/site";
+import { tone } from "../tones";
 
 // Sahə qutusu (ikon + input): fokus qutunun özünə düşür (focus-within)
 const field =
-  "flex items-center gap-3 rounded-2xl border border-night/10 bg-glacier/70 px-4 text-night/40 transition-all focus-within:border-cold focus-within:bg-white focus-within:text-cold focus-within:shadow-[0_0_0_4px_rgba(0,163,217,0.12)]";
-const fieldIcon = "shrink-0";
+  "flex items-center gap-3 rounded-2xl border border-night/10 bg-glacier/70 px-4 text-night/40 transition-all focus-within:border-(--tone) focus-within:bg-white focus-within:shadow-[0_0_0_4px_color-mix(in_srgb,var(--tone)_16%,transparent)]";
+const fieldIcon = "shrink-0 text-(--tone)";
 const input = "h-14 w-full bg-transparent text-night outline-none placeholder:text-night/35";
 
 // "Bizə yazın": ad, telefon, e-poçt (istəyə bağlı), mesaj → admin panelində "Müraciətlər". Mətnlər bazadan (t).
@@ -36,29 +37,30 @@ export function ContactForm({ t }: ContactFormProps) {
   }
 
   return (
-    <form ref={formRef} onSubmit={onSubmit} className="flex h-full flex-col rounded-[32px] bg-white p-8 ring-1 ring-night/5 sm:p-10">
+    <form ref={formRef} onSubmit={onSubmit} className="relative flex h-full flex-col overflow-hidden rounded-[32px] bg-white bg-[radial-gradient(55%_30%_at_100%_0%,rgba(0,163,217,0.1),transparent),radial-gradient(45%_25%_at_0%_100%,rgba(255,159,28,0.09),transparent)] p-8 ring-1 ring-night/5 sm:p-10">
+      <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-cold via-primary via-55% to-heat" aria-hidden="true" />
       <h2 className="font-display text-3xl font-bold">{t["form.title"]}</h2>
       <p className="mt-2 text-night/60">{t["form.lead"]}</p>
 
       {/* Sahələr: solda ikon, fokusda göy haşiyə və yumşaq halqa */}
       <div className="mt-8 grid flex-1 content-start gap-3 sm:grid-cols-2">
         <label className="sr-only" htmlFor="cf-name">{t["form.name"]}</label>
-        <span className={field}>
+        <span className={field} style={tone(0)}>
           <User size={18} className={fieldIcon} />
           <input id="cf-name" name="name" required maxLength={100} placeholder={t["form.name"]} autoComplete="name" className={input} />
         </span>
         <label className="sr-only" htmlFor="cf-phone">{t["form.phone"]}</label>
-        <span className={field}>
+        <span className={field} style={tone(1)}>
           <Phone size={18} className={fieldIcon} />
           <input id="cf-phone" name="phone" type="tel" required maxLength={30} placeholder={t["form.phone"]} autoComplete="tel" className={input} />
         </span>
         <label className="sr-only" htmlFor="cf-email">{t["form.email"]}</label>
-        <span className={`${field} sm:col-span-2`}>
+        <span className={`${field} sm:col-span-2`} style={tone(2)}>
           <Mail size={18} className={fieldIcon} />
           <input id="cf-email" name="email" type="email" maxLength={120} placeholder={t["form.email"]} autoComplete="email" className={input} />
         </span>
         <label className="sr-only" htmlFor="cf-message">{t["form.message"]}</label>
-        <span className={`${field} items-start sm:col-span-2`}>
+        <span className={`${field} items-start sm:col-span-2`} style={tone(3)}>
           <MessageSquare size={18} className={`${fieldIcon} mt-4`} />
           <textarea id="cf-message" name="message" rows={5} maxLength={1000} placeholder={t["form.message"]}
             className={`${input} h-auto resize-none py-3.5`} />
@@ -68,7 +70,7 @@ export function ContactForm({ t }: ContactFormProps) {
       </div>
 
       <button type="submit" disabled={pending}
-        className="mt-6 inline-flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-night text-lg font-bold text-white shadow-[0_14px_30px_rgba(6,25,43,0.22)] transition-all hover:-translate-y-px hover:bg-cold hover:shadow-[0_16px_34px_rgba(0,163,217,0.35)] disabled:translate-y-0 disabled:opacity-60">
+        className="mt-6 inline-flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cold to-primary text-lg font-bold text-white shadow-[0_14px_30px_rgba(0,163,217,0.4)] transition-all hover:-translate-y-px hover:shadow-[0_18px_38px_rgba(31,111,235,0.5)] disabled:translate-y-0 disabled:opacity-60">
         <Send size={19} /> {pending ? t["form.sending"] : t["form.submit"]}
       </button>
     </form>
