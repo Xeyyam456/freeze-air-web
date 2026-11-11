@@ -8,7 +8,7 @@ import { makeLens, type Lens } from "./lens";
 const DRY_EVERY = 20; // kadr: nəm iz bu aralıqla bir az quruyur
 
 // Şüşə damcıları: ekrandan çıxanda və tab gizli olanda dayanır; hərəkət azaldılıbsa heç nə çəkilmir.
-// Yalnız çox soyuqda (16–18°) görünür: soyuq şüşədə su yığılır; şaxtalaşdıqca sayı artır.
+// Yalnız çox soyuqda (16–18°) görünür: soyuq şüşədə su yığılır; şaxtalaşdıqca sayı bir az artır (16°-də ~50).
 export function useDrops(ref: RefObject<HTMLCanvasElement | null>) {
   useEffect(() => {
     const canvas = ref.current;
@@ -47,7 +47,7 @@ export function useDrops(ref: RefObject<HTMLCanvasElement | null>) {
       }
       ctx.clearRect(0, 0, w, h);
       if (climate.drops < 0.02) { raf = requestAnimationFrame(tick); return; } // soyuq olmayan rejim: damcı yoxdur
-      const n = Math.min(MAX, Math.round((70 + climate.frost * 80) * climate.density));
+      const n = Math.min(MAX, Math.round((20 + climate.frost * 30) * climate.density));
       for (let i = 0; i < n; i++) { stepDrop(ds[i], w, h); if (ds[i].run) drawTrail(tctx, ds[i]); }
       mergeDrops(ds, n);
       ctx.globalAlpha = climate.drops;
