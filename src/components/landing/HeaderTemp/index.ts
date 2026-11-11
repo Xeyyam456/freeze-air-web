@@ -1,0 +1,1 @@
+export { HeaderTemp } from "./HeaderTemp";

@@ -4,6 +4,7 @@ export const AWAY = -1e4;
 export const MIN_TEMP = 16;
 export const MAX_TEMP = 30;
 export const BASE_TEMP = 22;
+export const TEMP_EVENT = "climate-temp";
 
 // Canvas-ların hər kadrda oxuduğu ortaq vəziyyət
 export const climate: HeroClimate = { warm: 0, frost: 0, px: AWAY, py: AWAY, glow: 0, density: 1, drops: 1, cold: 0 };
@@ -32,6 +33,10 @@ export function applyTemp(temp: number, host: HTMLElement | null) {
   root?.style.setProperty("--cold", String(cold));
   root?.style.setProperty("--sun", String(sun));
   root?.style.setProperty("--melt", String(ramp(temp, 24, MAX_TEMP))); // 24°-dən başlayıb 30°-də 1: saçaqlar tədricən əriyib tam itir
+  if (root) {
+    root.dataset.temp = String(temp);
+    window.dispatchEvent(new Event(TEMP_EVENT)); // header-dəki temperatur çipi (HeaderTemp) yenilənir
+  }
 }
 
 // Səhifədən çıxanda kökdəki dəyişənləri sıfırla (başqa səhifələrdə header normal qalsın)
@@ -39,4 +44,6 @@ export function resetRootTemp() {
   document.documentElement.style.removeProperty("--cold");
   document.documentElement.style.removeProperty("--sun");
   document.documentElement.style.removeProperty("--melt");
+  delete document.documentElement.dataset.temp;
+  window.dispatchEvent(new Event(TEMP_EVENT));
 }

@@ -13,6 +13,7 @@ import { SiteMenu } from "../SiteMenu";
 import { SiteNav } from "../SiteNav";
 import { HeaderIcicles } from "../HeaderIcicles";
 import { BrandSnow } from "../BrandSnow";
+import { HeaderTemp } from "../HeaderTemp";
 
 const accountClass =
   "grid h-11 w-11 place-items-center rounded-full text-night/60 ring-1 ring-night/10 transition-colors hover:bg-night hover:text-white hover:ring-night";
@@ -66,6 +67,7 @@ export async function LandingHeader() {
         <SiteNav className="mx-auto max-lg:hidden" pages={navPages} services={navServices} />
 
         <div className="flex shrink-0 items-center gap-2 max-lg:ml-auto">
+          <HeaderTemp label={t["home.hero.climate_hint"]} />
           {tel && (
             <a href={tel} className="hidden items-center gap-2.5 rounded-full py-1.5 pl-1.5 pr-3 text-sm font-bold text-night transition-colors hover:bg-glacier xl:inline-flex" title={contact.phone}>
               <span className="grid h-9 w-9 place-items-center rounded-full bg-cold/10 text-cold"><Phone size={16} /></span>
