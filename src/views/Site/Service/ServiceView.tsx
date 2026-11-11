@@ -16,7 +16,7 @@ export async function ServiceView({ slug }: ServiceViewProps) {
   if (!service) notFound();
 
   return (
-    <>
+    <div className="bg-[radial-gradient(42%_12%_at_4%_14%,rgba(0,163,217,0.13),transparent),radial-gradient(38%_12%_at_98%_45%,rgba(255,159,28,0.11),transparent),radial-gradient(40%_12%_at_10%_85%,rgba(31,111,235,0.09),transparent)]">
       <PageIntro title={service.title} lead={service.lead || service.text} parent={{ href: "/xidmetler", label: t["nav.services"] }} />
 
       <section className="site-wrap grid items-start gap-4 lg:grid-cols-[1.6fr_1fr]">
@@ -25,6 +25,6 @@ export async function ServiceView({ slug }: ServiceViewProps) {
       </section>
 
       <OtherServices others={services.filter((s) => s.id !== service.id)} t={t} />
-    </>
+    </div>
   );
 }

@@ -6,7 +6,7 @@ import type { SegmentBlockProps } from "@/types/site";
 export function SegmentNote({ segment, t }: SegmentBlockProps) {
   return (
     <section className="site-wrap mt-4">
-      <div className="flex flex-wrap items-center justify-between gap-6 rounded-[28px] bg-gradient-to-r from-cold to-[#0086c3] p-8 text-white shadow-[0_20px_50px_rgba(0,163,217,0.25)] sm:flex-nowrap">
+      <div className="flex flex-wrap items-center justify-between gap-6 rounded-[28px] bg-[linear-gradient(110deg,var(--tone),color-mix(in_srgb,var(--tone)_55%,#06192b))] p-8 text-white shadow-[0_20px_50px_color-mix(in_srgb,var(--tone)_32%,transparent)] sm:flex-nowrap">
         {segment.note
           ? <p className="flex min-w-0 max-w-3xl items-start gap-3 text-lg"><Lightbulb size={24} className="mt-0.5 shrink-0" /> {segment.note}</p>
           : <p className="min-w-0 text-lg">{t["segment.note_fallback"]}</p>}
