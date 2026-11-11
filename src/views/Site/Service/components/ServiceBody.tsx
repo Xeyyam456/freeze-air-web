@@ -46,7 +46,7 @@ export function ServiceBody({ service, t }: ServiceBlockProps) {
         <div className="aurora relative overflow-hidden rounded-[28px] bg-night p-7 text-white sm:p-9">
           <h2 className="font-display text-2xl font-bold">{t["service.steps"]}</h2>
           <ol className="relative mt-8 grid gap-6 sm:grid-cols-2 xl:grid-flow-col xl:auto-cols-fr xl:grid-cols-none">
-            <span className="absolute left-5 right-5 top-5 hidden h-0.5 bg-gradient-to-r from-cold via-primary via-45% via-ok via-70% to-heat xl:block" aria-hidden="true" />
+            <span style={{ right: `calc((100% - ${(service.steps.length - 1) * 1.5}rem) / ${service.steps.length} - 20px)` }} className="absolute left-5 top-5 hidden h-0.5 bg-gradient-to-r from-cold via-primary via-45% via-ok via-70% to-heat xl:block" aria-hidden="true" />
             {service.steps.map((step, i) => (
               // Mobildə nömrə mətnin solunda (üstündə çox yer tuturdu)
               <li key={step} style={tone(i)} className="relative max-sm:flex max-sm:items-center max-sm:gap-4">
