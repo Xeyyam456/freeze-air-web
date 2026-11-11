@@ -12,6 +12,7 @@ import { sitePages } from "../content";
 import { SiteMenu } from "../SiteMenu";
 import { SiteNav } from "../SiteNav";
 import { BrandSnow } from "../BrandSnow";
+import { IceText } from "../IceText";
 import { SantaHat } from "../SantaHat";
 
 const accountClass =
@@ -58,7 +59,7 @@ export async function LandingHeader() {
               </span>
             )}<SantaHat /></span>
           <span className="leading-tight lg:max-xl:hidden">
-            <span className="block font-display text-[15px] font-bold text-night sm:text-[17px]"><span className="relative inline-block">{t["brand.name"]}<BrandSnow /></span></span>
+            <span className="block font-display text-[15px] font-bold text-night sm:text-[17px]"><span className="relative inline-block"><IceText>{t["brand.name"]}</IceText><BrandSnow /></span></span>
             <span className="block text-xs font-medium text-night/50 max-[1500px]:hidden">{t["brand.tagline"]}</span>
           </span>
         </Link>
