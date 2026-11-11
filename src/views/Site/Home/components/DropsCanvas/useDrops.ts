@@ -45,11 +45,12 @@ export function useDrops(ref: RefObject<HTMLCanvasElement | null>) {
         tctx.fillRect(0, 0, w, h);
         tctx.globalCompositeOperation = "source-over";
       }
+      ctx.clearRect(0, 0, w, h);
+      if (climate.drops < 0.02) { raf = requestAnimationFrame(tick); return; } // günəş/soyuq rejimi: damcı yoxdur
       const n = Math.min(MAX, Math.max(40, Math.round((75 + climate.warm * 80 - climate.frost * 25) * climate.density)));
       for (let i = 0; i < n; i++) { stepDrop(ds[i], w, h); if (ds[i].run) drawTrail(tctx, ds[i]); }
       mergeDrops(ds, n);
-      ctx.clearRect(0, 0, w, h);
-      ctx.globalAlpha = 1;
+      ctx.globalAlpha = climate.drops;
       ctx.drawImage(trail, 0, 0, w, h);
       for (let i = 0; i < n; i++) drawDrop(ctx, ds[i], lens);
       ctx.globalAlpha = 1;

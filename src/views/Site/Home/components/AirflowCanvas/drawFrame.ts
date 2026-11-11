@@ -21,8 +21,8 @@ export function drawFrame(ctx: CanvasRenderingContext2D, ps: AirParticle[], src:
   const { warm, frost, px, py } = climate;
   climate.glow += ((px > -1e3 ? 1 : 0) - climate.glow) * 0.08;
   if (climate.glow > 0.01) glow(ctx);
-  const active = Math.min(ps.length, Math.round((70 + frost * 40 - warm * 35) * climate.density));
-  const power = 1 + frost * 0.5 - warm * 0.5;
+  const active = Math.min(ps.length, Math.round((70 + frost * 60 - warm * 35) * climate.density));
+  const power = 1 + frost * 0.7 - warm * 0.5;
   for (let i = 0; i < active; i++) {
     const p = ps[i];
     p.life += 1;

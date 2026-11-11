@@ -1,4 +1,5 @@
 import type { Drop } from "@/types/site";
+import { climate } from "../HeroClimate/climate";
 import { drawLens, type Lens } from "./lens";
 
 // Nəm iz: damcının keçdiyi yer ayrıca qatda yumşaq, çox zəif zolaq kimi qalır və tez quruyur
@@ -20,7 +21,7 @@ export function drawDrop(ctx: CanvasRenderingContext2D, d: Drop, lens: Lens | nu
   const { x, y, r } = d;
   const rx = r * 0.88;
   const ry = r * (1.05 + Math.min(d.vy, 1.6) * 0.22);
-  ctx.globalAlpha = d.a;
+  ctx.globalAlpha = d.a * climate.drops;
   if (lens && r > 2.4) drawLens(ctx, lens, x, y, rx, ry);
   else {
     ctx.fillStyle = "rgba(130, 175, 210, 0.14)";

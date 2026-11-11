@@ -1,0 +1,1 @@
+export { HeroCold } from "./HeroCold";

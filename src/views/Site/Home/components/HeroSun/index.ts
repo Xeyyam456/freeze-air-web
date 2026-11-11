@@ -1,0 +1,1 @@
+export { HeroSun } from "./HeroSun";
