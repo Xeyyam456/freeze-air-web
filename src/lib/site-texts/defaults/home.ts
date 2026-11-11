@@ -8,6 +8,7 @@ export const HOME_TEXTS = {
   "home.hero.cta": "Usta çağır",
   "home.hero.cta2": "Xidmətlər",
   "home.hero.scroll": "Aşağı sürüşdürün",
+  "home.hero.climate_hint": "Dərəcəni dəyişin",
   "home.quick.title": "Sürətli müraciət",
   "home.quick.name": "Adınız",
   "home.quick.phone": "Telefon nömrəniz",

@@ -25,7 +25,7 @@ export function HeroSection({ t }: TextsProps) {
       {/* < 1024: mətn aşağıda, şəklin yuxarısındakı kondisioner açıq qalır */}
       <div className="site-wrap relative col-start-1 row-start-1 w-full self-center pb-24 pt-16 max-lg:self-end">
         <div className="max-w-2xl">
-          <HeroClimate out={t["home.hero.badge_out"]} inn={t["home.hero.badge_in"]} />
+          <HeroClimate out={t["home.hero.badge_out"]} inn={t["home.hero.badge_in"]} hint={t["home.hero.climate_hint"]} />
           <HeroTitle text={t["home.hero.title"]} className="mt-6 text-balance font-display text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-6xl" />
           <p className="hero-in mt-5 max-w-xl text-lg text-white/75" style={{ "--d": "420ms" } as React.CSSProperties}>
             {t["home.hero.lead"]}

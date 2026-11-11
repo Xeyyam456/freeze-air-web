@@ -16,6 +16,40 @@
   .range::-webkit-slider-thumb { appearance: none; width: 18px; height: 18px; margin-top: -7px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 4px rgb(255 255 255 / 0.2), 0 2px 8px rgb(0 0 0 / 0.4); }
   .range::-moz-range-thumb { width: 18px; height: 18px; border: 0; border-radius: 50%; background: #fff; box-shadow: 0 0 0 4px rgb(255 255 255 / 0.2), 0 2px 8px rgb(0 0 0 / 0.4); }
   .range:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 4px; }
+
+  /* Fərq edilsin deyə: tutacağın ətrafında halqa genişlənib itir (ilk toxunuşa qədər) */
+  @keyframes ping {
+    0% { box-shadow: 0 0 0 4px rgb(255 255 255 / 0.2), 0 2px 8px rgb(0 0 0 / 0.4), 0 0 0 4px rgb(255 255 255 / 0.55); }
+    80%, 100% { box-shadow: 0 0 0 4px rgb(255 255 255 / 0.2), 0 2px 8px rgb(0 0 0 / 0.4), 0 0 0 16px rgb(255 255 255 / 0); }
+  }
+  .pulse::-webkit-slider-thumb { animation: ping 1.9s ease-out infinite; }
+  .pulse::-moz-range-thumb { animation: ping 1.9s ease-out infinite; }
+
+  /* İşarə yazısı: ox sürgüyə doğru yellənir; ilk toxunuşdan sonra yumşaq itir və yer boşaldır */
+  @keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-4px); } }
+  .hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    max-width: 24rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgb(255 255 255 / 0.78);
+    text-shadow: 0 1px 8px rgb(6 25 43 / 0.6);
+    transition: opacity 0.5s ease, max-width 0.5s ease;
+  }
+  .gone { opacity: 0; max-width: 0; overflow: hidden; white-space: nowrap; }
+  .nudge { flex-shrink: 0; animation: nudge 1.4s ease-in-out infinite; }
+
+  /* Sürgünün solunda və sağında yanıb-sönən oxlar: hər iki istiqamətdə çəkmək olar (növbə ilə yanır) */
+  @keyframes blink { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+  .arrow { flex-shrink: 0; margin-inline: -0.35rem; color: #fff; animation: blink 1.3s ease-in-out infinite; transition: opacity 0.4s ease; }
+  .arrowR { animation-delay: 0.65s; }
+  .arrowGone { animation: none; opacity: 0; }
+
   @media (min-width: 640px) { .range { width: 10rem; } }
-  @media (prefers-reduced-motion: reduce) { .flake { animation: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .flake, .nudge, .arrow { animation: none; }
+    .pulse::-webkit-slider-thumb, .pulse::-moz-range-thumb { animation: none; }
+  }
 }
