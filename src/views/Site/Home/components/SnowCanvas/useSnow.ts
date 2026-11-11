@@ -1,11 +1,12 @@
 import { useEffect, type RefObject } from "react";
 import type { SnowParticle } from "@/types/site";
-import { climate } from "../HeroClimate/climate";
+import { AWAY, climate } from "../HeroClimate/climate";
 import { drawFlake, SNOW_MAX, spawnFlake, stepFlake } from "./snow";
 
 // Qar yağışı: 20°-dən aşağıda görünür (climate.cold). Ekrandan çıxanda və tab gizli olanda dayanır;
 // hərəkət azaldılıbsa heç nə çəkilmir; soyuq rejimi deyilsə kadr boş keçir.
-export function useSnow(ref: RefObject<HTMLCanvasElement | null>) {
+// always: temperatura baxmadan tam qar (404 səhifəsi); kursor yenə qarı itələyir.
+export function useSnow(ref: RefObject<HTMLCanvasElement | null>, always = false) {
   useEffect(() => {
     const canvas = ref.current;
     const ctx = canvas?.getContext("2d");
@@ -28,9 +29,9 @@ export function useSnow(ref: RefObject<HTMLCanvasElement | null>) {
 
     const tick = () => {
       ctx.clearRect(0, 0, w, h);
-      const k = climate.cold;
+      const k = always ? 1 : climate.cold;
       if (k >= 0.02) {
-        const n = Math.round(SNOW_MAX * k * climate.density);
+        const n = Math.round(SNOW_MAX * k * (always ? 1 : climate.density));
         for (let i = 0; i < n; i++) { stepFlake(ps[i], w, h, climate.px, climate.py); drawFlake(ctx, ps[i], k); }
         ctx.globalAlpha = 1;
       }
@@ -43,8 +44,10 @@ export function useSnow(ref: RefObject<HTMLCanvasElement | null>) {
     io.observe(canvas);
     const onVis = () => (document.hidden ? stop() : visible && start());
     document.addEventListener("visibilitychange", onVis);
+    const onMove = (e: PointerEvent) => { const r = canvas.getBoundingClientRect(); climate.px = e.clientX - r.left; climate.py = e.clientY - r.top; };
+    if (always) window.addEventListener("pointermove", onMove);
     const ro = new ResizeObserver(size);
     ro.observe(canvas);
-    return () => { stop(); io.disconnect(); ro.disconnect(); document.removeEventListener("visibilitychange", onVis); };
-  }, [ref]);
+    return () => { stop(); io.disconnect(); ro.disconnect(); document.removeEventListener("visibilitychange", onVis); if (always) { window.removeEventListener("pointermove", onMove); climate.px = AWAY; climate.py = AWAY; } };
+  }, [ref, always]);
 }

@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { ArrowLeft, Home, Snowflake } from "lucide-react";
+import { SnowCanvas } from "@/views/Site/Home/components/SnowCanvas";
 
 export const metadata = { title: "Səhifə tapılmadı — Freeze Air Service" };
 
-// 404: tünd gecə-mavisi fon, iri "404" və qar dənəsi; yalnız statik məzmun (data oxumur)
+// 404: tünd gecə-mavisi fon, iri "404" və yağan qar (canvas, kursor qarı itələyir); data oxumur
 export default function NotFound() {
   return (
     <main className="relative grid min-h-screen place-items-center overflow-hidden bg-[linear-gradient(135deg,#091428,#0f2447_60%,#123a6a)] px-5 text-white">
       <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-frost/20 blur-3xl" aria-hidden="true" />
       <div className="pointer-events-none absolute -bottom-32 -left-20 h-96 w-96 rounded-full bg-primary/25 blur-3xl" aria-hidden="true" />
 
+      <SnowCanvas always />
       <div className="relative max-w-md text-center">
         <div className="relative mx-auto w-fit">
           <span className="block bg-gradient-to-b from-white to-frost/60 bg-clip-text text-[9rem] font-extrabold leading-none tracking-tight text-transparent sm:text-[11rem]">404</span>
