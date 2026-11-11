@@ -16,8 +16,8 @@
       animation-range: entry 30% cover 65%;
     }
     @keyframes tl-node {
-      from { background-color: #fff; color: var(--color-cold); box-shadow: none; }
-      to { background-color: var(--color-cold); color: #fff; box-shadow: 0 12px 30px rgba(0, 163, 217, 0.45); }
+      from { background-color: #fff; color: var(--tone); box-shadow: none; }
+      to { background-color: var(--tone); color: #fff; box-shadow: 0 12px 30px color-mix(in srgb, var(--tone) 45%, transparent); }
     }
     .node {
       animation: tl-node linear both;

@@ -6,6 +6,7 @@ import { DELIVERABLES, STEPS } from "@/components/landing/content";
 import { PageIntro } from "@/components/landing/PageIntro";
 import { Reveal } from "@/components/landing/Reveal";
 import { Spotlight } from "@/components/landing/Spotlight";
+import { tone } from "@/components/landing/tones";
 import { pageTitle } from "@/lib/site-texts";
 import { getTexts } from "@/services/site/fetchSiteTexts.server";
 
@@ -16,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HowWeWorkPage() {
   const t = await getTexts();
   return (
-    <>
+    <div className="bg-[radial-gradient(42%_16%_at_4%_14%,rgba(0,163,217,0.13),transparent),radial-gradient(38%_14%_at_98%_40%,rgba(255,159,28,0.11),transparent),radial-gradient(40%_14%_at_10%_75%,rgba(31,111,235,0.09),transparent)]">
       <PageIntro title={t["how.title"]} lead={t["how.lead"]} />
 
       {/* Addımlar ardıcıllıqdır: zaman xətti, düyündə addımın nömrəsi. Xətt sürüşdükcə dolur, düyünlər növbə ilə işıqlanır
@@ -28,17 +29,17 @@ export default async function HowWeWorkPage() {
       <section className="site-wrap">
         <ol className={`${s.timeline} relative grid auto-rows-fr gap-4 lg:grid-cols-3 lg:gap-6`}>
           <span className="pointer-events-none absolute bottom-[calc((100%-2rem)/6)] left-9 top-[calc((100%-2rem)/6)] w-[3px] -translate-x-1/2 rounded-full bg-cold/15 max-sm:left-6 lg:bottom-auto lg:left-[calc((100%-3rem)/6)] lg:right-[calc((100%-3rem)/6)] lg:top-9 lg:h-[3px] lg:w-auto lg:translate-x-0 lg:-translate-y-1/2" aria-hidden="true">
-            <span className={`${s.fill} block h-full rounded-full bg-gradient-to-b from-cold to-[#4fd1ff] lg:bg-gradient-to-r`} />
+            <span className={`${s.fill} block h-full rounded-full bg-gradient-to-b from-cold via-primary to-ok lg:bg-gradient-to-r`} />
           </span>
           {STEPS.map(({ icon: Icon, title, text }, i) => (
-            <li key={title} className="relative grid grid-cols-[72px_1fr] gap-6 max-sm:grid-cols-[48px_1fr] max-sm:gap-4 md:gap-8 lg:flex lg:flex-col lg:gap-6">
-              <span className={`${s.node} relative z-10 grid h-[72px] w-[72px] place-items-center self-center rounded-full bg-white font-display text-xl font-bold text-cold ring-8 ring-glacier max-sm:h-12 max-sm:w-12 max-sm:text-base max-sm:ring-[6px] lg:mx-auto lg:shrink-0`}>
+            <li key={title} style={tone(i)} className="relative grid grid-cols-[72px_1fr] gap-6 max-sm:grid-cols-[48px_1fr] max-sm:gap-4 md:gap-8 lg:flex lg:flex-col lg:gap-6">
+              <span className={`${s.node} relative z-10 grid h-[72px] w-[72px] place-items-center self-center rounded-full bg-white font-display text-xl font-bold text-(--tone) ring-8 ring-glacier max-sm:h-12 max-sm:w-12 max-sm:text-base max-sm:ring-[6px] lg:mx-auto lg:shrink-0`}>
                 0{i + 1}
               </span>
               <Reveal delay={80} className="lg:flex-1">
                 <Spotlight className="h-full rounded-[28px]">
-                  <div className="group flex h-full items-center gap-6 rounded-[28px] bg-white p-8 shadow-[0_1px_2px_rgba(6,25,43,0.04)] ring-1 ring-night/5 transition-[box-shadow,transform] duration-300 hover:-translate-y-1 hover:shadow-[0_24px_50px_rgba(6,25,43,0.1)] max-sm:flex-col max-sm:items-start max-sm:gap-4 max-sm:p-5 lg:flex-col lg:gap-5 lg:p-8 lg:text-center">
-                    <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-cold to-[#0077b6] text-white shadow-[0_14px_30px_rgba(0,163,217,0.35)] transition-transform duration-300 group-hover:-rotate-6 max-sm:h-11 max-sm:w-11 max-sm:rounded-xl max-sm:[&>svg]:size-5 xl:h-20 xl:w-20 xl:rounded-3xl">
+                  <div className="group flex h-full items-center gap-6 rounded-[28px] bg-white bg-[radial-gradient(85%_55%_at_50%_0%,color-mix(in_srgb,var(--tone)_13%,transparent),transparent)] p-8 shadow-[0_1px_2px_rgba(6,25,43,0.04)] ring-1 ring-night/5 transition-[box-shadow,transform] duration-300 hover:-translate-y-1 hover:shadow-[0_24px_50px_color-mix(in_srgb,var(--tone)_22%,transparent)] hover:ring-[color-mix(in_srgb,var(--tone)_35%,transparent)] max-sm:flex-col max-sm:items-start max-sm:gap-4 max-sm:p-5 lg:flex-col lg:gap-5 lg:p-8 lg:text-center">
+                    <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-[linear-gradient(135deg,var(--tone),color-mix(in_srgb,var(--tone)_55%,#06192b))] text-white shadow-[0_14px_30px_color-mix(in_srgb,var(--tone)_40%,transparent)] transition-transform duration-300 group-hover:-rotate-6 max-sm:h-11 max-sm:w-11 max-sm:rounded-xl max-sm:[&>svg]:size-5 xl:h-20 xl:w-20 xl:rounded-3xl">
                       <Icon size={30} />
                     </span>
                     <div className="@container min-w-0 flex-1 max-sm:w-full lg:w-full">
@@ -66,8 +67,8 @@ export default async function HowWeWorkPage() {
             {DELIVERABLES.map(({ icon: Icon, title, text }, i) => (
               <Reveal key={title} delay={i * 100} className="h-full">
                 <Spotlight className="h-full rounded-[24px]">
-                  <div className="bento-card flex h-full flex-col rounded-[24px] p-7 max-lg:flex-row max-lg:items-center max-lg:gap-4 max-lg:p-5">
-                    <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-cold/15 text-cold ring-1 ring-cold/30 max-lg:h-12 max-lg:w-12"><Icon size={26} /></span>
+                  <div style={tone(i)} className="bento-card flex h-full flex-col rounded-[24px] bg-[radial-gradient(75%_45%_at_0%_0%,color-mix(in_srgb,var(--tone)_32%,transparent),transparent)] p-7 max-lg:flex-row max-lg:items-center max-lg:gap-4 max-lg:p-5">
+                    <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[linear-gradient(135deg,var(--tone),color-mix(in_srgb,var(--tone)_55%,#06192b))] text-white shadow-[0_10px_26px_color-mix(in_srgb,var(--tone)_50%,transparent)] ring-1 ring-white/25 max-lg:h-12 max-lg:w-12"><Icon size={26} /></span>
                     <div className="min-w-0">
                       <h3 className="mt-6 font-display text-xl font-bold max-lg:mt-0 max-sm:text-lg">{t[title]}</h3>
                       <p className="mt-2 text-white/65 max-lg:mt-1 max-sm:text-sm lg:min-h-[2lh]">{t[text]}</p>
@@ -85,12 +86,12 @@ export default async function HowWeWorkPage() {
         <Reveal>
           <div className="glow-border relative flex flex-wrap items-center justify-between gap-6 overflow-hidden rounded-[32px] bg-white px-10 py-10 ring-1 ring-night/5 max-sm:px-6 max-sm:py-8 sm:max-lg:flex-nowrap">
             <p className="max-w-2xl text-balance font-display text-2xl font-bold leading-snug max-sm:w-full max-sm:text-center max-sm:text-xl sm:max-lg:min-w-0 sm:max-lg:text-xl">{t["services.cta_text"]}</p>
-            <Link href="/elaqe" className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-night px-7 font-bold text-white transition-all hover:-translate-y-px hover:bg-cold max-sm:w-full">
+            <Link href="/elaqe" className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cold to-primary px-7 font-bold text-white shadow-[0_12px_28px_rgba(0,163,217,0.4)] transition-all hover:-translate-y-px hover:shadow-[0_16px_34px_rgba(31,111,235,0.5)] max-sm:w-full">
               {t["services.cta_button"]} <ArrowRight size={18} />
             </Link>
           </div>
         </Reveal>
       </section>
-    </>
+    </div>
   );
 }
