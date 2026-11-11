@@ -1,24 +1,24 @@
 @layer theme, base, components, utilities;
 
 @layer components {
-  /* --k: saçaq uzunluğunun miqyası: normalda 0.8×, soyuqda 1.2×-ə qədər uzanır, istidə 0.4×-ə qısalıb solur (--cold / --sun: 0–1) */
+  /* --k: saçaq uzunluğunun miqyası: normalda 0.8×, soyuqda 1.2×-ə qədər uzanır, istidə (24°-dən sonra) qısalıb əriyir və 30°-də tam itir (--cold / --melt: 0–1) */
   .ice {
-    --k: calc(0.8 + var(--cold, 0) * 0.4 - var(--sun, 0) * 0.4);
+    --k: calc(0.8 + var(--cold, 0) * 0.4 - var(--melt, 0) * 0.5);
     transform-origin: top;
     transform: scaleY(var(--k));
-    opacity: calc(1 - var(--sun, 0) * 0.85);
+    opacity: calc(1 - var(--melt, 0));
     filter: drop-shadow(0 3px 4px rgb(0 60 100 / 0.14));
     transition: transform 0.8s ease, opacity 0.8s ease;
   }
 
   /* Damcı saçağın ucunda (uzunluğa görə yerləşir): yığılır, ağırlaşır, qopan kimi sərbəst düşür */
   .fall {
-    --k: calc(0.8 + var(--cold, 0) * 0.4 - var(--sun, 0) * 0.4);
+    --k: calc(0.8 + var(--cold, 0) * 0.4 - var(--melt, 0) * 0.5);
     position: absolute;
     width: 0;
     height: 0;
     top: calc(100% + var(--len) * 1px * var(--k));
-    opacity: calc(1 - var(--sun, 0) * 0.85);
+    opacity: calc(1 - var(--melt, 0));
     pointer-events: none;
   }
   /* Damcı: şəffaf su gövdəsi, solda-yuxarıda parıltı, aşağıda tünd haşiyə (işıq sınması) */

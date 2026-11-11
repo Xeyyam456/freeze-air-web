@@ -27,7 +27,7 @@ function Stalk({ c }: { c: Icicle }) {
 // Header-in alt kənarından tək-tək asılan real buz saçaqları (nümunə foto əsasında): uzun, nazik, şəffaf, yavaş daralan,
 // kənarları parlaq, içində hava qabarcıqları, ucunda yumru damcı; arxada solğun-bulanıq qısa saçaqlar (dərinlik). Uzun
 // saçaqların ucunda damcı yığılır, ağırlaşır və qopub hero-nun içinə sürətlə düşür (iz qoymur: real damcı kimi).
-// SVG + CSS, JS yoxdur; temperatur sürgüsünə bağlıdır (soyuqda uzanır, istidə əriyib itir).
+// SVG + CSS, JS yoxdur; temperatur sürgüsünə bağlıdır (soyuqda uzanır, 24°-dən sonra əriyib 30°-də tam itir).
 export function HeaderIcicles() {
   return (
     <>

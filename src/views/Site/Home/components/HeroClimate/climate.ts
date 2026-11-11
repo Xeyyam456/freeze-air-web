@@ -31,10 +31,12 @@ export function applyTemp(temp: number, host: HTMLElement | null) {
   const root = typeof document === "undefined" ? null : document.documentElement;
   root?.style.setProperty("--cold", String(cold));
   root?.style.setProperty("--sun", String(sun));
+  root?.style.setProperty("--melt", String(ramp(temp, 24, MAX_TEMP))); // 24°-dən başlayıb 30°-də 1: saçaqlar tədricən əriyib tam itir
 }
 
 // Səhifədən çıxanda kökdəki dəyişənləri sıfırla (başqa səhifələrdə header normal qalsın)
 export function resetRootTemp() {
   document.documentElement.style.removeProperty("--cold");
   document.documentElement.style.removeProperty("--sun");
+  document.documentElement.style.removeProperty("--melt");
 }
