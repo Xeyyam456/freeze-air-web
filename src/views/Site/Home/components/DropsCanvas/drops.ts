@@ -6,13 +6,13 @@ export const MAX = 90;
 export function spawnDrop(w: number, h: number, d?: Drop): Drop {
   const o = d ?? ({} as Drop);
   o.x = Math.random() * w;
-  o.y = o.y0 = Math.random() * h * 0.92;
+  o.run = Math.random() < 0.88; // demək olar hamısı axır; qalanı bir yerdə durub qalır
+  o.y = o.y0 = Math.random() * h * (o.run ? 0.55 : 0.92);
   o.r = 3 + Math.random() * 4 + (Math.random() < 0.2 ? 4 : 0);
   o.vy = 0;
-  o.run = Math.random() < 0.4;
-  o.wait = 90 + Math.random() * 700;
+  o.wait = Math.random() * 180;
   o.age = 0;
-  o.life = 1500 + Math.random() * 2500;
+  o.life = o.run ? 1e6 : 1500 + Math.random() * 2500; // axan damcı alt kənara çatanda yenilənir
   o.a = 0;
   return o;
 }
@@ -27,8 +27,8 @@ export function stepDrop(d: Drop, w: number, h: number) {
   d.vy = Math.min(d.vy + (Math.random() < 0.06 ? 0.12 : 0.01), 0.9 + d.r * 0.18);
   if (Math.random() < 0.02) d.vy *= 0.3; // damcı bir anlıq ilişir
   d.y += d.vy;
-  d.r -= 0.0014;
-  if (d.y > h + 12) d.life = 0;
+  d.r -= 0.0008;
+  if (d.y > h + 12) spawnDrop(w, h, d);
 }
 
 // Damcı: yarımşəffaf cisim, solda-yuxarıda parıltı, aşağıda kölgə; süzülürsə arxasında nazik iz
