@@ -5,9 +5,9 @@
 /* Hero başlığı: sözlər bir-bir bulanıqdan aydına keçir (components/landing/HeroTitle.tsx) */
 
 @supports (animation-timeline: scroll()) {
-  /* Hero şəkli: aşağı sürüşdükcə yavaşca yaxınlaşır və tündləşir (parallax) */
+  /* Hero şəkli: aşağı sürüşdükcə yavaşca yaxınlaşır (parallax); tündləşmə yoxdur: narıncı işıqları qızardırdı */
   @keyframes hero-parallax {
-    to { transform: scale(1.12) translateY(4%); filter: brightness(0.7); }
+    to { transform: scale(1.12) translateY(4%); }
   }
   .hero-parallax {
     transform-origin: 70% 30%;
