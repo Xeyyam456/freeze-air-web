@@ -1,9 +1,9 @@
 import type { Drop } from "@/types/site";
 
-export const MAX = 90;
+export const MAX = 160;
 
-// Hovuzda hər 4-cü damcı süzülən (iri), qalanı yerində duran xırda damcıdır: tipik tərləmiş şüşə
-export const isRunner = (i: number) => i % 4 === 0;
+// Hovuzda hər 5-ci damcı süzülən (iri), qalanı yerində duran xırda damcıdır: tipik tərləmiş şüşə
+export const isRunner = (i: number) => i % 5 === 0;
 
 export function spawnDrop(w: number, h: number, run: boolean, d?: Drop): Drop {
   const o = d ?? ({} as Drop);

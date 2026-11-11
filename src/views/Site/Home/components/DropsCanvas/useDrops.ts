@@ -45,7 +45,7 @@ export function useDrops(ref: RefObject<HTMLCanvasElement | null>) {
         tctx.fillRect(0, 0, w, h);
         tctx.globalCompositeOperation = "source-over";
       }
-      const n = Math.min(MAX, Math.max(20, Math.round((36 + climate.warm * 44 - climate.frost * 12) * climate.density)));
+      const n = Math.min(MAX, Math.max(40, Math.round((75 + climate.warm * 80 - climate.frost * 25) * climate.density)));
       for (let i = 0; i < n; i++) { stepDrop(ds[i], w, h); if (ds[i].run) drawTrail(tctx, ds[i]); }
       mergeDrops(ds, n);
       ctx.clearRect(0, 0, w, h);
