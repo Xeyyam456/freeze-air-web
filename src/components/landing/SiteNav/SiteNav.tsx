@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Wrench } from "lucide-react";
-import s from "./SiteNav.module.css";
 
 // Açıq saytın menyusu (header-in ortasında həb düymələr): hər bənd ayrıca səhifədir, aktiv səhifə ağ həblə seçilir.
 // Sonda "Xidmət növləri" düyməsi: klikləyəndə xidmətlərin siyahısı açılır (masaüstündə; mobildə siyahı /xidmetler səhifəsindədir).
@@ -37,7 +36,7 @@ export function SiteNav({ pages, services = [], className = "" }: SiteNavProps) 
             href={p.href}
             aria-current={active ? "page" : undefined}
             className={`relative flex h-9 shrink-0 items-center rounded-full px-4 text-sm font-semibold transition-all lg:px-3 2xl:px-4 ${
-              active ? `${s.active} bg-white text-night shadow-[0_2px_8px_rgba(6,25,43,0.1)]` : "text-night/60 hover:text-night"
+              active ? "bg-white text-night shadow-[0_2px_8px_rgba(6,25,43,0.1)]" : "text-night/60 hover:text-night"
             }`}
           >
             {p.label}
@@ -62,14 +61,14 @@ export function SiteNav({ pages, services = [], className = "" }: SiteNavProps) 
 
           {open && (
             <ul className="absolute right-0 top-full z-40 mt-4 w-72 rounded-2xl bg-white p-2 shadow-[0_18px_40px_rgba(6,25,43,0.22)] ring-1 ring-night/10">
-              {services.map((sv) => (
-                <li key={sv.slug}>
+              {services.map((s) => (
+                <li key={s.slug}>
                   <Link
-                    href={`/xidmet/${sv.slug}`}
+                    href={`/xidmet/${s.slug}`}
                     onClick={() => setOpen(false)}
                     className="block rounded-xl px-4 py-2.5 text-sm font-semibold text-night transition-colors hover:bg-cold/10 hover:text-cold"
                   >
-                    {sv.title}
+                    {s.title}
                   </Link>
                 </li>
               ))}
