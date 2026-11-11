@@ -8,7 +8,7 @@ const POM = [[-3.6, 0], [3.6, 0], [0, -3.6], [0, 3.8], [-2.6, 2.7], [2.6, 2.7], 
 // ucu aşağı əyilir və pom-pom oradan sallanır (CSS). Ata element `relative` olmalıdır; papaq kliki tutmur.
 export function SantaHat() {
   return (
-    <svg aria-hidden="true" viewBox="0 0 56 44" className="pointer-events-none absolute -left-[2px] -top-[17px] z-10 w-[30px] -scale-x-100 rotate-[8deg] drop-shadow-[0_2px_2px_rgba(6,25,43,0.28)]">
+    <svg aria-hidden="true" viewBox="0 0 56 44" className="pointer-events-none absolute -left-[6px] -top-[19px] z-10 w-[40px] -scale-x-100 -rotate-[14deg] drop-shadow-[0_2px_2px_rgba(6,25,43,0.28)]">
       <defs>
         <linearGradient id="hat-cloth" x1="0.1" y1="0" x2="0.7" y2="1">
           <stop offset="0" stopColor="#ff6262" />
