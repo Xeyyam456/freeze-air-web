@@ -6,7 +6,7 @@ export const MAX_TEMP = 30;
 export const BASE_TEMP = 22;
 
 // Canvas-ların hər kadrda oxuduğu ortaq vəziyyət
-export const climate: HeroClimate = { warm: 0, frost: 0, px: AWAY, py: AWAY, glow: 0, density: 1, drops: 1 };
+export const climate: HeroClimate = { warm: 0, frost: 0, px: AWAY, py: AWAY, glow: 0, density: 1, drops: 1, cold: 0 };
 
 const clamp = (v: number) => Math.min(1, Math.max(0, v));
 
@@ -20,6 +20,7 @@ export function applyTemp(temp: number, host: HTMLElement | null) {
   const cold = ramp(-temp, -20.5, -18);
   climate.warm = clamp((temp - BASE_TEMP) / (MAX_TEMP - BASE_TEMP));
   climate.frost = clamp((BASE_TEMP - temp) / (BASE_TEMP - MIN_TEMP));
+  climate.cold = cold;
   climate.drops = ramp(temp, 21, 22) * (1 - ramp(temp, 24, 25));
   host?.style.setProperty("--warm", String(climate.warm));
   host?.style.setProperty("--frost", String(climate.frost));

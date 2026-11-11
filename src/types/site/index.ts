@@ -69,3 +69,4 @@ export type { WhatsAppIconProps } from "./WhatsAppIconProps";
 export type { HeroClimate } from "./HeroClimate";
 export type { HeroClimateProps } from "./HeroClimateProps";
 export type { Drop } from "./Drop";
+export type { SnowParticle } from "./SnowParticle";
