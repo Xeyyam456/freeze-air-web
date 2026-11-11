@@ -15,7 +15,7 @@
     animation: pulse 6s ease-in-out infinite alternate;
     will-change: opacity;
   }
-  /* İşıq şüaları: küncdən yayılan yumşaq profilli zolaqlar (kənarları sərt deyil); uzunluğu boyu pilləpilləsiz
+  /* İşıq şüaları: küncdən yayılan yumşaq profilli zolaqlar (kənarları sərt deyil); sağa və aşağıya eyni hamarlıqla (kosinus əyrisi)
      azalaraq hero-nun aşağısına çatmamış tam itir. Yerində qalır, yalnız yavaşca parıldayır */
   .rays {
     position: absolute;
@@ -23,7 +23,7 @@
     height: 150%;
     transform-origin: 8% 0;
     background: repeating-conic-gradient(from 98deg at 8% 0%, rgb(255 226 150 / 0) 0deg, rgb(255 226 150 / 0.13) 1.5deg, rgb(255 226 150 / 0.38) 4deg, rgb(255 226 150 / 0.13) 6.5deg, rgb(255 226 150 / 0) 9deg, rgb(255 226 150 / 0) 16deg);
-    mask-image: radial-gradient(ellipse 85% 68% at 8% 0%, #000 0, rgb(0 0 0 / 0.85) 15%, rgb(0 0 0 / 0.55) 32%, rgb(0 0 0 / 0.28) 52%, rgb(0 0 0 / 0.1) 72%, transparent 100%);
+    mask-image: radial-gradient(ellipse 75% 73% at 8% 0%, #000 0, rgb(0 0 0 / 0.98) 10%, rgb(0 0 0 / 0.9) 20%, rgb(0 0 0 / 0.79) 30%, rgb(0 0 0 / 0.65) 40%, rgb(0 0 0 / 0.5) 50%, rgb(0 0 0 / 0.35) 60%, rgb(0 0 0 / 0.21) 70%, rgb(0 0 0 / 0.1) 80%, rgb(0 0 0 / 0.02) 90%, transparent 100%);
     animation: sway 9s ease-in-out infinite alternate;
     will-change: opacity;
   }
