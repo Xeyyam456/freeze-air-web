@@ -1,6 +1,5 @@
 import { CircleCheck, Snowflake } from "lucide-react";
 import { CATEGORIES } from "@/components/landing/content";
-import { EdgeFade } from "@/components/landing/EdgeFade";
 import { tone } from "@/components/landing/tones";
 import { Reveal } from "@/components/landing/Reveal";
 import { Spotlight } from "@/components/landing/Spotlight";
@@ -8,39 +7,41 @@ import { lines } from "@/lib/site-texts";
 import type { TextsProps } from "@/types/site";
 import { SectionTitle } from "./SectionTitle";
 
-// Xidmət kateqoriyaları: tünd "aurora" fonda üç bərabər şüşə kart
+// Xidmət kateqoriyaları: tünd "aurora" fonlu yuvarlaq panel (yanlardan boşluq, ətrafı çox açıq gradient: boz keçid yoxdur),
+// içində üç bərabər şüşə kart
 export function CategoriesSection({ t }: TextsProps) {
   return (
-    <section className="aurora relative overflow-hidden bg-night py-24 text-white">
-      <EdgeFade top="#fff" bottom="var(--color-glacier)" />
-      <Snowflake size={420} strokeWidth={0.5} className="pointer-events-none absolute -left-24 -top-24 text-white/[0.06]" aria-hidden="true" />
-      <div className="site-wrap relative">
-        <Reveal>
-          <SectionTitle title={t["home.categories.title"]} lead={t["home.categories.lead"]} light />
-        </Reveal>
-        <div className="mt-12 grid gap-5 lg:grid-cols-3">
-          {CATEGORIES.map(({ icon: Icon, title, items }, i) => (
-            <Reveal key={title} delay={i * 100} className="h-full">
-              <Spotlight className="h-full rounded-[28px]">
-                <div className="bento-card h-full rounded-[28px] p-7" style={tone(i)}>
-                  <div className="flex items-center gap-4">
-                    <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[color-mix(in_srgb,var(--tone)_16%,transparent)] text-(--tone) ring-1 ring-[color-mix(in_srgb,var(--tone)_38%,transparent)]">
-                      <Icon size={26} />
-                    </span>
-                    <h3 className="font-display text-lg font-bold leading-tight">{t[title]}</h3>
+    <section className="bg-gradient-to-b from-white to-glacier px-3 py-8 sm:px-6 sm:py-12">
+      <div className="aurora relative overflow-hidden rounded-[36px] bg-night py-20 text-white shadow-[0_40px_100px_rgba(6,25,43,0.28)] sm:rounded-[52px] sm:py-24">
+        <Snowflake size={420} strokeWidth={0.5} className="pointer-events-none absolute -left-24 -top-24 text-white/[0.06]" aria-hidden="true" />
+        <div className="site-wrap relative">
+          <Reveal>
+            <SectionTitle title={t["home.categories.title"]} lead={t["home.categories.lead"]} light />
+          </Reveal>
+          <div className="mt-12 grid gap-5 lg:grid-cols-3">
+            {CATEGORIES.map(({ icon: Icon, title, items }, i) => (
+              <Reveal key={title} delay={i * 100} className="h-full">
+                <Spotlight className="h-full rounded-[28px]">
+                  <div className="bento-card h-full rounded-[28px] p-7" style={tone(i)}>
+                    <div className="flex items-center gap-4">
+                      <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[color-mix(in_srgb,var(--tone)_16%,transparent)] text-(--tone) ring-1 ring-[color-mix(in_srgb,var(--tone)_38%,transparent)]">
+                        <Icon size={26} />
+                      </span>
+                      <h3 className="font-display text-lg font-bold leading-tight">{t[title]}</h3>
+                    </div>
+                    {/* Planşetdə kart tam endədir: siyahı 2 sütuna bölünür (ayırıcı xətt hər sütunun ilk bəndində yoxdur) */}
+                    <ul className="mt-6 sm:max-lg:grid sm:max-lg:grid-cols-2 sm:max-lg:gap-x-8">
+                      {lines(t[items]).map((item) => (
+                        <li key={item} className="flex items-center gap-3 border-t border-white/10 py-3 font-medium text-white/85 first:border-t-0 sm:max-lg:nth-2:border-t-0">
+                          <CircleCheck size={18} className="shrink-0 text-(--tone)" /> {item}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  {/* Planşetdə kart tam endədir: siyahı 2 sütuna bölünür (ayırıcı xətt hər sütunun ilk bəndində yoxdur) */}
-                  <ul className="mt-6 sm:max-lg:grid sm:max-lg:grid-cols-2 sm:max-lg:gap-x-8">
-                    {lines(t[items]).map((item) => (
-                      <li key={item} className="flex items-center gap-3 border-t border-white/10 py-3 font-medium text-white/85 first:border-t-0 sm:max-lg:nth-2:border-t-0">
-                        <CircleCheck size={18} className="shrink-0 text-(--tone)" /> {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Spotlight>
-            </Reveal>
-          ))}
+                </Spotlight>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </div>
     </section>
