@@ -4,7 +4,6 @@ import { Reveal } from "@/components/landing/Reveal";
 import { SegmentCards, SegmentCardsSkeleton } from "@/components/landing/SegmentCards";
 import { FaqSection } from "../Trust/components/FaqSection";
 import { HowSteps } from "../Trust/components/HowSteps";
-import { StatsStrip } from "../Trust/components/StatsStrip";
 import { getTexts } from "@/services/site/fetchSiteTexts.server";
 import { About } from "./components/About";
 import { CategoriesSection } from "./components/CategoriesSection";
@@ -22,11 +21,6 @@ export async function HomeView() {
         <LocalBusinessJsonLd />
       </Suspense>
       <HeroSection t={t} />
-
-      {/* İnam: rəqəmlər zolağı (hero-nun üstünə çıxır); ən azı 2 aktiv rəqəm yoxdursa göstərilmir */}
-      <Suspense fallback={null}>
-        <StatsStrip />
-      </Suspense>
 
       {/* Xidmət: obyekt növlərinə görə (açıq, səhifə fonunda: ağ kartlar seçilir) */}
       <section className="py-20">
