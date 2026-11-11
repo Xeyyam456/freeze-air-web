@@ -22,7 +22,7 @@ export async function HeroBackground() {
       {/* relative: şəkil parallax üçün transform alır və qat yaradır; overlay onun üstündə qalsın deyə o da mövqeli olmalıdır */}
       <div className="relative col-start-1 row-start-1 bg-gradient-to-r from-night/90 via-night/65 to-night/10" aria-hidden="true" />
       <div className={`${TINT} bg-[radial-gradient(ellipse_at_78%_25%,rgba(255,205,120,0.3),rgba(255,175,80,0.12)_45%,transparent_78%)]`} style={{ opacity: "calc(var(--warm, 0) * 0.55)" }} aria-hidden="true" />
-      <div className={`${TINT} shadow-[inset_0_0_140px_rgba(170,225,255,0.45)]`} style={{ opacity: "var(--frost, 0)" }} aria-hidden="true" />
+      <div className={`${TINT} shadow-[inset_0_0_140px_rgba(170,225,255,0.28)]`} style={{ opacity: "var(--frost, 0)" }} aria-hidden="true" />
       <HeroSun />
       <HeroCold />
       <HeroSteam />

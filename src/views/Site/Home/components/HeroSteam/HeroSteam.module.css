@@ -7,7 +7,7 @@
   .haze {
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgb(215 235 248 / 0.3) 0%, rgb(215 235 248 / 0.27) 10%, rgb(215 235 248 / 0.22) 20%, rgb(215 235 248 / 0.17) 30%, rgb(215 235 248 / 0.12) 40%, rgb(215 235 248 / 0.08) 50%, rgb(215 235 248 / 0.04) 60%, rgb(215 235 248 / 0.015) 70%, rgb(215 235 248 / 0) 80%);
+    background: linear-gradient(180deg, rgb(215 235 248 / 0.15) 0%, rgb(215 235 248 / 0.135) 10%, rgb(215 235 248 / 0.11) 20%, rgb(215 235 248 / 0.085) 30%, rgb(215 235 248 / 0.06) 40%, rgb(215 235 248 / 0.04) 50%, rgb(215 235 248 / 0.02) 60%, rgb(215 235 248 / 0.0075) 70%, rgb(215 235 248 / 0) 80%);
     animation: breathe 7s ease-in-out infinite alternate;
     will-change: opacity;
   }

@@ -18,7 +18,7 @@
     width: 46%;
     height: 40%;
     border-radius: 50%;
-    background: radial-gradient(ellipse, rgb(210 244 255 / 0.62), rgb(160 220 255 / 0.26) 50%, transparent 72%);
+    background: radial-gradient(ellipse, rgb(210 244 255 / 0.38), rgb(160 220 255 / 0.16) 50%, transparent 72%);
     filter: blur(12px);
     animation: mist 8s ease-in infinite;
     will-change: transform, opacity;
