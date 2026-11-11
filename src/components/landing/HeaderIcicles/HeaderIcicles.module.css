@@ -1,20 +1,26 @@
 @layer theme, base, components, utilities;
 
 @layer components {
-  /* Sürüşdürmə: ilk ~6vh-dən sonra saçaqlar tədricən yuxarı qalxıb solur, ~88vh-də (hero ekrandan çıxanda) tam yoxdur */
-  .away {
+  /* Kəsmə sahəsi header-in alt kənarından başlayır: saçaqlar yuxarı çəkiləndə bu kənarda kəsilir və header-in altına
+     girmiş kimi gizlənir (damcılar üçün aşağı sərbəstdir) */
+  .clip {
     position: absolute;
-    inset: 0;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 130vh;
+    overflow: hidden;
     pointer-events: none;
   }
+  /* Sürüşdürmə: ilk ~6vh-dən sonra saçaqlar (və damcılar) tədricən header-in altına çəkilir, ~80vh-də (hero çıxanda) tam gizlənir */
   @supports (animation-timeline: scroll()) {
-    .away {
-      animation: away linear both;
+    .pull {
+      animation: pull linear both;
       animation-timeline: scroll(root);
-      animation-range: 6vh 88vh;
+      animation-range: 6vh 80vh;
     }
   }
-  @keyframes away { to { opacity: 0; transform: translateY(-22px); } }
+  @keyframes pull { to { translate: 0 -180px; } }
 
   /* --k: saçaq uzunluğunun miqyası: normalda 0.8×, soyuqda 1.2×-ə qədər uzanır, istidə (24°-dən sonra) qısalıb əriyir və 30°-də tam itir (--cold / --melt: 0–1) */
   .ice {
@@ -32,7 +38,7 @@
     position: absolute;
     width: 0;
     height: 0;
-    top: calc(100% + var(--len) * 1px * var(--k));
+    top: calc(var(--len) * 1px * var(--k));
     opacity: calc(1 - var(--melt, 0));
     pointer-events: none;
   }
@@ -61,6 +67,6 @@
     74%, 100% { opacity: 0; transform: translateY(345px) scale(0.7, 1.8); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .away, .bead { animation: none; }
+    .pull, .bead { animation: none; }
   }
 }

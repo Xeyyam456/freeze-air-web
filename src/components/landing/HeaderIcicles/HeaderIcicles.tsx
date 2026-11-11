@@ -30,10 +30,10 @@ function Stalk({ c }: { c: Icicle }) {
 // SVG + CSS, JS yoxdur; temperatur sürgüsünə bağlıdır (soyuqda uzanır, 24°-dən sonra əriyib 30°-də tam itir).
 export function HeaderIcicles() {
   return (
-    // .away: səhifə aşağı sürüşdükcə saçaqlar tədricən yuxarı qalxıb solur, hero ekrandan çıxanda tam yoxdur (CSS scroll-driven).
-    // Sarğı header ölçüsündədir (absolute inset-0): içindəki "top-full" və damcıların mövqeyi dəyişmir.
-    <div aria-hidden="true" className={s.away}>
-      <div className={`${s.ice} pointer-events-none absolute inset-x-0 top-full`}>
+    // .clip: header-in alt kənarından başlayan kəsmə sahəsi. Səhifə aşağı sürüşdükcə saçaqlar və damcılar (.pull) yuxarı
+    // çəkilir və bu kənarda kəsilərək header-in altına girmiş kimi gizlənir; hero ekrandan çıxanda tam yoxdur (CSS scroll-driven).
+    <div aria-hidden="true" className={s.clip}>
+      <div className={`${s.ice} ${s.pull} pointer-events-none absolute inset-x-0 top-0`}>
         <svg width="100%" height={ICE_H} className="block overflow-visible">
           <defs>
             <linearGradient id="ice-body" x1="0" y1="0" x2="1" y2="0">
@@ -63,7 +63,7 @@ export function HeaderIcicles() {
       {/* Damcı: ucda yığılır, ağırlaşır, qopan kimi sərbəst düşür (iz qoymur) */}
       {TIPS.map((t) => (
         <span
-          key={t.i} aria-hidden="true" className={s.fall}
+          key={t.i} aria-hidden="true" className={`${s.fall} ${s.pull}`}
           style={{ left: t.x, "--len": t.y, "--t": `${8 + t.i * 1.4}s`, "--d": `${t.i * 2.3}s` } as React.CSSProperties}
         >
           <i className={s.bead} />
