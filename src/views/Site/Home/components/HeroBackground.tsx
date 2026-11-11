@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { AirflowCanvas } from "./AirflowCanvas";
+import { DropsCanvas } from "./DropsCanvas";
 import { FogCanvas } from "./FogCanvas";
 import { getHomeContent } from "@/services/site/fetchSiteSettings.server";
 
@@ -20,6 +21,7 @@ export async function HeroBackground() {
       <div className={`${TINT} shadow-[inset_0_0_140px_rgba(170,225,255,0.45)]`} style={{ opacity: "var(--frost, 0)" }} aria-hidden="true" />
       <AirflowCanvas />
       <FogCanvas />
+      <DropsCanvas />
     </>
   );
 }
