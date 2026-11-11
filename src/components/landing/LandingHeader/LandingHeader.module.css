@@ -46,8 +46,6 @@
     0%, 55% { transform: translateX(-130%) skewX(-20deg); }
     100% { transform: translateX(260%) skewX(-20deg); }
   }
-  .brand { filter: drop-shadow(0 0 calc(9px * var(--cold, 0)) rgba(120, 215, 255, calc(0.85 * var(--cold, 0)))); }
-  .brand span span:first-child { text-shadow: 0 0 calc(12px * var(--cold, 0)) rgba(130, 220, 255, calc(0.9 * var(--cold, 0))); }
   .cta {
     box-shadow:
       0 10px 24px rgba(6, 25, 43, 0.25),

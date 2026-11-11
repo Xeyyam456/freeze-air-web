@@ -48,7 +48,7 @@ export async function LandingHeader() {
   return (
     <header className={`${s.header} sticky top-0 z-30 border-b border-night/[0.06] bg-white/85 backdrop-blur-xl backdrop-saturate-150`}>
       <div className="site-wrap flex h-[76px] items-center gap-3 sm:gap-6 lg:gap-4 2xl:gap-6">
-        <Link href="/" className={`${s.brand} flex shrink-0 items-center gap-3`}>
+        <Link href="/" className="flex shrink-0 items-center gap-3">
           {logo
             // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
             ? <img src={logo} alt={t["brand.name"]} className="h-11 w-auto max-w-[170px] object-contain" />
