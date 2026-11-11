@@ -2,11 +2,12 @@ import type { Drop } from "@/types/site";
 import { climate } from "../HeroClimate/climate";
 import { drawLens, type Lens } from "./lens";
 
-// Nəm iz: damcının keçdiyi yer ayrıca qatda yumşaq, çox zəif zolaq kimi qalır və tez quruyur
+// Süzülən damcının izi: arxasında buxarı silən təmiz zolaq (iz qatına yazılır; fog.ts onu buxardan çıxarır)
 export function drawTrail(t: CanvasRenderingContext2D, d: Drop) {
   if (d.a < 0.2 || Math.abs(d.y - d.py) < 0.5) return;
-  t.strokeStyle = "rgba(205, 228, 245, 0.07)";
-  t.lineWidth = Math.max(1.2, d.r * 0.7);
+  t.strokeStyle = "#000";
+  t.lineWidth = Math.max(2, d.r * 1.5);
+  t.lineCap = "round";
   t.beginPath();
   t.moveTo(d.px, d.py);
   t.lineTo(d.x, d.y);

@@ -2,8 +2,8 @@ import type { Drop } from "@/types/site";
 
 export const MAX = 160;
 
-// Hovuzda damcıların 2/3-i süzülür (axın kəsilmir), 1/3-i yerində durub tez quruyur
-export const isRunner = (i: number) => i % 3 !== 0;
+// Hovuzda hər 4-cü damcı süzülür (arxasında təmiz zolaq qoyur), qalanı yerində duran muncuqdur
+export const isRunner = (i: number) => i % 4 === 0;
 
 export function spawnDrop(w: number, h: number, run: boolean, d?: Drop): Drop {
   const o = d ?? ({} as Drop);
@@ -12,9 +12,10 @@ export function spawnDrop(w: number, h: number, run: boolean, d?: Drop): Drop {
   o.y = Math.random() * h * (run ? 0.5 : 0.95);
   o.px = o.x;
   o.py = o.y;
-  o.r = run ? 3.8 + Math.random() ** 1.4 * 4.5 + (Math.random() < 0.1 ? 3 : 0) : 2 + Math.random() ** 1.5 * 4.5;
+  o.rt = run ? 4.5 + Math.random() * 3.5 + (Math.random() < 0.12 ? 2.5 : 0) : 1.8 + Math.random() ** 1.5 * 3.2;
+  o.r = run ? 1.4 : o.rt; // süzülən damcı xırda yaranır, su yığıb böyüyür, sonra yerindən qopur
   o.vy = 0;
-  o.wait = Math.random() * 90;
+  o.wait = Math.random() * 120;
   o.age = 0;
   o.life = run ? 1e6 : 400 + Math.random() * 1000;
   o.a = 0;
@@ -27,14 +28,15 @@ export function spawnDrop(w: number, h: number, run: boolean, d?: Drop): Drop {
 // Xırda damcı: yerində durur, bir müddətdən sonra quruyub itir.
 export function stepDrop(d: Drop, w: number, h: number) {
   d.age += 1;
-  const dying = d.age > d.life || d.r < 3.2;
+  const dying = d.age > d.life || (d.vy > 0 && d.r < 2.6);
   d.a = Math.min(1, Math.max(0, d.a + (dying ? -0.025 : 0.02)));
   if (dying && d.a === 0) {
     spawnDrop(w, h, d.run, d);
     if (d.run) d.y = d.py = Math.random() * h * 0.1;
     return;
   }
-  if (!d.run || d.age < d.wait) return;
+  if (d.run && d.r < d.rt) d.r = Math.min(d.rt, d.r + 0.012);
+  if (!d.run || d.age < d.wait || d.r < d.rt * 0.98) return;
   if (d.stuck > 0) {
     d.stuck -= 1;
     d.vy *= 0.8;
