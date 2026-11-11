@@ -4,7 +4,7 @@ import { Spotlight } from "@/components/landing/Spotlight";
 import { initials } from "@/lib/experience";
 import { SUPABASE_URL } from "@/lib/env";
 import type { MasterCardProps } from "@/types/site";
-import { typeKey } from "../constants/workerTypes";
+import { typeKey, typeTone } from "../constants/workerTypes";
 
 // Usta kartı (üfüqi, yığcam): solda şəkil, sağda ixtisas, ad və təcrübə; təcrübə zolağı ən təcrübəli ustaya nisbətlə dolur.
 export function MasterCard({ e, max, t }: MasterCardProps) {
@@ -12,8 +12,8 @@ export function MasterCard({ e, max, t }: MasterCardProps) {
   return (
     <Spotlight className="h-full rounded-[28px]">
       {/* Şəkil kartın eninə görə: 128px, planşetin iki sütununda 96px, mobildə 80px */}
-      <article className="group flex h-full items-center gap-6 rounded-[28px] bg-white p-4 pr-7 ring-1 ring-night/5 transition-[box-shadow,transform] duration-300 hover:-translate-y-1 hover:shadow-[0_24px_50px_rgba(6,25,43,0.12)] max-sm:gap-4 max-sm:pr-5 md:max-lg:gap-5">
-        <span className="relative h-32 w-32 shrink-0 overflow-hidden rounded-[22px] bg-gradient-to-br from-ice to-glacier max-sm:h-20 max-sm:w-20 max-sm:rounded-[18px] md:max-lg:h-24 md:max-lg:w-24">
+      <article style={typeTone(e.worker_type)} className="group relative flex h-full items-center gap-6 overflow-hidden rounded-[28px] bg-[linear-gradient(100deg,color-mix(in_srgb,var(--tone)_9%,white),white_45%)] p-4 pr-7 ring-1 ring-night/5 transition-[box-shadow,transform] duration-300 hover:-translate-y-1 hover:shadow-[0_24px_50px_color-mix(in_srgb,var(--tone)_24%,transparent)] hover:ring-[color-mix(in_srgb,var(--tone)_35%,transparent)] max-sm:gap-4 max-sm:pr-5 md:max-lg:gap-5">
+        <span className="relative h-32 w-32 shrink-0 overflow-hidden rounded-[22px] bg-gradient-to-br from-ice to-glacier ring-2 ring-[color-mix(in_srgb,var(--tone)_45%,white)] max-sm:h-20 max-sm:w-20 max-sm:rounded-[18px] md:max-lg:h-24 md:max-lg:w-24">
           {e.photo_url ? (
             <Image width={256} height={256} sizes="128px" unoptimized={!e.photo_url.startsWith(SUPABASE_URL)} src={e.photo_url} alt={e.full_name} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
           ) : (
@@ -26,20 +26,20 @@ export function MasterCard({ e, max, t }: MasterCardProps) {
           {/* İxtisas solda, iş növü sağda sakit haşiyəli həb (şəklin üstündəki nişan bəyənilmədi: tünd və şüşə variantları).
               İxtisas bir sətirdə, kəsilmədən (2 sətrə düşəndə ad xətti pozulurdu): şrift kartın eninə görə, 84px = həb + ara; < 400px həb gizli (ixtisas 9px-ə düşürdü) */}
           <div className="flex items-center justify-between gap-3">
-            <p className="truncate text-[min(0.875rem,calc((100cqi-84px)/9.2))] font-bold text-cold max-[400px]:text-[min(0.875rem,calc(100cqi/9.2))]">{e.specialty ?? t["team.specialty"]}</p>
-            <span className="shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold text-night/55 ring-1 ring-night/10 max-[400px]:hidden">
+            <p className="truncate text-[min(0.875rem,calc((100cqi-84px)/9.2))] font-bold text-(--tone) max-[400px]:text-[min(0.875rem,calc(100cqi/9.2))]">{e.specialty ?? t["team.specialty"]}</p>
+            <span className="shrink-0 rounded-full bg-[color-mix(in_srgb,var(--tone)_12%,white)] px-2.5 py-0.5 text-xs font-semibold text-(--tone) ring-1 ring-[color-mix(in_srgb,var(--tone)_30%,transparent)] max-[400px]:hidden">
               {t[typeKey(e.worker_type)]}
             </span>
           </div>
           {/* Ad bir sətirdə, kəsilmədən: şrift kartın eninə görə */}
           <h2 className="mt-1 truncate font-display text-[min(1.25rem,calc(100cqi/11.2))] font-bold leading-tight">{e.full_name}</h2>
           <div className="mt-4 flex items-center gap-2 text-sm text-night/60">
-            <Briefcase size={15} className="shrink-0 text-cold" />
+            <Briefcase size={15} className="shrink-0 text-(--tone)" />
             {e.experience ? <span>{t["team.experience"]} <b className="font-semibold text-night">{e.experience}</b></span> : <span>{t["team.new"]}</span>}
           </div>
           {/* Təcrübə zolağı: görünəndə dolur (.stat-bar animasiyası) */}
-          <span className="mt-2.5 block h-1.5 overflow-hidden rounded-full bg-glacier" aria-hidden="true">
-            <span className="stat-bar" style={{ width: `${share}%`, height: "100%" }} />
+          <span className="mt-2.5 block h-1.5 overflow-hidden rounded-full bg-[color-mix(in_srgb,var(--tone)_12%,white)]" aria-hidden="true">
+            <span className="stat-bar" style={{ width: `${share}%`, height: "100%", background: "linear-gradient(90deg, color-mix(in srgb, var(--tone) 70%, white), var(--tone))" }} />
           </span>
         </div>
       </article>
