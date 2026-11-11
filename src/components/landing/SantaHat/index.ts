@@ -1,0 +1,1 @@
+export { SantaHat } from "./SantaHat";

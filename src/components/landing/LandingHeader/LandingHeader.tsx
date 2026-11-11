@@ -13,6 +13,7 @@ import { SiteMenu } from "../SiteMenu";
 import { SiteNav } from "../SiteNav";
 import { HeaderIcicles } from "../HeaderIcicles";
 import { BrandSnow } from "../BrandSnow";
+import { SantaHat } from "../SantaHat";
 
 const accountClass =
   "grid h-11 w-11 place-items-center rounded-full text-night/60 ring-1 ring-night/10 transition-colors hover:bg-night hover:text-white hover:ring-night";
@@ -49,14 +50,14 @@ export async function LandingHeader() {
     <header className={`${s.header} sticky top-0 z-30 border-b border-night/[0.06] bg-white/85 backdrop-blur-xl backdrop-saturate-150`}>
       <div className="site-wrap flex h-[76px] items-center gap-3 sm:gap-6 lg:gap-4 2xl:gap-6">
         <Link href="/" className="flex shrink-0 items-center gap-3">
-          {logo
+          <span className="relative shrink-0">{logo
             // eslint-disable-next-line @next/next/no-img-element -- storage şəkli
             ? <img src={logo} alt={t["brand.name"]} className="h-11 w-auto max-w-[170px] object-contain" />
             : (
               <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-cold to-night text-white shadow-[0_8px_20px_rgba(0,163,217,0.35)]">
                 <Snowflake size={22} strokeWidth={2.2} />
               </span>
-            )}
+            )}<SantaHat /></span>
           <span className="leading-tight lg:max-xl:hidden">
             <span className="block font-display text-[15px] font-bold text-night sm:text-[17px]"><span className="relative inline-block">{t["brand.name"]}<BrandSnow /></span></span>
             <span className="block text-xs font-medium text-night/50 max-[1500px]:hidden">{t["brand.tagline"]}</span>

@@ -1,0 +1,15 @@
+@layer components {
+  /* Pom-pom papağın ucundan asılıb sallanır: fırlanma mərkəzi uc nöqtəsidir (SVG vahidləri), ağırlıq həmişə aşağıdır */
+  @keyframes pom-swing {
+    0%, 100% { transform: rotate(14deg); }
+    50% { transform: rotate(-16deg); }
+  }
+  .pom {
+    transform-box: view-box;
+    transform-origin: 50px 27px;
+    animation: pom-swing 3.2s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pom { animation: none; }
+  }
+}
