@@ -71,3 +71,4 @@ export type { HeroClimateProps } from "./HeroClimateProps";
 export type { Drop } from "./Drop";
 export type { SnowParticle } from "./SnowParticle";
 export type { EdgeFadeProps } from "./EdgeFadeProps";
+export type { ScrollCueProps } from "./ScrollCueProps";

@@ -6,6 +6,7 @@ import { HeroTitle } from "@/components/landing/HeroTitle";
 import type { TextsProps } from "@/types/site";
 import { HeroBackground } from "./HeroBackground";
 import { HeroClimate } from "./HeroClimate";
+import { ScrollCue } from "./ScrollCue";
 import { HeroForm } from "./HeroForm";
 
 const LINK = "inline-flex items-center gap-1.5 text-white/85 underline-offset-4 transition-colors hover:text-white hover:underline";
@@ -20,6 +21,7 @@ export function HeroSection({ t }: TextsProps) {
       <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(90deg,rgba(255,255,255,0.04)_0_1px,transparent_1px_32px)]" aria-hidden="true" />
       {/* Alt kənar səhifə fonuna hamar keçir (rəqəmlər kartının yanlarında sərt xətt qalmır) */}
       <EdgeFade bottom="var(--color-glacier)" />
+      <ScrollCue text={t["home.hero.scroll"]} />
       {/* < 1024: mətn aşağıda, şəklin yuxarısındakı kondisioner açıq qalır */}
       <div className="site-wrap relative col-start-1 row-start-1 w-full self-center pb-24 pt-16 max-lg:self-end">
         <div className="max-w-2xl">

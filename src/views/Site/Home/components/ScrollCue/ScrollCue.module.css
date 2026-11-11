@@ -1,0 +1,56 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  @keyframes wheel {
+    0% { transform: translateY(0); opacity: 0; }
+    25% { opacity: 1; }
+    80% { transform: translateY(12px); opacity: 0.9; }
+    100% { transform: translateY(15px); opacity: 0; }
+  }
+  @keyframes cue-out { to { opacity: 0; transform: translateY(14px); } }
+
+  .cue {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55rem;
+  }
+  /* Səhifə sürüşdükcə (ilk ~20% ekran) işarə tədricən itir */
+  @supports (animation-timeline: scroll()) {
+    .cue {
+      animation: cue-out linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 22vh;
+    }
+  }
+  .mouse {
+    position: relative;
+    width: 24px;
+    height: 38px;
+    border: 2px solid rgb(255 255 255 / 0.72);
+    border-radius: 999px;
+    box-shadow: 0 0 22px rgb(0 163 217 / 0.4);
+  }
+  .wheel {
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    width: 3px;
+    height: 8px;
+    margin-left: -1.5px;
+    border-radius: 3px;
+    background: #fff;
+    animation: wheel 1.9s ease-in-out infinite;
+  }
+  .text {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: rgb(255 255 255 / 0.78);
+    text-shadow: 0 1px 8px rgb(6 25 43 / 0.6);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wheel { animation: none; opacity: 1; }
+    .cue { animation: none; }
+  }
+}

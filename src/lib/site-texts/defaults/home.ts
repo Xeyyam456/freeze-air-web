@@ -7,6 +7,7 @@ export const HOME_TEXTS = {
   "home.hero.lead": "Marketlər, banklar, stadionlar və yaşayış kompleksləri üçün quraşdırma, təmir və müqavilə ilə müntəzəm texniki xidmət.",
   "home.hero.cta": "Usta çağır",
   "home.hero.cta2": "Xidmətlər",
+  "home.hero.scroll": "Aşağı sürüşdürün",
   "home.quick.title": "Sürətli müraciət",
   "home.quick.name": "Adınız",
   "home.quick.phone": "Telefon nömrəniz",
