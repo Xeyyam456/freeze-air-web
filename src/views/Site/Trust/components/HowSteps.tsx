@@ -2,6 +2,7 @@ import s from "../styles/HowSteps.module.css";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { STEPS } from "@/components/landing/content";
+import { EdgeFade } from "@/components/landing/EdgeFade";
 import { Reveal } from "@/components/landing/Reveal";
 import type { TextsProps } from "@/types/site";
 import { HowStepCard } from "./HowStepCard";
@@ -9,13 +10,15 @@ import { HowStepCard } from "./HowStepCard";
 // Necə işləyirik: 3 addım, aralarında bağlayıcı xətt (mətnlər bazadan: "how.step*")
 export function HowSteps({ t }: TextsProps) {
   return (
-    <section className="bg-glacier py-20">
-      <div className="site-wrap">
+    // Tünd bölmə: yuxarıda firuzəyi parıltı (statik gradient, animasiya yox); kənarları qonşu açıq bölmələrə hamar keçir
+    <section className="relative overflow-hidden bg-night bg-[radial-gradient(60%_70%_at_50%_0%,rgba(0,163,217,0.22),transparent_72%)] py-24 text-white">
+      <EdgeFade top="var(--color-glacier)" bottom="#fff" />
+      <div className="site-wrap relative">
         <Reveal>
           <div className="mx-auto max-w-2xl text-center lg:max-w-3xl">
             <span className="mx-auto block h-1 w-12 rounded-full bg-cold" aria-hidden="true" />
             <h2 className="mt-4 text-balance font-display text-[clamp(1.4rem,6.9vw,1.875rem)] font-bold sm:text-4xl">{t["home.how.title"]}</h2>
-            <p className="mt-3 text-night/60">{t["home.how.lead"]}</p>
+            <p className="mt-3 text-white/65">{t["home.how.lead"]}</p>
           </div>
         </Reveal>
         {/* Addımları birləşdirən xətt səhifə sürüşdükcə dolur, addımlar növbə ilə işıqlanır (CSS scroll-driven: .steps-line, .step-dot) */}
@@ -28,7 +31,7 @@ export function HowSteps({ t }: TextsProps) {
         </ol>
         <Reveal className="mt-10 text-center">
           {/* Planşet və mobildə tam endə (istifadəçi qərarı) */}
-          <Link href="/nece-isleyirik" className="inline-flex h-12 items-center gap-2 rounded-full bg-cold px-6 font-bold text-white transition-colors hover:bg-night max-lg:w-full max-lg:justify-center">
+          <Link href="/nece-isleyirik" className="inline-flex h-12 items-center gap-2 rounded-full bg-cold px-6 font-bold text-white transition-colors hover:bg-white hover:text-night max-lg:w-full max-lg:justify-center">
             {t["home.how.button"]} <ArrowRight size={18} />
           </Link>
         </Reveal>

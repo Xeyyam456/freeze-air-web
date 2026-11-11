@@ -1,0 +1,20 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  /* Kosinus əyrisi ilə 100% → 0% (pilləsiz keçid); hündürlük ekrana görə dəyişir */
+  .fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: clamp(4rem, 10vw, 7.5rem);
+    pointer-events: none;
+  }
+  .top {
+    top: 0;
+    background: linear-gradient(to bottom, var(--c) 0%, color-mix(in srgb, var(--c) 98%, transparent) 10%, color-mix(in srgb, var(--c) 90%, transparent) 20%, color-mix(in srgb, var(--c) 79%, transparent) 30%, color-mix(in srgb, var(--c) 65%, transparent) 40%, color-mix(in srgb, var(--c) 50%, transparent) 50%, color-mix(in srgb, var(--c) 35%, transparent) 60%, color-mix(in srgb, var(--c) 21%, transparent) 70%, color-mix(in srgb, var(--c) 10%, transparent) 80%, color-mix(in srgb, var(--c) 2%, transparent) 90%, transparent 100%);
+  }
+  .bottom {
+    bottom: 0;
+    background: linear-gradient(to top, var(--c) 0%, color-mix(in srgb, var(--c) 98%, transparent) 10%, color-mix(in srgb, var(--c) 90%, transparent) 20%, color-mix(in srgb, var(--c) 79%, transparent) 30%, color-mix(in srgb, var(--c) 65%, transparent) 40%, color-mix(in srgb, var(--c) 50%, transparent) 50%, color-mix(in srgb, var(--c) 35%, transparent) 60%, color-mix(in srgb, var(--c) 21%, transparent) 70%, color-mix(in srgb, var(--c) 10%, transparent) 80%, color-mix(in srgb, var(--c) 2%, transparent) 90%, transparent 100%);
+  }
+}

@@ -1,5 +1,7 @@
 import { CircleCheck, Snowflake } from "lucide-react";
 import { CATEGORIES } from "@/components/landing/content";
+import { EdgeFade } from "@/components/landing/EdgeFade";
+import { tone } from "@/components/landing/tones";
 import { Reveal } from "@/components/landing/Reveal";
 import { Spotlight } from "@/components/landing/Spotlight";
 import { lines } from "@/lib/site-texts";
@@ -10,6 +12,7 @@ import { SectionTitle } from "./SectionTitle";
 export function CategoriesSection({ t }: TextsProps) {
   return (
     <section className="aurora relative overflow-hidden bg-night py-24 text-white">
+      <EdgeFade top="#fff" bottom="var(--color-glacier)" />
       <Snowflake size={420} strokeWidth={0.5} className="pointer-events-none absolute -left-24 -top-24 text-white/[0.06]" aria-hidden="true" />
       <div className="site-wrap relative">
         <Reveal>
@@ -19,9 +22,9 @@ export function CategoriesSection({ t }: TextsProps) {
           {CATEGORIES.map(({ icon: Icon, title, items }, i) => (
             <Reveal key={title} delay={i * 100} className="h-full">
               <Spotlight className="h-full rounded-[28px]">
-                <div className="bento-card h-full rounded-[28px] p-7">
+                <div className="bento-card h-full rounded-[28px] p-7" style={tone(i)}>
                   <div className="flex items-center gap-4">
-                    <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-cold/15 text-cold ring-1 ring-cold/30">
+                    <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[color-mix(in_srgb,var(--tone)_16%,transparent)] text-(--tone) ring-1 ring-[color-mix(in_srgb,var(--tone)_38%,transparent)]">
                       <Icon size={26} />
                     </span>
                     <h3 className="font-display text-lg font-bold leading-tight">{t[title]}</h3>
@@ -30,7 +33,7 @@ export function CategoriesSection({ t }: TextsProps) {
                   <ul className="mt-6 sm:max-lg:grid sm:max-lg:grid-cols-2 sm:max-lg:gap-x-8">
                     {lines(t[items]).map((item) => (
                       <li key={item} className="flex items-center gap-3 border-t border-white/10 py-3 font-medium text-white/85 first:border-t-0 sm:max-lg:nth-2:border-t-0">
-                        <CircleCheck size={18} className="shrink-0 text-cold" /> {item}
+                        <CircleCheck size={18} className="shrink-0 text-(--tone)" /> {item}
                       </li>
                     ))}
                   </ul>

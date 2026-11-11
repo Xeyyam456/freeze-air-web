@@ -1,0 +1,1 @@
+export { EdgeFade } from "./EdgeFade";

@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { getSegments } from "@/services/site/fetchSiteContent.server";
 import { getTexts } from "@/services/site/fetchSiteTexts.server";
 import { SegmentVisual } from "../SegmentVisual";
+import { tone } from "../tones";
 import { Spotlight } from "../Spotlight";
 
 // Obyekt növlərinin kartları (bazadan): ana səhifədə ətraflı, Xidmətlər səhifəsində yığcam.
@@ -16,23 +17,25 @@ export async function SegmentCards({ compact = false }: SegmentCardsProps) {
 
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-      {segments.map((s) => (
+      {segments.map((s, i) => (
         <Spotlight key={s.id} className={`rounded-[28px] ${compact ? "" : subgrid}`}>
-        <Link href={`/xidmetler/${s.slug}`}
-          className={`group h-full overflow-hidden rounded-[28px] bg-white transition-[box-shadow,transform] duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(6,25,43,0.14)] ${compact ? "block" : `border border-night/10 ${subgrid}`}`}>
+        {/* --tone: növün rəngi (üst zolaq, "Ətraflı", hover kölgəsi və haşiyəsi) */}
+        <Link href={`/xidmetler/${s.slug}`} style={tone(i)}
+          className={`group relative h-full overflow-hidden rounded-[28px] bg-white transition-[box-shadow,transform,border-color] duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_color-mix(in_srgb,var(--tone)_26%,transparent)] ${compact ? "block" : `border border-night/10 hover:border-[color-mix(in_srgb,var(--tone)_45%,transparent)] ${subgrid}`}`}>
+          <span className="absolute inset-x-0 top-0 z-10 h-1 bg-(--tone)" aria-hidden="true" />
           <div className={`overflow-hidden ${compact ? "h-40" : "h-48"}`}>
             <SegmentVisual segment={s} className="transition-transform duration-700 group-hover:scale-110" />
           </div>
           {compact ? (
             <div className="flex items-center justify-between gap-3 p-5">
               <span className="font-display font-bold">{s.title}</span>
-              <ArrowRight size={18} className="shrink-0 text-cold transition-transform group-hover:translate-x-1" />
+              <ArrowRight size={18} className="shrink-0 text-(--tone) transition-transform group-hover:translate-x-1" />
             </div>
           ) : (
             <>
               <h3 className="px-6 pt-6 font-display text-lg font-bold">{s.title}</h3>
               <p className="px-6 pt-2 text-sm text-night/60">{s.summary}</p>
-              <span className="inline-flex items-center gap-1.5 self-end justify-self-start px-6 pb-6 pt-4 text-sm font-bold text-cold">{t["home.segments.more"]} <ArrowRight size={15} /></span>
+              <span className="inline-flex items-center gap-1.5 self-end justify-self-start px-6 pb-6 pt-4 text-sm font-bold text-(--tone)">{t["home.segments.more"]} <ArrowRight size={15} /></span>
             </>
           )}
         </Link>

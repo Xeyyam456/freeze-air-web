@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { ArrowRight } from "lucide-react";
+import { EdgeFade } from "@/components/landing/EdgeFade";
 import { HeroTitle } from "@/components/landing/HeroTitle";
 import type { TextsProps } from "@/types/site";
 import { HeroBackground } from "./HeroBackground";
@@ -17,6 +18,8 @@ export function HeroSection({ t }: TextsProps) {
         <HeroBackground />
       </Suspense>
       <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(90deg,rgba(255,255,255,0.04)_0_1px,transparent_1px_32px)]" aria-hidden="true" />
+      {/* Alt kənar səhifə fonuna hamar keçir (rəqəmlər kartının yanlarında sərt xətt qalmır) */}
+      <EdgeFade bottom="var(--color-glacier)" />
       {/* < 1024: mətn aşağıda, şəklin yuxarısındakı kondisioner açıq qalır */}
       <div className="site-wrap relative col-start-1 row-start-1 w-full self-center pb-24 pt-16 max-lg:self-end">
         <div className="max-w-2xl">

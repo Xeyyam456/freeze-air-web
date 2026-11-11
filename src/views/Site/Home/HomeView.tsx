@@ -12,7 +12,8 @@ import { HeroSection } from "./components/HeroSection";
 import { QuickContact } from "./components/QuickContact";
 import { SectionTitle } from "./components/SectionTitle";
 
-// Ana səhifə: hero → rəqəmlər → Haqqımızda → obyektlər → necə işləyirik → kateqoriyalar → FAQ → əlaqə
+// Ana səhifə (açıq/tünd növbələşir): hero (tünd) → rəqəmlər → obyektlər (açıq) → necə işləyirik (tünd) →
+// Haqqımızda (ağ) → kateqoriyalar (tünd) → FAQ (açıq) → əlaqə. Tünd bölmələrin kənarı qonşuya hamar keçir (EdgeFade).
 export async function HomeView() {
   const t = await getTexts();
   return (
@@ -27,15 +28,8 @@ export async function HomeView() {
         <StatsStrip />
       </Suspense>
 
-      {/* Haqqımızda */}
-      <section className="site-wrap grid items-center gap-12 py-20 lg:grid-cols-2">
-        <Suspense fallback={<div className="min-h-[420px] rounded-[28px] bg-white/60 lg:col-span-2" />}>
-          <About t={t} />
-        </Suspense>
-      </section>
-
-      {/* Xidmət: obyekt növlərinə görə */}
-      <section className="bg-white py-20">
+      {/* Xidmət: obyekt növlərinə görə (açıq, səhifə fonunda: ağ kartlar seçilir) */}
+      <section className="py-20">
         <div className="site-wrap">
           <Reveal>
             <SectionTitle title={t["home.segments.title"]} lead={t["home.segments.lead"]} />
@@ -48,8 +42,17 @@ export async function HomeView() {
         </div>
       </section>
 
-      {/* Necə işləyirik: 3 addım */}
+      {/* Necə işləyirik: 3 addım (tünd) */}
       <HowSteps t={t} />
+
+      {/* Haqqımızda (ağ) */}
+      <section className="bg-white">
+        <div className="site-wrap grid items-center gap-12 py-20 lg:grid-cols-2">
+          <Suspense fallback={<div className="min-h-[420px] rounded-[28px] bg-glacier lg:col-span-2" />}>
+            <About t={t} />
+          </Suspense>
+        </div>
+      </section>
 
       <CategoriesSection t={t} />
 
