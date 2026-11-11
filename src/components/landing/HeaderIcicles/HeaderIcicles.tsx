@@ -30,8 +30,10 @@ function Stalk({ c }: { c: Icicle }) {
 // SVG + CSS, JS yoxdur; temperatur sürgüsünə bağlıdır (soyuqda uzanır, 24°-dən sonra əriyib 30°-də tam itir).
 export function HeaderIcicles() {
   return (
-    <>
-      <div aria-hidden="true" className={`${s.ice} pointer-events-none absolute inset-x-0 top-full`}>
+    // .away: səhifə aşağı sürüşdükcə saçaqlar tədricən yuxarı qalxıb solur, hero ekrandan çıxanda tam yoxdur (CSS scroll-driven).
+    // Sarğı header ölçüsündədir (absolute inset-0): içindəki "top-full" və damcıların mövqeyi dəyişmir.
+    <div aria-hidden="true" className={s.away}>
+      <div className={`${s.ice} pointer-events-none absolute inset-x-0 top-full`}>
         <svg width="100%" height={ICE_H} className="block overflow-visible">
           <defs>
             <linearGradient id="ice-body" x1="0" y1="0" x2="1" y2="0">
@@ -67,6 +69,6 @@ export function HeaderIcicles() {
           <i className={s.bead} />
         </span>
       ))}
-    </>
+    </div>
   );
 }

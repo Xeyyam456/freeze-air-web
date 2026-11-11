@@ -1,6 +1,21 @@
 @layer theme, base, components, utilities;
 
 @layer components {
+  /* Sürüşdürmə: ilk ~6vh-dən sonra saçaqlar tədricən yuxarı qalxıb solur, ~88vh-də (hero ekrandan çıxanda) tam yoxdur */
+  .away {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  @supports (animation-timeline: scroll()) {
+    .away {
+      animation: away linear both;
+      animation-timeline: scroll(root);
+      animation-range: 6vh 88vh;
+    }
+  }
+  @keyframes away { to { opacity: 0; transform: translateY(-22px); } }
+
   /* --k: saçaq uzunluğunun miqyası: normalda 0.8×, soyuqda 1.2×-ə qədər uzanır, istidə (24°-dən sonra) qısalıb əriyir və 30°-də tam itir (--cold / --melt: 0–1) */
   .ice {
     --k: calc(0.8 + var(--cold, 0) * 0.4 - var(--melt, 0) * 0.5);
@@ -46,6 +61,6 @@
     74%, 100% { opacity: 0; transform: translateY(345px) scale(0.7, 1.8); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .bead { animation: none; }
+    .away, .bead { animation: none; }
   }
 }
