@@ -22,9 +22,10 @@ export function CategoriesSection({ t }: TextsProps) {
             {CATEGORIES.map(({ icon: Icon, title, items }, i) => (
               <Reveal key={title} delay={i * 100} className="h-full">
                 <Spotlight className="h-full rounded-[28px]">
-                  <div className="bento-card h-full rounded-[28px] p-7" style={tone(i)}>
+                  <div className="bento-card relative h-full overflow-hidden rounded-[28px] bg-[radial-gradient(75%_45%_at_0%_0%,color-mix(in_srgb,var(--tone)_34%,transparent),transparent)] p-7" style={tone(i)}>
+                    <span className="absolute inset-x-7 top-0 h-px bg-gradient-to-r from-transparent via-(--tone) to-transparent" aria-hidden="true" />
                     <div className="flex items-center gap-4">
-                      <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[color-mix(in_srgb,var(--tone)_16%,transparent)] text-(--tone) ring-1 ring-[color-mix(in_srgb,var(--tone)_38%,transparent)]">
+                      <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[linear-gradient(135deg,var(--tone),color-mix(in_srgb,var(--tone)_55%,#06192b))] text-white shadow-[0_10px_26px_color-mix(in_srgb,var(--tone)_50%,transparent)] ring-1 ring-white/25">
                         <Icon size={26} />
                       </span>
                       <h3 className="font-display text-lg font-bold leading-tight">{t[title]}</h3>

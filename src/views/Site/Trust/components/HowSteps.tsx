@@ -27,7 +27,7 @@ export function HowSteps({ t }: TextsProps) {
           </ol>
           <Reveal className="mt-10 text-center">
             {/* Planşet və mobildə tam endə (istifadəçi qərarı) */}
-            <Link href="/nece-isleyirik" className="inline-flex h-12 items-center gap-2 rounded-full bg-cold px-6 font-bold text-white transition-colors hover:bg-white hover:text-night max-lg:w-full max-lg:justify-center">
+            <Link href="/nece-isleyirik" className="inline-flex h-12 items-center gap-2 rounded-full bg-gradient-to-r from-cold to-primary px-6 font-bold text-white shadow-[0_12px_28px_rgba(0,163,217,0.35)] transition-all hover:-translate-y-px hover:shadow-[0_16px_34px_rgba(31,111,235,0.45)] max-lg:w-full max-lg:justify-center">
               {t["home.how.button"]} <ArrowRight size={18} />
             </Link>
           </Reveal>

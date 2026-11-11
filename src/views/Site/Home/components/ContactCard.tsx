@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { ContactCardProps } from "@/types/site";
+import { tone } from "@/components/landing/tones";
 
 // Əsas çağırış kartı: tünd aurora fon + fırlanan işıqlı haşiyə (.glow-border).
 // Planşetdə kart tam endədir: iki bərabər yarı — solda başlıq, mətn və düymə; sağda məlumatlar şüşə plitələrdə
@@ -13,9 +14,9 @@ export function ContactCard({ t, items }: ContactCardProps) {
         <p className="mt-3 text-white/60">{t["home.contact.text"]}</p>
       </div>
       <ul className="mt-8 space-y-5 sm:max-lg:col-start-2 sm:max-lg:row-span-2 sm:max-lg:row-start-1 sm:max-lg:mt-0 sm:max-lg:space-y-3 sm:max-lg:self-center">
-        {items.map(({ icon: Icon, label, value, href }) => (
-          <li key={label} className="flex items-center gap-4 sm:max-lg:rounded-2xl sm:max-lg:bg-white/[0.06] sm:max-lg:p-3 sm:max-lg:ring-1 sm:max-lg:ring-white/10">
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/10 text-cold"><Icon size={20} /></span>
+        {items.map(({ icon: Icon, label, value, href }, i) => (
+          <li key={label} style={tone(i)} className="flex items-center gap-4 sm:max-lg:rounded-2xl sm:max-lg:bg-white/[0.06] sm:max-lg:p-3 sm:max-lg:ring-1 sm:max-lg:ring-white/10">
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[linear-gradient(135deg,var(--tone),color-mix(in_srgb,var(--tone)_55%,#06192b))] text-white shadow-[0_8px_20px_color-mix(in_srgb,var(--tone)_45%,transparent)] ring-1 ring-white/20"><Icon size={20} /></span>
             <span>
               <span className="block text-xs text-white/50">{label}</span>
               {href ? <a href={href} className="font-semibold hover:text-cold">{value}</a> : <span className="font-semibold">{value}</span>}

@@ -23,7 +23,7 @@ export async function HomeView() {
       <HeroSection t={t} />
 
       {/* Xidmət: obyekt növlərinə görə (açıq, səhifə fonunda: ağ kartlar seçilir) */}
-      <section className="py-20">
+      <section className="bg-[radial-gradient(45%_45%_at_6%_25%,rgba(0,163,217,0.13),transparent),radial-gradient(40%_45%_at_96%_72%,rgba(255,159,28,0.12),transparent)] py-20">
         <div className="site-wrap">
           <Reveal>
             <SectionTitle title={t["home.segments.title"]} lead={t["home.segments.lead"]} />
@@ -40,7 +40,7 @@ export async function HomeView() {
       <HowSteps t={t} />
 
       {/* Haqqımızda (ağ) */}
-      <section className="bg-white">
+      <section className="bg-white bg-[radial-gradient(40%_45%_at_96%_25%,rgba(31,111,235,0.09),transparent),radial-gradient(40%_45%_at_4%_75%,rgba(0,163,217,0.11),transparent)]">
         <div className="site-wrap grid items-center gap-12 py-20 lg:grid-cols-2">
           <Suspense fallback={<div className="min-h-[420px] rounded-[28px] bg-glacier lg:col-span-2" />}>
             <About t={t} />

@@ -3,8 +3,8 @@
 @layer components {
   @supports (animation-timeline: scroll()) {
     @keyframes step-dot {
-      from { background-color: #fff; color: var(--color-cold); box-shadow: 0 0 0 rgba(0, 163, 217, 0); }
-      to { background-color: var(--color-cold); color: #fff; box-shadow: 0 12px 30px rgba(0, 163, 217, 0.45); }
+      from { background-color: #fff; color: var(--tone); box-shadow: 0 0 0 transparent; }
+      to { background-color: var(--tone); color: #fff; box-shadow: 0 12px 30px color-mix(in srgb, var(--tone) 45%, transparent); }
     }
     .dot {
       animation: step-dot linear both;

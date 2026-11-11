@@ -23,7 +23,9 @@ export async function SegmentCards({ compact = false }: SegmentCardsProps) {
         <Link href={`/xidmetler/${s.slug}`} style={tone(i)}
           className={`group relative h-full overflow-hidden rounded-[28px] bg-white transition-[box-shadow,transform,border-color] duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_color-mix(in_srgb,var(--tone)_26%,transparent)] ${compact ? "block" : `border border-night/10 hover:border-[color-mix(in_srgb,var(--tone)_45%,transparent)] ${subgrid}`}`}>
           <span className="absolute inset-x-0 top-0 z-10 h-1 bg-(--tone)" aria-hidden="true" />
-          <div className={`overflow-hidden ${compact ? "h-40" : "h-48"}`}>
+          <div className={`relative overflow-hidden ${compact ? "h-40" : "h-48"}`}>
+            {!compact && <span className="absolute left-4 top-4 z-10 grid h-8 min-w-8 place-items-center rounded-full bg-(--tone) px-2.5 text-xs font-bold text-white shadow-[0_6px_16px_color-mix(in_srgb,var(--tone)_55%,transparent)] ring-1 ring-white/40">0{i + 1}</span>}
+            <span className="absolute inset-x-0 bottom-0 z-[5] h-16 bg-gradient-to-t from-[color-mix(in_srgb,var(--tone)_32%,transparent)] to-transparent" aria-hidden="true" />
             <SegmentVisual segment={s} className="transition-transform duration-700 group-hover:scale-110" />
           </div>
           {compact ? (

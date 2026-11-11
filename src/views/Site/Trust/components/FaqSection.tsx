@@ -23,7 +23,7 @@ export async function FaqSection({ t }: TextsProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <Reveal>
         {/* Mobildə digər bölmələr kimi mərkəzdə: göy xətt, başlıq və alt mətn ortada, düymə altında tam endə */}
-        <span className="block h-1 w-12 rounded-full bg-cold max-sm:mx-auto" aria-hidden="true" />
+        <span className="block h-1 w-14 rounded-full bg-gradient-to-r from-cold to-primary max-sm:mx-auto" aria-hidden="true" />
         {/* Düymə başlıq + alt mətn blokunun şaquli ortasında (göy xətt sıradan kənardadır) */}
         <div className="mt-4 flex flex-wrap items-center justify-between gap-6 sm:flex-nowrap">
           <div className="min-w-0 max-sm:w-full max-sm:text-center">
@@ -37,7 +37,7 @@ export async function FaqSection({ t }: TextsProps) {
       </Reveal>
       <Reveal delay={120}>
         <div className="mt-10 space-y-3">
-          {faq.map((f) => <FaqItem key={f.id} item={f} />)}
+          {faq.map((f, i) => <FaqItem key={f.id} item={f} index={i} />)}
         </div>
       </Reveal>
     </section>
