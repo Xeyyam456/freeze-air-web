@@ -45,11 +45,12 @@ export function ServiceBody({ service, t }: ServiceBlockProps) {
       {service.steps.length > 0 && (
         <div className="aurora relative overflow-hidden rounded-[28px] bg-night p-7 text-white sm:p-9">
           <h2 className="font-display text-2xl font-bold">{t["service.steps"]}</h2>
-          <ol className="relative mt-8 grid gap-6 sm:grid-cols-2 xl:grid-flow-col xl:auto-cols-fr xl:grid-cols-none">
-            <span style={{ right: `calc((100% - ${(service.steps.length - 1) * 1.5}rem) / ${service.steps.length} - 20px)` }} className="absolute left-5 top-5 hidden h-0.5 bg-gradient-to-r from-cold via-primary via-45% via-ok via-70% to-heat xl:block" aria-hidden="true" />
+          {/* ≥ 1280: sonuncu sütun məzmuna görə (auto), qalanları bərabər: sonuncu addım sağ kənara çatır, ondan sonra boşluq qalmır.
+              Xətt hər addımın özündədir (düyündən növbəti düyünə), sonuncuda yoxdur */}
+          <ol style={{ "--cols": service.steps.length > 1 ? `repeat(${service.steps.length - 1}, minmax(0, 1fr)) auto` : "auto" } as React.CSSProperties} className="relative mt-8 grid gap-6 sm:grid-cols-2 xl:[grid-template-columns:var(--cols)]">
             {service.steps.map((step, i) => (
               // Mobildə nömrə mətnin solunda (üstündə çox yer tuturdu)
-              <li key={step} style={tone(i)} className="relative max-sm:flex max-sm:items-center max-sm:gap-4">
+              <li key={step} style={tone(i)} className="relative max-sm:flex max-sm:items-center max-sm:gap-4 xl:not-last:after:absolute xl:not-last:after:left-10 xl:not-last:after:top-5 xl:not-last:after:h-0.5 xl:not-last:after:w-[calc(100%-1rem)] xl:not-last:after:bg-[linear-gradient(90deg,var(--tone),color-mix(in_srgb,var(--tone)_25%,transparent))] xl:not-last:after:content-['']">
                 <span className="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-(--tone) font-display text-sm font-bold shadow-[0_8px_20px_color-mix(in_srgb,var(--tone)_50%,transparent)] ring-4 ring-night">{i + 1}</span>
                 <p className="mt-4 font-semibold text-white/90 max-sm:mt-0">{step}</p>
               </li>
